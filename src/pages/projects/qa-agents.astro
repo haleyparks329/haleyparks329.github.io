@@ -1,0 +1,50 @@
+---
+import { getCollection } from "astro:content";
+import ExternalLink from "@/components/ExternalLink.astro";
+import StatusBadge from "@/components/StatusBadge.astro";
+import TagList from "@/components/TagList.astro";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+
+const project = (await getCollection("projects")).find(
+  (entry) => entry.data.slug === "qa-agents",
+);
+if (!project) {
+  throw new Error("Missing QA Agents project entry");
+}
+---
+
+<BaseLayout
+  title={project.data.title}
+  description={project.data.summary}
+  canonicalPath="/projects/qa-agents/"
+>
+  <section class="page-section container text-page">
+    <p class="eyebrow">Experimental project</p>
+    <h1>{project.data.title}</h1>
+    <p class="lede">{project.data.summary}</p>
+    <div class="button-row">
+      <StatusBadge status={project.data.status} accent={project.data.accent} />
+      {
+        project.data.repositoryUrl && (
+          <ExternalLink href={project.data.repositoryUrl} label="Repository" />
+        )
+      }
+    </div>
+    <TagList tags={project.data.tags} />
+
+    <h2>Overview</h2>
+    <p>
+      QA Agents is described conservatively as an experimental project involving
+      AI-assisted software-quality workflows. The public site avoids making
+      claims about features, outcomes, or performance that are not established
+      by the repository.
+    </p>
+
+    <h2>Current framing</h2>
+    <p>
+      The useful role for this page is to identify the project, link the public
+      repository, and leave room for more precise documentation as the work
+      becomes clearer.
+    </p>
+  </section>
+</BaseLayout>

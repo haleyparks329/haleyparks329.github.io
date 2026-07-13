@@ -1,0 +1,83 @@
+---
+import type { CollectionEntry } from "astro:content";
+import ExternalLink from "./ExternalLink.astro";
+import StatusBadge from "./StatusBadge.astro";
+import TagList from "./TagList.astro";
+
+type Props = {
+  project: CollectionEntry<"projects">;
+};
+
+const { project } = Astro.props;
+const data = project.data;
+---
+
+<article class={`project-card ${data.accent}`}>
+  <div class="card-top">
+    <StatusBadge status={data.status} accent={data.accent} />
+    <h3>{data.title}</h3>
+  </div>
+  <p>{data.summary}</p>
+  <TagList tags={data.tags} />
+  <div class="card-links">
+    <a href={`/projects/${data.slug}/`}>Read project notes</a>
+    {
+      data.repositoryUrl && (
+        <ExternalLink href={data.repositoryUrl} label="Repository" />
+      )
+    }
+  </div>
+</article>
+
+<style>
+  .project-card {
+    display: flex;
+    min-height: 100%;
+    flex-direction: column;
+    gap: 1rem;
+    border: 1px solid var(--line);
+    border-top: 5px solid var(--khaki);
+    border-radius: var(--radius);
+    padding: 1.15rem;
+    background: rgba(247, 236, 212, 0.68);
+    box-shadow: 0 10px 30px rgba(62, 41, 36, 0.08);
+  }
+
+  .rust {
+    border-top-color: var(--rust);
+  }
+
+  .olive {
+    border-top-color: var(--olive);
+  }
+
+  .blue {
+    border-top-color: var(--blue);
+  }
+
+  .plum {
+    border-top-color: var(--plum);
+  }
+
+  .khaki {
+    border-top-color: var(--khaki);
+  }
+
+  .card-top {
+    display: grid;
+    gap: 0.8rem;
+  }
+
+  p {
+    color: var(--muted);
+  }
+
+  .card-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+    margin-top: auto;
+    padding-top: 0.5rem;
+    font-weight: 750;
+  }
+</style>

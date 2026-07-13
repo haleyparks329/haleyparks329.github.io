@@ -1,0 +1,46 @@
+---
+import SectionHeading from "@/components/SectionHeading.astro";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { siteConfig } from "@/site.config";
+---
+
+<BaseLayout
+  title="About"
+  description="About Haley Parks, an AI Product Engineer based in Denmark."
+>
+  <section class="page-section container text-page">
+    <SectionHeading
+      eyebrow="About"
+      title="Building useful systems from ambiguous human problems"
+      text="Haley Parks is an American AI Product Engineer based in Denmark."
+    />
+
+    <p>
+      Haley works across software engineering, product thinking, data and
+      analytics, applied AI, systems design, and human-centered experimentation.
+      The common thread is translating messy human needs into working systems
+      that can be used, evaluated, and improved.
+    </p>
+
+    <p>
+      Her work focuses on personal AI, adaptive systems, evidence-rich decision
+      tools, and interfaces that make technology feel more connected to the
+      person using it. The projects on this site are intentionally presented as
+      public summaries rather than complete copies of their implementation
+      repositories.
+    </p>
+
+    <h2>Opportunities</h2>
+    <p>
+      {siteConfig.availability}
+    </p>
+
+    <ul class="quiet-list split-list">
+      <li>AI product engineering</li>
+      <li>Product engineering</li>
+      <li>Applied AI</li>
+      <li>Systems engineering</li>
+      <li>Early-stage product development</li>
+    </ul>
+  </section>
+</BaseLayout>

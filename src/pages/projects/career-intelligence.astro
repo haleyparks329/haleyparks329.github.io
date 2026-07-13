@@ -1,0 +1,52 @@
+---
+import { getCollection } from "astro:content";
+import ExternalLink from "@/components/ExternalLink.astro";
+import StatusBadge from "@/components/StatusBadge.astro";
+import TagList from "@/components/TagList.astro";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+
+const project = (await getCollection("projects")).find(
+  (entry) => entry.data.slug === "career-intelligence",
+);
+if (!project) {
+  throw new Error("Missing Career Intelligence project entry");
+}
+---
+
+<BaseLayout
+  title={project.data.title}
+  description={project.data.summary}
+  canonicalPath="/projects/career-intelligence/"
+>
+  <section class="page-section container text-page">
+    <p class="eyebrow">Project</p>
+    <h1>{project.data.title}</h1>
+    <p class="lede">{project.data.summary}</p>
+    <div class="button-row">
+      <StatusBadge status={project.data.status} accent={project.data.accent} />
+      {
+        project.data.repositoryUrl && (
+          <ExternalLink href={project.data.repositoryUrl} label="Repository" />
+        )
+      }
+    </div>
+    <TagList tags={project.data.tags} />
+
+    <h2>Overview</h2>
+    <p>
+      Career Intelligence is a system for reasoning about careers as connected
+      evidence, capabilities, preferences, and opportunities rather than
+      reducing a person to a static resume.
+    </p>
+
+    <h2>Focus areas</h2>
+    <ul class="quiet-list split-list">
+      <li>Career evidence graph</li>
+      <li>Job matching</li>
+      <li>Positioning</li>
+      <li>Interview preparation</li>
+      <li>Public career constellation</li>
+      <li>Person-model reasoning</li>
+    </ul>
+  </section>
+</BaseLayout>

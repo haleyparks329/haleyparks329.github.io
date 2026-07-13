@@ -1,0 +1,54 @@
+---
+import { getCollection } from "astro:content";
+import ProjectCard from "@/components/ProjectCard.astro";
+import SectionHeading from "@/components/SectionHeading.astro";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+
+const projects = (await getCollection("projects")).sort(
+  (a, b) => a.data.order - b.data.order,
+);
+---
+
+<BaseLayout
+  title="Projects"
+  description="Public project summaries for The Human Model, Career Intelligence, QA Agents, and future personal AI work."
+>
+  <section class="page-section container">
+    <SectionHeading
+      eyebrow="Projects"
+      title="A small public map of active systems"
+      text="These summaries are maintained here. The canonical project code, technical history, and implementation artifacts stay in their own repositories."
+    />
+    <div class="card-grid project-list">
+      {projects.map((project) => <ProjectCard project={project} />)}
+    </div>
+  </section>
+
+  <section class="page-section content-band">
+    <div class="container section-grid">
+      <SectionHeading
+        eyebrow="Ownership model"
+        title="Presentation here, implementation elsewhere"
+      />
+      <div class="stack">
+        <p>
+          The Human Model, Career Intelligence, and QA Agents each keep their
+          canonical code and technical documentation in their own repositories.
+          This website owns public presentation, navigation, cross-project
+          storytelling, and publishing.
+        </p>
+        <p>
+          Future automation may import selected Markdown and structured metadata
+          from project repositories during the site build. That import layer is
+          intentionally deferred.
+        </p>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .project-list {
+    margin-top: 2rem;
+  }
+</style>

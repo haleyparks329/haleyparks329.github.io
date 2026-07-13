@@ -1,0 +1,48 @@
+---
+type Props = {
+  status: string;
+  accent?: "rust" | "olive" | "plum" | "blue" | "khaki";
+};
+
+const { status, accent = "khaki" } = Astro.props;
+---
+
+<span class={`status ${accent}`}>{status}</span>
+
+<style>
+  .status {
+    display: inline-flex;
+    width: fit-content;
+    align-items: center;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 0.22rem 0.58rem;
+    background: rgba(247, 236, 212, 0.72);
+    color: var(--ink);
+    font-size: 0.82rem;
+    font-weight: 800;
+  }
+
+  .rust {
+    border-color: rgba(166, 57, 48, 0.42);
+    color: var(--rust);
+  }
+
+  .olive {
+    border-color: rgba(122, 112, 66, 0.5);
+    color: var(--olive);
+  }
+
+  .plum {
+    color: var(--plum);
+  }
+
+  .blue {
+    border-color: rgba(95, 129, 155, 0.45);
+    color: var(--blue);
+  }
+
+  .khaki {
+    color: #6d5c30;
+  }
+</style>

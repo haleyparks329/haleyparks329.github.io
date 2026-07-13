@@ -1,0 +1,99 @@
+---
+import { siteConfig } from "@/site.config";
+
+const nav = [
+  { href: "/", label: "Home" },
+  { href: "/about/", label: "About" },
+  { href: "/projects/", label: "Projects" },
+  { href: "/writing/", label: "Writing" },
+];
+---
+
+<header class="site-header">
+  <a class="brand" href="/" aria-label={`${siteConfig.name} home`}>
+    <span class="brand-mark" aria-hidden="true">HP</span>
+    <span>{siteConfig.name}</span>
+  </a>
+  <nav class="nav" aria-label="Primary navigation">
+    {
+      nav.map((item) => (
+        <a
+          href={item.href}
+          aria-current={Astro.url.pathname === item.href ? "page" : undefined}
+        >
+          {item.label}
+        </a>
+      ))
+    }
+  </nav>
+</header>
+
+<style>
+  .site-header {
+    display: flex;
+    width: min(1120px, calc(100% - 32px));
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin: 0 auto;
+    padding-block: 1rem;
+  }
+
+  .brand,
+  .nav a {
+    color: var(--ink);
+    text-decoration: none;
+  }
+
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.65rem;
+    font-weight: 850;
+  }
+
+  .brand-mark {
+    display: inline-grid;
+    width: 2.15rem;
+    height: 2.15rem;
+    place-items: center;
+    border: 1px solid var(--line);
+    border-radius: 50%;
+    background: var(--paper);
+    color: var(--rust);
+    font-size: 0.78rem;
+  }
+
+  .nav {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.35rem;
+  }
+
+  .nav a {
+    border-radius: var(--radius);
+    padding: 0.45rem 0.7rem;
+    color: var(--muted);
+    font-size: 0.95rem;
+    font-weight: 700;
+  }
+
+  .nav a:hover,
+  .nav a[aria-current="page"] {
+    background: rgba(62, 41, 36, 0.08);
+    color: var(--ink);
+  }
+
+  @media (max-width: 620px) {
+    .site-header {
+      align-items: flex-start;
+      flex-direction: column;
+    }
+
+    .nav {
+      justify-content: flex-start;
+    }
+  }
+</style>

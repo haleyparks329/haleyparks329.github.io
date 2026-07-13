@@ -1,0 +1,29 @@
+export type SiteConfig = {
+  name: string;
+  role: string;
+  tagline: string;
+  description: string;
+  siteUrl: string;
+  githubUsername: string;
+  githubUrl: string;
+  linkedinUrl: string;
+  resumeUrl: string;
+  location: string;
+  availability: string;
+};
+
+export const siteConfig: SiteConfig = {
+  name: "Haley Parks",
+  role: "AI Product Engineer",
+  tagline: "AI Product Engineer building systems that understand people.",
+  description:
+    "Personal website and public project portfolio for Haley Parks, an AI Product Engineer building human-centered systems across data, behavior, context, and goals.",
+  siteUrl: "https://haleyparks329.github.io",
+  githubUsername: "haleyparks329",
+  githubUrl: "https://github.com/haleyparks329",
+  linkedinUrl: "TODO: add verified LinkedIn URL",
+  resumeUrl: "TODO: add public resume URL",
+  location: "Denmark",
+  availability:
+    "Open to relevant AI product engineering, product engineering, applied AI, systems engineering, and early-stage product development opportunities.",
+};

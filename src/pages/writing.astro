@@ -1,0 +1,62 @@
+---
+import SectionHeading from "@/components/SectionHeading.astro";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+---
+
+<BaseLayout
+  title="Writing"
+  description="Research notes, systems thinking, Human Model writing, personal computing notes, and build notes from Haley Parks."
+>
+  <section class="page-section container text-page">
+    <SectionHeading
+      eyebrow="Writing"
+      title="Research notes are being assembled"
+      text="The ideas currently live across experiments, repositories, and an expanding knowledge graph."
+    />
+
+    <div class="writing-categories">
+      <section>
+        <h2>Research Notes</h2>
+        <p>Open questions, experiments, and synthesis from active work.</p>
+      </section>
+      <section>
+        <h2>Systems Thinking</h2>
+        <p>Notes on how pieces connect, fail, adapt, and become useful.</p>
+      </section>
+      <section>
+        <h2>Human Model</h2>
+        <p>
+          Writing about performance, context, training, and person-centered AI.
+        </p>
+      </section>
+      <section>
+        <h2>Personal Computing</h2>
+        <p>
+          Ideas about software that remembers and coordinates on a person's
+          behalf.
+        </p>
+      </section>
+      <section>
+        <h2>Build Notes</h2>
+        <p>Implementation notes once public writeups are ready.</p>
+      </section>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .writing-categories {
+    display: grid;
+    gap: 1rem;
+    margin-top: 2rem;
+  }
+
+  .writing-categories section {
+    border-top: 1px solid var(--line);
+    padding-top: 1rem;
+  }
+
+  .writing-categories h2 {
+    font-size: 1.25rem;
+  }
+</style>

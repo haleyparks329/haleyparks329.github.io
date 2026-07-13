@@ -1,0 +1,130 @@
+---
+import { getCollection } from "astro:content";
+import ExternalLink from "@/components/ExternalLink.astro";
+import StatusBadge from "@/components/StatusBadge.astro";
+import TagList from "@/components/TagList.astro";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+
+const project = (await getCollection("projects")).find(
+  (entry) => entry.data.slug === "the-human-model",
+);
+if (!project) {
+  throw new Error("Missing The Human Model project entry");
+}
+---
+
+<BaseLayout
+  title={project.data.title}
+  description={project.data.summary}
+  canonicalPath="/projects/the-human-model/"
+>
+  <section class="page-section container text-page">
+    <p class="eyebrow">Flagship project</p>
+    <h1>{project.data.title}</h1>
+    <p class="lede">{project.data.summary}</p>
+    <div class="button-row">
+      <StatusBadge status={project.data.status} accent={project.data.accent} />
+      {
+        project.data.repositoryUrl && (
+          <ExternalLink href={project.data.repositoryUrl} label="Repository" />
+        )
+      }
+    </div>
+    <TagList tags={project.data.tags} />
+
+    <h2>Overview</h2>
+    <p>
+      The Human Model is a living system for connecting training, recovery,
+      nutrition, movement, and context. It is both a personal performance system
+      and a broader experiment in what person-centered software can become.
+    </p>
+
+    <h2>Why it exists</h2>
+    <p>
+      Most tools store data in separate boxes. The Human Model asks what happens
+      when the system can reason across those boxes: load, sleep, recovery,
+      movement, food, behavior, goals, and the messy context around them.
+    </p>
+
+    <h2>Current system</h2>
+    <ul class="quiet-list split-list">
+      <li>Training and workout data</li>
+      <li>Recovery and sleep</li>
+      <li>Nutrition and macros</li>
+      <li>Body measurements</li>
+      <li>Movement and biomechanics</li>
+      <li>Performance prediction</li>
+      <li>Bridget, an AI-assisted performance interface</li>
+    </ul>
+
+    <h2>Current experiments</h2>
+    <ul class="quiet-list split-list">
+      <li>Exercise-load prediction</li>
+      <li>MediaPipe movement analysis</li>
+      <li>Wearable-data interpretation</li>
+      <li>Sensor and hardware exploration</li>
+      <li>Personal digital-twin architecture</li>
+    </ul>
+
+    <h2>Architecture at a glance</h2>
+    <div class="diagram" aria-label="Lightweight architecture diagram">
+      <div class="diagram-row">
+        <div class="diagram-node">Training data</div>
+        <div class="diagram-node">Recovery signals</div>
+        <div class="diagram-node">Nutrition context</div>
+      </div>
+      <div class="diagram-node center">Human Model reasoning layer</div>
+      <div class="diagram-row">
+        <div class="diagram-node">Movement analysis</div>
+        <div class="diagram-node">Predictions</div>
+        <div class="diagram-node">Bridget interface</div>
+      </div>
+    </div>
+
+    <h2>Project status</h2>
+    <div class="status-grid">
+      <section>
+        <h3>Working components</h3>
+        <p>
+          Data capture, modeling workflows, public documentation, and selected
+          project summaries are active parts of the system.
+        </p>
+      </section>
+      <section>
+        <h3>Active experiments</h3>
+        <p>
+          Prediction, movement analysis, wearable interpretation, and interface
+          design are evolving and should be read as experimental.
+        </p>
+      </section>
+      <section>
+        <h3>Future ideas</h3>
+        <p>
+          More interactive guides, knowledge graphs, and API-backed features are
+          planned as separate layers rather than static-site features today.
+        </p>
+      </section>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .status-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+  }
+
+  .status-grid section {
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 1rem;
+    background: rgba(247, 236, 212, 0.66);
+  }
+
+  @media (max-width: 820px) {
+    .status-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

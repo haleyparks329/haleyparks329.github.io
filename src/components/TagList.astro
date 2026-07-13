@@ -1,0 +1,31 @@
+---
+type Props = {
+  tags: string[];
+};
+
+const { tags } = Astro.props;
+---
+
+<ul class="tags" aria-label="Project tags">
+  {tags.map((tag) => <li>{tag}</li>)}
+</ul>
+
+<style>
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  li {
+    border-radius: 999px;
+    padding: 0.2rem 0.52rem;
+    background: rgba(62, 41, 36, 0.07);
+    color: var(--muted);
+    font-size: 0.82rem;
+    font-weight: 700;
+  }
+</style>

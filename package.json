@@ -1,0 +1,29 @@
+{
+  "name": "haleyparks329.github.io",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "astro check",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "validate:links": "node scripts/validate-links.mjs",
+    "validate": "npm run format:check && npm run check && npm run build && npm run validate:links"
+  },
+  "dependencies": {
+    "@astrojs/sitemap": "^3.6.0",
+    "astro": "^7.0.8"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.5",
+    "prettier": "^3.6.2",
+    "prettier-plugin-astro": "^0.14.1",
+    "typescript": "^5.8.3"
+  },
+  "engines": {
+    "node": ">=22.0.0"
+  }
+}
