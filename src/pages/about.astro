@@ -8,21 +8,22 @@ import { siteConfig } from "@/site.config";
   title="About"
   description="About Haley Parks, an AI Product Engineer building personal AI systems, human modeling tools, and adaptive performance systems."
 >
-  <section class="about-hero container">
-    <div class="about-intro">
+  <section class="interior-container about-hero">
+    <div class="about-hero-copy">
       <p class="eyebrow">About</p>
       <h1>Hi, I'm Haley.</h1>
-      <p class="tagline">
-        I build human-centered AI systems for messy, changing problems.
+      <p class="about-deck">
+        AI Product Engineer, systems thinker, and bodybuilder building software
+        that understands people.
       </p>
-      <p class="lede">
-        I'm a software engineer, data analyst, and AI Product Engineer who
-        naturally sees the world as interconnected systems: people, context,
-        goals, behavior, evidence, and feedback loops.
-      </p>
+      <ul class="metadata-row" aria-label="About Haley Parks">
+        <li>AI Product Engineer</li>
+        <li>{siteConfig.location}</li>
+        <li>Human-centered systems</li>
+      </ul>
     </div>
 
-    <aside class="contact-card surface surface-pad" aria-labelledby="contact">
+    <aside class="contact-card pinned-note" aria-labelledby="contact">
       <p class="eyebrow">Contact</p>
       <h2 id="contact">Open to relevant work</h2>
       <p>{siteConfig.availability}</p>
@@ -34,13 +35,13 @@ import { siteConfig } from "@/site.config";
     </aside>
   </section>
 
-  <section class="page-section content-band">
-    <div class="container about-grid">
+  <section class="page-section about-build-section">
+    <div class="interior-container about-build">
       <SectionHeading
         eyebrow="How I build"
         title="Systems first, people always"
       />
-      <div class="stack">
+      <div class="about-text-flow">
         <p>
           My work usually starts with a messy human problem, then turns into
           software, data models, dashboards, automation, or conversational
@@ -53,20 +54,20 @@ import { siteConfig } from "@/site.config";
           notice those patterns instead of asking them to hold everything in
           their heads.
         </p>
-        <p class="callout">
+        <blockquote>
           Give the machines the burden of remembering, coordinating, searching,
           and connecting. Give people their attention back.
-        </p>
+        </blockquote>
       </div>
     </div>
   </section>
 
-  <section class="page-section container">
-    <div class="about-grid">
-      <SectionHeading
-        eyebrow="Bodybuilding"
-        title="The Human Model started under a barbell"
-      />
+  <section class="page-section interior-container">
+    <article class="bodybuilding-note">
+      <div>
+        <p class="eyebrow">Bodybuilding</p>
+        <h2>The Human Model started under a barbell</h2>
+      </div>
       <div class="stack">
         <p>
           Outside of work, I am also a bodybuilder. Like many athletes, I wanted
@@ -88,35 +89,35 @@ import { siteConfig } from "@/site.config";
           understand how people adapt over time.
         </p>
       </div>
-    </div>
+    </article>
   </section>
 
-  <section class="page-section content-band">
-    <div class="container about-grid">
+  <section class="page-section focus-section">
+    <div class="interior-container about-grid">
       <SectionHeading eyebrow="Current focus" title="What I am looking for" />
       <div class="focus-grid">
-        <article class="surface surface-pad">
+        <article class="focus-object focus-raspberry">
           <h3>AI product engineering</h3>
           <p>
             Turning ambiguous product ideas into useful systems with clear
             feedback loops, thoughtful interfaces, and honest boundaries.
           </p>
         </article>
-        <article class="surface surface-pad">
+        <article class="focus-object focus-lavender">
           <h3>Personal AI systems</h3>
           <p>
             Building software that understands people through context, history,
             goals, and evidence rather than one-off prompts.
           </p>
         </article>
-        <article class="surface surface-pad">
+        <article class="focus-object focus-plant">
           <h3>Adaptive performance systems</h3>
           <p>
             Exploring how data, modeling, and human judgment can support better
             decisions as a person changes over time.
           </p>
         </article>
-        <article class="surface surface-pad">
+        <article class="focus-object focus-olive">
           <h3>Human-centered automation</h3>
           <p>
             Giving machines the remembering and coordination work while keeping
@@ -126,37 +127,81 @@ import { siteConfig } from "@/site.config";
       </div>
     </div>
   </section>
+
+  <section class="page-section interior-container">
+    <aside class="opportunity-note">
+      <div>
+        <p class="eyebrow">Opportunities</p>
+        <h2>Useful systems, honest boundaries, real users.</h2>
+      </div>
+      <p>
+        I am easiest to reach by email, and my public repositories are linked
+        from the contact note above.
+      </p>
+    </aside>
+  </section>
 </BaseLayout>
 
 <style>
   .about-hero {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(280px, 0.42fr);
+    grid-template-columns: minmax(0, 1fr) minmax(18rem, 0.34fr);
     gap: var(--section-gap);
     align-items: end;
-    padding-block: var(--space-hero);
+    padding-block: clamp(2.75rem, 5.5vw, 5rem);
   }
 
-  .about-intro {
-    min-width: 0;
+  .about-hero-copy {
+    max-width: 790px;
   }
 
-  .tagline {
-    max-width: var(--measure);
+  .about-hero h1 {
+    max-width: 11ch;
+    font-family: var(--font-serif);
+    font-size: var(--font-size-page-title);
+  }
+
+  .about-deck {
+    max-width: 740px;
     margin-top: var(--space-4);
-    color: var(--accent-primary);
-    font-size: var(--font-size-tagline);
-    font-weight: 800;
-    line-height: 1.15;
+    color: var(--color-text);
+    font-family: var(--font-serif);
+    font-size: var(--font-size-supporting);
+    font-weight: 700;
+    line-height: 1.18;
   }
 
-  .contact-card {
-    border-top: var(--border-accent) solid var(--accent-primary);
+  .pinned-note,
+  .opportunity-note {
+    position: relative;
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-surface-raised);
+    box-shadow: var(--shadow-soft);
   }
 
-  .contact-card h2 {
-    margin-bottom: var(--space-4);
-    font-size: var(--font-size-object-heading);
+  .pinned-note {
+    border-left: 0.38rem solid var(--houseplant);
+    padding: var(--space-5);
+  }
+
+  .pinned-note::before,
+  .bodybuilding-note::before {
+    position: absolute;
+    top: -0.65rem;
+    right: 16%;
+    width: 4rem;
+    height: 0.9rem;
+    background: color-mix(in srgb, var(--khaki) 44%, transparent);
+    content: "";
+    transform: rotate(-2deg);
+  }
+
+  .contact-card h2,
+  .opportunity-note h2 {
+    margin-bottom: var(--space-3);
+    font-family: var(--font-serif);
+    font-size: clamp(1.35rem, 2vw, 1.8rem);
   }
 
   .contact-links {
@@ -165,6 +210,65 @@ import { siteConfig } from "@/site.config";
     gap: 0.8rem;
     margin-top: var(--space-4);
     font-weight: var(--font-weight-strong);
+  }
+
+  .about-build-section,
+  .focus-section {
+    border-block: var(--border-width) solid var(--color-border);
+    background: var(--color-surface-band);
+  }
+
+  .about-build {
+    display: grid;
+    grid-template-columns: minmax(0, 0.64fr) minmax(0, 1fr);
+    gap: var(--section-gap);
+    align-items: start;
+  }
+
+  .about-text-flow {
+    display: grid;
+    gap: var(--space-4);
+  }
+
+  .about-text-flow p,
+  .bodybuilding-note p,
+  .opportunity-note p {
+    color: var(--color-text-muted);
+  }
+
+  blockquote {
+    margin: var(--space-4) 0 0;
+    border-left: 0.35rem solid var(--rust);
+    padding: var(--space-3) 0 var(--space-3) var(--space-5);
+    color: var(--color-text);
+    font-family: var(--font-serif);
+    font-size: clamp(1.25rem, 2vw, 1.7rem);
+    font-weight: 700;
+    line-height: 1.22;
+  }
+
+  .bodybuilding-note {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 0.56fr) minmax(0, 1fr);
+    gap: var(--section-gap);
+    border: var(--border-width) solid var(--color-border);
+    border-left: 0.38rem solid var(--rust);
+    border-radius: var(--radius-md);
+    padding: clamp(1.5rem, 4vw, 2.5rem);
+    background:
+      linear-gradient(
+        135deg,
+        color-mix(in srgb, var(--lavender) 28%, transparent),
+        transparent 58%
+      ),
+      var(--color-surface-raised);
+    box-shadow: var(--shadow-soft);
+  }
+
+  .bodybuilding-note h2 {
+    font-family: var(--font-serif);
+    font-size: var(--font-size-section-title);
   }
 
   .about-grid {
@@ -181,23 +285,67 @@ import { siteConfig } from "@/site.config";
   .focus-grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: var(--grid-gap);
+    gap: 0.9rem;
   }
 
-  .focus-grid article {
+  .focus-object {
+    --focus-accent: var(--rust);
+    --focus-surface: var(--color-surface-raised);
     min-width: 0;
-    border-top: var(--border-accent) solid var(--accent-secondary);
+    border: var(--border-width) solid var(--color-border);
+    border-top: 0.36rem solid var(--focus-accent);
+    border-radius: var(--radius-md);
+    padding: var(--space-5);
+    background: var(--focus-surface);
   }
 
-  .focus-grid h3 {
+  .focus-object h3 {
     margin-bottom: var(--space-3);
+    font-family: var(--font-serif);
+    font-size: 1.35rem;
+  }
+
+  .focus-raspberry {
+    --focus-accent: var(--rust);
+    --focus-surface: color-mix(in srgb, var(--rust) 8%, var(--paper));
+  }
+
+  .focus-lavender {
+    --focus-accent: var(--lavender);
+    --focus-surface: color-mix(in srgb, var(--lavender) 34%, var(--paper));
+  }
+
+  .focus-plant {
+    --focus-accent: var(--houseplant);
+    --focus-surface: color-mix(in srgb, var(--houseplant) 12%, var(--paper));
+  }
+
+  .focus-olive {
+    --focus-accent: var(--olive);
+    --focus-surface: color-mix(in srgb, var(--olive) 14%, var(--paper));
+  }
+
+  .opportunity-note {
+    display: grid;
+    grid-template-columns: minmax(0, 0.52fr) minmax(0, 1fr);
+    gap: var(--space-8);
+    width: min(980px, 100%);
+    border-left: 0.38rem solid var(--khaki);
+    padding: var(--space-5);
   }
 
   @media (max-width: 820px) {
     .about-hero,
+    .about-build,
+    .bodybuilding-note,
     .about-grid,
-    .focus-grid {
+    .focus-grid,
+    .opportunity-note {
       grid-template-columns: 1fr;
+    }
+
+    .about-hero h1 {
+      max-width: 100%;
     }
   }
 </style>

@@ -5,41 +5,26 @@ const year = new Date().getFullYear();
 ---
 
 <footer class="site-footer">
-  <div class="container footer-grid">
+  <div class="interior-container footer-shell">
     <div class="footer-intro">
       <p class="footer-title">{siteConfig.name}</p>
-      <p>{siteConfig.role} based in {siteConfig.location}.</p>
-      <p>{siteConfig.availability}</p>
+      <p>{siteConfig.role} · {siteConfig.location}</p>
     </div>
-    <div class="footer-links">
-      <nav aria-label="Footer site navigation">
-        <p class="footer-label">Explore</p>
+    <div class="footer-rails">
+      <nav aria-label="Footer site navigation" class="footer-links">
         <a href="/projects/">Projects</a>
         <a href="/field-log/">Field Log</a>
         <a href="/writing/">Writing</a>
         <a href="/about/">About</a>
       </nav>
-      <nav aria-label="Footer contact navigation">
-        <p class="footer-label">Connect</p>
+      <nav aria-label="Footer contact navigation" class="footer-links">
         <a href={siteConfig.githubUrl}>GitHub</a>
         <a href={siteConfig.linkedinUrl}>LinkedIn</a>
         <a href={`mailto:${siteConfig.email}`}>Email</a>
       </nav>
     </div>
-  </div>
-  <div class="container footer-bottom">
-    <p class="fine-print">
-      {"(c) "}
-      {year}
-      {" "}
-      {siteConfig.name}. Built with Astro and GitHub Pages.
-    </p>
-    <p class="desk-note">
-      Haley stepped away for an iced matcha. The notes are safe to inspect.
-    </p>
-    <span class="pixel-cat" aria-hidden="true">
-      <span class="pixel-cat-body"></span>
-    </span>
+    <p class="desk-note">Iced matcha nearby. Notes still open.</p>
+    <p class="fine-print">{"(c) "}{year} {siteConfig.name}</p>
   </div>
 </footer>
 
@@ -50,15 +35,20 @@ const year = new Date().getFullYear();
     color: var(--color-text-muted);
   }
 
-  .footer-grid {
+  .footer-shell {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(280px, 0.72fr);
-    gap: var(--section-gap);
-    padding-block: var(--space-8);
+    grid-template-areas:
+      "intro rails"
+      "fine note";
+    grid-template-columns: minmax(0, 1fr) minmax(20rem, auto);
+    gap: var(--space-5);
+    align-items: center;
+    padding-block: var(--space-5);
   }
 
   .footer-intro {
-    max-width: 620px;
+    grid-area: intro;
+    min-width: 0;
   }
 
   .footer-title {
@@ -67,39 +57,28 @@ const year = new Date().getFullYear();
     font-weight: var(--font-weight-heavy);
   }
 
+  .footer-intro p {
+    margin-bottom: 0;
+  }
+
+  .footer-rails {
+    grid-area: rails;
+    display: grid;
+    justify-items: end;
+    gap: 0.45rem;
+  }
+
   .footer-links {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: var(--space-8);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 0.8rem;
   }
 
-  nav {
-    display: grid;
-    align-content: start;
-    gap: 0.55rem;
-  }
-
-  nav a {
+  .footer-links a {
     color: var(--color-text);
-    font-weight: 700;
-  }
-
-  .footer-label {
-    margin-bottom: 0.1rem;
-    color: var(--accent-secondary);
-    font-size: var(--font-size-micro);
-    font-weight: var(--font-weight-strong);
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-  }
-
-  .footer-bottom {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
-    align-items: end;
-    gap: var(--space-4);
-    border-top: var(--border-width) solid var(--color-border);
-    padding-block: var(--space-4);
+    font-size: var(--font-size-small);
+    font-weight: 750;
   }
 
   .fine-print,
@@ -108,91 +87,33 @@ const year = new Date().getFullYear();
     font-size: 0.9rem;
   }
 
+  .fine-print {
+    grid-area: fine;
+  }
+
   .desk-note {
-    grid-column: 1;
-    color: var(--color-text-muted);
-  }
-
-  .pixel-cat {
-    position: relative;
-    grid-row: 1 / span 2;
-    grid-column: 2;
-    width: 44px;
-    height: 32px;
-    align-self: center;
-  }
-
-  .pixel-cat::before,
-  .pixel-cat::after,
-  .pixel-cat-body,
-  .pixel-cat-body::before,
-  .pixel-cat-body::after {
-    position: absolute;
-    content: "";
-    image-rendering: pixelated;
-  }
-
-  .pixel-cat::before,
-  .pixel-cat::after {
-    top: 4px;
-    width: 8px;
-    height: 8px;
-    background: var(--color-text);
-  }
-
-  .pixel-cat::before {
-    left: 12px;
-  }
-
-  .pixel-cat::after {
-    right: 12px;
-  }
-
-  .pixel-cat-body {
-    right: 8px;
-    bottom: 6px;
-    width: 28px;
-    height: 18px;
-    border-radius: var(--radius-sm);
-    background: var(--color-text);
-  }
-
-  .pixel-cat-body::before {
-    top: 6px;
-    left: 6px;
-    width: 4px;
-    height: 4px;
-    background: var(--color-surface);
-    box-shadow: 10px 0 0 var(--color-surface);
-  }
-
-  .pixel-cat-body::after {
-    right: -8px;
-    bottom: 4px;
-    width: 12px;
-    height: 4px;
-    background: var(--color-text);
-    box-shadow: 8px -4px 0 var(--color-text);
+    grid-area: note;
+    justify-self: end;
+    color: var(--rust);
+    font-family: var(--font-hand);
   }
 
   @media (max-width: 680px) {
-    .footer-grid {
+    .footer-shell {
+      grid-template-areas:
+        "intro"
+        "rails"
+        "note"
+        "fine";
       grid-template-columns: 1fr;
-      gap: var(--space-8);
+      align-items: start;
     }
 
-    .footer-links {
-      grid-template-columns: 1fr;
-      gap: var(--space-5);
-    }
-
-    .footer-bottom {
-      grid-template-columns: 1fr;
-    }
-
-    .pixel-cat {
-      grid-row: auto;
-      grid-column: 1;
+    .footer-rails,
+    .footer-links,
+    .desk-note {
+      justify-items: start;
+      justify-content: flex-start;
       justify-self: start;
     }
   }

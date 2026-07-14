@@ -1,5 +1,6 @@
 ---
 import { getCollection } from "astro:content";
+import InteriorHeader from "@/components/InteriorHeader.astro";
 import ProjectCard from "@/components/ProjectCard.astro";
 import SectionHeading from "@/components/SectionHeading.astro";
 import BaseLayout from "@/layouts/BaseLayout.astro";
@@ -13,29 +14,31 @@ const projects = (await getCollection("projects")).sort(
   title="Projects"
   description="Public project summaries for The Human Model, Career Intelligence, and QA Agents."
 >
-  <section class="page-section container">
-    <SectionHeading
+  <section class="interior-container projects-page">
+    <InteriorHeader
       eyebrow="Projects"
-      title="Research case studies for active systems"
+      title="Active systems shelf"
       text="Each project page frames the system as a public case study: the research question, evidence objects, current boundaries, and where the repository tells the deeper truth."
+      meta={["3 active systems", "Public notes", "Repo-backed"]}
+      objectLabel="Desk index"
+      objectText="Research objects opened from the homepage desk."
+      accent="olive"
     />
     <div class="card-grid project-list">
       {projects.map((project) => <ProjectCard project={project} />)}
     </div>
   </section>
 
-  <section class="page-section content-band">
-    <div class="container section-grid">
+  <section class="page-section">
+    <div class="interior-container section-grid">
       <SectionHeading
         eyebrow="Ownership model"
         title="Presentation here, implementation elsewhere"
       />
-      <div class="stack">
+      <div class="interior-note">
         <p>
-          The Human Model, Career Intelligence, and QA Agents each keep their
-          canonical code and technical documentation in their own repositories.
-          This website owns public presentation, navigation, cross-project
-          storytelling, and publishing.
+          This website owns the public story. Each repository owns the
+          implementation and technical documentation.
         </p>
       </div>
     </div>
@@ -44,6 +47,18 @@ const projects = (await getCollection("projects")).sort(
 
 <style>
   .project-list {
-    margin-top: 2rem;
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.98fr) minmax(0, 0.98fr);
+    margin-bottom: clamp(2rem, 4vw, 4rem);
+  }
+
+  :global(.projects-page .interior-header h1) {
+    max-width: 10ch;
+    font-size: clamp(2.8rem, 4.8vw, 4.3rem);
+  }
+
+  @media (max-width: 980px) {
+    .project-list {
+      grid-template-columns: 1fr;
+    }
   }
 </style>

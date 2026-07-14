@@ -71,6 +71,24 @@ const systems = [
       "No claims of automated application submission or recruiter outreach",
       "No production users or performance metrics claimed",
     ]}
+    boundaryItems={[
+      {
+        label: "Implemented",
+        text: "Public synthetic data model and schema validation",
+      },
+      {
+        label: "Demonstrated",
+        text: "Source-backed evidence ranking and role match analysis",
+      },
+      {
+        label: "Boundary",
+        text: "No claims of automated application submission or recruiter outreach",
+      },
+      {
+        label: "Boundary",
+        text: "No production users or performance metrics claimed",
+      },
+    ]}
     links={[
       ...(project.data.repositoryUrl
         ? [
@@ -95,20 +113,13 @@ const systems = [
   >
     <div
       slot="featured"
-      class="diagram"
+      class="artifact-flow career-flow"
       aria-label="Career Intelligence data flow"
     >
-      <div class="diagram-row">
-        <div class="diagram-node">Structured evidence</div>
-        <div class="diagram-node">Schema validation</div>
-        <div class="diagram-node">Evidence ranking</div>
-      </div>
-      <div class="diagram-node center">Career reasoning layer</div>
-      <div class="diagram-row">
-        <div class="diagram-node">Match report</div>
-        <div class="diagram-node">Positioning notes</div>
-        <div class="diagram-node">Interview prep</div>
-      </div>
+      <span>evidence</span>
+      <span>capability</span>
+      <span>fit</span>
+      <span>opportunity</span>
     </div>
   </ProjectCaseStudy>
 </BaseLayout>

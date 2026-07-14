@@ -19,6 +19,12 @@ const { eyebrow, title, text } = Astro.props;
     max-width: 760px;
   }
 
+  h2 {
+    font-family: var(--font-serif);
+    font-size: var(--font-size-section-title);
+    line-height: var(--line-height-heading);
+  }
+
   p:not(.eyebrow) {
     margin-top: var(--space-4);
     color: var(--color-text-muted);

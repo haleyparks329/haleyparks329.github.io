@@ -10,12 +10,48 @@ type Props = {
 
 const { project } = Astro.props;
 const data = project.data;
+const visibleTags = data.tags.slice(0, 2);
 ---
 
 <article class={`project-card ${data.accent}`}>
+  <div class="project-card-index" aria-hidden="true">
+    {String(data.order).padStart(2, "0")}
+  </div>
   <div class="project-card-top">
     <StatusBadge status={data.status} accent={data.accent} />
     <h3>{data.title}</h3>
+  </div>
+  <div class={`project-motif motif-${data.slug}`} aria-hidden="true">
+    {
+      data.slug === "the-human-model" && (
+        <>
+          <span />
+          <span />
+          <span />
+          <span />
+        </>
+      )
+    }
+    {
+      data.slug === "career-intelligence" && (
+        <>
+          <span>evidence</span>
+          <span>capability</span>
+          <span>fit</span>
+          <span>opportunity</span>
+        </>
+      )
+    }
+    {
+      data.slug === "qa-agents" && (
+        <>
+          <span>change</span>
+          <span>test</span>
+          <span>gap</span>
+          <span>review</span>
+        </>
+      )
+    }
   </div>
   <p>{data.summary}</p>
   <p class="question">
@@ -23,7 +59,9 @@ const data = project.data;
     {" "}
     {data.coreQuestion}
   </p>
-  <TagList tags={data.tags} />
+  <div class="project-tags">
+    <TagList tags={visibleTags} />
+  </div>
   <div class="card-links">
     <a href={`/projects/${data.slug}/`}>Read project notes</a>
     {
@@ -36,45 +74,174 @@ const data = project.data;
 
 <style>
   .project-card {
-    display: flex;
-    min-height: 100%;
-    flex-direction: column;
-    gap: var(--space-4);
+    --card-accent: var(--khaki);
+    --card-surface: var(--color-surface-raised);
+    --card-mark: var(--card-accent);
+    position: relative;
+    display: grid;
+    grid-template-rows: auto auto 1fr auto auto;
+    min-height: 28rem;
+    gap: var(--space-5);
     border: var(--border-width) solid var(--color-border);
-    border-top: var(--border-accent) solid var(--khaki);
     border-radius: var(--radius-md);
-    padding: 1.15rem;
-    background: var(--color-surface-raised);
+    padding: clamp(1.1rem, 2vw, 1.5rem);
+    background:
+      linear-gradient(
+        135deg,
+        color-mix(in srgb, var(--card-surface) 78%, transparent),
+        transparent 72%
+      ),
+      var(--color-surface-raised);
     box-shadow: var(--shadow-soft);
   }
 
+  .project-card::before {
+    position: absolute;
+    top: 1rem;
+    bottom: 1rem;
+    left: 0;
+    width: 0.34rem;
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    background: var(--card-accent);
+    content: "";
+  }
+
   .rust {
-    border-top-color: var(--rust);
+    --card-accent: var(--rust);
+    --card-surface: color-mix(in srgb, var(--lavender) 18%, var(--paper));
+    --card-mark: var(--houseplant);
   }
 
   .olive {
-    border-top-color: var(--olive);
+    --card-accent: var(--olive);
+    --card-surface: color-mix(in srgb, var(--olive) 18%, var(--paper));
+    --card-mark: var(--khaki);
   }
 
   .blue {
-    border-top-color: var(--blue);
+    --card-accent: var(--blue);
+    --card-surface: color-mix(in srgb, var(--blue-soft) 55%, var(--paper));
+    --card-mark: var(--khaki);
   }
 
   .plum {
-    border-top-color: var(--plum);
+    --card-accent: var(--plum);
   }
 
   .khaki {
-    border-top-color: var(--khaki);
+    --card-accent: var(--khaki);
+  }
+
+  .project-card-index {
+    position: absolute;
+    top: 1.25rem;
+    right: 1.25rem;
+    color: color-mix(in srgb, var(--card-accent) 78%, var(--color-text));
+    font-family: var(--font-mono);
+    font-size: var(--font-size-small);
+    font-weight: 800;
   }
 
   .project-card-top {
     display: grid;
     gap: 0.8rem;
+    padding-right: 2.4rem;
+  }
+
+  h3 {
+    font-family: var(--font-serif);
+    font-size: clamp(1.55rem, 2vw, 2.1rem);
+    line-height: 1.05;
   }
 
   p {
     color: var(--color-text-muted);
+  }
+
+  .project-motif {
+    display: grid;
+    min-height: 5.8rem;
+    align-items: end;
+    border-block: var(--border-width) solid var(--color-border);
+    padding-block: var(--space-4);
+  }
+
+  .motif-the-human-model {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.5rem;
+  }
+
+  .motif-the-human-model span {
+    position: relative;
+    height: 4.6rem;
+    border-bottom: 2px solid var(--card-accent);
+  }
+
+  .motif-the-human-model span::before {
+    position: absolute;
+    bottom: calc(var(--i, 1) * 0.55rem);
+    left: 50%;
+    width: 0.55rem;
+    height: 0.55rem;
+    border-radius: 50%;
+    background: var(--card-mark);
+    content: "";
+  }
+
+  .motif-the-human-model span:nth-child(1) {
+    --i: 1;
+  }
+
+  .motif-the-human-model span:nth-child(2) {
+    --i: 3;
+  }
+
+  .motif-the-human-model span:nth-child(3) {
+    --i: 2;
+  }
+
+  .motif-the-human-model span:nth-child(4) {
+    --i: 5;
+  }
+
+  .motif-career-intelligence,
+  .motif-qa-agents {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.45rem;
+    align-items: center;
+  }
+
+  .motif-career-intelligence span,
+  .motif-qa-agents span {
+    position: relative;
+    border: var(--border-width) solid
+      color-mix(in srgb, var(--card-accent) 45%, var(--color-border));
+    border-radius: var(--radius-sm);
+    padding: 0.48rem 0.35rem;
+    color: var(--color-text);
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+    font-weight: 800;
+    text-align: center;
+  }
+
+  .motif-career-intelligence span:not(:last-child)::after,
+  .motif-qa-agents span:not(:last-child)::after {
+    position: absolute;
+    top: 50%;
+    right: -0.46rem;
+    width: 0.46rem;
+    height: 2px;
+    background: var(--card-mark);
+    content: "";
+  }
+
+  .motif-qa-agents span:nth-child(2) {
+    background: color-mix(in srgb, var(--houseplant) 14%, transparent);
+  }
+
+  .motif-qa-agents span:nth-child(3) {
+    background: color-mix(in srgb, var(--khaki) 18%, transparent);
   }
 
   .question {
@@ -91,5 +258,22 @@ const data = project.data;
     margin-top: auto;
     padding-top: 0.5rem;
     font-weight: var(--font-weight-strong);
+  }
+
+  .project-card > p,
+  .project-card > .question,
+  .project-tags {
+    max-width: 38rem;
+  }
+
+  @media (max-width: 680px) {
+    .project-card {
+      min-height: auto;
+    }
+
+    .motif-career-intelligence,
+    .motif-qa-agents {
+      grid-template-columns: 1fr 1fr;
+    }
   }
 </style>

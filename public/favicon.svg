@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="HP monogram">
-  <rect width="64" height="64" rx="12" fill="#F0E1C4"/>
-  <path d="M15 47V17h6v12h13V17h6v30h-6V35H21v12h-6Z" fill="#3E2924"/>
-  <path d="M43 47V17h8c6 0 10 4 10 10s-4 10-10 10h-2v10h-6Zm6-16h2c3 0 4-2 4-4s-1-4-4-4h-2v8Z" fill="#A63930"/>
+  <rect width="64" height="64" rx="12" fill="#FFF8EF"/>
+  <path d="M15 47V17h6v12h13V17h6v30h-6V35H21v12h-6Z" fill="#372826"/>
+  <path d="M43 47V17h8c6 0 10 4 10 10s-4 10-10 10h-2v10h-6Zm6-16h2c3 0 4-2 4-4s-1-4-4-4h-2v8Z" fill="#91505B"/>
 </svg>

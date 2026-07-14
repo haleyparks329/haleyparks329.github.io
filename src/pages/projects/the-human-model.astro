@@ -75,6 +75,24 @@ const systems = [
       "Building in public through docs, examples, and public summaries",
       "Not a finished product or generalized coaching system",
     ]}
+    boundaryItems={[
+      {
+        label: "Implemented",
+        text: "Active personal research platform",
+      },
+      {
+        label: "Demonstrated",
+        text: "Building in public through docs, examples, and public summaries",
+      },
+      {
+        label: "Planned",
+        text: "Experimental modeling and interface work",
+      },
+      {
+        label: "Boundary",
+        text: "Not a finished product or generalized coaching system",
+      },
+    ]}
     links={[
       ...(project.data.repositoryUrl
         ? [
@@ -99,27 +117,13 @@ const systems = [
   >
     <div
       slot="featured"
-      class="diagram loop"
+      class="artifact-flow loop-flow"
       aria-label="Measure, model, reason, adapt loop"
     >
-      <div class="diagram-row">
-        <div class="diagram-node">Measure</div>
-        <div class="diagram-node">Model</div>
-        <div class="diagram-node">Reason</div>
-        <div class="diagram-node">Adapt</div>
-      </div>
+      <span>Measure</span>
+      <span>Model</span>
+      <span>Reason</span>
+      <span>Adapt</span>
     </div>
   </ProjectCaseStudy>
 </BaseLayout>
-
-<style>
-  .loop .diagram-row {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-  }
-
-  @media (max-width: 820px) {
-    .loop .diagram-row {
-      grid-template-columns: 1fr;
-    }
-  }
-</style>
