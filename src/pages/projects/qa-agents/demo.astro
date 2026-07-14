@@ -65,7 +65,7 @@ type Notebook = {
 };
 
 type StoryNote = {
-  actor: "Scout" | "Herbie" | "Quill";
+  actor: "Lookout" | "Beacon" | "Inspector" | "Scribe";
   emoji: string;
   heading: string;
   body: string;
@@ -301,11 +301,11 @@ const steps: InvestigationStep[] = [
       why: "Any new branch in business logic deserves coverage, especially when it changes money-related behavior.",
     },
     story: {
-      actor: "Scout",
-      emoji: "🔍",
-      heading: "Scout spotted the changed pricing file.",
-      body: "The pricing module changed. Herbie takes the next look.",
-      handoff: "Passing investigation → Herbie",
+      actor: "Lookout",
+      emoji: "🔭",
+      heading: "Lookout spotted the changed pricing file.",
+      body: "The pricing module changed. Beacon takes the next look.",
+      handoff: "Passing investigation → Beacon",
     },
   },
   {
@@ -330,10 +330,10 @@ const steps: InvestigationStep[] = [
       why: "Engineers care because CI can look healthy while a new branch has no real protection.",
     },
     story: {
-      actor: "Herbie",
-      emoji: "🧪",
-      heading: "Herbie checked the existing tests.",
-      body: "The existing tests all passed. Now Herbie checks what they actually covered.",
+      actor: "Beacon",
+      emoji: "🧭",
+      heading: "Beacon checked the existing tests.",
+      body: "The existing tests all passed. Now Beacon checks what they actually covered.",
       handoff: "Checking coverage evidence",
     },
   },
@@ -365,9 +365,9 @@ const steps: InvestigationStep[] = [
       why: "This is the core lesson: tests only protect behavior they execute.",
     },
     story: {
-      actor: "Herbie",
-      emoji: "🧪",
-      heading: "Herbie found the missing coverage.",
+      actor: "Inspector",
+      emoji: "🔍",
+      heading: "Inspector found the missing coverage.",
       body: "Coverage showed the changed pricing path was never reached.",
       handoff: "Recording the verification gap",
       evidenceLabel: "📊 Coverage evidence",
@@ -395,11 +395,11 @@ const steps: InvestigationStep[] = [
       why: "This matters because handoffs fail when evidence lives only in terminal scrollback or someone’s memory.",
     },
     story: {
-      actor: "Herbie",
-      emoji: "🧪",
-      heading: "Herbie saved the gap.",
+      actor: "Inspector",
+      emoji: "🔍",
+      heading: "Inspector saved the gap.",
       body: "The missing test is now a reviewable record, not a disappearing note.",
-      handoff: "Next reviewer → Quill",
+      handoff: "Next reviewer → Scribe",
     },
   },
   {
@@ -430,9 +430,9 @@ const steps: InvestigationStep[] = [
         "Recommendation only. No test was authored or committed during this replay.",
     },
     story: {
-      actor: "Quill",
-      emoji: "🪶",
-      heading: "Quill recommended the next step.",
+      actor: "Scribe",
+      emoji: "✍️",
+      heading: "Scribe recommended the next step.",
       body: "Add a regression test before treating this pricing behavior as verified.",
       handoff: "Ready for human review",
       boundary:
@@ -524,9 +524,9 @@ const safetyItems = [
         existing tests still pass, and it would be easy to move on.
       </p>
       <p>
-        QA Agents keeps looking. Scout notices the change. Herbie starts
-        digging. Coverage reveals the missing branch. Quill recommends what to
-        do next.
+        QA Agents keeps looking. Lookout notices the change. Beacon checks the
+        existing tests. Inspector reviews the coverage gap. Scribe recommends
+        what to do next.
       </p>
       <p class="replay-explanation">
         I could have recorded a terminal session, but watching someone click
@@ -539,13 +539,18 @@ const safetyItems = [
       <h2>Who's investigating?</h2>
       <ul>
         <li>
-          <span aria-hidden="true">🔍</span> Scout notices relevant changes
+          <span aria-hidden="true">🔭</span> Lookout notices relevant changes
         </li>
         <li>
-          <span aria-hidden="true">🧪</span> Herbie investigates and verifies
+          <span aria-hidden="true">🧭</span> Beacon scopes and verifies the investigation
         </li>
         <li>
-          <span aria-hidden="true">🪶</span> Quill recommends the next action
+          <span aria-hidden="true">🔍</span> Inspector reviews coverage and records
+          gaps
+        </li>
+        <li>
+          <span aria-hidden="true">✍️</span> Scribe recommends or authors accepted
+          tests
         </li>
         <li><span aria-hidden="true">👩‍💻</span> A human reviewer decides</li>
       </ul>
