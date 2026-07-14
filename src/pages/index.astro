@@ -133,12 +133,35 @@ const latestFieldLog = fieldLogEntries[0];
             <strong>Question:</strong> {project.data.coreQuestion}
           </p>
           <TagList tags={project.data.tags} />
-          <a
-            href={`/projects/${project.data.slug}/`}
-            aria-label={`Open ${project.data.title} project notes`}
-          >
-            Open project notes
-          </a>
+          {project.data.slug === "qa-agents" ? (
+            <nav
+              class="project-actions qa-agent-actions"
+              aria-label="QA Agents links"
+            >
+              <a
+                class="project-action project-action-notes"
+                href="/projects/qa-agents/"
+              >
+                <span aria-hidden="true">📂</span>
+                <span>Read project notes</span>
+              </a>
+              <a
+                class="project-action project-action-replay"
+                href="/projects/qa-agents/demo/"
+              >
+                <span aria-hidden="true">▶</span>
+                <span>Replay investigation</span>
+              </a>
+            </nav>
+          ) : (
+            <a
+              class="project-action"
+              href={`/projects/${project.data.slug}/`}
+              aria-label={`Open ${project.data.title} project notes`}
+            >
+              Open project notes
+            </a>
+          )}
         </article>
       ))
     }
@@ -627,6 +650,45 @@ const latestFieldLog = fieldLogEntries[0];
     color: var(--rust);
     font-family: var(--font-mono);
     font-size: 0.78rem;
+  }
+
+  .project-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.48rem;
+    align-items: center;
+    align-self: end;
+  }
+
+  .project-action {
+    display: inline-flex;
+    gap: 0.34rem;
+    align-items: center;
+    width: fit-content;
+  }
+
+  .project-action-notes {
+    color: var(--color-text-muted);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.22em;
+  }
+
+  .project-action-replay {
+    border: var(--border-width) solid rgba(79, 134, 168, 0.34);
+    border-radius: var(--radius-sm);
+    padding: 0.34rem 0.52rem;
+    background: color-mix(in srgb, var(--blue) 14%, var(--paper));
+    color: #294e68;
+    font-weight: var(--font-weight-heavy);
+    text-decoration: none;
+    box-shadow:
+      1px 1px 0 rgba(55, 40, 38, 0.1),
+      inset 1px 1px 0 rgba(255, 248, 239, 0.72);
+  }
+
+  .project-action-replay:hover {
+    color: #294e68;
+    background: color-mix(in srgb, var(--blue) 20%, var(--paper));
   }
 
   .field-log-preview {
