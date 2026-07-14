@@ -1,6 +1,11 @@
 ---
+import { getCollection } from "astro:content";
 import SectionHeading from "@/components/SectionHeading.astro";
 import BaseLayout from "@/layouts/BaseLayout.astro";
+
+const fieldLogEntries = (await getCollection("fieldLog")).sort(
+  (a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime(),
+);
 ---
 
 <BaseLayout
@@ -15,54 +20,94 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
     />
 
     <p>
-      Longer notes are still being organized. For now, project updates and
-      experiments can be found through the project pages and linked
-      repositories.
+      Longer essays are still being organized. The active public writing surface
+      is now the Field Log: short notes from build work, system questions, and
+      decisions worth preserving.
     </p>
 
+    <section class="field-log-bridge surface surface-pad">
+      <p class="eyebrow">Field Log</p>
+      <h2>Current notes live at /field-log</h2>
+      <p>
+        This page remains as the broader writing shelf. Field Log entries share
+        the same source of truth and can be read in chronological order.
+      </p>
+      <a href="/field-log/">Open Field Log</a>
+    </section>
+
     <div class="writing-categories">
-      <section>
+      <section class="object-list-item">
         <h2>Research Notes</h2>
         <p>Open questions, experiments, and synthesis from active work.</p>
       </section>
-      <section>
+      <section class="object-list-item">
         <h2>Systems Thinking</h2>
         <p>Notes on how pieces connect, fail, adapt, and become useful.</p>
       </section>
-      <section>
+      <section class="object-list-item">
         <h2>Human Model</h2>
         <p>
           Writing about performance, context, training, and person-centered AI.
         </p>
       </section>
-      <section>
+      <section class="object-list-item">
         <h2>Personal Computing</h2>
         <p>
           Ideas about software that remembers and coordinates on a person's
           behalf.
         </p>
       </section>
-      <section>
+      <section class="object-list-item">
         <h2>Build Notes</h2>
         <p>Implementation notes once public writeups are ready.</p>
       </section>
     </div>
+
+    {
+      fieldLogEntries.length > 0 && (
+        <section class="latest-notes" aria-labelledby="latest-field-log">
+          <h2 id="latest-field-log">Latest Field Log entries</h2>
+          <div class="latest-note-list">
+            {fieldLogEntries.slice(0, 3).map((entry) => (
+              <article class="object-list-item">
+                <p class="eyebrow">{entry.data.category}</p>
+                <h3>{entry.data.title}</h3>
+                <p>{entry.data.summary}</p>
+                <a href={`/field-log/#${entry.data.slug}`}>Read note</a>
+              </article>
+            ))}
+          </div>
+        </section>
+      )
+    }
   </section>
 </BaseLayout>
 
 <style>
   .writing-categories {
     display: grid;
-    gap: 1rem;
-    margin-top: 2rem;
+    gap: var(--space-4);
+    margin-top: var(--space-8);
   }
 
-  .writing-categories section {
-    border-top: 1px solid var(--line);
-    padding-top: 1rem;
+  .field-log-bridge,
+  .latest-notes {
+    margin-top: var(--space-8);
   }
 
-  .writing-categories h2 {
+  .object-list-item {
+    border-top: var(--border-width) solid var(--color-border);
+    padding-top: var(--space-4);
+  }
+
+  .writing-categories h2,
+  .latest-note-list h3 {
     font-size: 1.25rem;
+  }
+
+  .latest-note-list {
+    display: grid;
+    gap: var(--space-4);
+    margin-top: var(--space-4);
   }
 </style>

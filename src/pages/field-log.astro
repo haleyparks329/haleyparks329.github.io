@@ -1,0 +1,138 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+
+const entries = (await getCollection("fieldLog")).sort(
+  (a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime(),
+);
+
+const dateFormatter = new Intl.DateTimeFormat("en", {
+  month: "long",
+  day: "numeric",
+  year: "numeric",
+});
+---
+
+<BaseLayout
+  title="Field Log"
+  description="Short public notes from Haley Parks' active AI systems, build work, and research questions."
+  canonicalPath="/field-log/"
+>
+  <section class="page-section container field-log-page">
+    <div class="field-log-intro">
+      <p class="eyebrow">Field Log</p>
+      <h1>Notes from the edge of the work</h1>
+      <p class="lede">
+        Short notes from the desk: build observations, system questions, and
+        decisions worth keeping visible while the larger work is still moving.
+      </p>
+    </div>
+
+    <div class="entry-list" aria-label="Field Log entries">
+      {
+        entries.map((entry) => (
+          <article id={entry.data.slug} class="field-entry surface surface-pad">
+            <div class="entry-meta">
+              <p class="eyebrow">{entry.data.category}</p>
+              <time datetime={entry.data.pubDate.toISOString()}>
+                {dateFormatter.format(entry.data.pubDate)}
+              </time>
+            </div>
+            <div class="entry-body">
+              <h2>{entry.data.title}</h2>
+              <p class="entry-summary">{entry.data.summary}</p>
+              <blockquote>{entry.data.excerpt}</blockquote>
+              <ul class="tags" aria-label={`${entry.data.title} tags`}>
+                {entry.data.tags.map((tag) => (
+                  <li>{tag}</li>
+                ))}
+              </ul>
+            </div>
+          </article>
+        ))
+      }
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .field-log-page {
+    max-width: 980px;
+  }
+
+  .field-log-intro {
+    max-width: var(--measure);
+  }
+
+  .entry-list {
+    display: grid;
+    gap: var(--space-4);
+    margin-top: var(--space-8);
+  }
+
+  .field-entry {
+    display: grid;
+    grid-template-columns: minmax(150px, 0.35fr) minmax(0, 1fr);
+    gap: var(--space-8);
+    scroll-margin-top: var(--space-8);
+  }
+
+  .entry-meta {
+    display: grid;
+    align-content: start;
+    gap: var(--space-2);
+  }
+
+  time {
+    color: var(--color-text-muted);
+    font-size: var(--font-size-small);
+    font-weight: 700;
+  }
+
+  .entry-body {
+    min-width: 0;
+  }
+
+  .entry-body h2 {
+    font-size: var(--font-size-object-heading);
+  }
+
+  .entry-summary {
+    margin-top: var(--space-4);
+    color: var(--color-text-muted);
+  }
+
+  blockquote {
+    margin: var(--space-4) 0;
+    border-left: var(--border-accent) solid var(--accent-primary);
+    padding-left: var(--space-5);
+    color: var(--color-text);
+    font-weight: var(--font-weight-heavy);
+    line-height: var(--line-height-tight);
+  }
+
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .tags li {
+    border-radius: var(--radius-pill);
+    padding: 0.2rem 0.52rem;
+    background: var(--color-tint);
+    color: var(--color-text-muted);
+    font-size: var(--font-size-micro);
+    font-weight: 700;
+  }
+
+  @media (max-width: 720px) {
+    .field-entry {
+      grid-template-columns: 1fr;
+      gap: var(--space-4);
+    }
+  }
+</style>

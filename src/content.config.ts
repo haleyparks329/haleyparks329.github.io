@@ -39,4 +39,19 @@ const writing = defineCollection({
   }),
 });
 
-export const collections = { projects, writing };
+const fieldLog = defineCollection({
+  loader: glob({ base: "./src/content/field-log", pattern: "**/*.md" }),
+  schema: z.object({
+    title: z.string(),
+    slug: z.string(),
+    summary: z.string(),
+    excerpt: z.string(),
+    category: z.enum(["Desk Notes", "System Notes", "Build Notes"]),
+    pubDate: z.date(),
+    featured: z.boolean().default(false),
+    tags: z.array(z.string()),
+    order: z.number(),
+  }),
+});
+
+export const collections = { projects, writing, fieldLog };

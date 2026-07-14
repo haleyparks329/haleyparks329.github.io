@@ -16,8 +16,8 @@ const projects = (await getCollection("projects")).sort(
   <section class="page-section container">
     <SectionHeading
       eyebrow="Projects"
-      title="A small public map of active systems"
-      text="Each project keeps its implementation details in its own repository. This page gives the short version: what the project is, what question it explores, current status, and where to read more."
+      title="Research case studies for active systems"
+      text="Each project page frames the system as a public case study: the research question, evidence objects, current boundaries, and where the repository tells the deeper truth."
     />
     <div class="card-grid project-list">
       {projects.map((project) => <ProjectCard project={project} />)}

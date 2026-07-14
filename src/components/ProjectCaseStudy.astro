@@ -1,0 +1,289 @@
+---
+import type { CollectionEntry } from "astro:content";
+import ExternalLink from "./ExternalLink.astro";
+import StatusBadge from "./StatusBadge.astro";
+import TagList from "./TagList.astro";
+
+type CaseItem = {
+  title: string;
+  text: string;
+};
+
+type CaseLink = {
+  href: string;
+  label: string;
+  external?: boolean;
+};
+
+type RelatedLog = {
+  title: string;
+  summary: string;
+  href: string;
+};
+
+type Props = {
+  project: CollectionEntry<"projects">;
+  eyebrow: string;
+  thesis: string;
+  researchQuestion: string;
+  evidence: CaseItem[];
+  systems: CaseItem[];
+  boundaries: string[];
+  links: CaseLink[];
+  relatedLogs?: RelatedLog[];
+  featuredObject?: CaseItem;
+};
+
+const {
+  project,
+  eyebrow,
+  thesis,
+  researchQuestion,
+  evidence,
+  systems,
+  boundaries,
+  links,
+  relatedLogs = [],
+  featuredObject,
+} = Astro.props;
+const data = project.data;
+---
+
+<article class={`case-study ${data.accent}`}>
+  <header class="case-hero container">
+    <div class="case-hero-copy">
+      <p class="eyebrow">{eyebrow}</p>
+      <h1>{data.title}</h1>
+      <p class="lede">{data.summary}</p>
+      <p class="case-thesis">{thesis}</p>
+      <div class="case-meta">
+        <StatusBadge status={data.status} accent={data.accent} />
+        <TagList tags={data.tags} />
+      </div>
+    </div>
+
+    <aside class="research-question surface surface-pad">
+      <p class="eyebrow">Research question</p>
+      <h2>{researchQuestion}</h2>
+    </aside>
+  </header>
+
+  <section
+    class="page-section content-band"
+    aria-labelledby={`${data.slug}-evidence`}
+  >
+    <div class="container case-grid">
+      <div>
+        <p class="eyebrow">Case evidence</p>
+        <h2 id={`${data.slug}-evidence`}>What the public case study shows</h2>
+      </div>
+      <div class="case-object-grid">
+        {
+          evidence.map((item) => (
+            <section class="surface surface-pad">
+              <h3>{item.title}</h3>
+              <p>{item.text}</p>
+            </section>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section
+    class="page-section container"
+    aria-labelledby={`${data.slug}-systems`}
+  >
+    <div class="case-grid">
+      <div>
+        <p class="eyebrow">System shape</p>
+        <h2 id={`${data.slug}-systems`}>How the work is organized</h2>
+      </div>
+      <div class="case-object-grid">
+        {
+          systems.map((item) => (
+            <section class="surface surface-pad">
+              <h3>{item.title}</h3>
+              <p>{item.text}</p>
+            </section>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  {
+    featuredObject && (
+      <section
+        class="page-section content-band"
+        aria-labelledby={`${data.slug}-featured`}
+      >
+        <div class="container featured-case-object">
+          <div>
+            <p class="eyebrow">Featured object</p>
+            <h2 id={`${data.slug}-featured`}>{featuredObject.title}</h2>
+          </div>
+          <div class="surface surface-pad">
+            <p>{featuredObject.text}</p>
+            <slot name="featured" />
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  <section
+    class="page-section container"
+    aria-labelledby={`${data.slug}-status`}
+  >
+    <div class="case-grid">
+      <div>
+        <p class="eyebrow">Boundaries</p>
+        <h2 id={`${data.slug}-status`}>
+          What this page is careful not to claim
+        </h2>
+      </div>
+      <div class="stack">
+        <ul class="quiet-list split-list">
+          {boundaries.map((item) => <li>{item}</li>)}
+        </ul>
+        <div class="case-links">
+          {
+            links.map((link) =>
+              link.external ? (
+                <ExternalLink href={link.href} label={link.label} />
+              ) : (
+                <a href={link.href}>{link.label}</a>
+              ),
+            )
+          }
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {
+    relatedLogs.length > 0 && (
+      <section
+        class="page-section content-band"
+        aria-labelledby={`${data.slug}-field-log`}
+      >
+        <div class="container case-grid">
+          <div>
+            <p class="eyebrow">Related Field Log</p>
+            <h2 id={`${data.slug}-field-log`}>Notes beside the case study</h2>
+          </div>
+          <div class="case-object-grid">
+            {relatedLogs.map((entry) => (
+              <article class="surface surface-pad">
+                <h3>{entry.title}</h3>
+                <p>{entry.summary}</p>
+                <a href={entry.href}>Read note</a>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+    )
+  }
+</article>
+
+<style>
+  .case-study {
+    --case-accent: var(--khaki);
+  }
+
+  .case-study.rust {
+    --case-accent: var(--rust);
+  }
+
+  .case-study.olive {
+    --case-accent: var(--olive);
+  }
+
+  .case-study.blue {
+    --case-accent: var(--blue);
+  }
+
+  .case-study.plum {
+    --case-accent: var(--plum);
+  }
+
+  .case-hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(280px, 0.42fr);
+    gap: var(--section-gap);
+    align-items: end;
+    padding-block: var(--space-hero);
+  }
+
+  .case-hero-copy {
+    min-width: 0;
+  }
+
+  .case-thesis {
+    max-width: var(--measure);
+    margin-top: var(--space-4);
+    color: var(--accent-primary);
+    font-size: var(--font-size-tagline);
+    font-weight: 800;
+    line-height: 1.15;
+  }
+
+  .case-meta {
+    display: grid;
+    gap: var(--space-4);
+    margin-top: var(--space-8);
+  }
+
+  .research-question {
+    border-top: var(--border-accent) solid var(--case-accent);
+  }
+
+  .research-question h2 {
+    font-size: var(--font-size-object-heading);
+  }
+
+  .case-grid,
+  .featured-case-object {
+    display: grid;
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+    gap: var(--section-gap);
+    align-items: start;
+  }
+
+  .case-object-grid {
+    display: grid;
+    gap: var(--grid-gap);
+  }
+
+  .case-object-grid section,
+  .case-object-grid article {
+    min-width: 0;
+    border-top: var(--border-accent) solid var(--case-accent);
+  }
+
+  .case-object-grid h3 {
+    margin-bottom: var(--space-3);
+  }
+
+  .case-object-grid p,
+  .featured-case-object p {
+    color: var(--color-text-muted);
+  }
+
+  .case-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+    font-weight: var(--font-weight-strong);
+  }
+
+  @media (max-width: 820px) {
+    .case-hero,
+    .case-grid,
+    .featured-case-object {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

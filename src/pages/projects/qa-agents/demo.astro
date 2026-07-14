@@ -77,7 +77,9 @@ function requireNumber(value: unknown, path: string): number {
 
 function requireBoolean(value: unknown, path: string): boolean {
   if (typeof value !== "boolean") {
-    throw new Error(`QA Agents demo artifact missing required boolean: ${path}`);
+    throw new Error(
+      `QA Agents demo artifact missing required boolean: ${path}`,
+    );
   }
   return value;
 }
@@ -112,7 +114,10 @@ function assertDemoArtifact(value: unknown): DemoArtifact {
     application: {
       name: requireString(application.name, "application.name"),
       profile: requireString(application.profile, "application.profile"),
-      repository: requireString(application.repository, "application.repository"),
+      repository: requireString(
+        application.repository,
+        "application.repository",
+      ),
     },
     scenario: {
       base: requireString(scenario.base, "scenario.base"),
@@ -125,11 +130,20 @@ function assertDemoArtifact(value: unknown): DemoArtifact {
       diff_excerpt: requireString(change.diff_excerpt, "change.diff_excerpt"),
     },
     execution: {
-      command_name: requireString(execution.command_name, "execution.command_name"),
+      command_name: requireString(
+        execution.command_name,
+        "execution.command_name",
+      ),
       status: requireString(execution.status, "execution.status"),
       exit_code: requireNumber(execution.exit_code, "execution.exit_code"),
-      duration_ms: requireNumber(execution.duration_ms, "execution.duration_ms"),
-      test_summary: requireString(execution.test_summary, "execution.test_summary"),
+      duration_ms: requireNumber(
+        execution.duration_ms,
+        "execution.duration_ms",
+      ),
+      test_summary: requireString(
+        execution.test_summary,
+        "execution.test_summary",
+      ),
     },
     evidence: {
       coverage_report_found: requireBoolean(
@@ -156,7 +170,10 @@ function assertDemoArtifact(value: unknown): DemoArtifact {
       ),
     },
     safety: {
-      tests_generated: requireNumber(safety.tests_generated, "safety.tests_generated"),
+      tests_generated: requireNumber(
+        safety.tests_generated,
+        "safety.tests_generated",
+      ),
       patches_generated: requireNumber(
         safety.patches_generated,
         "safety.patches_generated",
@@ -277,8 +294,8 @@ const safetyItems = [
     <p class="replay-note">
       The page renders a canonical JSON artifact from the QA Agents repository:
       a real Little Bytes pricing diff, a passing test run, coverage evidence, a
-      persisted <code>{artifact.evidence.gap_type}</code> gap, and a Quill
-      recommendation. No autonomous changes were made.
+      persisted <code>{artifact.evidence.gap_type}</code> gap, and a Quill recommendation.
+      No autonomous changes were made.
     </p>
 
     <div class="button-row">
@@ -321,13 +338,11 @@ const safetyItems = [
         <button type="button" class="button secondary" data-step-prev>
           Previous
         </button>
-        <button type="button" class="button" data-step-next>
-          Next
-        </button>
+        <button type="button" class="button" data-step-next> Next </button>
       </div>
     </section>
 
-    <section class="active-detail" aria-live="polite">
+    <section class="active-detail surface surface-pad" aria-live="polite">
       <p class="eyebrow" data-active-eyebrow>{steps[0].eyebrow}</p>
       <h2 data-active-title>{steps[0].label}</h2>
       <p data-active-summary>{steps[0].summary}</p>
@@ -340,7 +355,12 @@ const safetyItems = [
       {
         steps.map((step, index) => (
           <article
-            class:list={["timeline-step", index === 0 && "is-active"]}
+            class:list={[
+              "timeline-step",
+              "surface",
+              "surface-pad",
+              index === 0 && "is-active",
+            ]}
             data-step-card={index}
           >
             <p class="eyebrow">{step.eyebrow}</p>
@@ -357,14 +377,14 @@ const safetyItems = [
     </section>
 
     <section class="evidence-grid" aria-label="Evidence captured">
-      <article>
+      <article class="surface surface-pad">
         <p class="eyebrow">Evidence captured</p>
         <h2>Change excerpt</h2>
         <p>{artifact.change.diff_summary}</p>
         <pre><code>{artifact.change.diff_excerpt}</code></pre>
       </article>
 
-      <article>
+      <article class="surface surface-pad">
         <p class="eyebrow">System boundary</p>
         <h2>Safety summary</h2>
         <p>
@@ -384,7 +404,10 @@ const safetyItems = [
       </article>
     </section>
 
-    <section class="provenance" aria-label="Replay provenance">
+    <section
+      class="provenance surface surface-pad"
+      aria-label="Replay provenance"
+    >
       <p class="eyebrow">Provenance</p>
       <h2>Recorded evidence, not a live browser run</h2>
       <dl>
@@ -464,13 +487,13 @@ const safetyItems = [
 
   .replay-note {
     max-width: 820px;
-    color: var(--muted);
+    color: var(--color-text-muted);
   }
 
   .replay-controls {
     display: grid;
     grid-template-columns: minmax(0, 1fr) auto;
-    gap: 1rem;
+    gap: var(--space-4);
     align-items: start;
     margin-top: 3rem;
   }
@@ -483,11 +506,11 @@ const safetyItems = [
 
   .step-button {
     min-height: 76px;
-    border: 1px solid var(--line);
-    border-radius: var(--radius);
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--radius-md);
     padding: 0.75rem;
-    background: rgba(247, 236, 212, 0.7);
-    color: var(--ink);
+    background: var(--color-surface-raised);
+    color: var(--color-text);
     font: inherit;
     font-size: 0.9rem;
     font-weight: 800;
@@ -499,13 +522,13 @@ const safetyItems = [
   .step-button span {
     display: block;
     margin-bottom: 0.35rem;
-    color: var(--rust);
+    color: var(--accent-primary);
     font-size: 0.78rem;
   }
 
   .step-button.is-active {
-    border-color: rgba(166, 57, 48, 0.55);
-    background: rgba(166, 57, 48, 0.1);
+    border-color: var(--accent-primary-border-strong);
+    background: var(--accent-primary-surface-strong);
   }
 
   .step-actions {
@@ -513,18 +536,8 @@ const safetyItems = [
     gap: 0.6rem;
   }
 
-  .active-detail,
-  .timeline-step,
-  .evidence-grid article,
-  .provenance {
-    border: 1px solid var(--line);
-    border-radius: var(--radius);
-    background: rgba(247, 236, 212, 0.66);
-  }
-
   .active-detail {
     margin-top: 1rem;
-    padding: 1.25rem;
   }
 
   .active-detail h2,
@@ -532,50 +545,41 @@ const safetyItems = [
   .evidence-grid h2,
   .provenance h2 {
     margin-bottom: 0.8rem;
-    font-size: clamp(1.35rem, 2vw, 2rem);
+    font-size: var(--font-size-object-heading);
   }
 
   .active-detail p,
   .timeline-step p,
   .evidence-grid p {
-    color: var(--muted);
+    color: var(--color-text-muted);
   }
 
   .timeline {
     display: grid;
-    gap: 1rem;
+    gap: var(--space-4);
     margin-top: 2rem;
   }
 
-  .timeline-step {
-    padding: 1.25rem;
-  }
-
   .timeline-step.is-active {
-    border-color: rgba(95, 129, 155, 0.55);
-    box-shadow: 0 0 0 3px rgba(95, 129, 155, 0.1);
+    border-color: var(--accent-tertiary-border-strong);
+    box-shadow: var(--accent-tertiary-ring);
   }
 
   .evidence-grid {
     display: grid;
     grid-template-columns: minmax(0, 1.35fr) minmax(280px, 0.65fr);
-    gap: 1rem;
+    gap: var(--space-4);
     margin-top: 1rem;
-  }
-
-  .evidence-grid article,
-  .provenance {
-    padding: 1.25rem;
   }
 
   pre {
     overflow: auto;
     max-height: 440px;
-    border: 1px solid var(--line);
-    border-radius: var(--radius);
-    padding: 1rem;
-    background: rgba(62, 41, 36, 0.06);
-    color: var(--ink);
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-4);
+    background: var(--color-code-surface);
+    color: var(--color-text);
     font-size: 0.85rem;
     line-height: 1.45;
     white-space: pre;
@@ -591,7 +595,7 @@ const safetyItems = [
 
   .safety-list dt,
   .provenance dt {
-    color: var(--muted);
+    color: var(--color-text-muted);
     font-weight: 800;
   }
 

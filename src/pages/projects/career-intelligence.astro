@@ -1,9 +1,7 @@
 ---
 import { getCollection } from "astro:content";
-import ExternalLink from "@/components/ExternalLink.astro";
-import StatusBadge from "@/components/StatusBadge.astro";
-import TagList from "@/components/TagList.astro";
 import BaseLayout from "@/layouts/BaseLayout.astro";
+import ProjectCaseStudy from "@/components/ProjectCaseStudy.astro";
 
 const project = (await getCollection("projects")).find(
   (entry) => entry.data.slug === "career-intelligence",
@@ -11,6 +9,48 @@ const project = (await getCollection("projects")).find(
 if (!project) {
   throw new Error("Missing Career Intelligence project entry");
 }
+
+const relatedLogs = (await getCollection("fieldLog"))
+  .filter((entry) => ["evidence-before-claims"].includes(entry.data.slug))
+  .map((entry) => ({
+    title: entry.data.title,
+    summary: entry.data.summary,
+    href: `/field-log/#${entry.data.slug}`,
+  }));
+
+const evidence = [
+  {
+    title: "Source-backed career evidence",
+    text: "The public slice starts with structured synthetic career data and validates it against a schema before any generated materials are produced.",
+  },
+  {
+    title: "Separated reasoning layers",
+    text: "Evidence ranking, role matching, positioning, interview prep, and rendering stay separated so outputs remain grounded in what the data supports.",
+  },
+  {
+    title: "Synthetic demo workflow",
+    text: "The public repository includes a deterministic Andy Barks example for inspecting outputs without exposing private career data.",
+  },
+];
+
+const systems = [
+  {
+    title: "Structured evidence",
+    text: "Career details become typed source material instead of loose resume language.",
+  },
+  {
+    title: "Evidence ranking",
+    text: "The system ranks source-backed evidence before turning it into match reports or positioning notes.",
+  },
+  {
+    title: "Person-model boundaries",
+    text: "Reflection and preference signals can shape reasoning without becoming unsupported resume claims.",
+  },
+  {
+    title: "Conservative rendering",
+    text: "Generated artifacts are treated as demo outputs and helpers, not automated application submission or recruiter outreach.",
+  },
+];
 ---
 
 <BaseLayout
@@ -18,50 +58,46 @@ if (!project) {
   description={project.data.summary}
   canonicalPath="/projects/career-intelligence/"
 >
-  <section class="page-section container text-page">
-    <p class="eyebrow">Project</p>
-    <h1>{project.data.title}</h1>
-    <p class="lede">{project.data.summary}</p>
-    <div class="button-row">
-      <StatusBadge status={project.data.status} accent={project.data.accent} />
+  <ProjectCaseStudy
+    project={project}
+    eyebrow="Research case study"
+    thesis="A source-backed career reasoning engine that keeps evidence, person context, fit analysis, and generated materials in their own lanes."
+    researchQuestion={project.data.coreQuestion}
+    evidence={evidence}
+    systems={systems}
+    boundaries={[
+      "Public synthetic data model and schema validation",
+      "Source-backed evidence ranking and role match analysis",
+      "No claims of automated application submission or recruiter outreach",
+      "No production users or performance metrics claimed",
+    ]}
+    links={[
+      ...(project.data.repositoryUrl
+        ? [
+            {
+              href: project.data.repositoryUrl,
+              label: "Career Intelligence repository",
+              external: true,
+            },
+          ]
+        : []),
       {
-        project.data.repositoryUrl && (
-          <ExternalLink href={project.data.repositoryUrl} label="Repository" />
-        )
-      }
-    </div>
-    <TagList tags={project.data.tags} />
-
-    <h2>Project overview</h2>
-    <p>
-      Career Intelligence is a system for reasoning about careers as connected
-      evidence, capabilities, preferences, and opportunities rather than
-      reducing a person to a static resume.
-    </p>
-
-    <p>
-      The public repository frames it as a source-backed career reasoning
-      engine. Evidence, role matching, person-model reasoning, and generated
-      materials stay separated so resumes and interview prep remain grounded in
-      what the data can support.
-    </p>
-
-    <h2>Why it exists</h2>
-    <p>
-      Career tools often flatten people into titles, keywords, and resume bullet
-      points. Career Intelligence instead models relationships between evidence,
-      capabilities, preferences, projects, and opportunities.
-    </p>
-
-    <h2>How it reasons</h2>
-    <p>
-      The current public slice starts with structured synthetic career data,
-      validates it against a schema, ranks source-backed evidence, analyzes role
-      fit, applies person-model boundaries, and generates conservative demo
-      artifacts.
-    </p>
-
-    <div class="diagram" aria-label="Career Intelligence data flow">
+        href: "https://github.com/haleyparks329/career-intelligence/tree/main/examples/andy-barks/generated",
+        label: "Synthetic demo outputs",
+        external: true,
+      },
+    ]}
+    relatedLogs={relatedLogs}
+    featuredObject={{
+      title: "Career reasoning flow",
+      text: "The interesting question is not only whether a person matches a job description. It is whether a system can preserve the evidence behind a career story, surface transferable skills, keep caveats visible, and use a person model without turning reflection-only claims into resume claims.",
+    }}
+  >
+    <div
+      slot="featured"
+      class="diagram"
+      aria-label="Career Intelligence data flow"
+    >
       <div class="diagram-row">
         <div class="diagram-node">Structured evidence</div>
         <div class="diagram-node">Schema validation</div>
@@ -74,48 +110,5 @@ if (!project) {
         <div class="diagram-node">Interview prep</div>
       </div>
     </div>
-
-    <h2>Current capabilities</h2>
-    <ul class="quiet-list split-list">
-      <li>Public synthetic data model and schema validation</li>
-      <li>Source-backed evidence ranking</li>
-      <li>Role match analysis</li>
-      <li>Positioning analysis</li>
-      <li>Interview preparation analysis</li>
-      <li>Conservative resume rendering helpers</li>
-      <li>Generated synthetic demo artifacts</li>
-      <li>Public visualization output</li>
-    </ul>
-
-    <h2>What it explores</h2>
-    <p>
-      The interesting question is not only whether a person matches a job
-      description. It is whether a system can preserve the evidence behind a
-      career story, surface transferable skills, keep caveats visible, and use a
-      person model without turning reflection-only claims into resume claims.
-    </p>
-
-    <h2>Status and links</h2>
-    <p>
-      Career Intelligence is active and public-safe. The current public repo
-      contains the generic engine slice, schema, templates, default
-      configuration, deterministic demo workflow, and fully synthetic Andy Barks
-      example. It does not claim automated application submission, recruiter
-      outreach, production users, or performance metrics.
-    </p>
-    <div class="button-row">
-      {
-        project.data.repositoryUrl && (
-          <ExternalLink
-            href={project.data.repositoryUrl}
-            label="Career Intelligence repository"
-          />
-        )
-      }
-      <ExternalLink
-        href="https://github.com/haleyparks329/career-intelligence/tree/main/examples/andy-barks/generated"
-        label="Synthetic demo outputs"
-      />
-    </div>
-  </section>
+  </ProjectCaseStudy>
 </BaseLayout>

@@ -21,11 +21,11 @@ const { tags } = Astro.props;
   }
 
   li {
-    border-radius: 999px;
+    border-radius: var(--radius-pill);
     padding: 0.2rem 0.52rem;
-    background: rgba(62, 41, 36, 0.07);
-    color: var(--muted);
-    font-size: 0.82rem;
+    background: var(--color-tint);
+    color: var(--color-text-muted);
+    font-size: var(--font-size-micro);
     font-weight: 700;
   }
 </style>

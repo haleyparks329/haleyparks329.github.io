@@ -1,9 +1,7 @@
 ---
 import { getCollection } from "astro:content";
-import ExternalLink from "@/components/ExternalLink.astro";
-import StatusBadge from "@/components/StatusBadge.astro";
-import TagList from "@/components/TagList.astro";
 import BaseLayout from "@/layouts/BaseLayout.astro";
+import ProjectCaseStudy from "@/components/ProjectCaseStudy.astro";
 
 const project = (await getCollection("projects")).find(
   (entry) => entry.data.slug === "qa-agents",
@@ -11,6 +9,48 @@ const project = (await getCollection("projects")).find(
 if (!project) {
   throw new Error("Missing QA Agents project entry");
 }
+
+const relatedLogs = (await getCollection("fieldLog"))
+  .filter((entry) => ["evidence-before-claims"].includes(entry.data.slug))
+  .map((entry) => ({
+    title: entry.data.title,
+    summary: entry.data.summary,
+    href: `/field-log/#${entry.data.slug}`,
+  }));
+
+const evidence = [
+  {
+    title: "Recorded evidence replay",
+    text: "The public page features one replay built from a Little Bytes pricing diff, passing test run, coverage evidence, persisted gap, and Quill recommendation.",
+  },
+  {
+    title: "Profile-aware QA planning",
+    text: "The experiment asks whether app profiles, shared rules, and stable gap records make QA planning more specific.",
+  },
+  {
+    title: "Human review boundary",
+    text: "The replay explicitly records that no autonomous patches, generated tests, or agent dispatches happened in the artifact.",
+  },
+];
+
+const systems = [
+  {
+    title: "Agent specs",
+    text: "Profile-aware agent descriptions and shared rules define how agents should act, block, or abstain.",
+  },
+  {
+    title: "SQLite knowledge base",
+    text: "Local-first persistence keeps fingerprints, gaps, and handoff debt inspectable.",
+  },
+  {
+    title: "Advisory routing",
+    text: "Recommendations can route attention without pretending to orchestrate full execution.",
+  },
+  {
+    title: "Herbie prototype",
+    text: "A narrow deterministic prototype turns simulated feature requests into QA plans for inspection.",
+  },
+];
 ---
 
 <BaseLayout
@@ -18,77 +58,65 @@ if (!project) {
   description={project.data.summary}
   canonicalPath="/projects/qa-agents/"
 >
-  <section class="page-section container text-page">
-    <p class="eyebrow">Experimental project</p>
-    <h1>{project.data.title}</h1>
-    <p class="lede">{project.data.summary}</p>
-    <div class="button-row">
-      <StatusBadge status={project.data.status} accent={project.data.accent} />
+  <ProjectCaseStudy
+    project={project}
+    eyebrow="Research case study"
+    thesis="An experiment in agent-assisted QA where the important work is keeping context, gaps, and human review visible."
+    researchQuestion={project.data.coreQuestion}
+    evidence={evidence}
+    systems={systems}
+    boundaries={[
+      "Implemented foundations and prototype slices are public",
+      "Browser probing, selector healing, live dashboards, and PR creation remain planned unless the repository shows otherwise",
+      "The replay is recorded evidence, not a live autonomous browser run",
+      "The system recommends next action; it does not claim full handoff execution",
+    ]}
+    links={[
       {
-        project.data.repositoryUrl && (
-          <ExternalLink href={project.data.repositoryUrl} label="Repository" />
-        )
-      }
-    </div>
-    <TagList tags={project.data.tags} />
-
-    <h2>Short overview</h2>
-    <p>
-      QA Agents is an early experiment exploring where agent-based workflows may
-      support software-quality work.
-    </p>
-
-    <h2>Problem being explored</h2>
-    <p>
-      Generating tests is easy to demo. Useful QA work depends on context:
-      critical flows, risk areas, constraints, app profiles, previous gaps, and
-      the parts of the system where a human still needs to inspect the result.
-    </p>
-
-    <h2>Current experiment</h2>
-    <p>
-      The repository explores a local-first QA agent operating system with
-      profile-aware agent specs, shared rules, a SQLite knowledge base, stable
-      error fingerprinting, gap records, advisory routing, and a narrow
-      deterministic Herbie prototype for turning simulated feature requests into
-      QA plans.
-    </p>
-    <p>
-      The recorded evidence replay is built from a real Little Bytes diff,
-      passing test run, coverage evidence, persisted gap, and Quill
-      recommendation.
-    </p>
-
-    <h2>What is being tested</h2>
-    <ul class="quiet-list split-list">
-      <li>Whether app profiles make QA planning more specific</li>
-      <li>How agents should act, block, or abstain</li>
-      <li>How gaps and handoff debt can stay inspectable</li>
-      <li>
-        Where advisory routing helps without pretending to orchestrate work
-      </li>
-    </ul>
-
-    <h2>Status and link</h2>
-    <p>
-      This page stays intentionally small because the project is experimental.
-      The repo includes implemented foundations and prototype slices, while
-      browser probing, selector healing, digest workflows, live dashboards,
-      handoff execution, and PR creation remain planned unless the repository
-      shows otherwise.
-    </p>
-    <div class="button-row">
+        href: "/projects/qa-agents/demo/",
+        label: "Interactive evidence replay",
+      },
+      ...(project.data.repositoryUrl
+        ? [
+            {
+              href: project.data.repositoryUrl,
+              label: "QA Agents repository",
+              external: true,
+            },
+          ]
+        : []),
+    ]}
+    relatedLogs={relatedLogs}
+    featuredObject={{
+      title: "Evidence replay",
+      text: "The replay turns one concrete scenario into an inspectable object: change, tests, coverage gap, persisted record, and recommendation. It is intentionally framed as evidence, not autonomy.",
+    }}
+  >
+    <div slot="featured" class="replay-object">
+      <ol>
+        <li>Little Bytes pricing changed</li>
+        <li>Tests passed</li>
+        <li>Coverage gap found</li>
+        <li>Gap persisted</li>
+        <li>Quill recommended next action</li>
+      </ol>
       <a class="button secondary" href="/projects/qa-agents/demo/">
-        Interactive evidence replay
+        Open evidence replay
       </a>
-      {
-        project.data.repositoryUrl && (
-          <ExternalLink
-            href={project.data.repositoryUrl}
-            label="QA Agents repository"
-          />
-        )
-      }
     </div>
-  </section>
+  </ProjectCaseStudy>
 </BaseLayout>
+
+<style>
+  .replay-object {
+    display: grid;
+    gap: var(--space-4);
+  }
+
+  .replay-object ol {
+    display: grid;
+    gap: 0.65rem;
+    margin: 0;
+    padding-left: var(--space-5);
+  }
+</style>

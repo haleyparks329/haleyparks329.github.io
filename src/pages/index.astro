@@ -1,152 +1,286 @@
 ---
 import { getCollection } from "astro:content";
-import ProjectCard from "@/components/ProjectCard.astro";
-import SectionHeading from "@/components/SectionHeading.astro";
 import StatusBadge from "@/components/StatusBadge.astro";
+import TagList from "@/components/TagList.astro";
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import { siteConfig } from "@/site.config";
 
 const projects = (await getCollection("projects")).sort(
   (a, b) => a.data.order - b.data.order,
 );
-const humanModel = projects.find(
-  (project) => project.data.slug === "the-human-model",
+const featuredProjects = projects.filter((project) => project.data.featured);
+const fieldLogEntries = (await getCollection("fieldLog")).sort(
+  (a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime(),
 );
+const latestFieldLog = fieldLogEntries[0];
 ---
 
 <BaseLayout title={siteConfig.name} description={siteConfig.description}>
-  <section class="hero container">
-    <p class="eyebrow">
-      Personal AI systems, performance modeling, public work
-    </p>
-    <h1>{siteConfig.name}</h1>
-    <p class="tagline">{siteConfig.tagline}</p>
-    <p class="lede">
-      I build human-centered systems that connect data, context, behavior, and
-      goals. My work explores personal AI, adaptive performance systems, and
-      software that helps people understand what is changing over time.
-    </p>
-    <div class="button-row">
-      <a class="button" href="/projects/the-human-model/"
-        >Explore The Human Model</a
-      >
-      <a class="button secondary" href="/projects/">View all projects</a>
-      <a class="button secondary" href={siteConfig.githubUrl}>GitHub</a>
+  <section class="desk-hero container" aria-labelledby="desk-title">
+    <div class="desk-hero-copy">
+      <p class="eyebrow">The desk</p>
+      <h1 id="desk-title">{siteConfig.name}</h1>
+      <p class="tagline">{siteConfig.tagline}</p>
+      <p class="lede">
+        A warm public workbench for personal AI systems, performance modeling,
+        career reasoning, and software that pays attention to context.
+      </p>
+      <div class="button-row">
+        <a class="button" href="/projects/the-human-model/">
+          Open the flagship project
+        </a>
+        <a class="button secondary" href="/projects/">Browse the shelves</a>
+      </div>
     </div>
+
+    <aside
+      class="desk-note surface surface-pad"
+      aria-labelledby="mini-me-title"
+    >
+      <p class="eyebrow">Mini Me</p>
+      <h2 id="mini-me-title">Static note from the desk</h2>
+      <p>
+        Mini Me is the small imagined companion for this site: part index card,
+        part research assistant, part reminder that the useful version of AI
+        should feel like it knows where the good notes are.
+      </p>
+      <p class="mini-me-note">
+        Desk status: notes open, systems humming, iced matcha nearby.
+      </p>
+    </aside>
   </section>
 
-  {
-    humanModel && (
-      <section class="page-section content-band">
-        <div class="container flagship">
-          <div>
-            <p class="eyebrow">Flagship project</p>
-            <h2>{humanModel.data.title}</h2>
-          </div>
-          <div class="stack">
-            <StatusBadge
-              status={humanModel.data.status}
-              accent={humanModel.data.accent}
-            />
-            <p class="lede">{humanModel.data.summary}</p>
-            <p>
-              The work stays intentionally experimental: some parts are useful
-              today, some are prototypes, and the larger question is how
-              software can reason about human performance as a changing system.
-            </p>
-            <a href="/projects/the-human-model/">Read the project overview</a>
-          </div>
-        </div>
-      </section>
-    )
-  }
-
-  <section class="page-section container">
-    <SectionHeading
-      eyebrow="Selected projects"
-      title="Systems for people, context, and decisions"
-      text="A concise map of active projects, their core questions, and the public repositories where the implementation details live."
-    />
-    <div class="card-grid project-list">
-      {projects.map((project) => <ProjectCard project={project} />)}
-    </div>
-  </section>
-
-  <section class="page-section content-band">
-    <div class="container section-grid">
-      <SectionHeading
-        eyebrow="Philosophy"
-        title="Attention is the scarce resource"
-      />
-      <div class="stack">
-        <blockquote>
-          Give the machines the burden of remembering, coordinating, searching,
-          and connecting. Give people their attention back.
-        </blockquote>
-        <p>
-          I am interested in personal computing that models the person, their
-          context, goals, and relationships rather than presenting another CRUD
-          interface and calling that understanding.
-        </p>
+  <section class="page-section content-band" aria-labelledby="current-desk">
+    <div class="container desk-board">
+      <div>
+        <p class="eyebrow">Current desk</p>
+        <h2 id="current-desk">What is open right now</h2>
+      </div>
+      <div class="desk-object-grid">
+        <article class="surface surface-pad">
+          <h3>The Human Model</h3>
+          <p>
+            Turning wearable data, training logs, movement video, and
+            conversational context into a living model of adaptation.
+          </p>
+        </article>
+        <article class="surface surface-pad">
+          <h3>Career Intelligence</h3>
+          <p>
+            Keeping career reasoning tied to evidence, fit, preferences, and
+            boundaries instead of flattening a person into keywords.
+          </p>
+        </article>
+        <article class="surface surface-pad">
+          <h3>QA Agents</h3>
+          <p>
+            Testing where agent-shaped workflows can help software-quality work
+            while keeping uncertainty and human review visible.
+          </p>
+        </article>
       </div>
     </div>
   </section>
 
-  <section class="page-section container">
-    <div class="section-grid">
-      <SectionHeading
-        eyebrow="Current direction"
-        title="Where the work is pointing"
-      />
-      <ul class="quiet-list split-list">
-        <li>Personal AI and human modeling</li>
-        <li>Adaptive performance systems</li>
-        <li>Human-centered automation</li>
-        <li>Digital self-ownership</li>
-        <li>Interfaces that make technology personal and fun</li>
-      </ul>
+  <section class="page-section container" aria-labelledby="flagship-projects">
+    <div class="desk-section-heading">
+      <p class="eyebrow">Flagship projects</p>
+      <h2 id="flagship-projects">Things worth picking up</h2>
+      <p>
+        Each object on the desk points to a larger system: what it explores,
+        what is implemented publicly, and where the repo tells the deeper truth.
+      </p>
+    </div>
+
+    <div class="project-desk">
+      {
+        featuredProjects.map((project) => (
+          <article
+            class={`project-object surface surface-pad ${project.data.accent}`}
+          >
+            <div class="project-object-top">
+              <StatusBadge
+                status={project.data.status}
+                accent={project.data.accent}
+              />
+              <h3>{project.data.title}</h3>
+            </div>
+            <p>{project.data.summary}</p>
+            <p class="question">
+              <strong>Question:</strong> {project.data.coreQuestion}
+            </p>
+            <TagList tags={project.data.tags} />
+            <a href={`/projects/${project.data.slug}/`}>Open project notes</a>
+          </article>
+        ))
+      }
+    </div>
+  </section>
+
+  <section class="page-section content-band" aria-labelledby="field-log">
+    <div class="container field-log">
+      <div>
+        <p class="eyebrow">Field log</p>
+        <h2 id="field-log">Notes from the edge of the work</h2>
+      </div>
+      <article class="field-log-preview surface surface-pad">
+        <p class="eyebrow">Preview</p>
+        {
+          latestFieldLog ? (
+            <>
+              <h3>{latestFieldLog.data.title}</h3>
+              <blockquote>{latestFieldLog.data.excerpt}</blockquote>
+              <p>{latestFieldLog.data.summary}</p>
+              <a href={`/field-log/#${latestFieldLog.data.slug}`}>
+                Read the field log
+              </a>
+            </>
+          ) : (
+            <>
+              <h3>Field Log is being organized</h3>
+              <p>
+                Notes will collect the edges of the work: build observations,
+                system questions, and practical decisions worth remembering.
+              </p>
+              <a href="/field-log/">Visit Field Log</a>
+            </>
+          )
+        }
+      </article>
     </div>
   </section>
 </BaseLayout>
 
 <style>
-  .hero {
-    padding-block: clamp(4rem, 10vw, 8rem);
+  .desk-hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(280px, 0.42fr);
+    gap: var(--section-gap);
+    align-items: end;
+    padding-block: var(--space-hero);
+  }
+
+  .desk-hero-copy {
+    min-width: 0;
   }
 
   .tagline {
-    max-width: 760px;
-    margin-top: 1rem;
-    color: var(--rust);
-    font-size: clamp(1.45rem, 3vw, 2.35rem);
+    max-width: var(--measure);
+    margin-top: var(--space-4);
+    color: var(--accent-primary);
+    font-size: var(--font-size-tagline);
     font-weight: 800;
     line-height: 1.15;
   }
 
-  .flagship {
+  .desk-note h2,
+  .field-log-preview h3 {
+    margin-bottom: var(--space-4);
+    font-size: var(--font-size-object-heading);
+  }
+
+  .mini-me-note {
+    border-top: var(--border-width) solid var(--color-border);
+    padding-top: var(--space-4);
+    color: var(--color-text);
+    font-weight: var(--font-weight-strong);
+  }
+
+  .desk-board,
+  .field-log {
     display: grid;
     grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
-    gap: clamp(2rem, 6vw, 5rem);
+    gap: var(--section-gap);
     align-items: start;
   }
 
-  .project-list {
-    margin-top: 2rem;
+  .desk-object-grid {
+    display: grid;
+    gap: var(--grid-gap);
+  }
+
+  .desk-object-grid article {
+    min-width: 0;
+  }
+
+  .desk-section-heading {
+    max-width: var(--measure);
+  }
+
+  .desk-section-heading p:not(.eyebrow) {
+    margin-top: var(--space-4);
+    color: var(--color-text-muted);
+    font-size: 1.08rem;
+  }
+
+  .project-desk {
+    display: grid;
+    grid-template-columns: minmax(0, 1.25fr) repeat(2, minmax(0, 1fr));
+    gap: var(--grid-gap);
+    align-items: stretch;
+    margin-top: var(--space-8);
+  }
+
+  .project-object {
+    display: grid;
+    min-width: 0;
+    align-content: start;
+    gap: var(--space-4);
+    border-top: var(--border-accent) solid var(--khaki);
+  }
+
+  .project-object.rust {
+    border-top-color: var(--rust);
+  }
+
+  .project-object.olive {
+    border-top-color: var(--olive);
+  }
+
+  .project-object.blue {
+    border-top-color: var(--blue);
+  }
+
+  .project-object-top {
+    display: grid;
+    gap: 0.8rem;
+  }
+
+  .project-object:first-child {
+    grid-row: span 2;
+  }
+
+  .project-object p {
+    color: var(--color-text-muted);
+  }
+
+  .project-object .question {
+    border-top: var(--border-width) solid var(--color-border);
+    padding-top: 0.85rem;
+    color: var(--color-text);
+    font-size: 0.98rem;
   }
 
   blockquote {
     margin: 0;
-    border-left: 5px solid var(--rust);
-    padding-left: 1.2rem;
-    color: var(--ink);
-    font-size: clamp(1.4rem, 3vw, 2rem);
-    font-weight: 850;
-    line-height: 1.2;
+    border-left: var(--border-accent) solid var(--accent-primary);
+    padding-left: var(--space-5);
+    color: var(--color-text);
+    font-size: var(--font-size-quote);
+    font-weight: var(--font-weight-heavy);
+    line-height: var(--line-height-tight);
   }
 
   @media (max-width: 820px) {
-    .flagship {
+    .desk-hero,
+    .desk-board,
+    .field-log,
+    .project-desk {
       grid-template-columns: 1fr;
+    }
+
+    .project-object:first-child {
+      grid-row: auto;
     }
   }
 </style>

@@ -14,22 +14,22 @@ const { status, accent = "khaki" } = Astro.props;
     display: inline-flex;
     width: fit-content;
     align-items: center;
-    border: 1px solid var(--line);
-    border-radius: 999px;
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--radius-pill);
     padding: 0.22rem 0.58rem;
-    background: rgba(247, 236, 212, 0.72);
-    color: var(--ink);
-    font-size: 0.82rem;
+    background: var(--color-surface-raised);
+    color: var(--color-text);
+    font-size: var(--font-size-micro);
     font-weight: 800;
   }
 
   .rust {
-    border-color: rgba(166, 57, 48, 0.42);
+    border-color: var(--accent-primary-border);
     color: var(--rust);
   }
 
   .olive {
-    border-color: rgba(122, 112, 66, 0.5);
+    border-color: var(--accent-secondary-border);
     color: var(--olive);
   }
 
@@ -38,7 +38,7 @@ const { status, accent = "khaki" } = Astro.props;
   }
 
   .blue {
-    border-color: rgba(95, 129, 155, 0.45);
+    border-color: var(--accent-tertiary-border);
     color: var(--blue);
   }
 
