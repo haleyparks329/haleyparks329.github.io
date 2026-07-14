@@ -1,0 +1,630 @@
+---
+import { getCollection } from "astro:content";
+import demoArtifact from "@/data/qa-agents/little-bytes-pricing.json";
+import ExternalLink from "@/components/ExternalLink.astro";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+
+type DemoArtifact = {
+  schema_version: number;
+  demo_id: string;
+  title: string;
+  application: {
+    name: string;
+    profile: string;
+    repository: string;
+  };
+  scenario: {
+    base: string;
+    head: string;
+    summary: string;
+  };
+  change: {
+    files: string[];
+    diff_summary: string;
+    diff_excerpt: string;
+  };
+  execution: {
+    command_name: string;
+    status: string;
+    exit_code: number;
+    duration_ms: number;
+    test_summary: string;
+  };
+  evidence: {
+    coverage_report_found: boolean;
+    coverage_report_path: string;
+    gap_type: string;
+    gap_path: string;
+    gap_detail: string;
+  };
+  recommendation: {
+    agent: string;
+    route_reason: string;
+    next_action: string;
+  };
+  safety: {
+    tests_generated: number;
+    patches_generated: number;
+    agents_dispatched: number;
+    human_review_required: boolean;
+  };
+};
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null;
+}
+
+function requireRecord(value: unknown, path: string): Record<string, unknown> {
+  if (!isRecord(value)) {
+    throw new Error(`QA Agents demo artifact missing required object: ${path}`);
+  }
+  return value;
+}
+
+function requireString(value: unknown, path: string): string {
+  if (typeof value !== "string" || value.length === 0) {
+    throw new Error(`QA Agents demo artifact missing required string: ${path}`);
+  }
+  return value;
+}
+
+function requireNumber(value: unknown, path: string): number {
+  if (typeof value !== "number") {
+    throw new Error(`QA Agents demo artifact missing required number: ${path}`);
+  }
+  return value;
+}
+
+function requireBoolean(value: unknown, path: string): boolean {
+  if (typeof value !== "boolean") {
+    throw new Error(`QA Agents demo artifact missing required boolean: ${path}`);
+  }
+  return value;
+}
+
+function requireStringArray(value: unknown, path: string): string[] {
+  if (
+    !Array.isArray(value) ||
+    value.length === 0 ||
+    !value.every((item) => typeof item === "string" && item.length > 0)
+  ) {
+    throw new Error(
+      `QA Agents demo artifact missing required string array: ${path}`,
+    );
+  }
+  return value;
+}
+
+function assertDemoArtifact(value: unknown): DemoArtifact {
+  const root = requireRecord(value, "artifact");
+  const application = requireRecord(root.application, "application");
+  const scenario = requireRecord(root.scenario, "scenario");
+  const change = requireRecord(root.change, "change");
+  const execution = requireRecord(root.execution, "execution");
+  const evidence = requireRecord(root.evidence, "evidence");
+  const recommendation = requireRecord(root.recommendation, "recommendation");
+  const safety = requireRecord(root.safety, "safety");
+
+  return {
+    schema_version: requireNumber(root.schema_version, "schema_version"),
+    demo_id: requireString(root.demo_id, "demo_id"),
+    title: requireString(root.title, "title"),
+    application: {
+      name: requireString(application.name, "application.name"),
+      profile: requireString(application.profile, "application.profile"),
+      repository: requireString(application.repository, "application.repository"),
+    },
+    scenario: {
+      base: requireString(scenario.base, "scenario.base"),
+      head: requireString(scenario.head, "scenario.head"),
+      summary: requireString(scenario.summary, "scenario.summary"),
+    },
+    change: {
+      files: requireStringArray(change.files, "change.files"),
+      diff_summary: requireString(change.diff_summary, "change.diff_summary"),
+      diff_excerpt: requireString(change.diff_excerpt, "change.diff_excerpt"),
+    },
+    execution: {
+      command_name: requireString(execution.command_name, "execution.command_name"),
+      status: requireString(execution.status, "execution.status"),
+      exit_code: requireNumber(execution.exit_code, "execution.exit_code"),
+      duration_ms: requireNumber(execution.duration_ms, "execution.duration_ms"),
+      test_summary: requireString(execution.test_summary, "execution.test_summary"),
+    },
+    evidence: {
+      coverage_report_found: requireBoolean(
+        evidence.coverage_report_found,
+        "evidence.coverage_report_found",
+      ),
+      coverage_report_path: requireString(
+        evidence.coverage_report_path,
+        "evidence.coverage_report_path",
+      ),
+      gap_type: requireString(evidence.gap_type, "evidence.gap_type"),
+      gap_path: requireString(evidence.gap_path, "evidence.gap_path"),
+      gap_detail: requireString(evidence.gap_detail, "evidence.gap_detail"),
+    },
+    recommendation: {
+      agent: requireString(recommendation.agent, "recommendation.agent"),
+      route_reason: requireString(
+        recommendation.route_reason,
+        "recommendation.route_reason",
+      ),
+      next_action: requireString(
+        recommendation.next_action,
+        "recommendation.next_action",
+      ),
+    },
+    safety: {
+      tests_generated: requireNumber(safety.tests_generated, "safety.tests_generated"),
+      patches_generated: requireNumber(
+        safety.patches_generated,
+        "safety.patches_generated",
+      ),
+      agents_dispatched: requireNumber(
+        safety.agents_dispatched,
+        "safety.agents_dispatched",
+      ),
+      human_review_required: requireBoolean(
+        safety.human_review_required,
+        "safety.human_review_required",
+      ),
+    },
+  };
+}
+
+const project = (await getCollection("projects")).find(
+  (entry) => entry.data.slug === "qa-agents",
+);
+if (!project) {
+  throw new Error("Missing QA Agents project entry");
+}
+
+const artifact = assertDemoArtifact(demoArtifact);
+const repositoryUrl = project.data.repositoryUrl;
+const canonicalArtifactUrl = repositoryUrl
+  ? `${repositoryUrl}/blob/main/examples/demo-runs/little-bytes-pricing.json`
+  : undefined;
+
+const steps = [
+  {
+    id: "change",
+    label: "Little Bytes pricing changed",
+    eyebrow: "Replay step 1",
+    summary: artifact.scenario.summary,
+    evidence: [
+      `Application: ${artifact.application.name}`,
+      `Changed file: ${artifact.change.files.join(", ")}`,
+      `Diff summary: ${artifact.change.diff_summary}`,
+      `Branch: ${artifact.scenario.base} -> ${artifact.scenario.head}`,
+    ],
+  },
+  {
+    id: "tests",
+    label: "Tests passed",
+    eyebrow: "Replay step 2",
+    summary: artifact.execution.test_summary,
+    evidence: [
+      `Command: ${artifact.execution.command_name}`,
+      `Status: ${artifact.execution.status}`,
+      `Exit code: ${artifact.execution.exit_code}`,
+      `Duration in stable artifact: ${artifact.execution.duration_ms} ms`,
+    ],
+  },
+  {
+    id: "coverage",
+    label: "Coverage gap found",
+    eyebrow: "Replay step 3",
+    summary: artifact.evidence.gap_detail,
+    evidence: [
+      `Coverage report captured: ${String(artifact.evidence.coverage_report_found)}`,
+      `Coverage report path: ${artifact.evidence.coverage_report_path}`,
+      `Gap path: ${artifact.evidence.gap_path}`,
+    ],
+  },
+  {
+    id: "persisted",
+    label: `${artifact.evidence.gap_type} persisted`,
+    eyebrow: "Replay step 4",
+    summary:
+      "QA Agents recorded the gap as reviewable evidence. The gap was not fixed in this replay.",
+    evidence: [
+      `Gap type: ${artifact.evidence.gap_type}`,
+      `Gap path: ${artifact.evidence.gap_path}`,
+      `Gap detail: ${artifact.evidence.gap_detail}`,
+    ],
+  },
+  {
+    id: "quill",
+    label: "Quill recommended",
+    eyebrow: "Replay step 5",
+    summary: artifact.recommendation.next_action,
+    evidence: [
+      `Recommended agent: ${artifact.recommendation.agent}`,
+      `Route reason: ${artifact.recommendation.route_reason}`,
+      "No autonomous changes were made.",
+    ],
+  },
+];
+
+const stepDetails = steps.map((step) => ({
+  id: step.id,
+  label: step.label,
+  eyebrow: step.eyebrow,
+  summary: step.summary,
+  evidence: step.evidence,
+}));
+
+const safetyItems = [
+  ["tests generated", artifact.safety.tests_generated],
+  ["patches generated", artifact.safety.patches_generated],
+  ["agents dispatched", artifact.safety.agents_dispatched],
+  ["human review required", String(artifact.safety.human_review_required)],
+];
+---
+
+<BaseLayout
+  title={`${project.data.title} Evidence Replay`}
+  description="Recorded evidence loop for the QA Agents Little Bytes pricing scenario."
+  canonicalPath="/projects/qa-agents/demo/"
+>
+  <section class="page-section container replay-page" data-replay-root>
+    <p class="eyebrow">Recorded evidence loop</p>
+    <h1>{project.data.title}: evidence replay</h1>
+    <p class="lede">
+      This is a replay of one evidence loop, not an autonomous agent run.
+    </p>
+    <p class="replay-note">
+      The page renders a canonical JSON artifact from the QA Agents repository:
+      a real Little Bytes pricing diff, a passing test run, coverage evidence, a
+      persisted <code>{artifact.evidence.gap_type}</code> gap, and a Quill
+      recommendation. No autonomous changes were made.
+    </p>
+
+    <div class="button-row">
+      <a class="button secondary" href="/projects/qa-agents/">
+        Main QA Agents page
+      </a>
+      {
+        repositoryUrl && (
+          <ExternalLink href={repositoryUrl} label="QA Agents repository" />
+        )
+      }
+      {
+        canonicalArtifactUrl && (
+          <ExternalLink
+            href={canonicalArtifactUrl}
+            label="Canonical artifact"
+          />
+        )
+      }
+    </div>
+
+    <section class="replay-controls" aria-label="Evidence replay controls">
+      <div class="step-selector" role="list" aria-label="Replay steps">
+        {
+          steps.map((step, index) => (
+            <button
+              type="button"
+              class:list={["step-button", index === 0 && "is-active"]}
+              data-step-button={index}
+              aria-pressed={index === 0 ? "true" : "false"}
+            >
+              <span>{index + 1}</span>
+              {step.label}
+            </button>
+          ))
+        }
+      </div>
+
+      <div class="step-actions">
+        <button type="button" class="button secondary" data-step-prev>
+          Previous
+        </button>
+        <button type="button" class="button" data-step-next>
+          Next
+        </button>
+      </div>
+    </section>
+
+    <section class="active-detail" aria-live="polite">
+      <p class="eyebrow" data-active-eyebrow>{steps[0].eyebrow}</p>
+      <h2 data-active-title>{steps[0].label}</h2>
+      <p data-active-summary>{steps[0].summary}</p>
+      <ul class="quiet-list" data-active-evidence>
+        {steps[0].evidence.map((item) => <li>{item}</li>)}
+      </ul>
+    </section>
+
+    <section class="timeline" aria-label="Recorded replay steps">
+      {
+        steps.map((step, index) => (
+          <article
+            class:list={["timeline-step", index === 0 && "is-active"]}
+            data-step-card={index}
+          >
+            <p class="eyebrow">{step.eyebrow}</p>
+            <h2>{step.label}</h2>
+            <p>{step.summary}</p>
+            <ul class="quiet-list">
+              {step.evidence.map((item) => (
+                <li>{item}</li>
+              ))}
+            </ul>
+          </article>
+        ))
+      }
+    </section>
+
+    <section class="evidence-grid" aria-label="Evidence captured">
+      <article>
+        <p class="eyebrow">Evidence captured</p>
+        <h2>Change excerpt</h2>
+        <p>{artifact.change.diff_summary}</p>
+        <pre><code>{artifact.change.diff_excerpt}</code></pre>
+      </article>
+
+      <article>
+        <p class="eyebrow">System boundary</p>
+        <h2>Safety summary</h2>
+        <p>
+          These values are part of the artifact and describe the current system
+          boundary for this replay.
+        </p>
+        <dl class="safety-list">
+          {
+            safetyItems.map(([label, value]) => (
+              <>
+                <dt>{label}</dt>
+                <dd>{value}</dd>
+              </>
+            ))
+          }
+        </dl>
+      </article>
+    </section>
+
+    <section class="provenance" aria-label="Replay provenance">
+      <p class="eyebrow">Provenance</p>
+      <h2>Recorded evidence, not a live browser run</h2>
+      <dl>
+        <dt>Source repository</dt>
+        <dd>{artifact.application.repository}</dd>
+        <dt>Artifact repository</dt>
+        <dd>{repositoryUrl ?? "QA Agents repository URL unavailable"}</dd>
+        <dt>Scenario/application</dt>
+        <dd>
+          {artifact.application.name} / {artifact.title}
+        </dd>
+        <dt>Artifact source path</dt>
+        <dd>examples/demo-runs/little-bytes-pricing.json</dd>
+        <dt>Replay type</dt>
+        <dd>recorded evidence</dd>
+        <dt>Autonomous changes</dt>
+        <dd>none</dd>
+      </dl>
+    </section>
+  </section>
+
+  <script is:inline define:vars={{ stepDetails }}>
+    const root = document.querySelector("[data-replay-root]");
+    const buttons = Array.from(document.querySelectorAll("[data-step-button]"));
+    const cards = Array.from(document.querySelectorAll("[data-step-card]"));
+    const previous = document.querySelector("[data-step-prev]");
+    const next = document.querySelector("[data-step-next]");
+    const activeEyebrow = document.querySelector("[data-active-eyebrow]");
+    const activeTitle = document.querySelector("[data-active-title]");
+    const activeSummary = document.querySelector("[data-active-summary]");
+    const activeEvidence = document.querySelector("[data-active-evidence]");
+    let activeIndex = 0;
+
+    function setActiveStep(index) {
+      activeIndex = (index + stepDetails.length) % stepDetails.length;
+      const detail = stepDetails[activeIndex];
+
+      buttons.forEach((button, buttonIndex) => {
+        const isActive = buttonIndex === activeIndex;
+        button.classList.toggle("is-active", isActive);
+        button.setAttribute("aria-pressed", String(isActive));
+      });
+
+      cards.forEach((card, cardIndex) => {
+        card.classList.toggle("is-active", cardIndex === activeIndex);
+      });
+
+      activeEyebrow.textContent = detail.eyebrow;
+      activeTitle.textContent = detail.label;
+      activeSummary.textContent = detail.summary;
+      activeEvidence.replaceChildren(
+        ...detail.evidence.map((item) => {
+          const li = document.createElement("li");
+          li.textContent = item;
+          return li;
+        }),
+      );
+    }
+
+    root?.classList.add("is-enhanced");
+    buttons.forEach((button, index) => {
+      button.addEventListener("click", () => setActiveStep(index));
+    });
+    previous?.addEventListener("click", () => setActiveStep(activeIndex - 1));
+    next?.addEventListener("click", () => setActiveStep(activeIndex + 1));
+  </script>
+</BaseLayout>
+
+<style>
+  .replay-page {
+    max-width: 1080px;
+  }
+
+  .replay-page h1 {
+    max-width: 980px;
+  }
+
+  .replay-note {
+    max-width: 820px;
+    color: var(--muted);
+  }
+
+  .replay-controls {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 1rem;
+    align-items: start;
+    margin-top: 3rem;
+  }
+
+  .step-selector {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 0.65rem;
+  }
+
+  .step-button {
+    min-height: 76px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 0.75rem;
+    background: rgba(247, 236, 212, 0.7);
+    color: var(--ink);
+    font: inherit;
+    font-size: 0.9rem;
+    font-weight: 800;
+    line-height: 1.2;
+    text-align: left;
+    cursor: pointer;
+  }
+
+  .step-button span {
+    display: block;
+    margin-bottom: 0.35rem;
+    color: var(--rust);
+    font-size: 0.78rem;
+  }
+
+  .step-button.is-active {
+    border-color: rgba(166, 57, 48, 0.55);
+    background: rgba(166, 57, 48, 0.1);
+  }
+
+  .step-actions {
+    display: flex;
+    gap: 0.6rem;
+  }
+
+  .active-detail,
+  .timeline-step,
+  .evidence-grid article,
+  .provenance {
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: rgba(247, 236, 212, 0.66);
+  }
+
+  .active-detail {
+    margin-top: 1rem;
+    padding: 1.25rem;
+  }
+
+  .active-detail h2,
+  .timeline-step h2,
+  .evidence-grid h2,
+  .provenance h2 {
+    margin-bottom: 0.8rem;
+    font-size: clamp(1.35rem, 2vw, 2rem);
+  }
+
+  .active-detail p,
+  .timeline-step p,
+  .evidence-grid p {
+    color: var(--muted);
+  }
+
+  .timeline {
+    display: grid;
+    gap: 1rem;
+    margin-top: 2rem;
+  }
+
+  .timeline-step {
+    padding: 1.25rem;
+  }
+
+  .timeline-step.is-active {
+    border-color: rgba(95, 129, 155, 0.55);
+    box-shadow: 0 0 0 3px rgba(95, 129, 155, 0.1);
+  }
+
+  .evidence-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.35fr) minmax(280px, 0.65fr);
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+
+  .evidence-grid article,
+  .provenance {
+    padding: 1.25rem;
+  }
+
+  pre {
+    overflow: auto;
+    max-height: 440px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 1rem;
+    background: rgba(62, 41, 36, 0.06);
+    color: var(--ink);
+    font-size: 0.85rem;
+    line-height: 1.45;
+    white-space: pre;
+  }
+
+  .safety-list,
+  .provenance dl {
+    display: grid;
+    grid-template-columns: minmax(150px, 0.65fr) minmax(0, 1fr);
+    gap: 0.75rem 1rem;
+    margin: 1rem 0 0;
+  }
+
+  .safety-list dt,
+  .provenance dt {
+    color: var(--muted);
+    font-weight: 800;
+  }
+
+  .safety-list dd,
+  .provenance dd {
+    margin: 0;
+    overflow-wrap: anywhere;
+    font-weight: 800;
+  }
+
+  .provenance {
+    margin-top: 1rem;
+  }
+
+  @media (max-width: 900px) {
+    .replay-controls,
+    .evidence-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .step-selector {
+      grid-template-columns: 1fr;
+    }
+
+    .step-actions {
+      flex-wrap: wrap;
+    }
+  }
+
+  @media (max-width: 560px) {
+    .safety-list,
+    .provenance dl {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

@@ -53,6 +53,11 @@ if (!project) {
       deterministic Herbie prototype for turning simulated feature requests into
       QA plans.
     </p>
+    <p>
+      The recorded evidence replay is built from a real Little Bytes diff,
+      passing test run, coverage evidence, persisted gap, and Quill
+      recommendation.
+    </p>
 
     <h2>What is being tested</h2>
     <ul class="quiet-list split-list">
@@ -73,6 +78,9 @@ if (!project) {
       shows otherwise.
     </p>
     <div class="button-row">
+      <a class="button secondary" href="/projects/qa-agents/demo/">
+        Interactive evidence replay
+      </a>
       {
         project.data.repositoryUrl && (
           <ExternalLink
