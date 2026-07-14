@@ -2,7 +2,8 @@
 title: "QA Agents"
 slug: "qa-agents"
 summary: "An experimental project exploring AI-assisted software-quality workflows."
-longDescription: "QA Agents is an early public project for experimenting with how AI can support software-quality work without overstating what has been proven."
+longDescription: "QA Agents explores where profile-aware agents can support software-quality workflows while keeping uncertainty, handoffs, and human review visible."
+coreQuestion: "Which parts of software-quality work benefit from agents, and which still require direct human reasoning?"
 status: "Experimental"
 featured: true
 accent: "blue"

@@ -18,6 +18,11 @@ const data = project.data;
     <h3>{data.title}</h3>
   </div>
   <p>{data.summary}</p>
+  <p class="question">
+    <strong>Question:</strong>
+    {" "}
+    {data.coreQuestion}
+  </p>
   <TagList tags={data.tags} />
   <div class="card-links">
     <a href={`/projects/${data.slug}/`}>Read project notes</a>
@@ -70,6 +75,13 @@ const data = project.data;
 
   p {
     color: var(--muted);
+  }
+
+  .question {
+    border-top: 1px solid var(--line);
+    padding-top: 0.85rem;
+    color: var(--ink);
+    font-size: 0.98rem;
   }
 
   .card-links {

@@ -32,19 +32,55 @@ if (!project) {
     </div>
     <TagList tags={project.data.tags} />
 
-    <h2>Overview</h2>
+    <h2>Short overview</h2>
     <p>
-      QA Agents is described conservatively as an experimental project involving
-      AI-assisted software-quality workflows. The public site avoids making
-      claims about features, outcomes, or performance that are not established
-      by the repository.
+      QA Agents is an early experiment exploring where agent-based workflows may
+      support software-quality work.
     </p>
 
-    <h2>Current framing</h2>
+    <h2>Problem being explored</h2>
     <p>
-      The useful role for this page is to identify the project, link the public
-      repository, and leave room for more precise documentation as the work
-      becomes clearer.
+      Generating tests is easy to demo. Useful QA work depends on context:
+      critical flows, risk areas, constraints, app profiles, previous gaps, and
+      the parts of the system where a human still needs to inspect the result.
     </p>
+
+    <h2>Current experiment</h2>
+    <p>
+      The repository explores a local-first QA agent operating system with
+      profile-aware agent specs, shared rules, a SQLite knowledge base, stable
+      error fingerprinting, gap records, advisory routing, and a narrow
+      deterministic Herbie prototype for turning simulated feature requests into
+      QA plans.
+    </p>
+
+    <h2>What is being tested</h2>
+    <ul class="quiet-list split-list">
+      <li>Whether app profiles make QA planning more specific</li>
+      <li>How agents should act, block, or abstain</li>
+      <li>How gaps and handoff debt can stay inspectable</li>
+      <li>
+        Where advisory routing helps without pretending to orchestrate work
+      </li>
+    </ul>
+
+    <h2>Status and link</h2>
+    <p>
+      This page stays intentionally small because the project is experimental.
+      The repo includes implemented foundations and prototype slices, while
+      browser probing, selector healing, digest workflows, live dashboards,
+      handoff execution, and PR creation remain planned unless the repository
+      shows otherwise.
+    </p>
+    <div class="button-row">
+      {
+        project.data.repositoryUrl && (
+          <ExternalLink
+            href={project.data.repositoryUrl}
+            label="QA Agents repository"
+          />
+        )
+      }
+    </div>
   </section>
 </BaseLayout>

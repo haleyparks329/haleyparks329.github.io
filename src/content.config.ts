@@ -11,6 +11,7 @@ const projects = defineCollection({
     slug: z.string(),
     summary: z.string(),
     longDescription: z.string(),
+    coreQuestion: z.string(),
     status: z.string(),
     featured: z.boolean(),
     accent: projectAccent,

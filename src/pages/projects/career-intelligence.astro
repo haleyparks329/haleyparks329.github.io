@@ -32,21 +32,90 @@ if (!project) {
     </div>
     <TagList tags={project.data.tags} />
 
-    <h2>Overview</h2>
+    <h2>Project overview</h2>
     <p>
       Career Intelligence is a system for reasoning about careers as connected
       evidence, capabilities, preferences, and opportunities rather than
       reducing a person to a static resume.
     </p>
 
-    <h2>Focus areas</h2>
+    <p>
+      The public repository frames it as a source-backed career reasoning
+      engine. Evidence, role matching, person-model reasoning, and generated
+      materials stay separated so resumes and interview prep remain grounded in
+      what the data can support.
+    </p>
+
+    <h2>Why it exists</h2>
+    <p>
+      Career tools often flatten people into titles, keywords, and resume bullet
+      points. Career Intelligence instead models relationships between evidence,
+      capabilities, preferences, projects, and opportunities.
+    </p>
+
+    <h2>How it reasons</h2>
+    <p>
+      The current public slice starts with structured synthetic career data,
+      validates it against a schema, ranks source-backed evidence, analyzes role
+      fit, applies person-model boundaries, and generates conservative demo
+      artifacts.
+    </p>
+
+    <div class="diagram" aria-label="Career Intelligence data flow">
+      <div class="diagram-row">
+        <div class="diagram-node">Structured evidence</div>
+        <div class="diagram-node">Schema validation</div>
+        <div class="diagram-node">Evidence ranking</div>
+      </div>
+      <div class="diagram-node center">Career reasoning layer</div>
+      <div class="diagram-row">
+        <div class="diagram-node">Match report</div>
+        <div class="diagram-node">Positioning notes</div>
+        <div class="diagram-node">Interview prep</div>
+      </div>
+    </div>
+
+    <h2>Current capabilities</h2>
     <ul class="quiet-list split-list">
-      <li>Career evidence graph</li>
-      <li>Job matching</li>
-      <li>Positioning</li>
-      <li>Interview preparation</li>
-      <li>Public career constellation</li>
-      <li>Person-model reasoning</li>
+      <li>Public synthetic data model and schema validation</li>
+      <li>Source-backed evidence ranking</li>
+      <li>Role match analysis</li>
+      <li>Positioning analysis</li>
+      <li>Interview preparation analysis</li>
+      <li>Conservative resume rendering helpers</li>
+      <li>Generated synthetic demo artifacts</li>
+      <li>Public visualization output</li>
     </ul>
+
+    <h2>What it explores</h2>
+    <p>
+      The interesting question is not only whether a person matches a job
+      description. It is whether a system can preserve the evidence behind a
+      career story, surface transferable skills, keep caveats visible, and use a
+      person model without turning reflection-only claims into resume claims.
+    </p>
+
+    <h2>Status and links</h2>
+    <p>
+      Career Intelligence is active and public-safe. The current public repo
+      contains the generic engine slice, schema, templates, default
+      configuration, deterministic demo workflow, and fully synthetic Andy Barks
+      example. It does not claim automated application submission, recruiter
+      outreach, production users, or performance metrics.
+    </p>
+    <div class="button-row">
+      {
+        project.data.repositoryUrl && (
+          <ExternalLink
+            href={project.data.repositoryUrl}
+            label="Career Intelligence repository"
+          />
+        )
+      }
+      <ExternalLink
+        href="https://github.com/haleyparks329/career-intelligence/tree/main/examples/andy-barks/generated"
+        label="Synthetic demo outputs"
+      />
+    </div>
   </section>
 </BaseLayout>

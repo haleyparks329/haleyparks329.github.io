@@ -23,8 +23,8 @@ const humanModel = projects.find(
     <p class="tagline">{siteConfig.tagline}</p>
     <p class="lede">
       I build human-centered systems that connect data, context, behavior, and
-      goals. My work explores what becomes possible when software moves beyond
-      storing information and begins helping people understand themselves.
+      goals. My work explores personal AI, adaptive performance systems, and
+      software that helps people understand what is changing over time.
     </p>
     <div class="button-row">
       <a class="button" href="/projects/the-human-model/"
@@ -50,10 +50,9 @@ const humanModel = projects.find(
             />
             <p class="lede">{humanModel.data.summary}</p>
             <p>
-              The work brings together personal data, adaptive modeling,
-              biomechanics, and AI-assisted reasoning in a system that stays
-              honest about what is working now, what is experimental, and what
-              is still being explored.
+              The work stays intentionally experimental: some parts are useful
+              today, some are prototypes, and the larger question is how
+              software can reason about human performance as a changing system.
             </p>
             <a href="/projects/the-human-model/">Read the project overview</a>
           </div>
@@ -66,7 +65,7 @@ const humanModel = projects.find(
     <SectionHeading
       eyebrow="Selected projects"
       title="Systems for people, context, and decisions"
-      text="This first version keeps the portfolio intentionally small while creating a clear place for future demos, research notes, and knowledge-graph work."
+      text="A concise map of active projects, their core questions, and the public repositories where the implementation details live."
     />
     <div class="card-grid project-list">
       {projects.map((project) => <ProjectCard project={project} />)}

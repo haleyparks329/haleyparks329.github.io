@@ -1,8 +1,9 @@
 ---
 title: "The Human Model"
 slug: "the-human-model"
-summary: "A living system for modeling human performance across training, recovery, nutrition, movement, and context."
-longDescription: "The Human Model connects personal data, adaptive modeling, biomechanics, and AI-assisted reasoning into a working system for understanding performance over time."
+summary: "A personal research platform exploring how wearable data, training logs, conversational context, biomechanics, and machine learning can become a continuously evolving model of human performance."
+longDescription: "The Human Model combines wearable data, training logs, conversational input, biomechanics, and machine learning into a continuously evolving model of a person."
+coreQuestion: "Can scattered human signals become structured evidence that supports better decisions as the person changes?"
 status: "Active · Building in public"
 featured: true
 accent: "rust"
@@ -15,4 +16,4 @@ repositoryUrl: "https://github.com/haleyparks329/the-human-model"
 order: 1
 ---
 
-The Human Model is Haley's flagship project: a working and evolving system for understanding training, recovery, nutrition, movement, and context together.
+The Human Model is Haley's flagship project: a personal research platform for understanding human performance through data, biomechanics, and adaptive systems.

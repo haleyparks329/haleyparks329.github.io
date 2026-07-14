@@ -6,6 +6,7 @@ export type SiteConfig = {
   siteUrl: string;
   githubUsername: string;
   githubUrl: string;
+  email: string;
   linkedinUrl: string;
   resumeUrl: string;
   location: string;
@@ -21,7 +22,8 @@ export const siteConfig: SiteConfig = {
   siteUrl: "https://haleyparks329.github.io",
   githubUsername: "haleyparks329",
   githubUrl: "https://github.com/haleyparks329",
-  linkedinUrl: "TODO: add verified LinkedIn URL",
+  email: "haleyparks329@gmail.com",
+  linkedinUrl: "https://www.linkedin.com/in/haleyparks329/",
   resumeUrl: "TODO: add public resume URL",
   location: "Denmark",
   availability:
