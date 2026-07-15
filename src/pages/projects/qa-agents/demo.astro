@@ -274,7 +274,7 @@ const canonicalArtifactUrl = repositoryUrl
   ? `${repositoryUrl}/blob/main/examples/demo-runs/little-bytes-pricing.json`
   : undefined;
 const artifactPath = "src/data/qa-agents/little-bytes-pricing.json";
-const defaultStepIndex = 0;
+const defaultStepIndex = 2;
 const diffLines = artifact.change.diff_excerpt.split("\n");
 const rawArtifact = JSON.stringify(artifact, null, 2);
 
@@ -585,7 +585,7 @@ const safetyItems = [
       </div>
 
       <section class="timeline-panel" aria-label="Investigation timeline">
-        <div class="investigation-timeline" role="list">
+        <div class="investigation-timeline">
           {
             steps.map((step, index) => (
               <button
@@ -600,7 +600,6 @@ const safetyItems = [
                 data-step-button={index}
                 aria-pressed={index === defaultStepIndex ? "true" : "false"}
                 aria-current={index === defaultStepIndex ? "step" : undefined}
-                role="listitem"
               >
                 <span class="tool-icon" aria-hidden="true">
                   {step.icon}
@@ -881,7 +880,11 @@ const safetyItems = [
       </div>
     </div>
 
-    <section class="result-section" aria-labelledby="investigation-result">
+    <dialog
+      class="result-dialog"
+      aria-labelledby="investigation-result"
+      data-completion-dialog
+    >
       <div class="retro-titlebar">
         <span>Investigation Complete</span>
         <span class="mini-window-controls" aria-hidden="true">
@@ -914,9 +917,9 @@ const safetyItems = [
             next.
           </p>
         </div>
-        <a class="retro-ok" href="#replay-workstation">OK</a>
+        <button class="retro-ok" type="button" data-result-ok>OK</button>
       </div>
-    </section>
+    </dialog>
 
     <p class="safety-note" id="recorded-replay-note">
       This workstation is a static interface around one canonical artifact. It
@@ -998,7 +1001,10 @@ const safetyItems = [
     const storyHandoff = document.querySelector("[data-story-handoff]");
     const previous = document.querySelector("[data-step-prev]");
     const next = document.querySelector("[data-step-next]");
+    const completionDialog = document.querySelector("[data-completion-dialog]");
+    const resultOk = document.querySelector("[data-result-ok]");
     let activeIndex = defaultStepIndex;
+    let shouldResetOnDialogClose = false;
 
     function stateFor(index) {
       if (index < activeIndex) return "completed";
@@ -1007,7 +1013,7 @@ const safetyItems = [
     }
 
     function setActiveStep(index) {
-      activeIndex = (index + stepDetails.length) % stepDetails.length;
+      activeIndex = Math.min(Math.max(index, 0), stepDetails.length - 1);
 
       buttons.forEach((button, buttonIndex) => {
         const state = stateFor(buttonIndex);
@@ -1063,12 +1069,47 @@ const safetyItems = [
       }
     }
 
+    function openCompletionDialog() {
+      if (
+        completionDialog instanceof HTMLDialogElement &&
+        !completionDialog.open
+      ) {
+        completionDialog.showModal();
+        resultOk?.focus();
+      }
+    }
+
+    function resetReplay() {
+      setActiveStep(0);
+      buttons[0]?.focus();
+    }
+
     root?.classList.add("is-enhanced");
     buttons.forEach((button, index) => {
       button.addEventListener("click", () => setActiveStep(index));
     });
     previous?.addEventListener("click", () => setActiveStep(activeIndex - 1));
-    next?.addEventListener("click", () => setActiveStep(activeIndex + 1));
+    next?.addEventListener("click", () => {
+      if (activeIndex === stepDetails.length - 1) {
+        openCompletionDialog();
+        return;
+      }
+
+      setActiveStep(activeIndex + 1);
+    });
+    resultOk?.addEventListener("click", () => {
+      shouldResetOnDialogClose = true;
+      completionDialog?.close();
+    });
+    completionDialog?.addEventListener("close", () => {
+      if (shouldResetOnDialogClose) {
+        shouldResetOnDialogClose = false;
+        resetReplay();
+        return;
+      }
+
+      next?.focus();
+    });
   </script>
 </BaseLayout>
 
@@ -1540,7 +1581,7 @@ const safetyItems = [
   }
 
   .notebook-panel h2,
-  .result-section h2 {
+  .result-dialog h2 {
     margin: 0.2rem 0 0.95rem;
     font-size: clamp(1.25rem, 2vw, 1.65rem);
   }
@@ -1906,15 +1947,29 @@ const safetyItems = [
     text-transform: uppercase;
   }
 
-  .result-section {
+  .result-dialog {
     overflow: hidden;
+    width: min(42rem, calc(100vw - 2rem));
+    max-height: min(44rem, calc(100vh - 2rem));
     border: 2px solid rgba(55, 40, 38, 0.74);
     border-radius: 4px;
+    padding: 0;
     background: rgba(248, 240, 231, 0.9);
+    color: var(--color-text);
     box-shadow: 4px 4px 0 rgba(55, 40, 38, 0.12);
   }
 
+  .result-dialog::backdrop {
+    background: rgba(55, 40, 38, 0.38);
+  }
+
+  .result-dialog:not([open]) {
+    display: none;
+  }
+
   .result-body {
+    overflow-y: auto;
+    max-height: calc(min(44rem, 100vh - 2rem) - 2.2rem);
     padding: clamp(1.1rem, 2.4vw, 1.6rem);
   }
 
