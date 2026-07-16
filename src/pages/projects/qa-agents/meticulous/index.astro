@@ -1,0 +1,892 @@
+---
+import { getCollection } from "astro:content";
+import ExternalLink from "@/components/ExternalLink.astro";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import investigation from "@/data/qa-agents/meticulous-pricing-investigation.json";
+import input from "@/data/qa-agents/meticulous-pricing-input.json";
+
+const project = (await getCollection("projects")).find(
+  (entry) => entry.data.slug === "qa-agents",
+);
+if (!project) {
+  throw new Error("Missing QA Agents project entry");
+}
+
+const meticulousUrl = "https://www.meticulous.ai/";
+const repositoryUrl = project.data.repositoryUrl;
+const architectureUrl = repositoryUrl
+  ? `${repositoryUrl}/blob/main/docs/strategy-architecture.md`
+  : undefined;
+const artifactUrl = repositoryUrl
+  ? `${repositoryUrl}/blob/main/strategies/meticulous/examples/pricing-change.investigation.json`
+  : undefined;
+
+const allDiffs: Record<string, unknown>[] = input.sessions.flatMap((session) =>
+  session.differences.map((difference) => ({ ...difference })),
+);
+const expectedDiffs = allDiffs.filter(
+  (difference) => difference.expected === true,
+);
+const regressionDiffs = allDiffs.filter(
+  (difference) => difference.severity === "regression",
+);
+const knownExpectation = input.known_expectations[0];
+
+const evaluatedSessions =
+  investigation.replay_summary.sessions_evaluated.toLocaleString();
+const selectedSessions =
+  investigation.replay_summary.sessions_selected.toLocaleString();
+const affectedSessions = investigation.replay_summary.sessions_affected;
+const workflowCount = investigation.summary.affected_workflows;
+const expectedDiffCount = expectedDiffs.length;
+const regressionDiffCount = regressionDiffs.length;
+const coverageGapCount = investigation.summary.coverage_gaps;
+const recommendation = investigation.summary.recommendation.toUpperCase();
+const matchedRule = investigation.policy_decision.matched_rule;
+
+const implementationItems = [
+  "StrategyRegistry",
+  "filesystem-backed strategy discovery",
+  "strategy-driven clustering features",
+  "strategy-driven classification rules",
+  "explicit deterministic decision policy",
+  "typed investigation domain objects",
+  "actionable evidence validation errors",
+  "serialization at the CLI boundary",
+  "tests and generated artifacts",
+];
+
+const strategyFiles = [
+  "strategies/",
+  "└── meticulous/",
+  "    ├── strategy.yaml",
+  "    ├── decision-policy.yaml",
+  "    ├── evidence-schema.json",
+  "    ├── fixtures/",
+  "    ├── examples/",
+  "    ├── prompts/",
+  "    └── tests/",
+];
+---
+
+<BaseLayout
+  title="Extending Deterministic Replay with QA Agents | Meticulous-Inspired Case Study"
+  description="An independent technical exploration inspired by Meticulous, showing how QA Agents can interpret deterministic replay evidence through workflow clustering, traceable findings, explicit policy, and human review."
+  canonicalPath="/projects/qa-agents/meticulous/"
+>
+  <article class="meticulous-writeup">
+    <header class="case-hero wide-case">
+      <p class="eyebrow">INDEPENDENT ENGINEERING EXPLORATION</p>
+      <h1>Extending deterministic replay with QA Agents</h1>
+      <p class="lede">
+        After studying Meticulous's publicly documented replay model, I extended
+        QA Agents with a replay-first quality strategy. The goal was not to
+        replace deterministic replay, but to explore what a downstream
+        investigation layer could do once trustworthy evidence already exists.
+      </p>
+      <p class="disclaimer">
+        Independent exploration using simulated data. Not an official Meticulous
+        integration and not built with private APIs or data.
+      </p>
+      <div class="button-row">
+        <ExternalLink href={meticulousUrl} label="Visit Meticulous" />
+        {
+          repositoryUrl && (
+            <ExternalLink
+              href={repositoryUrl}
+              label="View QA Agents repository"
+            />
+          )
+        }
+        {
+          architectureUrl && (
+            <ExternalLink
+              href={architectureUrl}
+              label="Read Quality Strategy Architecture"
+            />
+          )
+        }
+        <a class="button secondary" href="/projects/qa-agents/">
+          Main QA Agents project
+        </a>
+      </div>
+    </header>
+
+    <section class="page-section wide-case opening-grid">
+      <div>
+        <p class="eyebrow">About Meticulous</p>
+        <h2>About Meticulous</h2>
+      </div>
+      <div class="prose">
+        <p>
+          Meticulous is a software testing platform built around deterministic
+          replay. It records real user interactions, selects sessions relevant
+          to a code change, replays those sessions against base and head
+          versions, and surfaces visual or functional differences before
+          deployment.
+        </p>
+        <p>
+          The important engineering constraint is repeatability: session
+          capture, network-response replay, and deterministic execution make the
+          evidence inspectable before anyone interprets it.
+        </p>
+        <ExternalLink
+          href={meticulousUrl}
+          label="Learn about Meticulous's replay testing platform"
+        />
+      </div>
+    </section>
+
+    <section class="page-section content-band">
+      <div class="wide-case observation">
+        <p class="eyebrow">Observation</p>
+        <h2>The part I did not want to replace</h2>
+        <p>
+          My first instinct was to ask how AI agents might replace more of the
+          testing workflow. The more I read, the less that made sense. Replay is
+          valuable because it is deterministic, reproducible, and inspectable.
+        </p>
+        <p>
+          The useful extension was downstream: once the replay system has
+          produced stable evidence, another layer can group related differences,
+          separate expected product changes from regressions, expose missing
+          coverage, and prepare a bounded recommendation for a human reviewer.
+        </p>
+      </div>
+    </section>
+
+    <section class="page-section wide-case question-section">
+      <p class="eyebrow">Question</p>
+      <h2>The question I wanted to explore</h2>
+      <blockquote>
+        What happens after deterministic replay finds the differences?
+      </blockquote>
+      <p>
+        Could specialized QA agents turn a large replay result into a smaller
+        set of product workflows, traceable findings, residual risks, and an
+        explicit engineering recommendation?
+      </p>
+    </section>
+
+    <section class="page-section content-band">
+      <div class="wide-case">
+        <div class="section-heading">
+          <p class="eyebrow">Architectural boundary</p>
+          <h2>Where replay ends and QA Agents begin</h2>
+        </div>
+        <div
+          class="architecture-diagram"
+          aria-label="Replay and QA Agents responsibility flow"
+        >
+          <div>
+            <strong>Pull request</strong>
+            <span>annual-plan pricing change</span>
+          </div>
+          <span aria-hidden="true">↓</span>
+          <div>
+            <strong>Replay platform</strong>
+            <span>capture • select • replay • compare</span>
+          </div>
+          <span aria-hidden="true">↓</span>
+          <div>
+            <strong>Immutable evidence package</strong>
+            <span>sessions • diffs • branches • coverage</span>
+          </div>
+          <span aria-hidden="true">↓</span>
+          <div>
+            <strong>QA Agents</strong>
+            <span>cluster • classify • audit • recommend</span>
+          </div>
+          <span aria-hidden="true">↓</span>
+          <div>
+            <strong>Policy</strong>
+            <span>constrain the recommendation</span>
+          </div>
+          <span aria-hidden="true">↓</span>
+          <div>
+            <strong>Human</strong>
+            <span>review and decide</span>
+          </div>
+        </div>
+        <div class="responsibility-columns">
+          <section>
+            <h3>Replay platform responsibilities</h3>
+            <ul>
+              <li>session capture</li>
+              <li>deterministic execution</li>
+              <li>network replay</li>
+              <li>base-versus-head comparison</li>
+              <li>raw visual and functional differences</li>
+              <li>branch and workflow evidence</li>
+            </ul>
+          </section>
+          <section>
+            <h3>QA Agents responsibilities</h3>
+            <ul>
+              <li>evidence validation</li>
+              <li>workflow clustering</li>
+              <li>expected-change classification</li>
+              <li>regression synthesis</li>
+              <li>coverage-gap audit</li>
+              <li>policy evaluation</li>
+              <li>human-facing recommendation</li>
+            </ul>
+          </section>
+        </div>
+        <p class="boundary-note">
+          This exploration assumes replay evidence already exists. It does not
+          simulate or reproduce Meticulous internals.
+        </p>
+      </div>
+    </section>
+
+    <section class="page-section wide-case split-section">
+      <div>
+        <p class="eyebrow">What I built</p>
+        <h2>A quality strategy, not a Meticulous mode</h2>
+      </div>
+      <div class="prose">
+        <div
+          class="definition-pair"
+          aria-label="Profile and quality strategy distinction"
+        >
+          <div>
+            <strong>Profile</strong>
+            <span>who or what is being investigated</span>
+          </div>
+          <div>
+            <strong>Quality strategy</strong>
+            <span
+              >how evidence is interpreted and how decisions are constrained</span
+            >
+          </div>
+        </div>
+        <p>
+          The QA Agents repo now has a strategy layer for replay-first
+          investigation behavior, without pretending that Meticulous itself is a
+          runtime mode.
+        </p>
+        <ul class="compact-list">
+          {implementationItems.map((item) => <li>{item}</li>)}
+        </ul>
+        <details class="supporting-details">
+          <summary>Strategy directory excerpt</summary>
+          <pre><code>{strategyFiles.join("\n")}</code></pre>
+          <p>
+            Runtime use is intentionally narrower than the directory shape:
+            current investigation loads <code>strategy.yaml</code>, <code
+              >decision-policy.yaml</code
+            >, and the input evidence. The schema, prompts, example artifact,
+            README, and tests document, validate, or demonstrate the strategy.
+          </p>
+        </details>
+      </div>
+    </section>
+
+    <section class="page-section content-band">
+      <div class="wide-case split-section">
+        <div>
+          <p class="eyebrow">One simulated investigation</p>
+          <h2>One simulated investigation</h2>
+        </div>
+        <div class="prose">
+          <pre
+            class="terminal"><code>python3 -m qa_agents investigate \
+  --strategy meticulous \
+  --input strategies/meticulous/fixtures/pricing-change.input.json \
+  --output strategies/meticulous/examples/pricing-change.investigation.json</code></pre>
+          <div class="run-output" aria-label="Simulated investigation outcome">
+            <span>{evaluatedSessions} sessions evaluated</span>
+            <span>{selectedSessions} sessions selected</span>
+            <span>{affectedSessions} sessions affected</span>
+            <span aria-hidden="true">↓</span>
+            <span>{workflowCount} product workflows</span>
+            <span aria-hidden="true">↓</span>
+            <span>{expectedDiffCount} expected differences</span>
+            <span
+              >{investigation.summary.confirmed_regressions} shared rounding regression</span
+            >
+            <span>{coverageGapCount} uncovered changed branch</span>
+            <span aria-hidden="true">↓</span>
+            <span>Recommendation: {recommendation}</span>
+            <span>Human decision required</span>
+          </div>
+          {
+            artifactUrl && (
+              <ExternalLink
+                href={artifactUrl}
+                label="View generated artifact"
+              />
+            )
+          }
+        </div>
+      </div>
+    </section>
+
+    <section class="page-section wide-case">
+      <div class="section-heading">
+        <p class="eyebrow">Strategy result</p>
+        <h2>From replay output to engineering meaning</h2>
+        <p>Session != Workflow != Issue</p>
+      </div>
+      <div class="finding-grid">
+        <article>
+          <h3>Expected product change</h3>
+          <ul>
+            <li>{expectedDiffCount} textual differences</li>
+            <li><code>Save 10%</code> → <code>Save 12%</code></li>
+            <li>matched explicit expectation evidence</li>
+            <li><code>{knownExpectation.id}</code></li>
+          </ul>
+        </article>
+        <article>
+          <h3>Confirmed regression</h3>
+          <ul>
+            <li>{regressionDiffCount} functional differences</li>
+            <li><code>$108.00</code> → <code>$107.99</code></li>
+            <li>one shared rounding regression</li>
+          </ul>
+        </article>
+        <article>
+          <h3>Residual coverage risk</h3>
+          <ul>
+            <li>one changed branch not exercised</li>
+            <li>legacy coupon + prorated annual upgrade</li>
+            <li>coverage risk: {investigation.coverage_audit.coverage_risk}</li>
+          </ul>
+        </article>
+      </div>
+      <div class="policy-strip">
+        <span><strong>Policy result:</strong> HOLD</span>
+        <span><strong>Matched rule:</strong> <code>{matchedRule}</code></span>
+      </div>
+    </section>
+
+    <section class="page-section content-band">
+      <div class="wide-case">
+        <div class="section-heading">
+          <p class="eyebrow">Design decisions</p>
+          <h2>Three decisions that made the strategy credible</h2>
+        </div>
+        <div class="decision-list">
+          <article>
+            <h3>Preserve deterministic evidence</h3>
+            <p>
+              QA Agents do not sit inside replay execution or rewrite its
+              output. Raw sessions, differences, branches, and coverage records
+              remain the source of truth.
+            </p>
+            <code
+              >Deterministic systems produce evidence. Probabilistic systems
+              interpret evidence.</code
+            >
+          </article>
+          <article>
+            <h3>Model workflows and findings explicitly</h3>
+            <p>
+              Seventeen sessions should not become seventeen bug reports. Typed
+              objects preserve clear invariants, and every finding remains
+              traceable to source evidence.
+            </p>
+            <code
+              >WorkflowCluster • DifferenceFinding • CoverageFinding •
+              PolicyDecision • InvestigationResult</code
+            >
+          </article>
+          <article>
+            <h3>Constrain recommendations with policy</h3>
+            <p>
+              Finding: confirmed functional regression. Policy: confirmed
+              regressions require hold. Recommendation: hold. Authority: human.
+            </p>
+            <code>The system does not autonomously merge or approve.</code>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="page-section wide-case split-section">
+      <div>
+        <p class="eyebrow">Review refinement</p>
+        <h2>The architecture improved during review</h2>
+      </div>
+      <div class="prose">
+        <p>
+          The initial implementation looked like a strategy layer, but some
+          classification and summary behavior still lived in Python.
+        </p>
+        <p>
+          The refinement moved clustering features, classification rules, and
+          summary next actions into strategy configuration; kept decision rules
+          explicit and deterministic; separated discovery from the CLI through
+          <code>StrategyRegistry</code>; retained typed objects until
+          serialization; and made malformed evidence actionable.
+        </p>
+        <pre
+          class="terminal"><code>qa-agents investigate: Invalid evidence for strategy 'meticulous':
+  - missing top-level field: case_id
+  - source must be an object
+  - sessions[0] missing session_id</code></pre>
+      </div>
+    </section>
+
+    <section class="page-section content-band">
+      <div class="wide-case split-section">
+        <div>
+          <p class="eyebrow">Verification</p>
+          <h2>Verification</h2>
+        </div>
+        <div class="prose">
+          <ul class="proof-list">
+            <li>38 tests passing</li>
+            <li>compile check passing</li>
+            <li>generated artifact reproducible</li>
+            <li>malformed evidence tested</li>
+            <li>all source data marked simulated</li>
+            <li>no private APIs used</li>
+          </ul>
+          <pre
+            class="terminal"><code>.venv/bin/python -m pytest
+.venv/bin/python -m compileall qa_agents</code></pre>
+          <p class="fine-note">
+            Ruff and mypy are not currently configured as project checks.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="page-section wide-case split-section">
+      <div>
+        <p class="eyebrow">Limitations</p>
+        <h2>Current limitations</h2>
+      </div>
+      <div class="prose">
+        <ul class="compact-list single">
+          <li>
+            one implemented strategy does not prove every future strategy will
+            fit;
+          </li>
+          <li>the engine remains replay-evidence-specific in places;</li>
+          <li>
+            runtime validation is currently hand-coded rather than driven by
+            <code>evidence-schema.json</code>;
+          </li>
+          <li>
+            <code>decision-policy.yaml</code> currently contains JSON-shaped policy
+            configuration;
+          </li>
+          <li>this is not a live Meticulous integration;</li>
+          <li>this does not build or reproduce a replay engine.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="page-section content-band">
+      <div class="wide-case closing-section">
+        <div>
+          <p class="eyebrow">Closing reflection</p>
+          <h2>What changed in QA Agents</h2>
+          <p>
+            This exploration changed QA Agents beyond the Meticulous-inspired
+            example. Profiles now describe the target under investigation;
+            strategies describe how evidence should be interpreted. Replay
+            remains deterministic, findings remain traceable, policy remains
+            explicit, and a human retains final authority.
+          </p>
+        </div>
+        <div class="closing-principles">
+          <span>Replay finds what changed.</span>
+          <span>QA Agents investigate what it means.</span>
+          <span>Policy constrains the recommendation.</span>
+          <span>A human decides.</span>
+        </div>
+        <div class="closing-links">
+          <ExternalLink href={meticulousUrl} label="Visit Meticulous" />
+          {
+            repositoryUrl && (
+              <ExternalLink
+                href={repositoryUrl}
+                label="View QA Agents repository"
+              />
+            )
+          }
+          {
+            architectureUrl && (
+              <ExternalLink
+                href={architectureUrl}
+                label="Read Quality Strategy Architecture"
+              />
+            )
+          }
+          {
+            artifactUrl && (
+              <ExternalLink
+                href={artifactUrl}
+                label="View generated investigation artifact"
+              />
+            )
+          }
+          <a href="/projects/qa-agents/meticulous/replay/">
+            Prefer the interactive walkthrough? Explore the evidence replay.
+          </a>
+        </div>
+      </div>
+    </section>
+  </article>
+</BaseLayout>
+
+<style>
+  .meticulous-writeup {
+    display: grid;
+  }
+
+  .case-hero {
+    display: grid;
+    gap: var(--space-5);
+    padding-block: var(--space-hero) var(--space-12);
+  }
+
+  .case-hero h1 {
+    max-width: 980px;
+    font-size: var(--font-size-page-title);
+  }
+
+  .case-hero .lede {
+    max-width: 960px;
+  }
+
+  .disclaimer,
+  .fine-note,
+  .boundary-note {
+    max-width: 840px;
+    color: var(--color-text-muted);
+    font-size: var(--font-size-small);
+  }
+
+  .opening-grid,
+  .split-section {
+    display: grid;
+    grid-template-columns: minmax(0, 0.72fr) minmax(0, 1.28fr);
+    gap: var(--section-gap);
+    align-items: start;
+  }
+
+  .opening-grid h2,
+  .split-section h2,
+  .section-heading h2,
+  .closing-section h2 {
+    font-family: var(--font-serif);
+    font-size: var(--font-size-section-title);
+  }
+
+  .prose {
+    display: grid;
+    gap: var(--space-5);
+  }
+
+  .prose p,
+  .section-heading p,
+  .closing-section p,
+  .observation p,
+  .question-section p {
+    max-width: var(--reading-width);
+    color: var(--color-text-muted);
+  }
+
+  .observation {
+    display: grid;
+    gap: var(--space-5);
+    max-width: 960px;
+  }
+
+  .observation h2 {
+    font-family: var(--font-serif);
+    font-size: clamp(2.15rem, 4.6vw, 4.4rem);
+  }
+
+  .question-section {
+    display: grid;
+    gap: var(--space-5);
+  }
+
+  .question-section blockquote {
+    max-width: 920px;
+    margin: 0;
+    border-left: 0.42rem solid var(--khaki);
+    padding-left: var(--space-5);
+    font-family: var(--font-serif);
+    font-size: clamp(1.8rem, 3.8vw, 3.2rem);
+    line-height: 1.08;
+  }
+
+  .section-heading {
+    display: grid;
+    gap: var(--space-3);
+    max-width: 820px;
+    margin-bottom: var(--space-8);
+  }
+
+  .architecture-diagram {
+    display: grid;
+    gap: var(--space-3);
+    max-width: 860px;
+    margin-bottom: var(--space-8);
+  }
+
+  .architecture-diagram div,
+  .definition-pair div,
+  .finding-grid article,
+  .responsibility-columns section,
+  .decision-list article {
+    border: 1px solid rgba(55, 40, 38, 0.18);
+    border-radius: 6px;
+    background: rgba(248, 240, 231, 0.72);
+  }
+
+  .architecture-diagram div {
+    display: grid;
+    gap: var(--space-1);
+    border-left: 0.34rem solid var(--blue);
+    padding: var(--space-4);
+  }
+
+  .architecture-diagram div:nth-of-type(2) {
+    border-left-color: var(--houseplant);
+  }
+
+  .architecture-diagram div:nth-of-type(3) {
+    border-left-color: var(--khaki);
+  }
+
+  .architecture-diagram div:nth-of-type(4) {
+    border-left-color: var(--rust);
+  }
+
+  .architecture-diagram div:nth-of-type(5) {
+    border-left-color: var(--lavender);
+  }
+
+  .architecture-diagram span[aria-hidden] {
+    justify-self: center;
+    color: var(--blue);
+    font-family: var(--font-mono);
+    font-weight: 900;
+  }
+
+  .architecture-diagram div span,
+  .definition-pair span {
+    color: var(--color-text-muted);
+    font-size: var(--font-size-small);
+  }
+
+  .responsibility-columns,
+  .finding-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--grid-gap);
+  }
+
+  .responsibility-columns {
+    margin-bottom: var(--space-5);
+  }
+
+  .responsibility-columns section,
+  .finding-grid article,
+  .decision-list article {
+    display: grid;
+    gap: var(--space-3);
+    padding: var(--space-4);
+  }
+
+  .responsibility-columns ul,
+  .finding-grid ul {
+    margin: 0;
+    color: var(--color-text-muted);
+  }
+
+  .definition-pair {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--grid-gap);
+  }
+
+  .definition-pair div {
+    display: grid;
+    gap: var(--space-2);
+    border-left: 0.32rem solid var(--blue);
+    padding: var(--space-4);
+  }
+
+  .definition-pair div:nth-child(2) {
+    border-left-color: var(--rust);
+  }
+
+  .compact-list,
+  .proof-list {
+    columns: 2;
+    max-width: 820px;
+    padding-left: var(--space-5);
+  }
+
+  .compact-list.single {
+    columns: 1;
+  }
+
+  .supporting-details {
+    max-width: 760px;
+    border: 1px solid rgba(55, 40, 38, 0.18);
+    border-radius: 6px;
+    padding: var(--space-4);
+    background: rgba(255, 248, 239, 0.58);
+  }
+
+  .supporting-details summary {
+    color: var(--color-text-muted);
+    font-family: var(--font-mono);
+    font-size: var(--font-size-micro);
+    font-weight: 900;
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+
+  .supporting-details[open] summary {
+    margin-bottom: var(--space-4);
+  }
+
+  pre {
+    overflow-x: auto;
+    border: 1px solid rgba(55, 40, 38, 0.24);
+    border-radius: 6px;
+    padding: var(--space-4);
+    background: color-mix(in srgb, var(--blue-soft) 38%, var(--canvas));
+    color: var(--color-text);
+    font-size: 0.86rem;
+    line-height: 1.55;
+  }
+
+  .terminal {
+    background: color-mix(in srgb, var(--ink) 88%, var(--plum));
+    color: var(--paper);
+  }
+
+  .run-output {
+    display: grid;
+    gap: var(--space-2);
+    max-width: 640px;
+    font-weight: 850;
+  }
+
+  .run-output span:not([aria-hidden]) {
+    border: 1px solid rgba(55, 40, 38, 0.16);
+    border-radius: 4px;
+    padding: 0.48rem 0.68rem;
+    background: rgba(255, 248, 239, 0.76);
+  }
+
+  .run-output span[aria-hidden] {
+    justify-self: center;
+    color: var(--blue);
+    font-family: var(--font-mono);
+    font-weight: 900;
+  }
+
+  .finding-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .finding-grid article {
+    border-left: 0.32rem solid var(--blue);
+  }
+
+  .finding-grid article:nth-child(2) {
+    border-left-color: var(--rust);
+  }
+
+  .finding-grid article:nth-child(3) {
+    border-left-color: var(--khaki);
+  }
+
+  .policy-strip {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-4);
+    margin-top: var(--space-5);
+    border: 1px solid rgba(55, 40, 38, 0.18);
+    border-radius: 6px;
+    padding: var(--space-4);
+    background: rgba(248, 240, 231, 0.72);
+  }
+
+  .decision-list {
+    display: grid;
+    gap: var(--grid-gap);
+  }
+
+  .decision-list article {
+    grid-template-columns: minmax(13rem, 0.34fr) minmax(0, 1fr);
+    align-items: start;
+    border-left: 0.32rem solid var(--houseplant);
+  }
+
+  .decision-list article:nth-child(2) {
+    border-left-color: var(--blue);
+  }
+
+  .decision-list article:nth-child(3) {
+    border-left-color: var(--khaki);
+  }
+
+  .decision-list p {
+    margin: 0;
+    color: var(--color-text-muted);
+  }
+
+  .decision-list code {
+    grid-column: 2;
+    white-space: normal;
+    color: var(--plum);
+    font-weight: 850;
+  }
+
+  .closing-section {
+    display: grid;
+    gap: var(--space-6);
+    padding-bottom: var(--space-hero);
+  }
+
+  .closing-principles,
+  .closing-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    align-items: center;
+  }
+
+  .closing-principles span {
+    border: 1px solid rgba(55, 40, 38, 0.18);
+    border-radius: 4px;
+    padding: 0.42rem 0.58rem;
+    background: rgba(255, 248, 239, 0.76);
+    font-weight: 800;
+  }
+
+  @media (max-width: 900px) {
+    .opening-grid,
+    .split-section,
+    .responsibility-columns,
+    .definition-pair,
+    .finding-grid,
+    .decision-list article {
+      grid-template-columns: 1fr;
+    }
+
+    .decision-list code {
+      grid-column: auto;
+    }
+
+    .compact-list,
+    .proof-list {
+      columns: 1;
+    }
+  }
+</style>
