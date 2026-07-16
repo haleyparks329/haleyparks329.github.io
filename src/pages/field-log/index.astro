@@ -1,0 +1,91 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import FieldLogEntryRow from "@/components/FieldLogEntryRow.astro";
+
+const entries = (await getCollection("fieldLog")).sort(
+  (a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime(),
+);
+---
+
+<BaseLayout
+  title="Field Log"
+  description="Short public notes from Haley Parks' active AI systems, build work, and research questions."
+  canonicalPath="/field-log/"
+>
+  <section class="field-log-index">
+    <header class="field-log-index-header">
+      <p class="eyebrow">Field Log</p>
+      <h1>Notes from the edge of the work</h1>
+      <p>
+        Active build observations, system questions, and decisions worth keeping
+        visible while the larger work is still moving.
+      </p>
+      <ul aria-label="Field Log metadata">
+        <li>{entries.length} entries</li>
+        <li>Newest first</li>
+        <li>Active work updates</li>
+      </ul>
+    </header>
+
+    <section class="entry-list" aria-label="Field Log entries">
+      {entries.map((entry) => <FieldLogEntryRow entry={entry} />)}
+    </section>
+  </section>
+</BaseLayout>
+
+<style>
+  .field-log-index {
+    width: min(900px, calc(100% - 2rem));
+    margin: clamp(2rem, 5vw, 4rem) auto clamp(3rem, 7vw, 6rem);
+  }
+
+  .field-log-index-header {
+    display: grid;
+    gap: var(--space-4);
+    border-bottom: var(--border-width) solid var(--color-border);
+    padding-bottom: clamp(1.5rem, 4vw, 2.5rem);
+  }
+
+  .field-log-index-header h1 {
+    max-width: 14ch;
+    margin: 0;
+    font-size: clamp(2.25rem, 4vw, 3.5rem);
+    line-height: 0.98;
+  }
+
+  .field-log-index-header > p:not(.eyebrow) {
+    max-width: 48rem;
+    color: var(--color-text);
+    font-size: clamp(1.05rem, 1.3vw, 1.2rem);
+    font-weight: 650;
+    line-height: 1.5;
+  }
+
+  .field-log-index-header ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .field-log-index-header li {
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--radius-pill);
+    padding: 0.22rem 0.55rem;
+    background: var(--color-surface-raised);
+    color: var(--color-text-muted);
+    font-family: var(--font-mono);
+    font-size: var(--font-size-micro);
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .entry-list {
+    margin-top: clamp(2rem, 5vw, 3.5rem);
+    border-top: var(--border-width) solid var(--color-border);
+  }
+</style>

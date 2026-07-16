@@ -1,0 +1,108 @@
+---
+import type { CollectionEntry } from "astro:content";
+import ContentTypeLabel from "@/components/ContentTypeLabel.astro";
+
+type Props = {
+  entry: CollectionEntry<"writing">;
+};
+
+const { entry } = Astro.props;
+
+const dateFormatter = new Intl.DateTimeFormat("en", {
+  month: "long",
+  day: "numeric",
+  year: "numeric",
+});
+
+const meta = [
+  dateFormatter.format(entry.data.pubDate),
+  entry.data.updatedDate
+    ? `Updated ${dateFormatter.format(entry.data.updatedDate)}`
+    : undefined,
+  entry.data.readingTime,
+  entry.data.relatedProject,
+  entry.data.status !== "published" ? entry.data.status : undefined,
+].filter(Boolean);
+---
+
+<header class="writing-document-header">
+  <ContentTypeLabel type={entry.data.type} />
+  <h1>{entry.data.title}</h1>
+  <p>{entry.data.description}</p>
+  <ul class="document-meta" aria-label={`${entry.data.title} metadata`}>
+    {meta.map((item) => <li>{item}</li>)}
+  </ul>
+  {
+    entry.data.tags.length > 0 && (
+      <ul class="document-tags" aria-label={`${entry.data.title} tags`}>
+        {entry.data.tags.map((tag) => (
+          <li>{tag}</li>
+        ))}
+      </ul>
+    )
+  }
+  {
+    entry.data.disclaimer && (
+      <p class="document-disclaimer">{entry.data.disclaimer}</p>
+    )
+  }
+</header>
+
+<style>
+  .writing-document-header {
+    display: grid;
+    gap: var(--space-4);
+    border-bottom: var(--border-width) solid var(--color-border);
+    padding-block: clamp(2rem, 5vw, 4rem) clamp(1.5rem, 4vw, 2.5rem);
+  }
+
+  h1 {
+    max-width: 12ch;
+    margin: 0;
+    font-size: clamp(2.25rem, 4vw, 3.5rem);
+    line-height: 0.98;
+  }
+
+  .writing-document-header > p:not(.document-disclaimer) {
+    max-width: 48rem;
+    margin: 0;
+    color: var(--color-text);
+    font-size: clamp(1.05rem, 1.3vw, 1.2rem);
+    font-weight: 650;
+    line-height: 1.5;
+  }
+
+  .document-meta,
+  .document-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .document-meta li,
+  .document-tags li {
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--radius-pill);
+    padding: 0.22rem 0.55rem;
+    background: var(--color-surface-raised);
+    color: var(--color-text-muted);
+    font-size: var(--font-size-micro);
+    font-weight: 800;
+  }
+
+  .document-meta li {
+    font-family: var(--font-mono);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .document-disclaimer {
+    border-left: 0.25rem solid var(--khaki);
+    padding-left: var(--space-3);
+    color: var(--color-text-muted);
+    font-size: var(--font-size-small);
+  }
+</style>

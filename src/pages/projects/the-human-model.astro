@@ -1,7 +1,7 @@
 ---
 import { getCollection } from "astro:content";
+import ProjectReportLayout from "@/components/ProjectReportLayout.astro";
 import BaseLayout from "@/layouts/BaseLayout.astro";
-import ProjectCaseStudy from "@/components/ProjectCaseStudy.astro";
 
 const project = (await getCollection("projects")).find(
   (entry) => entry.data.slug === "the-human-model",
@@ -10,51 +10,21 @@ if (!project) {
   throw new Error("Missing The Human Model project entry");
 }
 
-const relatedLogs = (await getCollection("fieldLog"))
-  .filter((entry) =>
-    ["attention-is-the-scarce-resource", "evidence-before-claims"].includes(
-      entry.data.slug,
-    ),
-  )
-  .map((entry) => ({
-    title: entry.data.title,
-    summary: entry.data.summary,
-    href: `/field-log/#${entry.data.slug}`,
-  }));
+const repositoryLink = project.data.repositoryUrl
+  ? {
+      href: project.data.repositoryUrl,
+      label: "View repository",
+      external: true,
+    }
+  : undefined;
 
-const evidence = [
-  {
-    title: "Human signals as evidence",
-    text: "The public story connects wearable data, training logs, conversational context, biomechanics, and machine learning without claiming a finished generalized coaching product.",
-  },
-  {
-    title: "Feedback loop",
-    text: "The core research loop is Measure -> Model -> Reason -> Adapt: collect signals, structure them, reason about the person changing over time, and learn from the next action.",
-  },
-  {
-    title: "Implemented surfaces",
-    text: "Bridget, dashboard work, predictive models, movement analysis, and hardware experiments are presented as system parts with different maturity levels.",
-  },
-];
+const examplesLink = {
+  href: "https://github.com/haleyparks329/the-human-model/tree/main/examples",
+  label: "View public examples",
+  external: true,
+};
 
-const systems = [
-  {
-    title: "Bridget",
-    text: "Captures conversations, observations, and context that numbers miss, turning everyday interactions into structured evidence.",
-  },
-  {
-    title: "Decision Support Dashboard",
-    text: "Brings recovery, training, body measurements, and system health together as a review layer for better questions and next decisions.",
-  },
-  {
-    title: "Predictive and movement models",
-    text: "Explores whether past training, recovery, and movement data can become hypotheses that are tested in real sessions.",
-  },
-  {
-    title: "Experimental hardware",
-    text: "Investigates which additional signals might make the Human Model more complete beyond today's wearable data.",
-  },
-];
+const links = [...(repositoryLink ? [repositoryLink] : []), examplesLink];
 ---
 
 <BaseLayout
@@ -62,68 +32,177 @@ const systems = [
   description={project.data.summary}
   canonicalPath="/projects/the-human-model/"
 >
-  <ProjectCaseStudy
+  <ProjectReportLayout
     project={project}
-    eyebrow="Research case study"
-    thesis="A personal research platform for understanding adaptation as a changing system, not a pile of disconnected metrics."
-    researchQuestion={project.data.coreQuestion}
-    evidence={evidence}
-    systems={systems}
-    boundaries={[
-      "Active personal research platform",
-      "Experimental modeling and interface work",
-      "Building in public through docs, examples, and public summaries",
-      "Not a finished product or generalized coaching system",
+    reportType="Personal research project"
+    summary="A system that combines training, health, movement, and conversational data so I can reason about how I change over time."
+    links={links}
+    abstract={[
+      "The Human Model is an ongoing personal research project exploring whether wearable data, training history, conversational context, and movement analysis can be combined into a continuously updated record of human performance.",
+      "The current implementation includes health-data ingestion, workout logging, predictive performance models, dashboard experiments, Bridget as a conversational memory layer, and exploratory movement analysis from video. These parts are used to preserve context across training sessions instead of treating each measurement as an isolated signal.",
+      "The longer-term direction is better personal decision support through accumulated evidence. It is an n=1 research system, not a finished coaching product or a generalized model of human performance.",
     ]}
-    boundaryItems={[
-      {
-        label: "Implemented",
-        text: "Active personal research platform",
-      },
-      {
-        label: "Demonstrated",
-        text: "Building in public through docs, examples, and public summaries",
-      },
-      {
-        label: "Planned",
-        text: "Experimental modeling and interface work",
-      },
-      {
-        label: "Boundary",
-        text: "Not a finished product or generalized coaching system",
-      },
+    why={[
+      "My training history, health data, workout notes, and observations were spread across several apps and files. Each tool could show one part of the story, but none of them preserved enough context to explain why something changed.",
+      "I started this project because I wanted those records to become useful together. A weaker workout, a recovery change, or a movement problem should be reviewed alongside the surrounding week instead of being trapped in separate dashboards.",
+      "I also wanted a system that could remember the messy human parts: intent, stress, soreness, experiments, and the notes that usually disappear after a workout is logged.",
     ]}
-    links={[
-      ...(project.data.repositoryUrl
-        ? [
-            {
-              href: project.data.repositoryUrl,
-              label: "Human Model repository",
-              external: true,
-            },
-          ]
-        : []),
-      {
-        href: "https://github.com/haleyparks329/the-human-model/tree/main/examples",
-        label: "Public examples",
-        external: true,
-      },
-    ]}
-    relatedLogs={relatedLogs}
-    featuredObject={{
-      title: "Measure -> Model -> Reason -> Adapt",
-      text: "Most fitness tools stop at measurement. The Human Model asks what comes next: how scattered signals can become structured evidence, how that evidence can support reasoning, and how the next action can teach the system something new.",
+    actuallyDoes={{
+      intro:
+        "The system collects information from several sources, converts it into structured records, compares current performance with previous patterns, and keeps the result available for future decisions.",
+      steps: [
+        "A workout, check-in, measurement, or observation is recorded.",
+        "Relevant health and recovery data is imported or connected to the same period.",
+        "The new session is compared with previous sessions and known context.",
+        "Models, rules, or review screens identify useful differences.",
+        "The context is preserved so the next session starts with more memory than the last one.",
+      ],
     }}
-  >
-    <div
-      slot="featured"
-      class="artifact-flow loop-flow"
-      aria-label="Measure, model, reason, adapt loop"
-    >
-      <span>Measure</span>
-      <span>Model</span>
-      <span>Reason</span>
-      <span>Adapt</span>
-    </div>
-  </ProjectCaseStudy>
+    howItWorks={{
+      groups: [
+        {
+          title: "Inputs",
+          items: [
+            "Apple Health and wearable exports",
+            "workout logs and performance history",
+            "Bridget conversations and check-ins",
+            "body measurements and recovery notes",
+            "movement video for technique review",
+          ],
+        },
+        {
+          title: "Processing",
+          items: [
+            "ingestion and normalization scripts",
+            "structured records for training and health signals",
+            "feature generation for prediction experiments",
+            "movement-analysis prototypes",
+            "dashboard and Bridget review flows",
+          ],
+        },
+        {
+          title: "Outputs",
+          items: [
+            "session predictions and model diagnostics",
+            "review notes and next-session context",
+            "dashboard views for human inspection",
+            "movement-analysis summaries",
+            "public examples that explain the workflow safely",
+          ],
+        },
+      ],
+      note: "The technical structure matters because the system is only useful if the data, model output, and human interpretation stay connected. Bridget is the conversational memory layer; dashboards and reports are review layers; model output is treated as a hypothesis to inspect.",
+    }}
+    statusRows={[
+      {
+        part: "Health-data ingestion",
+        status: "Partial",
+        does: "Connects health and recovery signals to the wider personal-data record.",
+        inspect: repositoryLink ?? examplesLink,
+      },
+      {
+        part: "Workout logging",
+        status: "Working",
+        does: "Preserves training sessions so performance can be compared across time.",
+        inspect: repositoryLink ?? examplesLink,
+      },
+      {
+        part: "Bridget memory layer",
+        status: "Working",
+        does: "Captures conversational context, observations, and check-ins that numbers alone miss.",
+        inspect: repositoryLink ?? examplesLink,
+      },
+      {
+        part: "Performance prediction model",
+        status: "Experimental",
+        does: "Uses prior training and readiness context to create next-session hypotheses.",
+        inspect: examplesLink,
+      },
+      {
+        part: "Movement-video analysis",
+        status: "Prototype",
+        does: "Extracts movement signals from video so technique questions can be reviewed more concretely.",
+        inspect: examplesLink,
+      },
+      {
+        part: "Generalized coaching product",
+        status: "Not built",
+        does: "The project does not claim to coach other people or replace expert judgment.",
+        inspect: repositoryLink ?? examplesLink,
+      },
+    ]}
+    example={{
+      title: "Why was one workout worse than expected?",
+      steps: [
+        {
+          title: "Starting situation",
+          text: "A workout underperforms compared with the planned load, reps, or effort level.",
+        },
+        {
+          title: "Input",
+          text: "The session is reviewed beside recent training history, recovery signals, soreness notes, and any Bridget check-ins from the same period.",
+        },
+        {
+          title: "Processing",
+          text: "The system compares the session with prior patterns and looks for surrounding changes that may explain the result.",
+        },
+        {
+          title: "Result",
+          text: "The output is a clearer reason to adjust, repeat, rest, or collect more evidence before changing the plan.",
+        },
+        {
+          title: "Human interpretation",
+          text: "I still decide what the result means. The system helps me ask a better question instead of pretending the answer is automatic.",
+        },
+      ],
+    }}
+    learnings={[
+      {
+        title: "More data did not automatically create more understanding.",
+        text: "The project became clearer when raw metrics were treated as evidence that needed context, not as answers by themselves.",
+      },
+      {
+        title: "The notes mattered.",
+        text: "A short note about soreness, stress, or intent could explain a session better than another isolated metric.",
+      },
+      {
+        title: "The review loop was the useful part.",
+        text: "The valuable pattern is collecting evidence, reviewing it, acting, and learning from the next session.",
+      },
+    ]}
+    notSolved={[
+      "The system is built around one person, so it should not be treated as a generalized coaching model.",
+      "Some data still requires manual cleanup or interpretation.",
+      "Movement analysis is useful for review, not a final judgment about technique.",
+      "Private health and training data limits what can be shown publicly.",
+      "Storage boundaries are still evolving; Airtable, local files, and Postgres each appear in different stages of the work.",
+    ]}
+    appendix={{
+      intro:
+        "The sections above explain the project as a system. The repository contains the implementation details, scripts, and public-safe examples.",
+      details: [
+        {
+          summary: "Technology and storage",
+          items: [
+            "R and Python scripts support analysis and modeling work.",
+            "Training logs, health exports, and model outputs are handled as structured local records.",
+            "Airtable has been useful for lightweight review and organization; Postgres work is part of the more durable local data direction.",
+          ],
+        },
+        {
+          summary: "Models and outputs",
+          items: [
+            "Training-load models are treated as hypotheses for review.",
+            "Movement-analysis work uses video-derived signals for inspection.",
+            "Dashboard and Bridget-facing outputs are review aids, not automated decisions.",
+          ],
+        },
+      ],
+      links,
+    }}
+    currentDirection={[
+      "The current work is to make the data pipeline and review layers more coherent without overstating what the models know. The next useful milestone is a cleaner path from recorded training and recovery context to a reviewable next-session hypothesis.",
+      "The open question is how much personal evidence is enough to support better decisions while still keeping the system honest about uncertainty.",
+    ]}
+  />
 </BaseLayout>

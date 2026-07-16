@@ -1,0 +1,44 @@
+---
+type Props = {
+  type: "case-study" | "essay" | "quick-note" | string;
+};
+
+const { type } = Astro.props;
+
+const labels: Record<string, string> = {
+  "case-study": "Case study",
+  essay: "Essay",
+  "quick-note": "Quick note",
+};
+---
+
+<span class={`content-type type-${type}`}>{labels[type] ?? type}</span>
+
+<style>
+  .content-type {
+    display: inline-flex;
+    width: fit-content;
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--radius-pill);
+    padding: 0.2rem 0.52rem;
+    background: var(--color-surface-raised);
+    color: var(--color-text-muted);
+    font-family: var(--font-mono);
+    font-size: var(--font-size-micro);
+    font-weight: 850;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .type-case-study {
+    color: var(--blue);
+  }
+
+  .type-essay {
+    color: var(--rust);
+  }
+
+  .type-quick-note {
+    color: var(--olive);
+  }
+</style>

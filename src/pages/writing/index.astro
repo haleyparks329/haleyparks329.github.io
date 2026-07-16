@@ -1,0 +1,144 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import WritingEntryRow from "@/components/WritingEntryRow.astro";
+
+const entries = (await getCollection("writing"))
+  .filter((entry) => !entry.data.draft)
+  .sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime());
+
+const featuredEntry =
+  entries.find((entry) => entry.data.featured) ??
+  entries.find((entry) => entry.data.type !== "quick-note") ??
+  entries[0];
+
+const archiveEntries = featuredEntry
+  ? entries.filter((entry) => entry.id !== featuredEntry.id)
+  : entries;
+---
+
+<BaseLayout
+  title="Writing"
+  description="Case studies, arguments, and small ideas from active work."
+  canonicalPath="/writing/"
+>
+  <section class="writing-index">
+    <header class="writing-index-header">
+      <p class="eyebrow">Writing</p>
+      <h1>Case studies, arguments, and small ideas from active work.</h1>
+      <p>Case Studies · Essays · Quick Notes</p>
+    </header>
+
+    {
+      featuredEntry && (
+        <section aria-labelledby="featured-writing" class="featured-writing">
+          <div class="section-heading">
+            <p class="eyebrow">Featured writing</p>
+            <h2 id="featured-writing">Newest selected piece</h2>
+          </div>
+          <WritingEntryRow entry={featuredEntry} featured />
+        </section>
+      )
+    }
+
+    <section class="type-intro" aria-label="Writing type guide">
+      <p>Case studies investigate products and workflows.</p>
+      <p>Essays make an argument.</p>
+      <p>Quick notes capture one useful idea.</p>
+    </section>
+
+    <section aria-labelledby="writing-archive" class="writing-archive">
+      <div class="section-heading">
+        <p class="eyebrow">Archive</p>
+        <h2 id="writing-archive">All writing</h2>
+      </div>
+      <div class="writing-list">
+        {archiveEntries.map((entry) => <WritingEntryRow entry={entry} />)}
+      </div>
+    </section>
+
+    <aside class="field-log-bridge">
+      <p>
+        <strong>Looking for active build updates?</strong>
+        {" "}
+        Open the Field Log.
+      </p>
+      <a href="/field-log/">Open Field Log</a>
+    </aside>
+  </section>
+</BaseLayout>
+
+<style>
+  .writing-index {
+    width: min(900px, calc(100% - 2rem));
+    margin: clamp(2rem, 5vw, 4rem) auto clamp(3rem, 7vw, 6rem);
+  }
+
+  .writing-index-header {
+    display: grid;
+    gap: var(--space-4);
+    border-bottom: var(--border-width) solid var(--color-border);
+    padding-bottom: clamp(1.5rem, 4vw, 2.5rem);
+  }
+
+  .writing-index-header h1 {
+    max-width: 16ch;
+    margin: 0;
+    font-size: clamp(2.25rem, 4vw, 3.5rem);
+    line-height: 0.98;
+  }
+
+  .writing-index-header > p:not(.eyebrow) {
+    color: var(--color-text-muted);
+    font-family: var(--font-mono);
+    font-size: var(--font-size-micro);
+    font-weight: 850;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .featured-writing,
+  .writing-archive,
+  .field-log-bridge,
+  .type-intro {
+    margin-top: clamp(2.5rem, 5vw, 4.5rem);
+  }
+
+  .section-heading {
+    margin-bottom: var(--space-5);
+  }
+
+  .section-heading h2 {
+    font-size: clamp(1.45rem, 2.2vw, 2rem);
+  }
+
+  .writing-list {
+    border-top: var(--border-width) solid var(--color-border);
+  }
+
+  .type-intro {
+    border-block: var(--border-width) solid var(--color-border);
+    padding-block: var(--space-4);
+  }
+
+  .type-intro p {
+    margin: 0.25rem 0;
+    color: var(--color-text-muted);
+  }
+
+  .field-log-bridge {
+    border-left: 0.25rem solid var(--khaki);
+    padding-left: var(--space-4);
+  }
+
+  .field-log-bridge p {
+    margin-bottom: var(--space-3);
+  }
+
+  .field-log-bridge a {
+    color: var(--plum);
+    font-weight: 850;
+    text-decoration-thickness: 0.08em;
+    text-underline-offset: 0.18em;
+  }
+</style>

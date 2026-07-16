@@ -23,19 +23,26 @@ const projects = defineCollection({
 });
 
 const writing = defineCollection({
-  loader: () => [],
+  loader: glob({ base: "./src/content/writing", pattern: "**/*.{md,mdx}" }),
   schema: z.object({
     title: z.string(),
+    slug: z.string(),
     description: z.string(),
-    category: z.enum([
-      "Research Notes",
-      "Systems Thinking",
-      "Human Model",
-      "Personal Computing",
-      "Build Notes",
-    ]),
-    draft: z.boolean().default(true),
-    pubDate: z.date().optional(),
+    type: z.enum(["case-study", "essay", "quick-note"]),
+    pubDate: z.date(),
+    updatedDate: z.date().optional(),
+    status: z.enum(["published", "evolving", "archived"]).default("published"),
+    tags: z.array(z.string()).default([]),
+    relatedProject: z.string().optional(),
+    featured: z.boolean().default(false),
+    draft: z.boolean().default(false),
+    readingTime: z.string().optional(),
+    subjectName: z.string().optional(),
+    subjectUrl: z.url().optional(),
+    disclaimer: z.string().optional(),
+    repositoryUrl: z.url().optional(),
+    demoUrl: z.url().optional(),
+    externalUrl: z.url().optional(),
   }),
 });
 
@@ -45,12 +52,22 @@ const fieldLog = defineCollection({
     title: z.string(),
     slug: z.string(),
     summary: z.string(),
-    excerpt: z.string(),
-    category: z.enum(["Desk Notes", "System Notes", "Build Notes"]),
+    excerpt: z.string().optional(),
+    category: z.enum([
+      "Desk Notes",
+      "System Notes",
+      "Build Notes",
+      "Experiment Notes",
+      "Decision Notes",
+    ]),
     pubDate: z.date(),
+    relatedProject: z.string().optional(),
+    status: z
+      .enum(["completed", "in-progress", "blocked", "observed", "deferred"])
+      .default("observed"),
     featured: z.boolean().default(false),
-    tags: z.array(z.string()),
-    order: z.number(),
+    tags: z.array(z.string()).default([]),
+    order: z.number().optional(),
   }),
 });
 

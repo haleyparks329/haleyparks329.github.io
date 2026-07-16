@@ -1,0 +1,105 @@
+---
+import type { CollectionEntry } from "astro:content";
+
+type Props = {
+  entry: CollectionEntry<"fieldLog">;
+};
+
+const { entry } = Astro.props;
+
+const dateFormatter = new Intl.DateTimeFormat("en", {
+  month: "short",
+  day: "2-digit",
+  year: "numeric",
+});
+---
+
+<article
+  id={entry.data.slug}
+  class="field-log-row"
+  data-category={entry.data.category}
+  data-tags={entry.data.tags.join(" ")}
+  data-related-project={entry.data.relatedProject ?? ""}
+>
+  <div class="row-meta">
+    <time datetime={entry.data.pubDate.toISOString()}>
+      {dateFormatter.format(entry.data.pubDate)}
+    </time>
+    <span>{entry.data.category}</span>
+    {entry.data.relatedProject && <span>{entry.data.relatedProject}</span>}
+    {entry.data.status !== "observed" && <span>{entry.data.status}</span>}
+  </div>
+  <div class="row-main">
+    <h2>
+      <a href={`/field-log/${entry.data.slug}/`}>{entry.data.title}</a>
+    </h2>
+    <p>{entry.data.summary}</p>
+    <a class="read-link" href={`/field-log/${entry.data.slug}/`}>
+      Read entry
+    </a>
+  </div>
+</article>
+
+<style>
+  .field-log-row {
+    display: grid;
+    grid-template-columns: minmax(8.5rem, 0.28fr) minmax(0, 1fr);
+    gap: var(--space-5);
+    border-bottom: var(--border-width) solid var(--color-border);
+    padding-block: var(--space-5);
+    scroll-margin-top: var(--space-8);
+  }
+
+  .row-meta {
+    display: grid;
+    align-content: start;
+    gap: 0.45rem;
+  }
+
+  time,
+  .row-meta span {
+    width: fit-content;
+    color: var(--color-text-muted);
+    font-family: var(--font-mono);
+    font-size: var(--font-size-micro);
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .row-meta span {
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--radius-pill);
+    padding: 0.18rem 0.48rem;
+    background: var(--color-surface-raised);
+  }
+
+  h2 {
+    margin-bottom: var(--space-2);
+    font-family: var(--font-serif);
+    font-size: clamp(1.25rem, 1.8vw, 1.65rem);
+    line-height: 1.1;
+  }
+
+  h2 a,
+  .read-link {
+    color: var(--color-text);
+    text-decoration-thickness: 0.08em;
+    text-underline-offset: 0.16em;
+  }
+
+  .row-main p {
+    color: var(--color-text-muted);
+  }
+
+  .read-link {
+    font-weight: 850;
+  }
+
+  @media (max-width: 720px) {
+    .field-log-row {
+      grid-template-columns: 1fr;
+      gap: var(--space-3);
+    }
+  }
+</style>

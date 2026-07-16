@@ -1,7 +1,7 @@
 ---
 import { getCollection } from "astro:content";
+import ProjectReportLayout from "@/components/ProjectReportLayout.astro";
 import BaseLayout from "@/layouts/BaseLayout.astro";
-import ProjectCaseStudy from "@/components/ProjectCaseStudy.astro";
 
 const project = (await getCollection("projects")).find(
   (entry) => entry.data.slug === "career-intelligence",
@@ -10,47 +10,21 @@ if (!project) {
   throw new Error("Missing Career Intelligence project entry");
 }
 
-const relatedLogs = (await getCollection("fieldLog"))
-  .filter((entry) => ["evidence-before-claims"].includes(entry.data.slug))
-  .map((entry) => ({
-    title: entry.data.title,
-    summary: entry.data.summary,
-    href: `/field-log/#${entry.data.slug}`,
-  }));
+const repositoryLink = project.data.repositoryUrl
+  ? {
+      href: project.data.repositoryUrl,
+      label: "View repository",
+      external: true,
+    }
+  : undefined;
 
-const evidence = [
-  {
-    title: "Source-backed career evidence",
-    text: "The public slice starts with structured synthetic career data and validates it against a schema before any generated materials are produced.",
-  },
-  {
-    title: "Separated reasoning layers",
-    text: "Evidence ranking, role matching, positioning, interview prep, and rendering stay separated so outputs remain grounded in what the data supports.",
-  },
-  {
-    title: "Synthetic demo workflow",
-    text: "The public repository includes a deterministic Andy Barks example for inspecting outputs without exposing private career data.",
-  },
-];
+const demoLink = {
+  href: "https://github.com/haleyparks329/career-intelligence/tree/main/examples/andy-barks/generated",
+  label: "View synthetic demo outputs",
+  external: true,
+};
 
-const systems = [
-  {
-    title: "Structured evidence",
-    text: "Career details become typed source material instead of loose resume language.",
-  },
-  {
-    title: "Evidence ranking",
-    text: "The system ranks source-backed evidence before turning it into match reports or positioning notes.",
-  },
-  {
-    title: "Person-model boundaries",
-    text: "Reflection and preference signals can shape reasoning without becoming unsupported resume claims.",
-  },
-  {
-    title: "Conservative rendering",
-    text: "Generated artifacts are treated as demo outputs and helpers, not automated application submission or recruiter outreach.",
-  },
-];
+const links = [...(repositoryLink ? [repositoryLink] : []), demoLink];
 ---
 
 <BaseLayout
@@ -58,68 +32,177 @@ const systems = [
   description={project.data.summary}
   canonicalPath="/projects/career-intelligence/"
 >
-  <ProjectCaseStudy
+  <ProjectReportLayout
     project={project}
-    eyebrow="Research case study"
-    thesis="A source-backed career reasoning engine that keeps evidence, person context, fit analysis, and generated materials in their own lanes."
-    researchQuestion={project.data.coreQuestion}
-    evidence={evidence}
-    systems={systems}
-    boundaries={[
-      "Public synthetic data model and schema validation",
-      "Source-backed evidence ranking and role match analysis",
-      "No claims of automated application submission or recruiter outreach",
-      "No production users or performance metrics claimed",
+    reportType="Career reasoning project"
+    summary="A source-backed career reasoning system that compares roles against evidence, preferences, capabilities, and boundaries instead of keywords alone."
+    links={links}
+    abstract={[
+      "Career Intelligence is a project about making career reasoning more evidence-based. It explores how a person's work history, skills, preferences, and goals can be represented as structured source material instead of flattened into resume keywords.",
+      "The current public implementation includes validated synthetic career data, evidence ranking, role matching, positioning outputs, interview-prep outputs, and generated demo artifacts. The public example uses synthetic data so the workflow can be inspected without exposing private career history.",
+      "The longer-term direction is a system that supports career judgment without pretending to decide a person's future automatically. It should help compare opportunities, explain fit, and preserve the evidence behind each claim.",
     ]}
-    boundaryItems={[
-      {
-        label: "Implemented",
-        text: "Public synthetic data model and schema validation",
-      },
-      {
-        label: "Demonstrated",
-        text: "Source-backed evidence ranking and role match analysis",
-      },
-      {
-        label: "Boundary",
-        text: "No claims of automated application submission or recruiter outreach",
-      },
-      {
-        label: "Boundary",
-        text: "No production users or performance metrics claimed",
-      },
+    why={[
+      "Resumes and job boards often reduce a person to the words that fit neatly into a posting. That misses transferable work, preferences, constraints, and the difference between being qualified for something and actually wanting the shape of the job.",
+      "I built this because I wanted career materials to start from evidence instead of from whatever phrasing sounded strongest. A system should be able to explain why a role fits, where the match is weak, and which claims are safe to use.",
+      "I also wanted the private reflection layer to stay separate from public claims. Preferences and boundaries can guide reasoning, but they should not become unsupported resume language.",
     ]}
-    links={[
-      ...(project.data.repositoryUrl
-        ? [
-            {
-              href: project.data.repositoryUrl,
-              label: "Career Intelligence repository",
-              external: true,
-            },
-          ]
-        : []),
-      {
-        href: "https://github.com/haleyparks329/career-intelligence/tree/main/examples/andy-barks/generated",
-        label: "Synthetic demo outputs",
-        external: true,
-      },
-    ]}
-    relatedLogs={relatedLogs}
-    featuredObject={{
-      title: "Career reasoning flow",
-      text: "The interesting question is not only whether a person matches a job description. It is whether a system can preserve the evidence behind a career story, surface transferable skills, keep caveats visible, and use a person model without turning reflection-only claims into resume claims.",
+    actuallyDoes={{
+      intro:
+        "The system turns career history and job information into structured records, compares them, and produces conservative outputs that stay attached to the evidence behind them.",
+      steps: [
+        "A person record describes work history, skills, preferences, goals, and boundaries.",
+        "A job description is parsed into requirements, responsibilities, and signals.",
+        "The system compares the role against source-backed evidence.",
+        "Fit, gaps, positioning, and preparation notes are generated from the supported evidence.",
+        "The human reader reviews the output before using it in any real career decision.",
+      ],
     }}
-  >
-    <div
-      slot="featured"
-      class="artifact-flow career-flow"
-      aria-label="Career Intelligence data flow"
-    >
-      <span>evidence</span>
-      <span>capability</span>
-      <span>fit</span>
-      <span>opportunity</span>
-    </div>
-  </ProjectCaseStudy>
+    howItWorks={{
+      groups: [
+        {
+          title: "Inputs",
+          items: [
+            "structured career records",
+            "skills and work-history evidence",
+            "preferences, goals, and boundaries",
+            "job descriptions",
+            "synthetic public demo data",
+          ],
+        },
+        {
+          title: "Processing",
+          items: [
+            "/match compares a role with the evidence record",
+            "/position turns supported evidence into positioning notes",
+            "/prep creates interview-prep material from the match",
+            "evidence ranking keeps claims tied to source records",
+            "graph or atlas views represent relationships across roles, skills, and evidence",
+          ],
+        },
+        {
+          title: "Outputs",
+          items: [
+            "role match reports",
+            "positioning notes",
+            "interview-prep notes",
+            "public synthetic demo artifacts",
+            "inspectable source-backed examples",
+          ],
+        },
+      ],
+      note: "The system separates fit, preferences, capabilities, and boundaries because they are different kinds of information. A role can be technically possible and still be a poor fit; a preference can shape judgment without becoming a public claim.",
+    }}
+    statusRows={[
+      {
+        part: "Synthetic career dataset",
+        status: "Working",
+        does: "Provides public-safe source records for inspecting the workflow without private career data.",
+        inspect: demoLink,
+      },
+      {
+        part: "/match workflow",
+        status: "Prototype",
+        does: "Compares job requirements against structured career evidence and returns fit signals.",
+        inspect: repositoryLink ?? demoLink,
+      },
+      {
+        part: "/position workflow",
+        status: "Prototype",
+        does: "Turns supported evidence into role-specific positioning notes.",
+        inspect: demoLink,
+      },
+      {
+        part: "/prep workflow",
+        status: "Prototype",
+        does: "Generates interview-prep notes from the role match and source evidence.",
+        inspect: demoLink,
+      },
+      {
+        part: "Evidence graph or atlas",
+        status: "Experimental",
+        does: "Represents relationships among roles, skills, claims, and source evidence.",
+        inspect: repositoryLink ?? demoLink,
+      },
+      {
+        part: "Automated career decisions",
+        status: "Not built",
+        does: "The system does not decide where someone should work or submit applications for them.",
+        inspect: repositoryLink ?? demoLink,
+      },
+    ]}
+    example={{
+      title: "Why did one job appear to fit better than another?",
+      steps: [
+        {
+          title: "Starting situation",
+          text: "Two job descriptions look similar because they share many keywords.",
+        },
+        {
+          title: "Input",
+          text: "The system receives the structured career record and each job description.",
+        },
+        {
+          title: "Processing",
+          text: "It compares responsibilities, required skills, preferred experience, constraints, and evidence from past work.",
+        },
+        {
+          title: "Result",
+          text: "One role may have stronger source-backed fit, while the other may rely on unsupported claims or conflict with stated boundaries.",
+        },
+        {
+          title: "Human interpretation",
+          text: "The output gives the person a clearer basis for judgment. It does not make the career decision for them.",
+        },
+      ],
+    }}
+    learnings={[
+      {
+        title: "Fit is not the same as eligibility.",
+        text: "A person can meet baseline requirements while still being mismatched on work style, goals, or constraints.",
+      },
+      {
+        title: "Claims are safer when they stay attached to evidence.",
+        text: "The system is most useful when every generated point can be traced back to a source record.",
+      },
+      {
+        title: "Generated writing should come after reasoning.",
+        text: "Positioning and prep outputs are less likely to overclaim when analysis happens first.",
+      },
+    ]}
+    notSolved={[
+      "The public example is synthetic and does not prove performance on a broad real-world dataset.",
+      "No production users or outcome metrics are claimed.",
+      "Manual judgment is still required to decide whether a role is worth pursuing.",
+      "Reflection-only signals cannot become resume claims unless they are supported by source evidence.",
+      "Vague job descriptions can still produce uncertain or incomplete match results.",
+    ]}
+    appendix={{
+      intro:
+        "The sections above explain the project as a system. The repository contains the implementation details and public synthetic examples.",
+      details: [
+        {
+          summary: "Core routes",
+          items: [
+            "/match compares structured career evidence with a job description.",
+            "/position creates role-specific positioning material from supported claims.",
+            "/prep creates interview-prep material from the same evidence trail.",
+          ],
+        },
+        {
+          summary: "Data and artifacts",
+          items: [
+            "Structured Markdown and schema-validated records describe the public synthetic person.",
+            "Generated demo outputs show the workflow without exposing private data.",
+            "Graph or atlas work explores how evidence, skills, roles, and claims relate.",
+          ],
+        },
+      ],
+      links,
+    }}
+    currentDirection={[
+      "The current work is to keep the reasoning layer source-backed while making the public example easier to inspect. The next meaningful milestone is clearer comparison output that shows fit, gaps, and boundaries without collapsing them into one score.",
+      "The open question is how much structure is needed before career reasoning becomes helpful rather than just another polished generator.",
+    ]}
+  />
 </BaseLayout>

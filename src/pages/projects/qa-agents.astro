@@ -1,7 +1,7 @@
 ---
 import { getCollection } from "astro:content";
+import ProjectReportLayout from "@/components/ProjectReportLayout.astro";
 import BaseLayout from "@/layouts/BaseLayout.astro";
-import ProjectCaseStudy from "@/components/ProjectCaseStudy.astro";
 
 const project = (await getCollection("projects")).find(
   (entry) => entry.data.slug === "qa-agents",
@@ -10,81 +10,25 @@ if (!project) {
   throw new Error("Missing QA Agents project entry");
 }
 
-const relatedLogs = (await getCollection("fieldLog"))
-  .filter((entry) => ["evidence-before-claims"].includes(entry.data.slug))
-  .map((entry) => ({
-    title: entry.data.title,
-    summary: entry.data.summary,
-    href: `/field-log/#${entry.data.slug}`,
-  }));
+const repositoryLink = project.data.repositoryUrl
+  ? {
+      href: project.data.repositoryUrl,
+      label: "View repository",
+      external: true,
+    }
+  : undefined;
 
-const evidence = [
-  {
-    title: "Recorded evidence replay",
-    text: "The public page features one replay built from a Little Bytes pricing diff, passing test run, coverage evidence, persisted gap, and Scribe recommendation.",
-  },
-  {
-    title: "Profile-aware QA planning",
-    text: "The experiment asks whether app profiles, shared rules, and stable gap records make QA planning more specific.",
-  },
-  {
-    title: "Human review boundary",
-    text: "The replay explicitly records that no autonomous patches, generated tests, or agent dispatches happened in the artifact.",
-  },
-];
+const replayLink = {
+  href: "/projects/qa-agents/demo/",
+  label: "Open evidence replay",
+};
 
-const systems = [
-  {
-    title: "Agent specs",
-    text: "Profile-aware agent descriptions and shared rules define how agents should act, block, or abstain.",
-  },
-  {
-    title: "SQLite knowledge base",
-    text: "Local-first persistence keeps fingerprints, gaps, and handoff debt inspectable.",
-  },
-  {
-    title: "Advisory routing",
-    text: "Recommendations can route attention without pretending to orchestrate full execution.",
-  },
-  {
-    title: "Beacon prototype",
-    text: "A narrow deterministic prototype turns simulated feature requests into QA plans for inspection.",
-  },
-];
+const strategyReplayLink = {
+  href: "/projects/qa-agents/meticulous/",
+  label: "View strategy replay",
+};
 
-const agentRoster = [
-  {
-    agent: "Beacon",
-    emoji: "🧭",
-    responsibility: "Scope QA work and create test plans",
-    status: "Prototype via deterministic CLI",
-  },
-  {
-    agent: "Patch",
-    emoji: "🩹",
-    responsibility: "Investigate and repair failing browser tests",
-    status: "Planned beyond fingerprinting and routing foundations",
-  },
-  {
-    agent: "Lookout",
-    emoji: "🔭",
-    responsibility: "Explore for bugs and risky behavior",
-    status: "Planned",
-  },
-  {
-    agent: "Scribe",
-    emoji: "✍️",
-    responsibility:
-      "Author or update tests from accepted plans, specs, bugs, or gaps",
-    status: "Prototype via stubs and routing target",
-  },
-  {
-    agent: "Inspector",
-    emoji: "🔍",
-    responsibility: "Review coverage gaps and system behavior",
-    status: "Prototype via KB query surfaces",
-  },
-];
+const links = [replayLink, ...(repositoryLink ? [repositoryLink] : [])];
 ---
 
 <BaseLayout
@@ -92,200 +36,187 @@ const agentRoster = [
   description={project.data.summary}
   canonicalPath="/projects/qa-agents/"
 >
-  <ProjectCaseStudy
+  <ProjectReportLayout
     project={project}
-    eyebrow="Research case study"
-    thesis="An experiment in agent-assisted QA where the important work is keeping context, gaps, and human review visible."
-    researchQuestion={project.data.coreQuestion}
-    evidence={evidence}
-    systems={systems}
-    boundaries={[
-      "Implemented foundations and prototype slices are public",
-      "Browser probing, selector healing, live dashboards, and PR creation remain planned unless the repository shows otherwise",
-      "The replay is recorded evidence, not a live autonomous browser run",
-      "The system recommends next action; it does not claim full handoff execution",
+    reportType="Software-quality research project"
+    summary="A recorded evidence loop that reconstructs a QA investigation so a human can see what changed, what passed, what remains uncertain, and what should happen next."
+    links={links}
+    abstract={[
+      "QA Agents explores which parts of software-quality work can be supported by agents and which parts still need direct human review. The project focuses on preserving evidence: what changed, what tests ran, what gaps remained, and why a next action was recommended.",
+      "The current public implementation includes a recorded Little Bytes pricing replay, local knowledge-base foundations, agent role definitions, deterministic planning prototypes, and a secondary strategy replay. The demo is a reconstruction of a completed investigation, not a hidden live browser run.",
+      "The longer-term direction is better QA handoff: detection should lead to routing, routing may lead to repair, and repair still needs review. No autonomous changes are hidden from human judgment.",
     ]}
-    boundaryItems={[
-      {
-        label: "Implemented",
-        text: "Implemented foundations and prototype slices are public",
-      },
-      {
-        label: "Planned",
-        text: "Browser probing, selector healing, live dashboards, and PR creation remain planned unless the repository shows otherwise",
-      },
-      {
-        label: "Demonstrated",
-        text: "The replay is recorded evidence, not a live autonomous browser run",
-      },
-      {
-        label: "Boundary",
-        text: "The system recommends next action; it does not claim full handoff execution",
-      },
+    why={[
+      "A software change can pass tests and still leave an important question unanswered. That is the gap this project explores.",
+      "I built QA Agents because test output often loses the surrounding story. A human reviewer needs to know what changed, what evidence exists, what is missing, and which decision is still theirs to make.",
+      "The project is also a boundary exercise. It is tempting to describe agents as if they completed the whole workflow. This page keeps the distinction between detection, routing, repair, and review visible.",
     ]}
-    links={[
-      {
-        href: "/projects/qa-agents/demo/",
-        label: "Interactive evidence replay",
-      },
-      ...(project.data.repositoryUrl
-        ? [
-            {
-              href: project.data.repositoryUrl,
-              label: "QA Agents repository",
-              external: true,
-            },
-          ]
-        : []),
-    ]}
-    relatedLogs={relatedLogs}
-    featuredObject={{
-      title: "Evidence replay",
-      text: "The replay turns one concrete scenario into an inspectable object: change, tests, coverage gap, persisted record, and recommendation. It is intentionally framed as evidence, not autonomy.",
+    actuallyDoes={{
+      intro:
+        "The system records a QA investigation as a sequence of evidence, then uses that evidence to route attention to the next useful step.",
+      steps: [
+        "A software change is identified.",
+        "The available tests and coverage evidence are reviewed.",
+        "Any missing coverage or risky behavior is recorded as a gap.",
+        "The gap is routed to the workflow or agent role most suited to address it.",
+        "A human reviews the recommendation before any real change is accepted.",
+      ],
     }}
-  >
-    <div slot="featured" class="replay-object">
-      <ol>
-        <li>Little Bytes pricing changed</li>
-        <li>Tests passed</li>
-        <li>Coverage gap found</li>
-        <li>Gap persisted</li>
-        <li>Scribe recommended next action</li>
-      </ol>
-      <a class="button secondary" href="/projects/qa-agents/demo/">
-        Open evidence replay
-      </a>
-      <div class="strategy-replay-note">
-        <p class="eyebrow">Strategy exploration</p>
-        <h3>Meticulous-inspired replay investigation</h3>
-        <p>
-          A simulated example showing how QA Agents can turn deterministic
-          replay evidence into workflow clusters, findings, coverage risks, and
-          a policy-constrained merge recommendation.
-        </p>
-        <a href="/projects/qa-agents/meticulous/"> View strategy replay → </a>
-      </div>
-    </div>
-  </ProjectCaseStudy>
-  <section class="page-section wide-case agent-roster-section">
-    <div>
-      <p class="eyebrow">Full team</p>
-      <h2>QA agent roster</h2>
-    </div>
-    <div class="agent-roster" aria-label="QA Agents full team">
+    howItWorks={{
+      groups: [
+        {
+          title: "Inputs",
+          items: [
+            "software changes or feature requests",
+            "test output and coverage evidence",
+            "application profiles",
+            "known gaps and fingerprints",
+            "recorded replay artifacts",
+          ],
+        },
+        {
+          title: "Processing",
+          items: [
+            "Lookout represents exploration and detection work",
+            "Beacon scopes QA plans and test strategy",
+            "Inspector reviews coverage gaps and system behavior",
+            "Scribe represents test-authoring handoff",
+            "Patch is planned for repair workflows, not claimed as complete",
+          ],
+        },
+        {
+          title: "Outputs",
+          items: [
+            "recorded evidence replay",
+            "persisted gap records",
+            "agent or workflow recommendations",
+            "strategy replay summaries",
+            "human-review prompts",
+          ],
+        },
+      ],
+      note: "Detection means finding or suspecting a problem. Routing means choosing the next responsible workflow. Repair means changing code or tests. Review means a human checks the evidence and decides what to accept. QA Agents is strongest when those steps are not blurred together.",
+    }}
+    statusRows={[
       {
-        agentRoster.map((agent) => (
-          <article class="agent-roster-item">
-            <h3>
-              <span aria-hidden="true">{agent.emoji}</span>
-              {agent.agent}
-            </h3>
-            <p>{agent.responsibility}</p>
-            <span>{agent.status}</span>
-          </article>
-        ))
-      }
-    </div>
-  </section>
+        part: "Little Bytes evidence replay",
+        status: "Working",
+        does: "Reconstructs one pricing-change investigation from vendored evidence.",
+        inspect: replayLink,
+      },
+      {
+        part: "Replay evidence artifact",
+        status: "Working",
+        does: "Stores the recorded change, test result, coverage gap, and recommendation used by the replay.",
+        inspect: replayLink,
+      },
+      {
+        part: "Agent role definitions",
+        status: "Prototype",
+        does: "Separates exploration, planning, inspection, writing, and repair responsibilities.",
+        inspect: repositoryLink ?? replayLink,
+      },
+      {
+        part: "SQLite knowledge base",
+        status: "Prototype",
+        does: "Persists fingerprints, gaps, and handoff debt locally for inspection.",
+        inspect: repositoryLink ?? replayLink,
+      },
+      {
+        part: "Meticulous-inspired strategy replay",
+        status: "Prototype",
+        does: "Shows how deterministic replay evidence can become workflow clusters, findings, and a policy-constrained recommendation.",
+        inspect: strategyReplayLink,
+      },
+      {
+        part: "Autonomous browser repair and PR creation",
+        status: "Not built",
+        does: "The public project does not claim hidden autonomous patching, live browser repair, or automatic pull requests.",
+        inspect: repositoryLink ?? replayLink,
+      },
+    ]}
+    example={{
+      title: "A software change passed tests but still left an evidence gap.",
+      steps: [
+        {
+          title: "Starting situation",
+          text: "A pricing path in the Little Bytes example changed.",
+        },
+        {
+          title: "Input",
+          text: "The replay records the change, the passing test run, and the available coverage evidence.",
+        },
+        {
+          title: "Processing",
+          text: "The investigation checks whether the changed path was directly covered or whether a gap remained.",
+        },
+        {
+          title: "Result",
+          text: "The artifact records a coverage gap and recommends Scribe as the next workflow because test-writing is the missing step.",
+        },
+        {
+          title: "Human interpretation",
+          text: "The recommendation routes attention. It does not claim that an agent wrote the test, changed the code, or approved the merge.",
+        },
+      ],
+    }}
+    learnings={[
+      {
+        title: "Passing tests are not the whole story.",
+        text: "The useful question is whether the changed behavior was actually examined.",
+      },
+      {
+        title: "Evidence is more trustworthy than agent confidence.",
+        text: "A recommendation matters only when the reader can inspect why it was made.",
+      },
+      {
+        title: "Human review is part of the design.",
+        text: "The project is clearer when it treats human judgment as a required step rather than a fallback.",
+      },
+      {
+        title: "Agent names work best as responsibility labels.",
+        text: "They help separate kinds of QA work without implying every role is fully autonomous today.",
+      },
+    ]}
+    notSolved={[
+      "The demo is a recorded reconstruction, not a live autonomous browser run.",
+      "Selector healing, browser repair, live dashboards, and PR creation remain planned unless the repository shows otherwise.",
+      "Patch is not presented as a completed autonomous repair system.",
+      "Recommendations route attention; they do not complete the handoff.",
+      "The system is advisory and local-first, and human review remains required.",
+    ]}
+    appendix={{
+      intro:
+        "The sections above explain the project as a QA system. The repository and demos contain the implementation details and evidence artifacts.",
+      details: [
+        {
+          summary: "Agent and workflow roles",
+          items: [
+            "Lookout: exploration and detection.",
+            "Beacon: QA planning and scope.",
+            "Inspector: coverage and behavior review.",
+            "Scribe: test-authoring handoff.",
+            "Patch: planned repair workflow, not a completed autonomous claim.",
+          ],
+        },
+        {
+          summary: "Evidence and demos",
+          items: [
+            "The Little Bytes replay is static and GitHub Pages-friendly.",
+            "Vendored JSON evidence keeps the replay inspectable without runtime GitHub fetches.",
+            "The strategy replay is secondary and shows a planning-style investigation.",
+          ],
+        },
+      ],
+      links: [
+        replayLink,
+        strategyReplayLink,
+        ...(repositoryLink ? [repositoryLink] : []),
+      ],
+    }}
+    currentDirection={[
+      "The current work is to make QA handoff evidence clearer: what changed, what was tested, what was not covered, and who should review the next step. The next meaningful milestone is a stronger connection between recorded gaps and the workflow that handles them.",
+      "The open question is how much assistance can be added before the system starts hiding the human decision boundary it was built to preserve.",
+    ]}
+  />
 </BaseLayout>
-
-<style>
-  .agent-roster-section {
-    display: grid;
-    grid-template-columns: minmax(0, 0.72fr) minmax(0, 1.28fr);
-    gap: var(--section-gap);
-    align-items: start;
-  }
-
-  .agent-roster-section h2 {
-    font-family: var(--font-serif);
-    font-size: var(--font-size-section-title);
-  }
-
-  .agent-roster {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: var(--grid-gap);
-  }
-
-  .agent-roster-item {
-    display: grid;
-    gap: var(--space-2);
-    min-width: 0;
-    border-left: 0.3rem solid var(--plum);
-    border-radius: var(--radius-md);
-    padding: var(--space-4);
-    background: var(--color-surface-raised);
-  }
-
-  .agent-roster-item h3 {
-    display: flex;
-    gap: var(--space-2);
-    align-items: center;
-    margin: 0;
-  }
-
-  .agent-roster-item p {
-    margin: 0;
-    color: var(--color-text-muted);
-  }
-
-  .agent-roster-item span:not([aria-hidden]) {
-    color: var(--color-text-muted);
-    font-family: var(--font-mono);
-    font-size: var(--font-size-micro);
-    font-weight: 800;
-    text-transform: uppercase;
-  }
-
-  .replay-object {
-    display: grid;
-    gap: var(--space-4);
-  }
-
-  .replay-object ol {
-    display: grid;
-    gap: 0.65rem;
-    margin: 0;
-    padding-left: var(--space-5);
-  }
-
-  .strategy-replay-note {
-    display: grid;
-    gap: var(--space-2);
-    border: 1px solid rgba(55, 40, 38, 0.18);
-    border-left: 0.28rem solid var(--blue);
-    border-radius: var(--radius-sm);
-    padding: var(--space-4);
-    background: rgba(248, 240, 231, 0.58);
-  }
-
-  .strategy-replay-note h3,
-  .strategy-replay-note p {
-    margin: 0;
-  }
-
-  .strategy-replay-note h3 {
-    font-size: 1.02rem;
-  }
-
-  .strategy-replay-note p:not(.eyebrow) {
-    color: var(--color-text-muted);
-    font-size: var(--font-size-small);
-  }
-
-  .strategy-replay-note a {
-    width: fit-content;
-    color: var(--plum);
-    font-weight: 850;
-    text-decoration-thickness: 0.08em;
-    text-underline-offset: 0.18em;
-  }
-
-  @media (max-width: 760px) {
-    .agent-roster-section,
-    .agent-roster {
-      grid-template-columns: 1fr;
-    }
-  }
-</style>

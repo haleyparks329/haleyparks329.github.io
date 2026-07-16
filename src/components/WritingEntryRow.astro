@@ -1,0 +1,136 @@
+---
+import type { CollectionEntry } from "astro:content";
+import ContentTypeLabel from "@/components/ContentTypeLabel.astro";
+
+type Props = {
+  entry: CollectionEntry<"writing">;
+  featured?: boolean;
+};
+
+const { entry, featured = false } = Astro.props;
+
+const dateFormatter = new Intl.DateTimeFormat("en", {
+  month: "short",
+  day: "2-digit",
+  year: "numeric",
+});
+---
+
+<article
+  class={`writing-row ${featured ? "is-featured" : ""}`}
+  data-writing-type={entry.data.type}
+  data-tags={entry.data.tags.join(" ")}
+  data-related-project={entry.data.relatedProject ?? ""}
+>
+  <div class="row-date">
+    <time datetime={entry.data.pubDate.toISOString()}>
+      {dateFormatter.format(entry.data.pubDate)}
+    </time>
+    <ContentTypeLabel type={entry.data.type} />
+  </div>
+  <div class="row-main">
+    <h3>
+      <a href={`/writing/${entry.data.slug}/`}>{entry.data.title}</a>
+    </h3>
+    <p>{entry.data.description}</p>
+    <p class="row-meta">
+      {
+        [
+          entry.data.readingTime,
+          entry.data.relatedProject,
+          entry.data.status !== "published" ? entry.data.status : undefined,
+        ]
+          .filter(Boolean)
+          .join(" · ")
+      }
+    </p>
+    {
+      entry.data.tags.length > 0 && (
+        <ul class="tag-list" aria-label={`${entry.data.title} tags`}>
+          {entry.data.tags.map((tag) => (
+            <li>{tag}</li>
+          ))}
+        </ul>
+      )
+    }
+  </div>
+</article>
+
+<style>
+  .writing-row {
+    display: grid;
+    grid-template-columns: minmax(8rem, 0.26fr) minmax(0, 1fr);
+    gap: var(--space-5);
+    border-bottom: var(--border-width) solid var(--color-border);
+    padding-block: var(--space-5);
+  }
+
+  .writing-row.is-featured {
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-5);
+    background: var(--color-surface);
+  }
+
+  .row-date {
+    display: grid;
+    align-content: start;
+    gap: var(--space-2);
+  }
+
+  time,
+  .row-meta {
+    color: var(--color-text-muted);
+    font-family: var(--font-mono);
+    font-size: var(--font-size-micro);
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .row-main h3 {
+    margin-bottom: var(--space-2);
+    font-family: var(--font-serif);
+    font-size: clamp(1.25rem, 1.8vw, 1.65rem);
+    line-height: 1.1;
+  }
+
+  .row-main h3 a {
+    color: var(--color-text);
+    text-decoration-thickness: 0.08em;
+    text-underline-offset: 0.16em;
+  }
+
+  .row-main p:not(.row-meta) {
+    color: var(--color-text-muted);
+  }
+
+  .row-meta {
+    margin-top: var(--space-3);
+  }
+
+  .tag-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin: var(--space-3) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .tag-list li {
+    border-radius: var(--radius-pill);
+    padding: 0.18rem 0.48rem;
+    background: var(--color-surface-raised);
+    color: var(--color-text-muted);
+    font-size: var(--font-size-micro);
+    font-weight: 700;
+  }
+
+  @media (max-width: 720px) {
+    .writing-row {
+      grid-template-columns: 1fr;
+      gap: var(--space-3);
+    }
+  }
+</style>

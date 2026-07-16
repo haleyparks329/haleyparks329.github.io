@@ -1,0 +1,140 @@
+---
+import { getCollection, render } from "astro:content";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import FieldLogDocumentHeader from "@/components/FieldLogDocumentHeader.astro";
+
+export async function getStaticPaths() {
+  const entries = (await getCollection("fieldLog")).sort(
+    (a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime(),
+  );
+
+  return entries.map((entry, index) => ({
+    params: { slug: entry.data.slug },
+    props: {
+      entry,
+      previous: entries[index + 1],
+      next: entries[index - 1],
+    },
+  }));
+}
+
+const { entry, previous, next } = Astro.props;
+const { Content } = await render(entry);
+---
+
+<BaseLayout
+  title={entry.data.title}
+  description={entry.data.summary}
+  canonicalPath={`/field-log/${entry.data.slug}/`}
+>
+  <article
+    class="field-log-document"
+    data-category={entry.data.category}
+    data-tags={entry.data.tags.join(" ")}
+    data-related-project={entry.data.relatedProject ?? ""}
+  >
+    <FieldLogDocumentHeader entry={entry} />
+    <div class="document-body">
+      <Content />
+    </div>
+    <nav class="entry-nav" aria-label="Field Log entry navigation">
+      {
+        previous ? (
+          <a href={`/field-log/${previous.data.slug}/`}>
+            Previous: {previous.data.title}
+          </a>
+        ) : (
+          <span />
+        )
+      }
+      {
+        next ? (
+          <a href={`/field-log/${next.data.slug}/`}>Next: {next.data.title}</a>
+        ) : (
+          <span />
+        )
+      }
+    </nav>
+    <p class="back-link">
+      <a href="/field-log/">Return to Field Log</a>
+    </p>
+  </article>
+</BaseLayout>
+
+<style>
+  .field-log-document {
+    width: min(760px, calc(100% - 2rem));
+    margin-inline: auto;
+  }
+
+  .document-body {
+    padding-top: clamp(1.5rem, 4vw, 2.5rem);
+  }
+
+  .document-body :global(h2) {
+    margin-top: clamp(2rem, 5vw, 3.5rem);
+    margin-bottom: var(--space-3);
+    border-top: var(--border-width) solid var(--color-border);
+    padding-top: clamp(1.2rem, 3vw, 1.8rem);
+    font-size: clamp(1.35rem, 2vw, 1.85rem);
+    line-height: 1.08;
+  }
+
+  .document-body :global(h2:first-child) {
+    margin-top: 0;
+    border-top: 0;
+    padding-top: 0;
+  }
+
+  .document-body :global(p),
+  .document-body :global(li) {
+    color: var(--color-text-muted);
+    font-size: clamp(0.98rem, 1vw, 1.05rem);
+    line-height: 1.65;
+  }
+
+  .document-body :global(p),
+  .document-body :global(ul),
+  .document-body :global(ol) {
+    margin-bottom: var(--space-4);
+  }
+
+  .document-body :global(a),
+  .entry-nav a,
+  .back-link a {
+    color: var(--plum);
+    font-weight: 850;
+    text-decoration-thickness: 0.08em;
+    text-underline-offset: 0.18em;
+  }
+
+  .entry-nav {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-4);
+    border-top: var(--border-width) solid var(--color-border);
+    margin-top: clamp(2.5rem, 5vw, 4.5rem);
+    padding-top: var(--space-5);
+  }
+
+  .entry-nav a:last-child {
+    text-align: right;
+  }
+
+  .back-link {
+    border-top: var(--border-width) solid var(--color-border);
+    margin-top: var(--space-5);
+    padding-top: var(--space-5);
+    padding-bottom: clamp(3rem, 7vw, 6rem);
+  }
+
+  @media (max-width: 620px) {
+    .entry-nav {
+      grid-template-columns: 1fr;
+    }
+
+    .entry-nav a:last-child {
+      text-align: left;
+    }
+  }
+</style>
