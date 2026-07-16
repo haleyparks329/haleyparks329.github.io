@@ -274,7 +274,7 @@ const canonicalArtifactUrl = repositoryUrl
   ? `${repositoryUrl}/blob/main/examples/demo-runs/little-bytes-pricing.json`
   : undefined;
 const artifactPath = "src/data/qa-agents/little-bytes-pricing.json";
-const defaultStepIndex = 2;
+const defaultStepIndex = 0;
 const diffLines = artifact.change.diff_excerpt.split("\n");
 const rawArtifact = JSON.stringify(artifact, null, 2);
 
