@@ -1,0 +1,453 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { compostArtifacts } from "@/data/compostArtifacts";
+
+const threadLabels = {
+  attention: "Attention",
+  career: "Career reasoning",
+  quality: "Quality work",
+  site: "Site language",
+};
+
+const threadOrder = ["attention", "career", "quality", "site"] as const;
+const firstArtifactByThread = Object.fromEntries(
+  threadOrder.map((thread) => [
+    thread,
+    compostArtifacts.find((artifact) => artifact.thread === thread)?.id,
+  ]),
+) as Record<(typeof threadOrder)[number], string | undefined>;
+---
+
+<BaseLayout
+  title="Compost Heap"
+  description="Early prototypes, retired concepts, and previous versions that became material for Haley Parks' current work."
+  canonicalPath="/compost-heap/"
+>
+  <section
+    class="compost-page interior-container"
+    aria-labelledby="compost-title"
+  >
+    <header class="compost-header">
+      <p class="eyebrow">Compost Heap</p>
+      <h1 id="compost-title">Compost Heap</h1>
+      <p class="primary-intro">
+        Old ideas never really disappear. They become the soil for whatever
+        grows next.
+      </p>
+      <p class="secondary-intro">
+        Dig through early prototypes, retired concepts, and previous versions of
+        current projects.
+      </p>
+    </header>
+
+    <nav class="discovery-control" aria-label="Follow a thread">
+      <span>Follow a thread</span>
+      {
+        threadOrder.map((thread) => (
+          <a href={`#${firstArtifactByThread[thread]}`}>
+            {threadLabels[thread]}
+          </a>
+        ))
+      }
+    </nav>
+
+    <div class="artifact-collection" aria-label="Compost Heap artifacts">
+      {
+        compostArtifacts.map((artifact) => (
+          <details
+            id={artifact.id}
+            class={`artifact-preview size-${artifact.size} tilt-${artifact.tilt} offset-${artifact.offset} thumb-${artifact.thumbnail}`}
+            data-thread={artifact.thread}
+          >
+            <summary>
+              <span class="artifact-thumb" aria-hidden="true">
+                <span />
+              </span>
+              <span class="artifact-summary-copy">
+                <span class="artifact-kicker">
+                  {artifact.kind} / {artifact.period}
+                </span>
+                <span class="artifact-title">{artifact.title}</span>
+                <span class="artifact-preview-text">{artifact.preview}</span>
+              </span>
+              <span class="expand-cue" aria-hidden="true">
+                Open
+              </span>
+            </summary>
+
+            <div class="artifact-expanded">
+              <div>
+                <h2>What was this?</h2>
+                <p>{artifact.whatItWas}</p>
+              </div>
+              <div>
+                <h2>Why it mattered</h2>
+                <p>{artifact.whyItMattered}</p>
+              </div>
+              <div>
+                <h2>What I learned</h2>
+                <p>{artifact.whatILearned}</p>
+              </div>
+              <div class="became">
+                <h2>Eventually became</h2>
+                <p>{artifact.eventuallyBecame}</p>
+              </div>
+            </div>
+          </details>
+        ))
+      }
+    </div>
+    <footer class="living-end-state">
+      <p class="eyebrow">Still decomposing</p>
+      <p>More ideas will appear over time.</p>
+    </footer>
+  </section>
+</BaseLayout>
+
+<style>
+  .compost-page {
+    padding-block: clamp(2rem, 4vw, 3.5rem) clamp(3.5rem, 7vw, 6rem);
+  }
+
+  .compost-header {
+    max-width: 760px;
+  }
+
+  .compost-header h1 {
+    max-width: 12ch;
+    font-family: var(--font-serif);
+    font-size: clamp(2.6rem, 4.6vw, 4.25rem);
+    line-height: var(--line-height-display);
+  }
+
+  .primary-intro {
+    max-width: 660px;
+    margin-top: var(--space-4);
+    color: var(--color-text);
+    font-size: clamp(1.1rem, 1.7vw, 1.28rem);
+    font-weight: 750;
+    line-height: 1.45;
+  }
+
+  .secondary-intro {
+    max-width: 620px;
+    color: var(--color-text-muted);
+    font-size: 1.02rem;
+  }
+
+  .discovery-control {
+    display: flex;
+    width: fit-content;
+    max-width: 100%;
+    flex-wrap: wrap;
+    gap: 0.42rem;
+    align-items: center;
+    margin-block: clamp(1.5rem, 4vw, 2.6rem);
+    border-block: var(--border-width) solid var(--color-border);
+    padding-block: var(--space-3);
+  }
+
+  .discovery-control span {
+    margin-right: 0.3rem;
+    color: var(--color-text-muted);
+    font-family: var(--font-mono);
+    font-size: var(--font-size-micro);
+    font-weight: 800;
+    text-transform: uppercase;
+  }
+
+  .discovery-control a {
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--radius-pill);
+    padding: 0.24rem 0.58rem;
+    background: rgba(255, 248, 239, 0.5);
+    color: var(--color-text);
+    font-size: var(--font-size-small);
+    font-weight: 750;
+    text-decoration: none;
+  }
+
+  .discovery-control a:hover {
+    border-color: var(--accent-primary-border);
+    background: var(--accent-primary-surface);
+  }
+
+  .artifact-collection {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: clamp(0.75rem, 1.6vw, 1.25rem);
+    align-items: start;
+  }
+
+  .artifact-preview {
+    --artifact-accent: var(--khaki);
+    grid-column: span 4;
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-surface-raised);
+    box-shadow: var(--shadow-soft);
+    scroll-margin-top: var(--space-8);
+    transition:
+      border-color var(--motion-fast),
+      box-shadow var(--motion-fast),
+      transform var(--motion-fast);
+  }
+
+  .artifact-preview[data-thread="attention"] {
+    --artifact-accent: var(--houseplant);
+  }
+
+  .artifact-preview[data-thread="career"] {
+    --artifact-accent: var(--khaki);
+  }
+
+  .artifact-preview[data-thread="quality"] {
+    --artifact-accent: var(--blue);
+  }
+
+  .artifact-preview[data-thread="site"] {
+    --artifact-accent: var(--rust);
+  }
+
+  .artifact-preview:hover,
+  .artifact-preview:focus-within,
+  .artifact-preview[open] {
+    border-color: var(--color-border-strong);
+    box-shadow: var(--shadow-raised);
+  }
+
+  .artifact-preview[open] {
+    grid-column: span 8;
+    transform: none;
+  }
+
+  .size-wide {
+    grid-column: span 5;
+  }
+
+  .size-tall {
+    grid-row: span 2;
+  }
+
+  .tilt-left:not([open]) {
+    transform: rotate(-0.45deg);
+  }
+
+  .tilt-right:not([open]) {
+    transform: rotate(0.55deg);
+  }
+
+  .offset-low:not([open]) {
+    margin-top: clamp(0.65rem, 2vw, 1.8rem);
+  }
+
+  .offset-high:not([open]) {
+    margin-top: clamp(0.25rem, 1vw, 0.8rem);
+  }
+
+  summary {
+    display: grid;
+    grid-template-columns: 5.2rem minmax(0, 1fr) auto;
+    gap: var(--space-4);
+    align-items: start;
+    min-height: 8.4rem;
+    padding: var(--space-4);
+    cursor: pointer;
+    list-style: none;
+  }
+
+  summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .artifact-thumb {
+    display: grid;
+    min-height: 5.4rem;
+    place-items: center;
+    overflow: hidden;
+    border: var(--border-width) solid var(--color-border);
+    border-left: 0.32rem solid var(--artifact-accent);
+    border-radius: var(--radius-sm);
+    background:
+      linear-gradient(135deg, rgba(255, 248, 239, 0.76), transparent),
+      color-mix(in srgb, var(--artifact-accent) 20%, var(--color-surface));
+  }
+
+  .artifact-thumb span {
+    display: block;
+    width: 62%;
+    height: 52%;
+    border: var(--border-width) solid rgba(55, 40, 38, 0.18);
+    border-radius: var(--radius-sm);
+    background: rgba(255, 248, 239, 0.58);
+  }
+
+  .thumb-note .artifact-thumb span {
+    background:
+      linear-gradient(rgba(55, 40, 38, 0.18) 1px, transparent 1px) 0 0 / 100%
+        0.62rem,
+      rgba(255, 248, 239, 0.62);
+  }
+
+  .thumb-screen .artifact-thumb span {
+    border-bottom-width: 0.55rem;
+  }
+
+  .thumb-map .artifact-thumb span {
+    border-radius: 50%;
+    background:
+      radial-gradient(
+        circle at 35% 35%,
+        var(--artifact-accent) 0 12%,
+        transparent 13%
+      ),
+      radial-gradient(
+        circle at 68% 58%,
+        rgba(55, 40, 38, 0.22) 0 10%,
+        transparent 11%
+      ),
+      rgba(255, 248, 239, 0.58);
+  }
+
+  .thumb-stack .artifact-thumb span {
+    box-shadow:
+      0.35rem 0.32rem 0 rgba(255, 248, 239, 0.45),
+      -0.3rem -0.25rem 0 rgba(255, 248, 239, 0.42);
+  }
+
+  .artifact-summary-copy {
+    display: grid;
+    gap: 0.25rem;
+    min-width: 0;
+  }
+
+  .artifact-kicker {
+    color: var(--color-text-muted);
+    font-family: var(--font-mono);
+    font-size: var(--font-size-micro);
+    font-weight: 800;
+    text-transform: uppercase;
+  }
+
+  .artifact-title {
+    color: var(--color-text);
+    font-family: var(--font-serif);
+    font-size: clamp(1.2rem, 1.8vw, 1.55rem);
+    font-weight: 800;
+    line-height: 1.12;
+  }
+
+  .artifact-preview-text {
+    color: var(--color-text-muted);
+    font-size: 0.98rem;
+    line-height: 1.42;
+  }
+
+  .expand-cue {
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--radius-pill);
+    padding: 0.18rem 0.46rem;
+    color: var(--color-text-muted);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    font-weight: 800;
+    text-transform: uppercase;
+  }
+
+  .artifact-preview[open] .expand-cue {
+    background: var(--accent-primary-surface);
+    color: var(--color-text);
+  }
+
+  .artifact-expanded {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-4);
+    border-top: var(--border-width) solid var(--color-border);
+    padding: 0 var(--space-4) var(--space-4);
+  }
+
+  .artifact-expanded div {
+    border-top: 3px solid
+      color-mix(in srgb, var(--artifact-accent) 68%, transparent);
+    padding-top: var(--space-3);
+  }
+
+  .artifact-expanded h2 {
+    margin-bottom: var(--space-2);
+    font-family: var(--font-mono);
+    font-size: var(--font-size-micro);
+    font-weight: 850;
+    text-transform: uppercase;
+  }
+
+  .artifact-expanded p {
+    margin: 0;
+    color: var(--color-text-muted);
+    font-size: 1rem;
+    line-height: 1.52;
+  }
+
+  .artifact-expanded .became {
+    border-color: var(--rust);
+  }
+
+  .living-end-state {
+    width: min(620px, 100%);
+    margin-top: clamp(2.2rem, 5vw, 4rem);
+    border-block: var(--border-width) solid var(--color-border);
+    padding-block: var(--space-5);
+  }
+
+  .living-end-state p:last-child {
+    margin: 0;
+    color: var(--color-text);
+    font-family: var(--font-serif);
+    font-size: clamp(1.3rem, 2vw, 1.75rem);
+    font-weight: 800;
+    line-height: 1.2;
+  }
+
+  @media (max-width: 980px) {
+    .artifact-preview,
+    .artifact-preview[open],
+    .size-wide {
+      grid-column: span 6;
+    }
+  }
+
+  @media (max-width: 680px) {
+    .artifact-collection {
+      grid-template-columns: 1fr;
+    }
+
+    .artifact-preview,
+    .artifact-preview[open],
+    .size-wide {
+      grid-column: 1;
+    }
+
+    .tilt-left:not([open]),
+    .tilt-right:not([open]) {
+      transform: none;
+    }
+
+    .offset-low:not([open]),
+    .offset-high:not([open]) {
+      margin-top: 0;
+    }
+
+    summary {
+      grid-template-columns: 4.6rem minmax(0, 1fr);
+    }
+
+    .expand-cue {
+      grid-column: 2;
+      width: fit-content;
+    }
+
+    .artifact-expanded {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
