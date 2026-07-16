@@ -1,5 +1,6 @@
 ---
 import { getCollection } from "astro:content";
+import InteriorHeader from "@/components/InteriorHeader.astro";
 import BaseLayout from "@/layouts/BaseLayout.astro";
 
 const fieldLogEntries = (await getCollection("fieldLog")).sort(
@@ -42,25 +43,24 @@ const writingCategories = [
   description="Notes on personal AI, human modeling, performance systems, software, and building in public."
 >
   <section class="writing-page">
-    <header class="writing-header reading-column">
-      <p class="eyebrow">Writing</p>
-      <h1>
-        Longer notes on personal AI, human modeling, systems thinking, and
-        building in public.
-      </h1>
-      <p>
-        This is the publication shelf for more finished essays. Longer pieces
-        are still being organized; shorter active observations live in the Field
-        Log.
-      </p>
-    </header>
+    <div class="interior-container">
+      <InteriorHeader
+        eyebrow="Writing"
+        title="Longer notes on personal AI and human modeling"
+        text="This is the publication shelf for more finished essays. Longer pieces are still being organized; shorter active observations live in the Field Log."
+        meta={["Reading table", "Essays forthcoming", "Field notes live"]}
+        objectLabel="Bookmark"
+        objectText="Finished essays will land here when they are ready."
+        accent="raspberry"
+      />
+    </div>
 
     <section class="featured-publication" aria-labelledby="featured-writing">
       <div>
         <p class="eyebrow">Featured essay</p>
         <h2 id="featured-writing">Publication object coming soon</h2>
       </div>
-      <article class="publication-object">
+      <article class="publication-object workspace-object surface-lavender">
         <p class="eyebrow">Drafting shelf</p>
         <h3>No long-form essay is published here yet.</h3>
         <p>
@@ -93,7 +93,9 @@ const writingCategories = [
       </div>
     </section>
 
-    <aside class="reading-column field-log-bridge">
+    <aside
+      class="reading-column field-log-bridge workspace-object surface-ochre tape-left"
+    >
       <p>
         <strong>Looking for shorter notes?</strong>
         {" "}
@@ -114,7 +116,7 @@ const writingCategories = [
           </div>
           <div class="note-link-list">
             {fieldLogEntries.slice(0, 3).map((entry) => (
-              <article>
+              <article class="workspace-object no-tape surface-linen">
                 <p>{entry.data.category}</p>
                 <h3>{entry.data.title}</h3>
                 <p>{entry.data.summary}</p>
@@ -131,22 +133,6 @@ const writingCategories = [
 <style>
   .writing-page {
     padding-bottom: clamp(3rem, 6vw, 5.5rem);
-  }
-
-  .writing-header {
-    padding-block: clamp(2.4rem, 5vw, 4rem);
-  }
-
-  .writing-header h1 {
-    font-family: var(--font-serif);
-    font-size: clamp(2rem, 3.4vw, 3.25rem);
-    line-height: 1.05;
-  }
-
-  .writing-header p:not(.eyebrow) {
-    margin-top: var(--space-4);
-    color: var(--color-text-muted);
-    font-size: 1.08rem;
   }
 
   .featured-publication {
@@ -166,25 +152,9 @@ const writingCategories = [
   }
 
   .publication-object {
-    position: relative;
-    min-width: 0;
-    border: var(--border-width) solid var(--color-border);
+    --object-tilt: -0.35deg;
     border-left: 0.35rem solid var(--lavender);
-    border-radius: var(--radius-md);
     padding: var(--space-5);
-    background: var(--color-surface-raised);
-    box-shadow: var(--shadow-soft);
-  }
-
-  .publication-object::before {
-    position: absolute;
-    top: -0.62rem;
-    right: 12%;
-    width: 3.8rem;
-    height: 0.85rem;
-    background: color-mix(in srgb, var(--khaki) 44%, transparent);
-    content: "";
-    transform: rotate(-2deg);
   }
 
   .publication-object h3 {
@@ -221,6 +191,10 @@ const writingCategories = [
     padding-block: var(--space-5);
   }
 
+  .article-row:nth-child(even) {
+    padding-left: clamp(0rem, 2vw, 1.4rem);
+  }
+
   .article-date,
   .article-meta,
   .note-link-list article > p:first-child {
@@ -252,7 +226,6 @@ const writingCategories = [
   .field-log-bridge {
     border-left: 0.3rem solid var(--khaki);
     padding: var(--space-5);
-    background: color-mix(in srgb, var(--paper) 72%, transparent);
   }
 
   .field-log-bridge p {
@@ -260,8 +233,7 @@ const writingCategories = [
   }
 
   .note-link-list article {
-    border-bottom: var(--border-width) solid var(--color-border);
-    padding-block: var(--space-4);
+    padding: var(--space-4);
   }
 
   @media (max-width: 820px) {

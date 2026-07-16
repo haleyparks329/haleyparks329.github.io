@@ -109,12 +109,13 @@ function isCurrent(href: string) {
     gap: 0.4rem;
     border: var(--border-width) solid var(--color-border);
     border-radius: var(--radius-pill);
-    padding: 0.22rem;
+    padding: 0.34rem;
     background: var(--color-surface-raised);
   }
 
   .nav a {
-    border-radius: var(--radius-pill);
+    border: var(--border-width) solid transparent;
+    border-radius: calc(var(--radius-md) - 1px);
     padding: 0.42rem 0.72rem;
     color: var(--color-text-muted);
     font-size: 0.95rem;
@@ -123,8 +124,10 @@ function isCurrent(href: string) {
 
   .nav a:hover,
   .nav a[aria-current="page"] {
-    background: var(--color-tint);
+    border-color: var(--color-border);
+    background: var(--color-surface);
     color: var(--color-text);
+    box-shadow: 0 2px 0 rgba(55, 40, 38, 0.06);
   }
 
   @media (max-width: 620px) {

@@ -55,7 +55,7 @@
   --font-size-h1: clamp(3rem, 8vw, 7.2rem);
   --font-size-h2: clamp(2rem, 4vw, 3.6rem);
   --font-size-h3: 1.35rem;
-  --font-size-page-title: clamp(2.85rem, 5.2vw, 4.9rem);
+  --font-size-page-title: clamp(2.25rem, 3.4vw, 3.35rem);
   --font-size-section-title: clamp(1.75rem, 3vw, 3.1rem);
   --font-size-supporting: clamp(1.45rem, 2.1vw, 2.25rem);
   --font-size-lede: clamp(1.1rem, 2vw, 1.35rem);
@@ -360,6 +360,130 @@ pre {
     border-color var(--motion-fast),
     box-shadow var(--motion-fast),
     transform var(--motion-fast);
+}
+
+.workspace-object {
+  --object-accent: var(--khaki);
+  --object-surface: var(--color-surface-raised);
+  --object-tilt: 0deg;
+  position: relative;
+  min-width: 0;
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--object-surface);
+  box-shadow: var(--shadow-soft);
+  transform: rotate(var(--object-tilt));
+  transition:
+    border-color var(--motion-fast),
+    box-shadow var(--motion-fast),
+    transform 220ms ease;
+}
+
+.workspace-object:hover,
+.workspace-object:focus-within {
+  border-color: var(--color-border-strong);
+  box-shadow: var(--shadow-raised);
+  transform: rotate(var(--object-tilt)) translateY(-2px);
+}
+
+.workspace-object::after {
+  position: absolute;
+  top: -0.62rem;
+  left: var(--tape-left, auto);
+  right: var(--tape-right, 14%);
+  width: 4.2rem;
+  height: 0.92rem;
+  background: color-mix(in srgb, var(--khaki) 48%, transparent);
+  content: "";
+  transform: rotate(var(--tape-tilt, -2deg));
+  pointer-events: none;
+}
+
+.workspace-object.tape-left {
+  --tape-left: 14%;
+  --tape-right: auto;
+  --tape-tilt: 3deg;
+}
+
+.workspace-object.tape-center {
+  --tape-left: calc(50% - 2.1rem);
+  --tape-right: auto;
+  --tape-tilt: -1deg;
+}
+
+.workspace-object.no-tape::after {
+  content: none;
+}
+
+.workspace-note {
+  color: var(--color-text-muted);
+  font-family: var(--font-mono);
+  font-size: var(--font-size-micro);
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.workspace-object[data-note]::before {
+  position: absolute;
+  z-index: 2;
+  right: 0.85rem;
+  bottom: calc(100% + 0.35rem);
+  max-width: min(18rem, 78vw);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: 0.35rem 0.5rem;
+  background: var(--color-surface);
+  color: var(--color-text-muted);
+  content: attr(data-note);
+  font-family: var(--font-hand);
+  font-size: 0.9rem;
+  line-height: 1.25;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(0.25rem);
+  transition:
+    opacity var(--motion-fast),
+    transform var(--motion-fast);
+}
+
+.workspace-object[data-note]:hover::before,
+.workspace-object[data-note]:focus-within::before {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.surface-warm {
+  --object-surface: var(--color-surface-raised);
+}
+
+.surface-linen {
+  --object-surface: color-mix(in srgb, var(--paper) 88%, white);
+}
+
+.surface-raspberry {
+  --object-accent: var(--rust);
+  --object-surface: color-mix(in srgb, var(--rust) 12%, var(--paper));
+}
+
+.surface-olive {
+  --object-accent: var(--olive);
+  --object-surface: color-mix(in srgb, var(--olive) 16%, var(--paper));
+}
+
+.surface-sky {
+  --object-accent: var(--blue);
+  --object-surface: color-mix(in srgb, var(--blue-soft) 62%, var(--paper));
+}
+
+.surface-lavender {
+  --object-accent: var(--lavender);
+  --object-surface: color-mix(in srgb, var(--lavender) 42%, var(--paper));
+}
+
+.surface-ochre {
+  --object-accent: var(--khaki);
+  --object-surface: color-mix(in srgb, var(--khaki) 20%, var(--paper));
 }
 
 .surface:hover,

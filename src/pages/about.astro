@@ -23,7 +23,10 @@ import { siteConfig } from "@/site.config";
       </ul>
     </div>
 
-    <aside class="contact-card pinned-note" aria-labelledby="contact">
+    <aside
+      class="contact-card pinned-note workspace-object surface-lavender tape-center"
+      aria-labelledby="contact"
+    >
       <p class="eyebrow">Contact</p>
       <h2 id="contact">Open to relevant work</h2>
       <p>{siteConfig.availability}</p>
@@ -63,7 +66,7 @@ import { siteConfig } from "@/site.config";
   </section>
 
   <section class="page-section interior-container">
-    <article class="bodybuilding-note">
+    <article class="bodybuilding-note workspace-object surface-raspberry">
       <div>
         <p class="eyebrow">Bodybuilding</p>
         <h2>The Human Model started under a barbell</h2>
@@ -96,28 +99,28 @@ import { siteConfig } from "@/site.config";
     <div class="interior-container about-grid">
       <SectionHeading eyebrow="Current focus" title="What I am looking for" />
       <div class="focus-grid">
-        <article class="focus-object focus-raspberry">
+        <article class="focus-object focus-raspberry workspace-object no-tape">
           <h3>AI product engineering</h3>
           <p>
             Turning ambiguous product ideas into useful systems with clear
             feedback loops, thoughtful interfaces, and honest boundaries.
           </p>
         </article>
-        <article class="focus-object focus-lavender">
+        <article class="focus-object focus-lavender workspace-object no-tape">
           <h3>Personal AI systems</h3>
           <p>
             Building software that understands people through context, history,
             goals, and evidence rather than one-off prompts.
           </p>
         </article>
-        <article class="focus-object focus-plant">
+        <article class="focus-object focus-plant workspace-object no-tape">
           <h3>Adaptive performance systems</h3>
           <p>
             Exploring how data, modeling, and human judgment can support better
             decisions as a person changes over time.
           </p>
         </article>
-        <article class="focus-object focus-olive">
+        <article class="focus-object focus-olive workspace-object no-tape">
           <h3>Human-centered automation</h3>
           <p>
             Giving machines the remembering and coordination work while keeping
@@ -129,7 +132,7 @@ import { siteConfig } from "@/site.config";
   </section>
 
   <section class="page-section interior-container">
-    <aside class="opportunity-note">
+    <aside class="opportunity-note workspace-object surface-ochre tape-left">
       <div>
         <p class="eyebrow">Opportunities</p>
         <h2>Useful systems, honest boundaries, real users.</h2>
@@ -159,6 +162,7 @@ import { siteConfig } from "@/site.config";
     max-width: 11ch;
     font-family: var(--font-serif);
     font-size: var(--font-size-page-title);
+    line-height: 0.98;
   }
 
   .about-deck {
@@ -174,27 +178,12 @@ import { siteConfig } from "@/site.config";
   .pinned-note,
   .opportunity-note {
     position: relative;
-    border: var(--border-width) solid var(--color-border);
-    border-radius: var(--radius-md);
-    background: var(--color-surface-raised);
-    box-shadow: var(--shadow-soft);
   }
 
   .pinned-note {
+    --object-tilt: 0.45deg;
     border-left: 0.38rem solid var(--houseplant);
     padding: var(--space-5);
-  }
-
-  .pinned-note::before,
-  .bodybuilding-note::before {
-    position: absolute;
-    top: -0.65rem;
-    right: 16%;
-    width: 4rem;
-    height: 0.9rem;
-    background: color-mix(in srgb, var(--khaki) 44%, transparent);
-    content: "";
-    transform: rotate(-2deg);
   }
 
   .contact-card h2,
@@ -248,22 +237,12 @@ import { siteConfig } from "@/site.config";
   }
 
   .bodybuilding-note {
-    position: relative;
+    --object-tilt: -0.25deg;
     display: grid;
     grid-template-columns: minmax(0, 0.56fr) minmax(0, 1fr);
     gap: var(--section-gap);
-    border: var(--border-width) solid var(--color-border);
     border-left: 0.38rem solid var(--rust);
-    border-radius: var(--radius-md);
     padding: clamp(1.5rem, 4vw, 2.5rem);
-    background:
-      linear-gradient(
-        135deg,
-        color-mix(in srgb, var(--lavender) 28%, transparent),
-        transparent 58%
-      ),
-      var(--color-surface-raised);
-    box-shadow: var(--shadow-soft);
   }
 
   .bodybuilding-note h2 {
@@ -292,11 +271,14 @@ import { siteConfig } from "@/site.config";
     --focus-accent: var(--rust);
     --focus-surface: var(--color-surface-raised);
     min-width: 0;
-    border: var(--border-width) solid var(--color-border);
     border-top: 0.36rem solid var(--focus-accent);
-    border-radius: var(--radius-md);
     padding: var(--space-5);
     background: var(--focus-surface);
+  }
+
+  .focus-object:nth-child(2),
+  .focus-object:nth-child(3) {
+    --object-tilt: -0.35deg;
   }
 
   .focus-object h3 {
@@ -326,6 +308,7 @@ import { siteConfig } from "@/site.config";
   }
 
   .opportunity-note {
+    --object-tilt: 0.25deg;
     display: grid;
     grid-template-columns: minmax(0, 0.52fr) minmax(0, 1fr);
     gap: var(--space-8);

@@ -24,8 +24,22 @@ const projects = (await getCollection("projects")).sort(
       objectText="Research objects opened from the homepage desk."
       accent="olive"
     />
-    <div class="card-grid project-list">
-      {projects.map((project) => <ProjectCard project={project} />)}
+    <div class="project-shelf" aria-label="Active project objects">
+      <div class="project-shelf-primary">
+        {
+          projects
+            .filter((project) => project.data.slug === "the-human-model")
+            .map((project) => <ProjectCard project={project} />)
+        }
+      </div>
+
+      <div class="project-shelf-secondary">
+        {
+          projects
+            .filter((project) => project.data.slug !== "the-human-model")
+            .map((project) => <ProjectCard project={project} />)
+        }
+      </div>
     </div>
   </section>
 
@@ -35,7 +49,7 @@ const projects = (await getCollection("projects")).sort(
         eyebrow="Ownership model"
         title="Presentation here, implementation elsewhere"
       />
-      <div class="interior-note">
+      <div class="interior-note workspace-object surface-ochre tape-left">
         <p>
           This website owns the public story. Each repository owns the
           implementation and technical documentation.
@@ -46,19 +60,48 @@ const projects = (await getCollection("projects")).sort(
 </BaseLayout>
 
 <style>
-  .project-list {
-    grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.98fr) minmax(0, 0.98fr);
+  .projects-page {
+    padding-bottom: clamp(2.5rem, 5vw, 4.5rem);
+  }
+
+  .project-shelf {
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(19rem, 0.95fr);
+    gap: clamp(1rem, 2vw, 1.35rem);
+    align-items: start;
     margin-bottom: clamp(2rem, 4vw, 4rem);
   }
 
+  .project-shelf-primary,
+  .project-shelf-secondary {
+    display: grid;
+    min-width: 0;
+    align-content: start;
+    gap: clamp(1rem, 2vw, 1.35rem);
+  }
+
+  .project-shelf-primary > :global(*),
+  .project-shelf-secondary > :global(*) {
+    height: auto;
+    min-height: 0;
+    align-self: start;
+  }
+
   :global(.projects-page .interior-header h1) {
-    max-width: 10ch;
-    font-size: clamp(2.8rem, 4.8vw, 4.3rem);
+    max-width: 15ch;
+  }
+
+  :global(.project-shelf-secondary .project-career-intelligence) {
+    margin-top: clamp(0.25rem, 1vw, 0.7rem);
   }
 
   @media (max-width: 980px) {
-    .project-list {
+    .project-shelf {
       grid-template-columns: 1fr;
+    }
+
+    :global(.project-shelf-secondary .project-career-intelligence) {
+      margin-top: 0;
     }
   }
 </style>

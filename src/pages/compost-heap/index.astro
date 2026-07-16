@@ -1,5 +1,6 @@
 ---
 import BaseLayout from "@/layouts/BaseLayout.astro";
+import InteriorHeader from "@/components/InteriorHeader.astro";
 import { compostArtifacts } from "@/data/compostArtifacts";
 
 const threadLabels = {
@@ -27,18 +28,19 @@ const firstArtifactByThread = Object.fromEntries(
     class="compost-page interior-container"
     aria-labelledby="compost-title"
   >
-    <header class="compost-header">
-      <p class="eyebrow">Compost Heap</p>
-      <h1 id="compost-title">Compost Heap</h1>
-      <p class="primary-intro">
-        Old ideas never really disappear. They become the soil for whatever
-        grows next.
-      </p>
-      <p class="secondary-intro">
-        Dig through early prototypes, retired concepts, and previous versions of
-        current projects.
-      </p>
-    </header>
+    <InteriorHeader
+      eyebrow="Compost Heap"
+      title="Compost Heap"
+      text="Old ideas never really disappear. They become the soil for whatever grows next. Dig through early prototypes, retired concepts, and previous versions of current projects."
+      meta={[
+        "Garden archive",
+        `${compostArtifacts.length} artifacts`,
+        "Still decomposing",
+      ]}
+      objectLabel="Archive note"
+      objectText="Older work is kept here as useful material."
+      accent="ochre"
+    />
 
     <nav class="discovery-control" aria-label="Follow a thread">
       <span>Follow a thread</span>
@@ -56,7 +58,7 @@ const firstArtifactByThread = Object.fromEntries(
         compostArtifacts.map((artifact) => (
           <details
             id={artifact.id}
-            class={`artifact-preview size-${artifact.size} tilt-${artifact.tilt} offset-${artifact.offset} thumb-${artifact.thumbnail}`}
+            class={`artifact-preview workspace-object no-tape size-${artifact.size} tilt-${artifact.tilt} offset-${artifact.offset} thumb-${artifact.thumbnail}`}
             data-thread={artifact.thread}
           >
             <summary>
@@ -109,32 +111,6 @@ const firstArtifactByThread = Object.fromEntries(
     padding-block: clamp(2rem, 4vw, 3.5rem) clamp(3.5rem, 7vw, 6rem);
   }
 
-  .compost-header {
-    max-width: 760px;
-  }
-
-  .compost-header h1 {
-    max-width: 12ch;
-    font-family: var(--font-serif);
-    font-size: clamp(2.6rem, 4.6vw, 4.25rem);
-    line-height: var(--line-height-display);
-  }
-
-  .primary-intro {
-    max-width: 660px;
-    margin-top: var(--space-4);
-    color: var(--color-text);
-    font-size: clamp(1.1rem, 1.7vw, 1.28rem);
-    font-weight: 750;
-    line-height: 1.45;
-  }
-
-  .secondary-intro {
-    max-width: 620px;
-    color: var(--color-text-muted);
-    font-size: 1.02rem;
-  }
-
   .discovery-control {
     display: flex;
     width: fit-content;
@@ -181,16 +157,9 @@ const firstArtifactByThread = Object.fromEntries(
 
   .artifact-preview {
     --artifact-accent: var(--khaki);
+    --object-accent: var(--artifact-accent);
     grid-column: span 4;
-    border: var(--border-width) solid var(--color-border);
-    border-radius: var(--radius-md);
-    background: var(--color-surface-raised);
-    box-shadow: var(--shadow-soft);
     scroll-margin-top: var(--space-8);
-    transition:
-      border-color var(--motion-fast),
-      box-shadow var(--motion-fast),
-      transform var(--motion-fast);
   }
 
   .artifact-preview[data-thread="attention"] {
