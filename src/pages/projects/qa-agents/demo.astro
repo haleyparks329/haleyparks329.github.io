@@ -1,265 +1,7 @@
 ---
 import { getCollection } from "astro:content";
 import demoArtifact from "@/data/qa-agents/little-bytes-pricing.json";
-import ExternalLink from "@/components/ExternalLink.astro";
-import BaseLayout from "@/layouts/BaseLayout.astro";
-
-type DemoArtifact = {
-  schema_version: number;
-  demo_id: string;
-  title: string;
-  application: {
-    name: string;
-    profile: string;
-    repository: string;
-  };
-  scenario: {
-    base: string;
-    head: string;
-    summary: string;
-  };
-  change: {
-    files: string[];
-    diff_summary: string;
-    diff_excerpt: string;
-  };
-  execution: {
-    command_name: string;
-    status: string;
-    exit_code: number;
-    duration_ms: number;
-    test_summary: string;
-  };
-  evidence: {
-    coverage_report_found: boolean;
-    coverage_report_path: string;
-    gap_type: string;
-    gap_path: string;
-    gap_detail: string;
-  };
-  recommendation: {
-    agent: string;
-    route_reason: string;
-    next_action: string;
-  };
-  safety: {
-    tests_generated: number;
-    patches_generated: number;
-    agents_dispatched: number;
-    human_review_required: boolean;
-  };
-};
-
-type DetailItem = {
-  label: string;
-  value: string | number | boolean;
-  tone?: string;
-};
-
-type Notebook = {
-  heading: string;
-  observation: string;
-  interpretation: string;
-  why: string;
-  boundary?: string;
-};
-
-type StoryNote = {
-  actor: "Lookout" | "Beacon" | "Inspector" | "Scribe";
-  emoji: string;
-  heading: string;
-  body: string;
-  handoff: string;
-  evidenceLabel?: string;
-  boundary?: string;
-};
-
-type InvestigationStep = {
-  id: string;
-  timelineLabel: string;
-  panelTitle: string;
-  windowTitle: string;
-  icon: string;
-  accent: string;
-  notebook: Notebook;
-  story: StoryNote;
-  details?: DetailItem[];
-};
-
-function isRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === "object" && value !== null;
-}
-
-function requireRecord(value: unknown, path: string): Record<string, unknown> {
-  if (!isRecord(value)) {
-    throw new Error(`QA Agents demo artifact missing required object: ${path}`);
-  }
-  return value;
-}
-
-function requireString(value: unknown, path: string): string {
-  if (typeof value !== "string" || value.length === 0) {
-    throw new Error(`QA Agents demo artifact missing required string: ${path}`);
-  }
-  return value;
-}
-
-function requireNumber(value: unknown, path: string): number {
-  if (typeof value !== "number") {
-    throw new Error(`QA Agents demo artifact missing required number: ${path}`);
-  }
-  return value;
-}
-
-function requireBoolean(value: unknown, path: string): boolean {
-  if (typeof value !== "boolean") {
-    throw new Error(
-      `QA Agents demo artifact missing required boolean: ${path}`,
-    );
-  }
-  return value;
-}
-
-function requireStringArray(value: unknown, path: string): string[] {
-  if (
-    !Array.isArray(value) ||
-    value.length === 0 ||
-    !value.every((item) => typeof item === "string" && item.length > 0)
-  ) {
-    throw new Error(
-      `QA Agents demo artifact missing required string array: ${path}`,
-    );
-  }
-  return value;
-}
-
-function assertDemoArtifact(value: unknown): DemoArtifact {
-  const root = requireRecord(value, "artifact");
-  const application = requireRecord(root.application, "application");
-  const scenario = requireRecord(root.scenario, "scenario");
-  const change = requireRecord(root.change, "change");
-  const execution = requireRecord(root.execution, "execution");
-  const evidence = requireRecord(root.evidence, "evidence");
-  const recommendation = requireRecord(root.recommendation, "recommendation");
-  const safety = requireRecord(root.safety, "safety");
-
-  return {
-    schema_version: requireNumber(root.schema_version, "schema_version"),
-    demo_id: requireString(root.demo_id, "demo_id"),
-    title: requireString(root.title, "title"),
-    application: {
-      name: requireString(application.name, "application.name"),
-      profile: requireString(application.profile, "application.profile"),
-      repository: requireString(
-        application.repository,
-        "application.repository",
-      ),
-    },
-    scenario: {
-      base: requireString(scenario.base, "scenario.base"),
-      head: requireString(scenario.head, "scenario.head"),
-      summary: requireString(scenario.summary, "scenario.summary"),
-    },
-    change: {
-      files: requireStringArray(change.files, "change.files"),
-      diff_summary: requireString(change.diff_summary, "change.diff_summary"),
-      diff_excerpt: requireString(change.diff_excerpt, "change.diff_excerpt"),
-    },
-    execution: {
-      command_name: requireString(
-        execution.command_name,
-        "execution.command_name",
-      ),
-      status: requireString(execution.status, "execution.status"),
-      exit_code: requireNumber(execution.exit_code, "execution.exit_code"),
-      duration_ms: requireNumber(
-        execution.duration_ms,
-        "execution.duration_ms",
-      ),
-      test_summary: requireString(
-        execution.test_summary,
-        "execution.test_summary",
-      ),
-    },
-    evidence: {
-      coverage_report_found: requireBoolean(
-        evidence.coverage_report_found,
-        "evidence.coverage_report_found",
-      ),
-      coverage_report_path: requireString(
-        evidence.coverage_report_path,
-        "evidence.coverage_report_path",
-      ),
-      gap_type: requireString(evidence.gap_type, "evidence.gap_type"),
-      gap_path: requireString(evidence.gap_path, "evidence.gap_path"),
-      gap_detail: requireString(evidence.gap_detail, "evidence.gap_detail"),
-    },
-    recommendation: {
-      agent: requireString(recommendation.agent, "recommendation.agent"),
-      route_reason: requireString(
-        recommendation.route_reason,
-        "recommendation.route_reason",
-      ),
-      next_action: requireString(
-        recommendation.next_action,
-        "recommendation.next_action",
-      ),
-    },
-    safety: {
-      tests_generated: requireNumber(
-        safety.tests_generated,
-        "safety.tests_generated",
-      ),
-      patches_generated: requireNumber(
-        safety.patches_generated,
-        "safety.patches_generated",
-      ),
-      agents_dispatched: requireNumber(
-        safety.agents_dispatched,
-        "safety.agents_dispatched",
-      ),
-      human_review_required: requireBoolean(
-        safety.human_review_required,
-        "safety.human_review_required",
-      ),
-    },
-  };
-}
-
-function formatLabel(value: string): string {
-  return value
-    .replace(/_/g, " ")
-    .replace(/\b\w/g, (character) => character.toUpperCase());
-}
-
-function classifyDiffLine(line: string): string {
-  if (
-    line.includes("if discount_percent:") ||
-    line.includes("calculate_discount_cents(unit_price_cents")
-  ) {
-    return "diff-line is-added is-branch-gap";
-  }
-
-  if (line.startsWith("+") && !line.startsWith("+++")) {
-    return "diff-line is-added";
-  }
-
-  if (line.startsWith("-") && !line.startsWith("---")) {
-    return "diff-line is-removed";
-  }
-
-  if (
-    line.startsWith("@@") ||
-    line.startsWith("diff --git") ||
-    line.startsWith("index ") ||
-    line.startsWith("---") ||
-    line.startsWith("+++")
-  ) {
-    return "diff-line is-meta";
-  }
-
-  return "diff-line";
-}
+import EvidenceReplay from "@/components/qa-agents/EvidenceReplay.astro";
 
 const project = (await getCollection("projects")).find(
   (entry) => entry.data.slug === "qa-agents",
@@ -268,1861 +10,380 @@ if (!project) {
   throw new Error("Missing QA Agents project entry");
 }
 
-const artifact = assertDemoArtifact(demoArtifact);
 const repositoryUrl = project.data.repositoryUrl;
 const canonicalArtifactUrl = repositoryUrl
   ? `${repositoryUrl}/blob/main/examples/demo-runs/little-bytes-pricing.json`
   : undefined;
-const artifactPath = "src/data/qa-agents/little-bytes-pricing.json";
-const defaultStepIndex = 0;
-const diffLines = artifact.change.diff_excerpt.split("\n");
-const rawArtifact = JSON.stringify(artifact, null, 2);
-
-const steps: InvestigationStep[] = [
-  {
-    id: "change",
-    timelineLabel: "Change detected",
-    panelTitle: "Pricing diff",
-    windowTitle: "pricing.py",
-    icon: "▤",
-    accent: "sky",
-    details: [
-      { label: "Filename", value: artifact.change.files.join(", ") },
-      { label: "Diff summary", value: artifact.change.diff_summary },
-      { label: "Changed path", value: artifact.evidence.gap_path },
-    ],
-    notebook: {
-      heading: "Pricing logic changed",
-      observation:
-        "The pricing code changed in a branch that affects discount handling.",
-      interpretation: `${artifact.change.diff_summary} in ${artifact.change.files.join(
-        ", ",
-      )}. That is enough to ask a simple QA question: did the tests actually reach this new path?`,
-      why: "Any new branch in business logic deserves coverage, especially when it changes money-related behavior.",
-    },
-    story: {
-      actor: "Lookout",
-      emoji: "🔭",
-      heading: "Lookout spotted the changed pricing file.",
-      body: "The pricing module changed. Beacon takes the next look.",
-      handoff: "Passing investigation → Beacon",
-    },
-  },
-  {
-    id: "tests",
-    timelineLabel: "Tests passed",
-    panelTitle: "Test execution result",
-    windowTitle: "unit-tests.log",
-    icon: "✓",
-    accent: "sage",
-    details: [
-      { label: "Command", value: artifact.execution.command_name },
-      { label: "Status", value: artifact.execution.status, tone: "success" },
-      { label: "Exit status", value: artifact.execution.exit_code },
-      { label: "Output excerpt", value: artifact.execution.test_summary },
-    ],
-    notebook: {
-      heading: "Existing tests passed",
-      observation:
-        "The current test suite still reports a clean pass after the pricing change.",
-      interpretation:
-        "A green test run means the old assertions still hold. It does not prove the new pricing path was exercised.",
-      why: "Engineers care because CI can look healthy while a new branch has no real protection.",
-    },
-    story: {
-      actor: "Beacon",
-      emoji: "🧭",
-      heading: "Beacon checked the existing tests.",
-      body: "The existing tests all passed. Now Beacon checks what they actually covered.",
-      handoff: "Checking coverage evidence",
-    },
-  },
-  {
-    id: "coverage",
-    timelineLabel: "Gap discovered",
-    panelTitle: "Coverage evidence",
-    windowTitle: "coverage-report.json",
-    icon: "⌕",
-    accent: "ochre",
-    details: [
-      {
-        label: "Coverage report",
-        value: artifact.evidence.coverage_report_path,
-      },
-      {
-        label: "Coverage report found",
-        value: artifact.evidence.coverage_report_found,
-      },
-      { label: "Affected file", value: artifact.evidence.gap_path },
-      { label: "Uncovered behavior", value: artifact.evidence.gap_detail },
-    ],
-    notebook: {
-      heading: "New behavior was not exercised",
-      observation:
-        "Coverage links the passing test run back to the changed pricing file.",
-      interpretation:
-        "The tests passed, but the changed branch was not reached. That is a verification gap, not a product bug by itself.",
-      why: "This is the core lesson: tests only protect behavior they execute.",
-    },
-    story: {
-      actor: "Inspector",
-      emoji: "🔍",
-      heading: "Inspector found the missing coverage.",
-      body: "Coverage showed the changed pricing path was never reached.",
-      handoff: "Recording the verification gap",
-      evidenceLabel: "📊 Coverage evidence",
-    },
-  },
-  {
-    id: "recorded",
-    timelineLabel: "Evidence recorded",
-    panelTitle: "Persisted gap record",
-    windowTitle: "gap-record.json",
-    icon: "▣",
-    accent: "burgundy",
-    details: [
-      { label: "Gap type", value: formatLabel(artifact.evidence.gap_type) },
-      { label: "Affected area", value: "Pricing logic" },
-      { label: "Affected file", value: artifact.evidence.gap_path },
-      { label: "Status", value: "Open for review" },
-      { label: "Detail", value: artifact.evidence.gap_detail },
-    ],
-    notebook: {
-      heading: "The gap was recorded",
-      observation: "The finding is no longer just a transient test-run detail.",
-      interpretation:
-        "The affected file, gap type, and supporting detail are preserved in a small reviewable record.",
-      why: "This matters because handoffs fail when evidence lives only in terminal scrollback or someone’s memory.",
-    },
-    story: {
-      actor: "Inspector",
-      emoji: "🔍",
-      heading: "Inspector saved the gap.",
-      body: "The missing test is now a reviewable record, not a disappearing note.",
-      handoff: "Next reviewer → Scribe",
-    },
-  },
-  {
-    id: "recommendation",
-    timelineLabel: "Test recommended",
-    panelTitle: "Recommendation artifact",
-    windowTitle: "recommendation.md",
-    icon: "✎",
-    accent: "lavender",
-    details: [
-      {
-        label: "Recommended action",
-        value: artifact.recommendation.next_action,
-      },
-      { label: "Target behavior", value: "Quantity and discount ordering" },
-      { label: "Suggested agent", value: artifact.recommendation.agent },
-      { label: "Route reason", value: artifact.recommendation.route_reason },
-      { label: "Supporting evidence", value: artifact.evidence.gap_path },
-    ],
-    notebook: {
-      heading: "Add a regression test",
-      observation:
-        "The recommendation is narrow: add a regression test for quantity and discount ordering.",
-      interpretation:
-        "The proposed test targets the exact behavior the current suite missed. It does not claim any code was written.",
-      why: "Good QA output should make the next human decision easier, not pretend the decision has already been made.",
-      boundary:
-        "Recommendation only. No test was authored or committed during this replay.",
-    },
-    story: {
-      actor: "Scribe",
-      emoji: "✍️",
-      heading: "Scribe recommended the next step.",
-      body: "Add a regression test before treating this pricing behavior as verified.",
-      handoff: "Ready for human review",
-      boundary:
-        "Recommendation only. No test was authored or committed during this replay.",
-    },
-  },
-];
-
-const stepDetails = steps.map((step) => ({
-  id: step.id,
-  label: step.timelineLabel,
-  story: step.story,
-}));
-
-const safetyItems = [
-  ["Tests generated", artifact.safety.tests_generated],
-  ["Patches generated", artifact.safety.patches_generated],
-  ["Agents dispatched", artifact.safety.agents_dispatched],
-  ["Human review required", String(artifact.safety.human_review_required)],
-];
+const rawArtifact = JSON.stringify(demoArtifact, null, 2);
+const diffLines = demoArtifact.change.diff_excerpt.split("\n");
 ---
 
-<BaseLayout
-  title="QA Replay Workstation"
-  description="Recorded QA Agents investigation replay for the Little Bytes pricing scenario."
+<EvidenceReplay
+  pageTitle="QA Replay Workstation"
+  pageDescription="Recorded QA Agents investigation replay for the Little Bytes pricing scenario."
   canonicalPath="/projects/qa-agents/demo/"
->
-  <section class="page-section wide-case replay-page" data-replay-root>
-    <div class="replay-hero">
-      <p class="eyebrow">Recorded investigation replay</p>
-      <h1>
-        The tests passed.<br />
-        The new pricing behavior still wasn't tested.
-      </h1>
-      <p class="lede">
-        This replay exists for the uncomfortable little gap between “CI is
-        green” and “the new behavior is actually protected.”
-      </p>
-      <p class="safety-note">
-        Static replay from a canonical Little Bytes artifact. No live browser
-        session, autonomous code change, or hidden agent execution is occurring
-        on this page.
-      </p>
-
-      <div class="button-row">
-        <a class="button secondary" href="/projects/qa-agents/">
-          Main QA Agents page
-        </a>
+  eyebrow="Recorded investigation replay"
+  titleLines={[
+    "The tests passed.",
+    "The new pricing behavior still wasn't tested.",
+  ]}
+  lede="This replay exists for the uncomfortable little gap between CI is green and the new behavior is actually protected."
+  safetyNote="Static replay from a canonical Little Bytes artifact. No live browser session, autonomous code change, or hidden agent execution is occurring on this page."
+  links={[
+    { href: "/projects/qa-agents/", label: "Main QA Agents page" },
+    ...(repositoryUrl
+      ? [{ href: repositoryUrl, label: "QA Agents repository", external: true }]
+      : []),
+    ...(canonicalArtifactUrl
+      ? [
+          {
+            href: canonicalArtifactUrl,
+            label: "Canonical artifact",
+            external: true,
+          },
+        ]
+      : []),
+  ]}
+  caseSummary={[
+    {
+      label: "Repository",
+      value: demoArtifact.application.name.toLowerCase().replace(/\s+/g, "-"),
+    },
+    { label: "Branch", value: demoArtifact.scenario.head },
+    { label: "Outcome", value: "Coverage gap found" },
+    { label: "Action", value: "Regression test recommended" },
+  ]}
+  storyIntro={{
+    eyebrow: "The story behind the evidence",
+    heading: "A green test run is not the end of the story.",
+    paragraphs: [
+      "Imagine you are reviewing a pull request. The pricing logic changed, the existing tests still pass, and it would be easy to move on.",
+      "QA Agents keeps looking. Lookout notices the change. Beacon checks the existing tests. Inspector reviews the coverage gap. Scribe recommends what to do next.",
+    ],
+    explanation:
+      "I could have recorded a terminal session, but watching someone click around does not explain the investigation very well. This workstation reconstructs the evidence so you can inspect the reasoning step by step.",
+  }}
+  castTitle="Who's investigating?"
+  cast={[
+    "🔭 Lookout notices relevant changes",
+    "🧭 Beacon scopes and verifies the investigation",
+    "🔍 Inspector reviews coverage and records gaps",
+    "✍️ Scribe recommends or authors accepted tests",
+    "👩‍💻 A human reviewer decides",
+  ]}
+  sessionMeta={[
+    demoArtifact.application.name.toLowerCase().replace(/\s+/g, "-"),
+    demoArtifact.scenario.head,
+  ]}
+  gapNote="tests passed ≠ behavior tested"
+  defaultStepIndex={0}
+  steps={[
+    {
+      id: "change",
+      timelineLabel: "Change detected",
+      panelTitle: "Pricing diff",
+      windowTitle: "pricing.py",
+      icon: "▤",
+      accent: "sky",
+      notebook: {
+        heading: "Pricing logic changed",
+        observation:
+          "The pricing code changed in a branch that affects discount handling.",
+        interpretation: `${demoArtifact.change.diff_summary} in ${demoArtifact.change.files.join(", ")}. That is enough to ask a simple QA question: did the tests actually reach this new path?`,
+        why: "Any new branch in business logic deserves coverage, especially when it changes money-related behavior.",
+      },
+      story: {
+        actor: "Lookout",
+        emoji: "🔭",
+        heading: "Lookout spotted the changed pricing file.",
+        body: "The pricing module changed. Beacon takes the next look.",
+        handoff: "Passing investigation → Beacon",
+      },
+      panel: {
+        kind: "diff",
+        diffBadges: [demoArtifact.change.files.join(", "), "+6", "-1"],
+        facts: [
+          {
+            label: "Filename",
+            value: demoArtifact.change.files.join(", "),
+            code: true,
+          },
+          {
+            label: "Diff summary",
+            value: demoArtifact.change.diff_summary,
+            code: true,
+          },
+          {
+            label: "Changed path",
+            value: demoArtifact.evidence.gap_path,
+            code: true,
+          },
+        ],
+        diffLines,
+        diffNote: "coverage gap associated with changed pricing path",
+      },
+    },
+    {
+      id: "tests",
+      timelineLabel: "Tests passed",
+      panelTitle: "Test execution result",
+      windowTitle: "unit-tests.log",
+      icon: "✓",
+      accent: "sage",
+      notebook: {
+        heading: "Existing tests passed",
+        observation:
+          "The current test suite still reports a clean pass after the pricing change.",
+        interpretation:
+          "A green test run means the old assertions still hold. It does not prove the new pricing path was exercised.",
+        why: "Engineers care because CI can look healthy while a new branch has no real protection.",
+      },
+      story: {
+        actor: "Beacon",
+        emoji: "🧭",
+        heading: "Beacon checked the existing tests.",
+        body: "The existing tests all passed. Now Beacon checks what they actually covered.",
+        handoff: "Checking coverage evidence",
+      },
+      panel: {
+        kind: "command",
+        statusLabel: "PASS",
+        facts: [
+          {
+            label: "Command",
+            value: demoArtifact.execution.command_name,
+            code: true,
+          },
+          {
+            label: "Status",
+            value: demoArtifact.execution.status,
+            tone: "success",
+          },
+          { label: "Exit status", value: demoArtifact.execution.exit_code },
+          {
+            label: "Output excerpt",
+            value: demoArtifact.execution.test_summary,
+          },
+        ],
+      },
+    },
+    {
+      id: "coverage",
+      timelineLabel: "Gap discovered",
+      panelTitle: "Coverage evidence",
+      windowTitle: "coverage-report.json",
+      icon: "⌕",
+      accent: "ochre",
+      notebook: {
+        heading: "New behavior was not exercised",
+        observation:
+          "Coverage links the passing test run back to the changed pricing file.",
+        interpretation:
+          "The tests passed, but the changed branch was not reached. That is a verification gap, not a product bug by itself.",
+        why: "This is the core lesson: tests only protect behavior they execute.",
+      },
+      story: {
+        actor: "Inspector",
+        emoji: "🔍",
+        heading: "Inspector found the missing coverage.",
+        body: "Coverage showed the changed pricing path was never reached.",
+        handoff: "Recording the verification gap",
+        evidenceLabel: "📊 Coverage evidence",
+      },
+      panel: {
+        kind: "inspection",
+        headerTitle: "Coverage report",
+        headerText: "Inspection summary for the changed pricing path.",
+        facts: [
+          {
+            label: "Coverage report captured",
+            value: String(demoArtifact.evidence.coverage_report_found),
+            tone: "success",
+          },
+          {
+            label: "Affected file",
+            value: demoArtifact.evidence.gap_path,
+            code: true,
+          },
+          {
+            label: "Finding",
+            value: "Changed pricing branch was never executed",
+          },
+          {
+            label: "Artifact",
+            value: demoArtifact.evidence.coverage_report_path,
+            code: true,
+          },
+          { label: "Recorded gap", value: demoArtifact.evidence.gap_detail },
+        ],
+        diffNote: "coverage gap associated with changed pricing path",
+      },
+    },
+    {
+      id: "recorded",
+      timelineLabel: "Evidence recorded",
+      panelTitle: "Persisted gap record",
+      windowTitle: "gap-record.json",
+      icon: "▣",
+      accent: "burgundy",
+      notebook: {
+        heading: "The gap was recorded",
+        observation:
+          "The finding is no longer just a transient test-run detail.",
+        interpretation:
+          "The affected file, gap type, and supporting detail are preserved in a small reviewable record.",
+        why: "This matters because handoffs fail when evidence lives only in terminal scrollback or someone's memory.",
+      },
+      story: {
+        actor: "Inspector",
+        emoji: "🔍",
+        heading: "Inspector saved the gap.",
+        body: "The missing test is now a reviewable record, not a disappearing note.",
+        handoff: "Next reviewer → Scribe",
+      },
+      panel: {
+        kind: "record",
+        facts: [
+          {
+            label: "Gap type",
+            value: demoArtifact.evidence.gap_type.replace(/_/g, " "),
+          },
+          { label: "Affected area", value: "Pricing logic" },
+          { label: "Affected file", value: demoArtifact.evidence.gap_path },
+          { label: "Status", value: "Open for review" },
+          { label: "Detail", value: demoArtifact.evidence.gap_detail },
+        ],
+      },
+    },
+    {
+      id: "recommendation",
+      timelineLabel: "Test recommended",
+      panelTitle: "Recommendation artifact",
+      windowTitle: "recommendation.md",
+      icon: "✎",
+      accent: "lavender",
+      notebook: {
+        heading: "Add a regression test",
+        observation:
+          "The recommendation is narrow: add a regression test for quantity and discount ordering.",
+        interpretation:
+          "The proposed test targets the exact behavior the current suite missed. It does not claim any code was written.",
+        why: "Good QA output should make the next human decision easier, not pretend the decision has already been made.",
+        boundary:
+          "Recommendation only. No test was authored or committed during this replay.",
+      },
+      story: {
+        actor: "Scribe",
+        emoji: "✍️",
+        heading: "Scribe recommended the next step.",
+        body: "Add a regression test before treating this pricing behavior as verified.",
+        handoff: "Ready for human review",
+        boundary:
+          "Recommendation only. No test was authored or committed during this replay.",
+      },
+      panel: {
+        kind: "recommendation",
+        statusLabel: "recommendation only",
+        action: demoArtifact.recommendation.next_action,
+        facts: [
+          { label: "Target behavior", value: "Quantity and discount ordering" },
+          {
+            label: "Suggested agent",
+            value: demoArtifact.recommendation.agent,
+          },
+          {
+            label: "Route reason",
+            value: demoArtifact.recommendation.route_reason,
+          },
+          {
+            label: "Supporting evidence",
+            value: demoArtifact.evidence.gap_path,
+            code: true,
+          },
+        ],
+      },
+    },
+  ]}
+  result={{
+    eyebrow: "Investigation result",
+    heading: "Human review required",
+    story: [
+      "Pricing logic changed.",
+      "Existing tests still passed.",
+      "Coverage showed the new path wasn't exercised.",
+      "A regression test was recommended.",
+    ],
+    items: [
+      { marker: "✓", text: "Pricing change detected" },
+      { marker: "✓", text: "Existing tests passed" },
+      { marker: "⚠", text: "New behavior remained untested", warning: true },
+      { marker: "✓", text: "Gap recorded as evidence" },
+      { marker: "→", text: "Regression test recommended" },
+    ],
+    boundary: [
+      "The investigation is complete.",
+      "The decision isn't.",
+      "The evidence is ready for a human reviewer to decide what happens next.",
+    ],
+  }}
+  recordedReplayNote="This workstation is a static interface around one canonical artifact. It does not start a browser session, dispatch an agent, generate code, or run tests."
+  technicalDetails={[
+    {
+      summary: "Canonical artifact",
+      items: [
         {
-          repositoryUrl && (
-            <ExternalLink href={repositoryUrl} label="QA Agents repository" />
-          )
-        }
+          label: "Local artifact path",
+          value: "src/data/qa-agents/little-bytes-pricing.json",
+          code: true,
+        },
         {
-          canonicalArtifactUrl && (
-            <ExternalLink
-              href={canonicalArtifactUrl}
-              label="Canonical artifact"
-            />
-          )
-        }
-      </div>
-    </div>
-
-    <dl class="case-summary" aria-label="Compact case summary">
-      <div>
-        <dt>Repository</dt>
-        <dd>{artifact.application.name.toLowerCase().replace(/\s+/g, "-")}</dd>
-      </div>
-      <div>
-        <dt>Branch</dt>
-        <dd>{artifact.scenario.head}</dd>
-      </div>
-      <div>
-        <dt>Outcome</dt>
-        <dd>Coverage gap found</dd>
-      </div>
-      <div>
-        <dt>Action</dt>
-        <dd>Regression test recommended</dd>
-      </div>
-    </dl>
-
-    <section class="story-intro" aria-labelledby="story-heading">
-      <p class="eyebrow">The story behind the evidence</p>
-      <h2 id="story-heading">A green test run is not the end of the story.</h2>
-      <p>
-        Imagine you are reviewing a pull request. The pricing logic changed, the
-        existing tests still pass, and it would be easy to move on.
-      </p>
-      <p>
-        QA Agents keeps looking. Lookout notices the change. Beacon checks the
-        existing tests. Inspector reviews the coverage gap. Scribe recommends
-        what to do next.
-      </p>
-      <p class="replay-explanation">
-        I could have recorded a terminal session, but watching someone click
-        around does not explain the investigation very well. This workstation
-        reconstructs the evidence so you can inspect the reasoning step by step.
-      </p>
-    </section>
-
-    <aside class="cast-key" aria-label="Who's investigating?">
-      <h2>Who's investigating?</h2>
-      <ul>
-        <li>
-          <span aria-hidden="true">🔭</span> Lookout notices relevant changes
-        </li>
-        <li>
-          <span aria-hidden="true">🧭</span> Beacon scopes and verifies the investigation
-        </li>
-        <li>
-          <span aria-hidden="true">🔍</span> Inspector reviews coverage and records
-          gaps
-        </li>
-        <li>
-          <span aria-hidden="true">✍️</span> Scribe recommends or authors accepted
-          tests
-        </li>
-        <li><span aria-hidden="true">👩‍💻</span> A human reviewer decides</li>
-      </ul>
-    </aside>
-
-    <div class="workstation-shell" id="replay-workstation">
-      <div class="workstation-titlebar">
-        <span>QA Replay Workstation</span>
-        <span class="window-controls" aria-hidden="true">
-          <span>_</span>
-          <span>□</span>
-          <span>×</span>
-        </span>
-      </div>
-
-      <nav class="workstation-menu" aria-label="Replay workstation menu">
-        <span>File</span>
-        <span>View</span>
-        <a href="#technical-details">Evidence</a>
-        <a href="#recorded-replay-note">Help</a>
-      </nav>
-
-      <div class="session-strip" aria-label="Recorded session status">
-        <span class="recorded-badge">● Recorded replay</span>
-        <span
-          >{artifact.application.name.toLowerCase().replace(/\s+/g, "-")}</span
-        >
-        <span>{artifact.scenario.head}</span>
-        <span data-session-step
-          >Step {defaultStepIndex + 1} of {steps.length}</span
-        >
-      </div>
-
-      <section class="timeline-panel" aria-label="Investigation timeline">
-        <div class="investigation-timeline">
-          {
-            steps.map((step, index) => (
-              <button
-                type="button"
-                class:list={[
-                  "timeline-button",
-                  `accent-${step.accent}`,
-                  index < defaultStepIndex && "is-completed",
-                  index === defaultStepIndex && "is-active",
-                  index > defaultStepIndex && "is-upcoming",
-                ]}
-                data-step-button={index}
-                aria-pressed={index === defaultStepIndex ? "true" : "false"}
-                aria-current={index === defaultStepIndex ? "step" : undefined}
-              >
-                <span class="tool-icon" aria-hidden="true">
-                  {step.icon}
-                </span>
-                <span class="timeline-copy">
-                  <span class="timeline-number">Step {index + 1}</span>
-                  <span class="timeline-label">{step.timelineLabel}</span>
-                  <span class="timeline-state" data-step-state={index}>
-                    {index < defaultStepIndex
-                      ? "Completed"
-                      : index === defaultStepIndex
-                        ? "Active"
-                        : "Upcoming"}
-                  </span>
-                </span>
-              </button>
-            ))
-          }
-        </div>
-      </section>
-
-      <div class="personality-note" data-gap-note>
-        tests passed ≠ behavior tested
-      </div>
-
-      <section class="team-notes" aria-live="polite" aria-label="Team notes">
-        <div class="team-note-actor">
-          <span class="team-note-emoji" data-story-emoji aria-hidden="true">
-            {steps[defaultStepIndex].story.emoji}
-          </span>
-          <span class="team-note-name" data-story-actor>
-            {steps[defaultStepIndex].story.actor}
-          </span>
-          {
-            steps[defaultStepIndex].story.evidenceLabel && (
-              <span class="team-note-evidence" data-story-evidence>
-                {steps[defaultStepIndex].story.evidenceLabel}
-              </span>
-            )
-          }
-          {
-            !steps[defaultStepIndex].story.evidenceLabel && (
-              <span class="team-note-evidence" data-story-evidence hidden />
-            )
-          }
-        </div>
-        <div class="team-note-copy">
-          <h2 data-story-heading>{steps[defaultStepIndex].story.heading}</h2>
-          <p data-story-body>{steps[defaultStepIndex].story.body}</p>
-          {
-            steps[defaultStepIndex].story.boundary && (
-              <p class="team-note-boundary" data-story-boundary>
-                {steps[defaultStepIndex].story.boundary}
-              </p>
-            )
-          }
-          {
-            !steps[defaultStepIndex].story.boundary && (
-              <p class="team-note-boundary" data-story-boundary hidden />
-            )
-          }
-        </div>
-        <div class="team-note-handoff" data-story-handoff>
-          {steps[defaultStepIndex].story.handoff}
-        </div>
-      </section>
-
-      <section class="workspace" aria-live="polite">
+          label: "Repository artifact path",
+          value: "examples/demo-runs/little-bytes-pricing.json",
+          code: true,
+        },
+        { label: "Schema version", value: demoArtifact.schema_version },
+        { label: "Demo ID", value: demoArtifact.demo_id, code: true },
+      ],
+    },
+    {
+      summary: "Provenance",
+      items: [
+        { label: "Application", value: demoArtifact.application.name },
         {
-          steps.map((step, index) => (
-            <article
-              class:list={[
-                "workspace-step",
-                `accent-${step.accent}`,
-                index === defaultStepIndex && "is-active",
-              ]}
-              data-step-panel={index}
-              hidden={index !== defaultStepIndex}
-            >
-              <div class="retro-window evidence-panel">
-                <div class="retro-titlebar">
-                  <span>{step.windowTitle}</span>
-                  <span class="mini-window-controls" aria-hidden="true">
-                    <span>_</span>
-                    <span>□</span>
-                    <span>×</span>
-                  </span>
-                </div>
-                <div class="window-toolbar">
-                  <span>Evidence under review</span>
-                  <span>{step.panelTitle}</span>
-                </div>
-                <div class="window-body">
-                  {step.id === "change" && (
-                    <>
-                      <div class="diff-badges" aria-label="Diff summary">
-                        <span>{artifact.change.files.join(", ")}</span>
-                        <span class="additions">+6</span>
-                        <span class="deletions">-1</span>
-                      </div>
-                      <dl class="evidence-facts">
-                        {step.details?.map((item) => (
-                          <div>
-                            <dt>{item.label}</dt>
-                            <dd>
-                              <code>{String(item.value)}</code>
-                            </dd>
-                          </div>
-                        ))}
-                      </dl>
-                      <pre class="diff-view" aria-label="Pricing diff excerpt">
-                        <code>
-                          {diffLines.map((line) => (
-                            <span class={classifyDiffLine(line)}>
-                              {line || " "}
-                            </span>
-                          ))}
-                        </code>
-                      </pre>
-                      <p class="coverage-link-note">
-                        coverage gap associated with changed pricing path
-                      </p>
-                    </>
-                  )}
-
-                  {step.id === "tests" && (
-                    <div class="command-result">
-                      <span class="status-indicator">PASS</span>
-                      <dl class="evidence-facts compact">
-                        {step.details?.map((item) => (
-                          <div>
-                            <dt>{item.label}</dt>
-                            <dd
-                              class={
-                                item.tone ? `tone-${item.tone}` : undefined
-                              }
-                            >
-                              {item.label === "Command" ? (
-                                <code>{String(item.value)}</code>
-                              ) : (
-                                String(item.value)
-                              )}
-                            </dd>
-                          </div>
-                        ))}
-                      </dl>
-                    </div>
-                  )}
-
-                  {step.id === "coverage" && (
-                    <div class="coverage-report">
-                      <div class="coverage-report-header">
-                        <span class="coverage-warning" aria-hidden="true">
-                          !
-                        </span>
-                        <div>
-                          <h3>Coverage report</h3>
-                          <p>
-                            Inspection summary for the changed pricing path.
-                          </p>
-                        </div>
-                      </div>
-                      <dl class="inspection-list">
-                        <div>
-                          <dt>Coverage report captured</dt>
-                          <dd class="inspection-status">
-                            ✓ {String(artifact.evidence.coverage_report_found)}
-                          </dd>
-                        </div>
-                        <div>
-                          <dt>Affected file</dt>
-                          <dd>
-                            <code>{artifact.evidence.gap_path}</code>
-                          </dd>
-                        </div>
-                        <div>
-                          <dt>Finding</dt>
-                          <dd>Changed pricing branch was never executed</dd>
-                        </div>
-                        <div>
-                          <dt>Artifact</dt>
-                          <dd>
-                            <code>
-                              {artifact.evidence.coverage_report_path}
-                            </code>
-                          </dd>
-                        </div>
-                        <div>
-                          <dt>Recorded gap</dt>
-                          <dd>{artifact.evidence.gap_detail}</dd>
-                        </div>
-                      </dl>
-                      <p class="coverage-link-note">
-                        coverage gap associated with changed pricing path
-                      </p>
-                    </div>
-                  )}
-
-                  {step.id === "recorded" && (
-                    <dl class="record-list">
-                      {step.details?.map((item) => (
-                        <div>
-                          <dt>{item.label}</dt>
-                          <dd>{String(item.value)}</dd>
-                        </div>
-                      ))}
-                    </dl>
-                  )}
-
-                  {step.id === "recommendation" && (
-                    <div class="recommendation-card">
-                      <span class="status-indicator recommendation-only">
-                        recommendation only
-                      </span>
-                      <p class="recommendation-action">
-                        {artifact.recommendation.next_action}
-                      </p>
-                      <dl class="evidence-facts">
-                        {step.details?.slice(1).map((item) => (
-                          <div>
-                            <dt>{item.label}</dt>
-                            <dd>
-                              {item.label === "Supporting evidence" ? (
-                                <code>{String(item.value)}</code>
-                              ) : (
-                                String(item.value)
-                              )}
-                            </dd>
-                          </div>
-                        ))}
-                      </dl>
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              <aside
-                class="retro-window notebook-panel"
-                aria-label="Case notes"
-              >
-                <div class="retro-titlebar">
-                  <span>Case Notes</span>
-                  <span class="read-only-label">read-only</span>
-                </div>
-                <div class="window-body notebook-paper">
-                  <p class="panel-kicker">Case notes</p>
-                  <h2>{step.notebook.heading}</h2>
-                  <div class="notebook-entry">
-                    <h3>What happened</h3>
-                    <p>{step.notebook.observation}</p>
-                  </div>
-                  <div class="notebook-entry">
-                    <h3>Why the evidence matters</h3>
-                    <p>{step.notebook.interpretation}</p>
-                  </div>
-                  <div class="notebook-entry">
-                    <h3>Why engineers care</h3>
-                    <p>{step.notebook.why}</p>
-                  </div>
-                  {step.notebook.boundary && (
-                    <p class="boundary-note">{step.notebook.boundary}</p>
-                  )}
-                </div>
-              </aside>
-            </article>
-          ))
-        }
-      </section>
-
-      <div class="playback-shell" aria-label="Replay navigation controls">
-        <button type="button" class="retro-control" data-step-prev>
-          ◀ Rewind
-        </button>
-        <span class="replay-mode">Replay</span>
-        <button type="button" class="retro-control primary" data-step-next>
-          Continue ▶
-        </button>
-      </div>
-    </div>
-
-    <dialog
-      class="result-dialog"
-      aria-labelledby="investigation-result"
-      data-completion-dialog
-    >
-      <div class="retro-titlebar">
-        <span>Investigation Complete</span>
-        <span class="mini-window-controls" aria-hidden="true">
-          <span>_</span>
-          <span>□</span>
-          <span>×</span>
-        </span>
-      </div>
-      <div class="result-body">
-        <p class="eyebrow">Investigation result</p>
-        <h2 id="investigation-result">Human review required</h2>
-        <div class="result-story">
-          <p>Pricing logic changed.</p>
-          <p>Existing tests still passed.</p>
-          <p>Coverage showed the new path wasn't exercised.</p>
-          <p>A regression test was recommended.</p>
-        </div>
-        <ol class="result-list">
-          <li><span>✓</span> Pricing change detected</li>
-          <li><span>✓</span> Existing tests passed</li>
-          <li class="warning"><span>⚠</span> New behavior remained untested</li>
-          <li><span>✓</span> Gap recorded as evidence</li>
-          <li><span>→</span> Regression test recommended</li>
-        </ol>
-        <div class="result-boundary">
-          <p>The investigation is complete.</p>
-          <p>The decision isn't.</p>
-          <p>
-            The evidence is ready for a human reviewer to decide what happens
-            next.
-          </p>
-        </div>
-        <button class="retro-ok" type="button" data-result-ok>OK</button>
-      </div>
-    </dialog>
-
-    <p class="safety-note" id="recorded-replay-note">
-      This workstation is a static interface around one canonical artifact. It
-      does not start a browser session, dispatch an agent, generate code, or run
-      tests.
-    </p>
-
-    <section
-      class="technical-details"
-      id="technical-details"
-      aria-label="Technical details"
-    >
-      <details>
-        <summary>Canonical artifact</summary>
-        <dl>
-          <dt>Local artifact path</dt>
-          <dd><code>{artifactPath}</code></dd>
-          <dt>Repository artifact path</dt>
-          <dd><code>examples/demo-runs/little-bytes-pricing.json</code></dd>
-          <dt>Schema version</dt>
-          <dd>{artifact.schema_version}</dd>
-          <dt>Demo ID</dt>
-          <dd><code>{artifact.demo_id}</code></dd>
-        </dl>
-      </details>
-
-      <details>
-        <summary>Provenance</summary>
-        <dl>
-          <dt>Application</dt>
-          <dd>{artifact.application.name}</dd>
-          <dt>Application repository</dt>
-          <dd><code>{artifact.application.repository}</code></dd>
-          <dt>Application profile</dt>
-          <dd><code>{artifact.application.profile}</code></dd>
-          <dt>Base branch</dt>
-          <dd><code>{artifact.scenario.base}</code></dd>
-          <dt>Head branch</dt>
-          <dd><code>{artifact.scenario.head}</code></dd>
-        </dl>
-      </details>
-
-      <details>
-        <summary>Raw replay data</summary>
-        <pre><code>{rawArtifact}</code></pre>
-      </details>
-
-      <details>
-        <summary>Safety boundaries</summary>
-        <dl>
-          {
-            safetyItems.map(([label, value]) => (
-              <>
-                <dt>{label}</dt>
-                <dd>{value}</dd>
-              </>
-            ))
-          }
-        </dl>
-      </details>
-    </section>
-  </section>
-
-  <script is:inline define:vars={{ stepDetails, defaultStepIndex }}>
-    const root = document.querySelector("[data-replay-root]");
-    const buttons = Array.from(document.querySelectorAll("[data-step-button]"));
-    const panels = Array.from(document.querySelectorAll("[data-step-panel]"));
-    const stateLabels = Array.from(
-      document.querySelectorAll("[data-step-state]"),
-    );
-    const sessionStep = document.querySelector("[data-session-step]");
-    const gapNote = document.querySelector("[data-gap-note]");
-    const storyEmoji = document.querySelector("[data-story-emoji]");
-    const storyActor = document.querySelector("[data-story-actor]");
-    const storyEvidence = document.querySelector("[data-story-evidence]");
-    const storyHeading = document.querySelector("[data-story-heading]");
-    const storyBody = document.querySelector("[data-story-body]");
-    const storyBoundary = document.querySelector("[data-story-boundary]");
-    const storyHandoff = document.querySelector("[data-story-handoff]");
-    const previous = document.querySelector("[data-step-prev]");
-    const next = document.querySelector("[data-step-next]");
-    const completionDialog = document.querySelector("[data-completion-dialog]");
-    const resultOk = document.querySelector("[data-result-ok]");
-    let activeIndex = defaultStepIndex;
-    let shouldResetOnDialogClose = false;
-
-    function stateFor(index) {
-      if (index < activeIndex) return "completed";
-      if (index === activeIndex) return "active";
-      return "upcoming";
-    }
-
-    function setActiveStep(index) {
-      activeIndex = Math.min(Math.max(index, 0), stepDetails.length - 1);
-
-      buttons.forEach((button, buttonIndex) => {
-        const state = stateFor(buttonIndex);
-        const isActive = buttonIndex === activeIndex;
-        button.classList.toggle("is-completed", state === "completed");
-        button.classList.toggle("is-active", isActive);
-        button.classList.toggle("is-upcoming", state === "upcoming");
-        button.setAttribute("aria-pressed", String(isActive));
-        if (isActive) {
-          button.setAttribute("aria-current", "step");
-        } else {
-          button.removeAttribute("aria-current");
-        }
-      });
-
-      panels.forEach((panel, panelIndex) => {
-        const isActive = panelIndex === activeIndex;
-        panel.classList.toggle("is-active", isActive);
-        panel.hidden = !isActive;
-      });
-
-      stateLabels.forEach((label, labelIndex) => {
-        const state = stateFor(labelIndex);
-        label.textContent = state.charAt(0).toUpperCase() + state.slice(1);
-      });
-
-      if (sessionStep) {
-        sessionStep.textContent = `Step ${activeIndex + 1} of ${stepDetails.length}`;
-      }
-
-      gapNote?.classList.toggle(
-        "is-muted",
-        stepDetails[activeIndex]?.id !== "coverage",
-      );
-
-      const story = stepDetails[activeIndex]?.story;
-      if (story) {
-        if (storyEmoji) storyEmoji.textContent = story.emoji;
-        if (storyActor) storyActor.textContent = story.actor;
-        if (storyHeading) storyHeading.textContent = story.heading;
-        if (storyBody) storyBody.textContent = story.body;
-        if (storyHandoff) storyHandoff.textContent = story.handoff;
-
-        if (storyEvidence) {
-          storyEvidence.textContent = story.evidenceLabel || "";
-          storyEvidence.hidden = !story.evidenceLabel;
-        }
-
-        if (storyBoundary) {
-          storyBoundary.textContent = story.boundary || "";
-          storyBoundary.hidden = !story.boundary;
-        }
-      }
-    }
-
-    function openCompletionDialog() {
-      if (
-        completionDialog instanceof HTMLDialogElement &&
-        !completionDialog.open
-      ) {
-        completionDialog.showModal();
-        resultOk?.focus();
-      }
-    }
-
-    function resetReplay() {
-      setActiveStep(0);
-      buttons[0]?.focus();
-    }
-
-    root?.classList.add("is-enhanced");
-    buttons.forEach((button, index) => {
-      button.addEventListener("click", () => setActiveStep(index));
-    });
-    previous?.addEventListener("click", () => setActiveStep(activeIndex - 1));
-    next?.addEventListener("click", () => {
-      if (activeIndex === stepDetails.length - 1) {
-        openCompletionDialog();
-        return;
-      }
-
-      setActiveStep(activeIndex + 1);
-    });
-    resultOk?.addEventListener("click", () => {
-      shouldResetOnDialogClose = true;
-      completionDialog?.close();
-    });
-    completionDialog?.addEventListener("close", () => {
-      if (shouldResetOnDialogClose) {
-        shouldResetOnDialogClose = false;
-        resetReplay();
-        return;
-      }
-
-      next?.focus();
-    });
-  </script>
-</BaseLayout>
-
-<style>
-  .replay-page {
-    display: grid;
-    gap: clamp(1.4rem, 3vw, 2.25rem);
-  }
-
-  .replay-hero h1 {
-    max-width: 1040px;
-    font-size: var(--font-size-page-title);
-  }
-
-  .safety-note {
-    max-width: 820px;
-    margin-top: var(--space-4);
-    color: var(--color-text-muted);
-    font-size: var(--font-size-small);
-  }
-
-  .case-summary {
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: var(--border-width);
-    overflow: hidden;
-    border: 2px solid rgba(55, 40, 38, 0.72);
-    border-radius: 4px;
-    background: rgba(55, 40, 38, 0.72);
-    box-shadow: 3px 3px 0 rgba(55, 40, 38, 0.1);
-  }
-
-  .case-summary div {
-    min-width: 0;
-    padding: 0.85rem 1rem;
-    background: rgba(248, 240, 231, 0.92);
-  }
-
-  .case-summary dt,
-  .panel-kicker,
-  .technical-details summary {
-    color: var(--color-text-muted);
-    font-size: var(--font-size-micro);
-    font-weight: var(--font-weight-strong);
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-  }
-
-  .case-summary dd {
-    margin: 0.3rem 0 0;
-    overflow-wrap: anywhere;
-    font-weight: 850;
-  }
-
-  .story-intro {
-    max-width: 860px;
-    border-left: 0.38rem solid var(--khaki);
-    padding-left: var(--space-5);
-  }
-
-  .story-intro h2 {
-    max-width: 760px;
-    margin-bottom: var(--space-4);
-    font-family: var(--font-serif);
-    font-size: var(--font-size-supporting);
-  }
-
-  .story-intro p {
-    max-width: var(--reading-width);
-    color: var(--color-text-muted);
-  }
-
-  .replay-explanation {
-    border: 1px solid rgba(55, 40, 38, 0.16);
-    border-left: 0.32rem solid var(--blue);
-    padding: 0.75rem 0.9rem;
-    background: rgba(207, 231, 246, 0.24);
-  }
-
-  .cast-key {
-    border: 2px solid rgba(55, 40, 38, 0.38);
-    border-radius: 4px;
-    padding: 0.85rem 1rem;
-    background: rgba(248, 240, 231, 0.76);
-    box-shadow:
-      2px 2px 0 rgba(55, 40, 38, 0.08),
-      inset 1px 1px 0 rgba(255, 248, 239, 0.86);
-  }
-
-  .cast-key h2 {
-    margin-bottom: 0.55rem;
-    color: var(--color-text-muted);
-    font-family: var(--font-mono);
-    font-size: var(--font-size-micro);
-    font-weight: 900;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-  }
-
-  .cast-key ul {
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 0.55rem;
-    margin: 0;
-    padding: 0;
-    list-style: none;
-  }
-
-  .cast-key li {
-    min-width: 0;
-    color: var(--color-text-muted);
-    font-size: var(--font-size-small);
-    font-weight: 750;
-  }
-
-  .cast-key span {
-    margin-right: 0.25rem;
-  }
-
-  .workstation-shell {
-    overflow: hidden;
-    border: 2px solid rgba(55, 40, 38, 0.82);
-    border-radius: 6px;
-    background:
-      linear-gradient(rgba(255, 248, 239, 0.35), rgba(255, 248, 239, 0.35)),
-      repeating-linear-gradient(
-        0deg,
-        rgba(55, 40, 38, 0.025) 0,
-        rgba(55, 40, 38, 0.025) 1px,
-        transparent 1px,
-        transparent 7px
-      ),
-      var(--paper);
-    box-shadow:
-      5px 5px 0 rgba(55, 40, 38, 0.16),
-      inset 2px 2px 0 rgba(255, 248, 239, 0.85),
-      inset -2px -2px 0 rgba(55, 40, 38, 0.12);
-  }
-
-  .workstation-titlebar,
-  .retro-titlebar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    border-bottom: 2px solid rgba(55, 40, 38, 0.72);
-    background: color-mix(in srgb, var(--rust) 24%, var(--paper));
-    color: var(--color-text);
-    font-family: var(--font-mono);
-    font-size: var(--font-size-small);
-    font-weight: 850;
-    line-height: 1.2;
-  }
-
-  .workstation-titlebar {
-    padding: 0.55rem 0.8rem;
-  }
-
-  .retro-titlebar {
-    min-height: 2.2rem;
-    padding: 0.42rem 0.55rem;
-  }
-
-  .window-controls,
-  .mini-window-controls {
-    display: inline-flex;
-    gap: 0.35rem;
-    align-items: center;
-    font-family: var(--font-mono);
-    font-weight: 900;
-  }
-
-  .window-controls span,
-  .mini-window-controls span {
-    display: inline-grid;
-    width: 1.25rem;
-    height: 1.15rem;
-    place-items: center;
-    border: 1px solid rgba(55, 40, 38, 0.62);
-    background: rgba(255, 248, 239, 0.58);
-    line-height: 1;
-  }
-
-  .workstation-menu {
-    display: flex;
-    gap: 1.25rem;
-    border-bottom: 1px solid rgba(55, 40, 38, 0.35);
-    padding: 0.4rem 0.8rem;
-    background: rgba(255, 248, 239, 0.54);
-    font-family: var(--font-mono);
-    font-size: var(--font-size-micro);
-    font-weight: 850;
-  }
-
-  .workstation-menu a {
-    color: var(--color-text);
-    text-decoration: none;
-  }
-
-  .workstation-menu a:hover {
-    color: var(--rust);
-    text-decoration: underline;
-  }
-
-  .session-strip {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.4rem 0.75rem;
-    align-items: center;
-    border-bottom: 1px solid rgba(55, 40, 38, 0.22);
-    padding: 0.7rem 0.8rem;
-    background: color-mix(in srgb, var(--blue-soft) 46%, var(--paper));
-    color: var(--color-text-muted);
-    font-family: var(--font-mono);
-    font-size: var(--font-size-micro);
-    font-weight: 850;
-  }
-
-  .session-strip span:not(:last-child)::after {
-    margin-left: 0.75rem;
-    color: rgba(55, 40, 38, 0.38);
-    content: "|";
-  }
-
-  .recorded-badge {
-    color: var(--plum);
-    text-transform: uppercase;
-  }
-
-  .timeline-panel {
-    padding: 0.8rem 0.8rem 0;
-  }
-
-  .investigation-timeline {
-    display: grid;
-    grid-template-columns: repeat(5, minmax(9.5rem, 1fr));
-    gap: 0.5rem;
-    overflow-x: auto;
-    padding-bottom: var(--space-2);
-  }
-
-  .timeline-button {
-    display: grid;
-    grid-template-columns: 2rem minmax(0, 1fr);
-    gap: 0.55rem;
-    align-items: start;
-    min-height: 5.25rem;
-    border: 2px solid rgba(55, 40, 38, 0.55);
-    border-radius: 4px;
-    padding: 0.62rem;
-    background: rgba(255, 248, 239, 0.72);
-    color: var(--color-text);
-    font: inherit;
-    text-align: left;
-    box-shadow:
-      inset 2px 2px 0 rgba(255, 248, 239, 0.75),
-      inset -2px -2px 0 rgba(55, 40, 38, 0.08);
-    cursor: pointer;
-  }
-
-  .tool-icon {
-    display: inline-grid;
-    width: 1.85rem;
-    height: 1.85rem;
-    place-items: center;
-    border: 1px solid rgba(55, 40, 38, 0.58);
-    background: color-mix(in srgb, var(--blue-soft) 42%, var(--paper));
-    color: var(--plum);
-    font-family: var(--font-mono);
-    font-size: 1rem;
-    font-weight: 850;
-    line-height: 1;
-  }
-
-  .timeline-copy {
-    display: grid;
-    gap: 0.16rem;
-  }
-
-  .timeline-number {
-    color: var(--color-text-muted);
-    font-family: var(--font-mono);
-    font-size: 0.72rem;
-    font-weight: 850;
-    text-transform: uppercase;
-  }
-
-  .timeline-label {
-    font-size: 0.93rem;
-    font-weight: 850;
-    line-height: 1.2;
-  }
-
-  .timeline-state {
-    color: var(--color-text-muted);
-    font-size: var(--font-size-micro);
-    font-weight: 750;
-  }
-
-  .timeline-button.is-completed {
-    background: color-mix(in srgb, var(--houseplant) 16%, var(--paper));
-  }
-
-  .timeline-button.is-active {
-    border-color: rgba(55, 40, 38, 0.84);
-    background: color-mix(in srgb, var(--khaki) 24%, var(--paper));
-    box-shadow:
-      3px 3px 0 rgba(55, 40, 38, 0.18),
-      inset 2px 2px 0 rgba(255, 248, 239, 0.72);
-  }
-
-  .timeline-button.is-upcoming {
-    color: color-mix(in srgb, var(--color-text) 78%, var(--color-text-muted));
-  }
-
-  .personality-note {
-    width: fit-content;
-    margin: 0.1rem 0.8rem 0.85rem auto;
-    border: 1px solid rgba(145, 80, 91, 0.24);
-    border-radius: 3px;
-    padding: 0.3rem 0.58rem;
-    background: rgba(255, 248, 239, 0.86);
-    color: var(--plum);
-    font-family: var(--font-hand);
-    font-size: 1.08rem;
-    font-weight: 800;
-    line-height: 1.2;
-    box-shadow: 2px 2px 0 rgba(210, 166, 58, 0.18);
-    transition: opacity var(--motion-fast);
-  }
-
-  .personality-note.is-muted {
-    opacity: 0.35;
-  }
-
-  .team-notes {
-    display: grid;
-    grid-template-columns: minmax(9rem, 0.23fr) minmax(0, 1fr) auto;
-    gap: 0.85rem;
-    align-items: center;
-    margin: 0 0.8rem 0.8rem;
-    border: 2px inset rgba(55, 40, 38, 0.3);
-    border-left: 0.42rem solid var(--khaki);
-    border-radius: 3px;
-    padding: 0.85rem;
-    background: rgba(255, 248, 239, 0.78);
-    box-shadow: inset 1px 1px 0 rgba(255, 248, 239, 0.9);
-    transition: background-color var(--motion-fast);
-  }
-
-  .team-note-actor {
-    display: grid;
-    gap: 0.18rem;
-    align-content: center;
-    font-family: var(--font-mono);
-    font-weight: 900;
-  }
-
-  .team-note-emoji {
-    font-size: 1.25rem;
-    line-height: 1;
-  }
-
-  .team-note-name {
-    font-size: var(--font-size-small);
-    text-transform: uppercase;
-  }
-
-  .team-note-evidence {
-    width: fit-content;
-    border: 1px solid rgba(55, 40, 38, 0.26);
-    padding: 0.1rem 0.32rem;
-    background: rgba(210, 166, 58, 0.15);
-    color: var(--color-text-muted);
-    font-size: 0.72rem;
-  }
-
-  .team-note-copy h2 {
-    margin: 0 0 0.25rem;
-    font-size: 1.08rem;
-  }
-
-  .team-note-copy p {
-    margin: 0;
-    color: var(--color-text-muted);
-    font-size: var(--font-size-small);
-  }
-
-  .team-note-boundary {
-    margin-top: 0.45rem !important;
-    border-left: 3px solid var(--rust);
-    padding-left: 0.55rem;
-    font-weight: 750;
-  }
-
-  .team-note-handoff {
-    justify-self: end;
-    border: 1px solid rgba(55, 40, 38, 0.42);
-    padding: 0.28rem 0.45rem;
-    background: color-mix(in srgb, var(--lavender) 42%, var(--paper));
-    color: var(--plum);
-    font-family: var(--font-mono);
-    font-size: var(--font-size-micro);
-    font-weight: 900;
-    text-transform: uppercase;
-    white-space: nowrap;
-  }
-
-  .workspace {
-    min-height: 30rem;
-    padding: 0 0.8rem 0.8rem;
-  }
-
-  .workspace-step {
-    display: grid;
-    grid-template-columns: minmax(0, 1.14fr) minmax(320px, 0.86fr);
-    gap: 0.75rem;
-  }
-
-  .workspace-step[hidden] {
-    display: none;
-  }
-
-  .retro-window {
-    overflow: hidden;
-    min-width: 0;
-    border: 2px solid rgba(55, 40, 38, 0.74);
-    border-radius: 4px;
-    background: var(--paper);
-    box-shadow:
-      3px 3px 0 rgba(55, 40, 38, 0.14),
-      inset 1px 1px 0 rgba(255, 248, 239, 0.76);
-  }
-
-  .evidence-panel,
-  .notebook-panel {
-    min-width: 0;
-  }
-
-  .window-toolbar {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.4rem 0.65rem;
-    justify-content: space-between;
-    border-bottom: 1px solid rgba(55, 40, 38, 0.22);
-    padding: 0.45rem 0.6rem;
-    background: rgba(255, 248, 239, 0.58);
-    color: var(--color-text-muted);
-    font-family: var(--font-mono);
-    font-size: var(--font-size-micro);
-    font-weight: 850;
-    text-transform: uppercase;
-  }
-
-  .window-body {
-    padding: clamp(0.9rem, 2vw, 1.25rem);
-  }
-
-  .notebook-paper {
-    min-height: 100%;
-    background:
-      repeating-linear-gradient(
-        180deg,
-        transparent 0,
-        transparent 2.1rem,
-        rgba(79, 134, 168, 0.11) 2.1rem,
-        rgba(79, 134, 168, 0.11) calc(2.1rem + 1px)
-      ),
-      rgba(255, 248, 239, 0.78);
-  }
-
-  .notebook-panel h2,
-  .result-dialog h2 {
-    margin: 0.2rem 0 0.95rem;
-    font-size: clamp(1.25rem, 2vw, 1.65rem);
-  }
-
-  .evidence-facts,
-  .record-list,
-  .technical-details dl {
-    display: grid;
-    gap: 0.58rem;
-    margin: 0;
-  }
-
-  .evidence-facts {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    margin-bottom: 0.8rem;
-  }
-
-  .evidence-facts.compact {
-    grid-template-columns: minmax(0, 1fr);
-    margin-bottom: 0;
-  }
-
-  .evidence-facts div,
-  .record-list div,
-  .technical-details details {
-    border: 1px solid rgba(55, 40, 38, 0.22);
-    border-radius: 3px;
-    padding: 0.62rem 0.68rem;
-    background: rgba(255, 248, 239, 0.68);
-    box-shadow: inset 1px 1px 0 rgba(255, 248, 239, 0.82);
-  }
-
-  .evidence-facts dt,
-  .record-list dt,
-  .technical-details dt {
-    color: var(--color-text-muted);
-    font-size: var(--font-size-micro);
-    font-weight: 850;
-  }
-
-  .evidence-facts dd,
-  .record-list dd,
-  .technical-details dd {
-    margin: 0.25rem 0 0;
-    overflow-wrap: anywhere;
-    font-weight: 750;
-  }
-
-  code {
-    font-size: 0.92em;
-  }
-
-  .diff-badges {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.4rem;
-    align-items: center;
-    margin-bottom: 0.7rem;
-    font-family: var(--font-mono);
-    font-size: var(--font-size-micro);
-    font-weight: 850;
-  }
-
-  .diff-badges span {
-    border: 1px solid rgba(55, 40, 38, 0.28);
-    padding: 0.18rem 0.4rem;
-    background: rgba(255, 248, 239, 0.7);
-  }
-
-  .diff-badges .additions {
-    background: rgba(111, 152, 117, 0.24);
-    color: #304d34;
-  }
-
-  .diff-badges .deletions {
-    background: rgba(145, 80, 91, 0.13);
-    color: var(--plum);
-  }
-
-  .diff-view,
-  .technical-details pre {
-    overflow: auto;
-    max-height: 25rem;
-    border: 2px inset rgba(55, 40, 38, 0.36);
-    border-radius: 2px;
-    padding: 0.65rem 0;
-    background: color-mix(in srgb, var(--blue-soft) 34%, var(--canvas));
-    color: var(--color-text);
-    font-size: 0.78rem;
-    line-height: 1.45;
-    text-align: left;
-    counter-reset: diff-line;
-  }
-
-  .diff-line {
-    display: grid;
-    grid-template-columns: 2.7rem minmax(max-content, 1fr);
-    gap: 0.75rem;
-    min-width: max-content;
-    padding-inline: 0.55rem 0.9rem;
-    white-space: pre;
-    counter-increment: diff-line;
-  }
-
-  .diff-line::before {
-    color: rgba(55, 40, 38, 0.46);
-    content: counter(diff-line);
-    text-align: right;
-    user-select: none;
-  }
-
-  .diff-line.is-meta {
-    color: color-mix(in srgb, var(--blue) 72%, var(--ink));
-    font-weight: 850;
-  }
-
-  .diff-line.is-added {
-    background: rgba(111, 152, 117, 0.2);
-    color: #304d34;
-  }
-
-  .diff-line.is-branch-gap {
-    outline: 1px solid rgba(210, 166, 58, 0.48);
-    outline-offset: -1px;
-    background: rgba(210, 166, 58, 0.18);
-  }
-
-  .diff-line.is-removed {
-    background: rgba(145, 80, 91, 0.14);
-    color: var(--plum);
-  }
-
-  .coverage-link-note {
-    margin: 0.7rem 0 0;
-    border-left: 4px solid var(--khaki);
-    padding-left: 0.65rem;
-    color: var(--color-text-muted);
-    font-family: var(--font-mono);
-    font-size: var(--font-size-micro);
-    font-weight: 850;
-  }
-
-  .command-result,
-  .coverage-report,
-  .recommendation-card {
-    border: 2px inset rgba(55, 40, 38, 0.28);
-    border-left: 0.42rem solid var(--houseplant);
-    border-radius: 3px;
-    padding: 0.95rem;
-    background: rgba(255, 248, 239, 0.7);
-  }
-
-  .coverage-report {
-    border-left-color: var(--khaki);
-  }
-
-  .coverage-report-header {
-    display: grid;
-    grid-template-columns: auto minmax(0, 1fr);
-    gap: 0.75rem;
-    align-items: start;
-    border-bottom: 1px solid rgba(55, 40, 38, 0.24);
-    padding-bottom: 0.8rem;
-  }
-
-  .coverage-report-header h3 {
-    margin: 0;
-    font-size: 1.08rem;
-  }
-
-  .coverage-report-header p {
-    margin: 0.2rem 0 0;
-    color: var(--color-text-muted);
-    font-size: var(--font-size-small);
-  }
-
-  .coverage-warning {
-    display: inline-grid;
-    width: 2.15rem;
-    height: 2.15rem;
-    place-items: center;
-    border-radius: 50%;
-    border: 2px solid rgba(55, 40, 38, 0.42);
-    background: rgba(210, 166, 58, 0.24);
-    color: color-mix(in srgb, var(--khaki) 64%, var(--ink));
-    font-weight: 900;
-  }
-
-  .inspection-list {
-    display: grid;
-    gap: 0;
-    margin: 0.8rem 0 0;
-  }
-
-  .inspection-list div {
-    display: grid;
-    grid-template-columns: minmax(9rem, 0.34fr) minmax(0, 1fr);
-    gap: 0.85rem;
-    border-bottom: 1px solid rgba(55, 40, 38, 0.16);
-    padding: 0.72rem 0;
-  }
-
-  .inspection-list div:last-child {
-    border-bottom: 0;
-  }
-
-  .inspection-list dt {
-    color: var(--color-text-muted);
-    font-family: var(--font-mono);
-    font-size: var(--font-size-micro);
-    font-weight: 900;
-    text-transform: uppercase;
-  }
-
-  .inspection-list dd {
-    margin: 0;
-    min-width: 0;
-    overflow-wrap: anywhere;
-    color: var(--color-text);
-    font-weight: 760;
-  }
-
-  .inspection-status {
-    color: #365f2c;
-  }
-
-  .recommendation-card {
-    border-left-color: color-mix(in srgb, var(--lavender) 72%, var(--plum));
-  }
-
-  .recommendation-action {
-    margin: 0.65rem 0 var(--space-4);
-    color: var(--color-text);
-    font-size: 1.15rem;
-    font-weight: 850;
-    line-height: 1.3;
-  }
-
-  .status-indicator {
-    display: inline-block;
-    margin-bottom: 0.65rem;
-    border: 2px solid rgba(55, 40, 38, 0.44);
-    padding: 0.18rem 0.45rem;
-    background: color-mix(in srgb, var(--houseplant) 22%, var(--paper));
-    color: #304d34;
-    font-family: var(--font-mono);
-    font-size: var(--font-size-micro);
-    font-weight: 900;
-  }
-
-  .status-indicator.recommendation-only {
-    background: color-mix(in srgb, var(--lavender) 50%, var(--paper));
-    color: var(--plum);
-  }
-
-  .tone-success {
-    color: #435f22;
-  }
-
-  .notebook-entry {
-    border-top: 1px solid rgba(55, 40, 38, 0.18);
-    padding-top: 0.8rem;
-  }
-
-  .notebook-entry + .notebook-entry {
-    margin-top: 0.8rem;
-  }
-
-  .notebook-entry h3 {
-    margin-bottom: var(--space-2);
-    font-size: 0.95rem;
-  }
-
-  .notebook-entry p,
-  .boundary-note {
-    color: var(--color-text-muted);
-  }
-
-  .boundary-note {
-    margin-top: var(--space-5);
-    border-left: 0.3rem solid var(--rust);
-    padding-left: var(--space-4);
-    font-weight: 750;
-  }
-
-  .read-only-label {
-    border: 1px solid rgba(55, 40, 38, 0.28);
-    padding: 0.08rem 0.35rem;
-    background: rgba(255, 248, 239, 0.6);
-    color: var(--color-text-muted);
-    font-size: 0.72rem;
-    text-transform: uppercase;
-  }
-
-  .accent-sky .retro-titlebar {
-    background: color-mix(in srgb, var(--blue) 24%, var(--paper));
-  }
-
-  .accent-sage .retro-titlebar {
-    background: color-mix(in srgb, var(--houseplant) 24%, var(--paper));
-  }
-
-  .accent-ochre .retro-titlebar {
-    background: color-mix(in srgb, var(--khaki) 36%, var(--paper));
-  }
-
-  .accent-burgundy .retro-titlebar {
-    background: color-mix(in srgb, var(--rust) 24%, var(--paper));
-  }
-
-  .accent-lavender .retro-titlebar {
-    background: color-mix(in srgb, var(--lavender) 70%, var(--paper));
-  }
-
-  .playback-shell {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.65rem;
-    align-items: center;
-    justify-content: center;
-    border-top: 2px solid rgba(55, 40, 38, 0.32);
-    padding: 0.8rem;
-    background: rgba(255, 248, 239, 0.52);
-  }
-
-  .retro-control,
-  .retro-ok {
-    display: inline-flex;
-    min-height: 2.55rem;
-    align-items: center;
-    justify-content: center;
-    border: 2px solid rgba(55, 40, 38, 0.72);
-    border-radius: 3px;
-    padding: 0.48rem 0.78rem;
-    background: rgba(255, 248, 239, 0.86);
-    color: var(--color-text);
-    font: inherit;
-    font-family: var(--font-mono);
-    font-size: var(--font-size-small);
-    font-weight: 900;
-    text-decoration: none;
-    box-shadow:
-      2px 2px 0 rgba(55, 40, 38, 0.16),
-      inset 1px 1px 0 rgba(255, 248, 239, 0.9);
-    cursor: pointer;
-  }
-
-  .retro-control:hover,
-  .retro-ok:hover {
-    background: color-mix(in srgb, var(--khaki) 18%, var(--paper));
-    color: var(--color-text);
-  }
-
-  .retro-control.primary {
-    background: color-mix(in srgb, var(--blue-soft) 50%, var(--paper));
-  }
-
-  .replay-mode {
-    color: var(--color-text-muted);
-    font-family: var(--font-mono);
-    font-size: var(--font-size-micro);
-    font-weight: 850;
-    text-transform: uppercase;
-  }
-
-  .result-dialog {
-    overflow: hidden;
-    width: min(42rem, calc(100vw - 2rem));
-    max-height: min(44rem, calc(100vh - 2rem));
-    border: 2px solid rgba(55, 40, 38, 0.74);
-    border-radius: 4px;
-    padding: 0;
-    background: rgba(248, 240, 231, 0.9);
-    color: var(--color-text);
-    box-shadow: 4px 4px 0 rgba(55, 40, 38, 0.12);
-  }
-
-  .result-dialog::backdrop {
-    background: rgba(55, 40, 38, 0.38);
-  }
-
-  .result-dialog:not([open]) {
-    display: none;
-  }
-
-  .result-body {
-    overflow-y: auto;
-    max-height: calc(min(44rem, 100vh - 2rem) - 2.2rem);
-    padding: clamp(1.1rem, 2.4vw, 1.6rem);
-  }
-
-  .result-list {
-    display: grid;
-    gap: 0.6rem;
-    max-width: 720px;
-    margin: 0;
-    padding: 0;
-    list-style: none;
-  }
-
-  .result-list li {
-    display: grid;
-    grid-template-columns: 2rem minmax(0, 1fr);
-    align-items: center;
-    color: var(--color-text-muted);
-    font-weight: 750;
-  }
-
-  .result-list span {
-    color: var(--houseplant);
-    font-weight: 900;
-  }
-
-  .result-list .warning span {
-    color: color-mix(in srgb, var(--khaki) 72%, var(--ink));
-  }
-
-  .result-story {
-    display: grid;
-    gap: 0.3rem;
-    max-width: 780px;
-    margin-bottom: var(--space-5);
-    color: var(--color-text-muted);
-  }
-
-  .result-story p {
-    margin: 0;
-  }
-
-  .result-boundary {
-    display: grid;
-    gap: 0.25rem;
-    max-width: 680px;
-    margin-top: var(--space-5);
-    border-left: 0.32rem solid var(--rust);
-    padding-left: var(--space-4);
-    color: var(--color-text-muted);
-    font-weight: 760;
-  }
-
-  .result-boundary p {
-    margin: 0;
-  }
-
-  .retro-ok {
-    width: min(8rem, 100%);
-    margin-top: var(--space-5);
-  }
-
-  .technical-details {
-    display: grid;
-    gap: 0.55rem;
-  }
-
-  .technical-details summary {
-    list-style-position: inside;
-    cursor: pointer;
-  }
-
-  .technical-details details[open] summary {
-    margin-bottom: var(--space-4);
-  }
-
-  .technical-details details {
-    border: 2px solid rgba(55, 40, 38, 0.42);
-    background: color-mix(in srgb, var(--paper) 82%, var(--blue-soft));
-    box-shadow: 2px 2px 0 rgba(55, 40, 38, 0.08);
-  }
-
-  .technical-details dl {
-    grid-template-columns: minmax(11rem, 0.35fr) minmax(0, 1fr);
-  }
-
-  .technical-details dd {
-    margin-top: 0;
-  }
-
-  @media (max-width: 940px) {
-    .case-summary,
-    .cast-key ul,
-    .team-notes,
-    .workspace-step,
-    .technical-details dl {
-      grid-template-columns: 1fr;
-    }
-
-    .workspace {
-      min-height: auto;
-    }
-
-    .personality-note {
-      margin-left: 0.8rem;
-    }
-
-    .team-note-handoff {
-      justify-self: start;
-      white-space: normal;
-    }
-  }
-
-  @media (max-width: 760px) {
-    .session-strip span:not(:last-child)::after {
-      content: "";
-      margin-left: 0;
-    }
-
-    .evidence-facts,
-    .inspection-list div {
-      grid-template-columns: 1fr;
-    }
-
-    .playback-shell {
-      justify-content: stretch;
-    }
-
-    .retro-control {
-      flex: 1 1 9rem;
-    }
-
-    .replay-mode {
-      order: -1;
-      width: 100%;
-      text-align: center;
-    }
-
-    .personality-note {
-      display: none;
-    }
-  }
-
-  @media (max-width: 560px) {
-    .workstation-titlebar,
-    .retro-titlebar,
-    .workstation-menu {
-      font-size: 0.78rem;
-    }
-
-    .window-controls span,
-    .mini-window-controls span {
-      width: 1rem;
-      height: 1rem;
-    }
-  }
-</style>
+          label: "Application repository",
+          value: demoArtifact.application.repository,
+          code: true,
+        },
+        {
+          label: "Application profile",
+          value: demoArtifact.application.profile,
+          code: true,
+        },
+        { label: "Base branch", value: demoArtifact.scenario.base, code: true },
+        { label: "Head branch", value: demoArtifact.scenario.head, code: true },
+      ],
+    },
+    { summary: "Raw replay data", raw: rawArtifact },
+    {
+      summary: "Safety boundaries",
+      items: [
+        {
+          label: "Tests generated",
+          value: demoArtifact.safety.tests_generated,
+        },
+        {
+          label: "Patches generated",
+          value: demoArtifact.safety.patches_generated,
+        },
+        {
+          label: "Agents dispatched",
+          value: demoArtifact.safety.agents_dispatched,
+        },
+        {
+          label: "Human review required",
+          value: String(demoArtifact.safety.human_review_required),
+        },
+      ],
+    },
+  ]}
+/>

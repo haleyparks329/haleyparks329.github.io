@@ -1,0 +1,723 @@
+---
+import { getCollection } from "astro:content";
+import investigation from "@/data/qa-agents/meticulous-pricing-investigation.json";
+import input from "@/data/qa-agents/meticulous-pricing-input.json";
+import EvidenceReplay from "@/components/qa-agents/EvidenceReplay.astro";
+
+const project = (await getCollection("projects")).find(
+  (entry) => entry.data.slug === "qa-agents",
+);
+if (!project) {
+  throw new Error("Missing QA Agents project entry");
+}
+
+const rawInvestigationArtifact = JSON.stringify(investigation, null, 2);
+const rawInputArtifact = JSON.stringify(input, null, 2);
+const changedFiles = input.change.changed_files.join(", ");
+const changedBranches = input.change.changed_branches.join(", ");
+const allDiffs = input.sessions.flatMap((session) =>
+  session.differences.map((difference) => ({
+    ...difference,
+    session_id: session.session_id,
+    workflow_hint: session.workflow_hint,
+  })),
+);
+const expectedDiffs = allDiffs.filter(
+  (difference) => "expected" in difference && difference.expected,
+);
+const regressionDiffs = allDiffs.filter(
+  (difference) =>
+    "severity" in difference && difference.severity === "regression",
+);
+const expectedFinding = investigation.findings.find(
+  (finding) => finding.classification === "expected_change",
+);
+const regressionFinding = investigation.findings.find(
+  (finding) => finding.classification === "confirmed_regression",
+);
+const knownExpectation = input.known_expectations[0];
+const missingWorkflow = investigation.coverage_audit.missing_workflows[0];
+const uncoveredBranch =
+  investigation.coverage_audit.uncovered_changed_branches[0];
+const uncoveredExpectation =
+  (input.coverage.branch_expectations as Record<string, string>)[
+    uncoveredBranch
+  ] ?? missingWorkflow;
+const decision =
+  investigation.policy_decision.decision[0].toUpperCase() +
+  investigation.policy_decision.decision.slice(1);
+const workflowDetails = investigation.workflow_clusters
+  .map(
+    (cluster) =>
+      `${cluster.name}: ${cluster.session_ids.join(", ")} | routes ${cluster.shared_routes.join(" -> ")}`,
+  )
+  .join("\n");
+const workflowSummary = investigation.workflow_clusters
+  .map((cluster) => `${cluster.name} (${cluster.session_ids.length} sessions)`)
+  .join("\n");
+const expectedSessionIds = expectedFinding?.session_ids.join(", ") ?? "";
+const expectedDiffIds = expectedFinding?.diff_ids.join(", ") ?? "";
+const regressionSessionIds = regressionFinding?.session_ids.join(", ") ?? "";
+const regressionDiffIds = regressionFinding?.diff_ids.join(", ") ?? "";
+const regressionBaseValues = [
+  ...new Set(regressionDiffs.map((difference) => difference.base_value)),
+].join(", ");
+const regressionHeadValues = [
+  ...new Set(regressionDiffs.map((difference) => difference.head_value)),
+].join(", ");
+const packageContents = [
+  `${investigation.replay_summary.sessions_affected} affected sessions`,
+  `${investigation.findings.length} findings`,
+  `${allDiffs.length} deterministic differences`,
+  `${investigation.change.changed_branches.length} changed branches`,
+  `${input.known_expectations.length} known expectation`,
+].join(" | ");
+---
+
+<EvidenceReplay
+  pageTitle="QA Agents Meticulous Strategy Replay"
+  pageDescription="Independent simulated Meticulous-inspired QA Agents replay investigation."
+  canonicalPath="/projects/qa-agents/meticulous/"
+  eyebrow="QA AGENTS STRATEGY EXPLORATION"
+  titleLines={["From deterministic replay", "to engineering decision"]}
+  lede="A simulated pricing change moves through two distinct layers: a replay engine produces deterministic base-versus-head evidence, then QA Agents group, interpret, audit, and convert that evidence into a policy-constrained recommendation."
+  safetyNote="This is an independent technical exploration based on publicly documented replay-testing concepts. It uses simulated data and is not an official Meticulous integration."
+  links={[
+    { href: "/projects/qa-agents/", label: "Main QA Agents page" },
+    ...(project.data.repositoryUrl
+      ? [
+          {
+            href: project.data.repositoryUrl,
+            label: "QA Agents repository",
+            external: true,
+          },
+        ]
+      : []),
+  ]}
+  caseSummary={[
+    { label: "Change", value: "Annual-plan pricing" },
+    {
+      label: "Replay evaluated",
+      value: `${investigation.replay_summary.sessions_evaluated.toLocaleString()} sessions`,
+    },
+    {
+      label: "Affected",
+      value: `${investigation.replay_summary.sessions_affected} sessions`,
+    },
+    { label: "Decision", value: decision },
+  ]}
+  storyIntro={{
+    eyebrow: "Two-phase replay",
+    heading: "The replay engine finishes first. The investigation starts next.",
+    paragraphs: [
+      "A pull request changes annual-plan pricing. The replay layer evaluates recorded user sessions, selects those relevant to the changed code, replays base and head behavior, and produces a deterministic comparison package.",
+      "QA Agents do not replace that machinery. They begin where it ends: turning 17 affected sessions into workflows, separating expected changes from a real regression, exposing missing coverage, and handing a bounded recommendation to a human.",
+    ],
+    explanation:
+      "PHASE 1 - DETERMINISTIC EVIDENCE: replay finds what changed. PHASE 2 - QA INVESTIGATION: QA Agents investigate what it means.",
+  }}
+  castTitle="Responsibility map"
+  cast={[
+    "Replay Engine - captures, replays, and compares deterministic evidence",
+    "Beacon - groups affected sessions into product workflows",
+    "Inspector - separates expected changes from regressions",
+    "Inspector - audits missing workflow coverage",
+    "Scribe / Policy - applies bounded decision rules",
+    "Human - makes the final decision",
+  ]}
+  sessionMeta={[
+    "PHASE 1 - DETERMINISTIC EVIDENCE",
+    "PHASE 2 - QA INVESTIGATION",
+    investigation.case_id,
+  ]}
+  gapNote="Replay finds what changed. QA Agents investigate what it means."
+  defaultStepIndex={0}
+  steps={[
+    {
+      id: "change",
+      timelineLabel: "PR changes pricing",
+      panelTitle: "Change context",
+      windowTitle: "pull-request.json",
+      icon: "▤",
+      accent: "sky",
+      notebook: {
+        heading: "What changed?",
+        observation: `A pull request changes annual-plan pricing: ${input.change.title}.`,
+        interpretation:
+          "The change touches billing calculation, discount-label copy, and coupon-proration branches before any QA interpretation begins.",
+        why: "Pricing changes are risky because a small calculation or copy change can affect checkout totals, customer expectations, and merge confidence.",
+        boundary:
+          "PHASE 1 - DETERMINISTIC EVIDENCE begins with the code change.",
+      },
+      story: {
+        actor: "REPOSITORY",
+        emoji: "▤",
+        heading: "A pull request changes annual-plan pricing.",
+        body: "The pricing change triggers deterministic replay before merge so the changed code can be compared against recorded behavior.",
+        handoff: "TRIGGER REPLAY",
+        evidenceLabel: "What started this?",
+      },
+      panel: {
+        kind: "diff",
+        diffBadges: [
+          input.change.title,
+          `${input.change.changed_files.length} files`,
+          `${input.change.changed_branches.length} branches`,
+        ],
+        facts: [
+          { label: "Case ID", value: input.case_id, code: true },
+          {
+            label: "Base revision",
+            value: input.change.base_revision,
+            code: true,
+          },
+          {
+            label: "Head revision",
+            value: input.change.head_revision,
+            code: true,
+          },
+          { label: "Changed files", value: changedFiles, code: true },
+          { label: "Changed branches", value: changedBranches, code: true },
+        ],
+        diffLines: [
+          `pull request: ${input.change.title}`,
+          `base: ${input.change.base_revision}`,
+          `head: ${input.change.head_revision}`,
+          ...input.change.changed_files.map((file) => `+ file ${file}`),
+          ...input.change.changed_branches.map(
+            (branch) => `+ branch ${branch}`,
+          ),
+        ],
+        diffNote:
+          "Human question: What started the investigation? Answer: a PR changed annual-plan pricing.",
+      },
+    },
+    {
+      id: "replay",
+      timelineLabel: "Replay completes",
+      panelTitle: "Replay summary",
+      windowTitle: "replay-engine.json",
+      icon: "✓",
+      accent: "sage",
+      notebook: {
+        heading: "What did replay already do?",
+        observation: `The replay engine evaluated ${investigation.replay_summary.sessions_evaluated.toLocaleString()} recorded sessions, selected ${investigation.replay_summary.sessions_selected}, replayed base and head behavior, and identified ${investigation.replay_summary.sessions_affected} affected sessions.`,
+        interpretation:
+          "The evidence is reproducible and inspectable before any agent interprets it.",
+        why: "QA Agents do not need to guess what the browser did. They begin with deterministic evidence.",
+        boundary:
+          "Capture, replay, and base-versus-head comparison belong to the deterministic evidence layer.",
+      },
+      story: {
+        actor: "REPLAY ENGINE",
+        emoji: "✓",
+        heading: "The replay engine completed the deterministic work.",
+        body: "It evaluated the recorded session corpus, selected sessions relevant to the changed pricing code, replayed base and head, and produced comparison evidence.",
+        handoff: "BUILD EVIDENCE PACKAGE",
+        evidenceLabel: "PHASE 1",
+        boundary:
+          "Capture, replay, and base-versus-head comparison belong to the deterministic evidence layer.",
+      },
+      panel: {
+        kind: "command",
+        statusLabel: "REPLAY COMPLETE",
+        facts: [
+          {
+            label: "Sessions evaluated",
+            value: investigation.replay_summary.sessions_evaluated,
+          },
+          {
+            label: "Sessions selected",
+            value: investigation.replay_summary.sessions_selected,
+          },
+          {
+            label: "Sessions affected",
+            value: investigation.replay_summary.sessions_affected,
+            tone: "success",
+          },
+          {
+            label: "Network replay",
+            value: "used and stable in source sessions",
+          },
+          { label: "Source marker", value: input.source.type, code: true },
+        ],
+      },
+    },
+    {
+      id: "handoff",
+      timelineLabel: "Evidence handed off",
+      panelTitle: "Evidence package",
+      windowTitle: "qa-agents-handoff.json",
+      icon: "→",
+      accent: "lavender",
+      notebook: {
+        heading: "Where do QA Agents begin?",
+        observation:
+          "The replay engine produced an immutable evidence package and completed its responsibility.",
+        interpretation:
+          "The package preserves session, diff, branch, expectation, and coverage references so every later conclusion can be traced back.",
+        why: "This is the boundary between execution and interpretation.",
+        boundary:
+          "Replay finds the differences. QA Agents investigate what they mean.",
+      },
+      story: {
+        actor: "QA AGENTS",
+        emoji: "→",
+        heading: "The evidence package is handed to QA Agents.",
+        body: "The replay engine has completed its work. QA Agents receive affected sessions, deterministic differences, branch coverage, and known expectation evidence.",
+        handoff: "BEGIN INVESTIGATION",
+        evidenceLabel: "PHASE 2",
+        boundary:
+          "Replay finds the differences. QA Agents investigate what they mean.",
+      },
+      panel: {
+        kind: "record",
+        facts: [
+          { label: "Package contents", value: packageContents },
+          {
+            label: "Affected sessions",
+            value: investigation.replay_summary.sessions_affected,
+          },
+          { label: "Differences", value: allDiffs.length },
+          {
+            label: "Coverage records",
+            value: investigation.coverage_audit.coverage_risk,
+          },
+          {
+            label: "Known expectation",
+            value: `${knownExpectation.id}: ${knownExpectation.summary}`,
+          },
+          {
+            label: "Deterministic source",
+            value: input.source.type,
+            code: true,
+          },
+        ],
+      },
+    },
+    {
+      id: "workflows",
+      timelineLabel: "17 sessions → 3 workflows",
+      panelTitle: "Workflow clusters",
+      windowTitle: "workflow-clusters.json",
+      icon: "▣",
+      accent: "burgundy",
+      notebook: {
+        heading: "Are these 17 separate problems?",
+        observation: `${investigation.replay_summary.sessions_affected} affected sessions group into ${investigation.summary.affected_workflows} product workflows.`,
+        interpretation:
+          "Session does not equal workflow, and workflow does not equal issue. Grouping reduces duplicate review without discarding the source evidence.",
+        why: "Engineers can reason about the product paths that changed instead of treating every affected session as a separate bug report.",
+      },
+      story: {
+        actor: "Beacon",
+        emoji: "🧭",
+        heading: "Beacon groups affected sessions into workflows.",
+        body: "The replay engine found 17 affected sessions, but that does not mean there are 17 separate bugs. The next step is to group them by the user workflows and code paths they share.",
+        handoff: "CHECK EXPECTATIONS",
+        evidenceLabel: "Scope",
+      },
+      panel: {
+        kind: "record",
+        facts: [
+          {
+            label: "Affected sessions",
+            value: investigation.replay_summary.sessions_affected,
+          },
+          {
+            label: "Workflow clusters",
+            value: investigation.summary.affected_workflows,
+          },
+          { label: "Cluster names", value: workflowSummary },
+          { label: "Representative evidence", value: workflowDetails },
+        ],
+      },
+    },
+    {
+      id: "expected",
+      timelineLabel: "Expected changes separated",
+      panelTitle: "Expected product change",
+      windowTitle: "finding-expected.json",
+      icon: "✓",
+      accent: "sage",
+      notebook: {
+        heading: "Which differences were expected?",
+        observation: `${expectedDiffs.length} textual differences match expectation ${knownExpectation.id}.`,
+        interpretation:
+          "The annual-discount copy changed from Save 10% to Save 12%, and the source fixture marks that as intentional expectation evidence.",
+        why: "A visual or textual difference is not automatically a defect. Expected changes should be separated before searching for regressions.",
+      },
+      story: {
+        actor: "Inspector",
+        emoji: "🔍",
+        heading: "Inspector separates the intentional pricing-copy change.",
+        body: `${expectedDiffs.length} differences reflect the expected annual discount copy update, so they should not be treated as regressions.`,
+        handoff: "REMOVE EXPECTED NOISE",
+        evidenceLabel: "Expected",
+      },
+      panel: {
+        kind: "record",
+        facts: [
+          {
+            label: "Finding",
+            value: expectedFinding?.finding_id ?? "finding-expected",
+            code: true,
+          },
+          {
+            label: "Classification",
+            value: expectedFinding?.classification ?? "expected_change",
+          },
+          { label: "Expected diffs", value: expectedDiffs.length },
+          { label: "Session IDs", value: expectedSessionIds, code: true },
+          { label: "Diff IDs", value: expectedDiffIds, code: true },
+          {
+            label: "Expectation evidence",
+            value: `${knownExpectation.id}: ${knownExpectation.summary}`,
+          },
+        ],
+      },
+    },
+    {
+      id: "regression",
+      timelineLabel: "Rounding regression confirmed",
+      panelTitle: "Confirmed regression",
+      windowTitle: "finding-regression.json",
+      icon: "!",
+      accent: "ochre",
+      notebook: {
+        heading: "What is actually broken?",
+        observation: `${regressionDiffs.length} functional differences point to one shared one-cent annual-upgrade rounding regression.`,
+        interpretation:
+          "Two sessions do not represent two separate bugs when they share the same changed branch and root-cause candidate.",
+        why: "The investigation reduces uncertainty by separating expected product change from one confirmed functional regression.",
+      },
+      story: {
+        actor: "Inspector",
+        emoji: "🔍",
+        heading: "Inspector confirms one shared rounding regression.",
+        body: "After expected copy changes are removed, two affected sessions trace to the same one-cent pricing mismatch.",
+        handoff: "AUDIT COVERAGE",
+        evidenceLabel: "Regression",
+      },
+      panel: {
+        kind: "inspection",
+        headerTitle: "Shared rounding regression",
+        headerText:
+          "Functional replay evidence shows base and head totals diverging by one cent.",
+        facts: [
+          {
+            label: "Finding ID",
+            value: regressionFinding?.finding_id ?? "finding-regression",
+            code: true,
+          },
+          { label: "Base value", value: regressionBaseValues },
+          { label: "Head value", value: regressionHeadValues },
+          {
+            label: "Affected sessions",
+            value: regressionSessionIds,
+            code: true,
+          },
+          { label: "Diff IDs", value: regressionDiffIds, code: true },
+          {
+            label: "Changed branch",
+            value:
+              regressionFinding?.branch_ids.join(", ") ??
+              "branch-annual-rounding-total",
+            code: true,
+          },
+        ],
+        diffNote:
+          "Finding: one confirmed functional regression remains after expected changes are removed.",
+      },
+    },
+    {
+      id: "coverage",
+      timelineLabel: "Coverage gap found",
+      panelTitle: "Coverage audit",
+      windowTitle: "coverage-audit.json",
+      icon: "⌕",
+      accent: "burgundy",
+      notebook: {
+        heading: "What risk remains unseen?",
+        observation: `${uncoveredBranch} is a changed branch with no selected replay coverage for ${uncoveredExpectation}.`,
+        interpretation:
+          "A large replay suite can still leave a meaningful changed workflow unobserved.",
+        why: "Residual coverage risk matters because a hold recommendation should account for both known regressions and changed paths that were not exercised.",
+      },
+      story: {
+        actor: "Inspector",
+        emoji: "🔍",
+        heading: "Inspector finds one changed workflow still uncovered.",
+        body: "The legacy coupon plus prorated annual upgrade branch was changed, but the selected replay evidence did not exercise that workflow.",
+        handoff: "APPLY POLICY",
+        evidenceLabel: "Residual risk",
+      },
+      panel: {
+        kind: "inspection",
+        headerTitle: "Missing workflow coverage",
+        headerText:
+          "The replay evidence is useful, but the audit records one changed branch with no selected workflow coverage.",
+        facts: [
+          { label: "Uncovered branch", value: uncoveredBranch, code: true },
+          { label: "Missing workflow", value: missingWorkflow },
+          { label: "Expected branch meaning", value: uncoveredExpectation },
+          {
+            label: "Coverage risk",
+            value: investigation.coverage_audit.coverage_risk,
+          },
+          {
+            label: "Uncovered changed branches",
+            value:
+              investigation.policy_decision.metrics.uncovered_changed_branches,
+          },
+        ],
+        diffNote:
+          "Residual risk: one changed workflow needs capture, replay, or direct test coverage before reconsidering merge.",
+      },
+    },
+    {
+      id: "policy",
+      timelineLabel: "Policy says hold",
+      panelTitle: "Merge policy",
+      windowTitle: "policy-decision.json",
+      icon: "▣",
+      accent: "lavender",
+      notebook: {
+        heading: "Can this safely merge?",
+        observation: `Policy matched ${investigation.policy_decision.matched_rule} and produced a ${investigation.policy_decision.decision} recommendation.`,
+        interpretation:
+          "Finding: a regression exists. Policy: confirmed functional regressions require hold. Recommendation: hold.",
+        why: "The LLM is not independently deciding to block the merge; the recommendation is constrained by explicit policy and deterministic evidence.",
+      },
+      story: {
+        actor: "Scribe / Policy",
+        emoji: "✍️",
+        heading: "Policy constrains the merge recommendation.",
+        body: "The confirmed-functional-regression rule matches the evidence, so the bounded recommendation is hold.",
+        handoff: "REQUEST HUMAN REVIEW",
+        evidenceLabel: "Policy",
+      },
+      panel: {
+        kind: "recommendation",
+        statusLabel: `Recommendation: ${investigation.policy_decision.decision}`,
+        action: `Hold because ${investigation.policy_decision.matched_rule} matched the confirmed regression evidence.`,
+        facts: [
+          {
+            label: "Matched rule",
+            value: investigation.policy_decision.matched_rule,
+            code: true,
+          },
+          { label: "Decision", value: investigation.policy_decision.decision },
+          { label: "Priority", value: investigation.policy_decision.priority },
+          {
+            label: "Confirmed regressions",
+            value: investigation.policy_decision.metrics.confirmed_regressions,
+          },
+          {
+            label: "Coverage risk",
+            value: investigation.policy_decision.metrics.coverage_risk,
+          },
+          {
+            label: "Next actions",
+            value: investigation.summary.next_actions.join(" "),
+          },
+        ],
+      },
+    },
+    {
+      id: "recommendation",
+      timelineLabel: "Human review requested",
+      panelTitle: "Bounded recommendation",
+      windowTitle: "human-review.md",
+      icon: "✎",
+      accent: "sky",
+      notebook: {
+        heading: "Who makes the final decision?",
+        observation: `QA Agents return a bounded hold recommendation with ${expectedDiffs.length} expected changes, one shared regression, and one coverage gap.`,
+        interpretation:
+          "The investigation reduces uncertainty and recommends next actions, but it does not merge, approve, or change tests autonomously.",
+        why: "A human reviewer keeps final authority because product context and engineering tradeoffs still matter.",
+        boundary:
+          "Recommendation only. This replay does not use private Meticulous APIs or data.",
+      },
+      story: {
+        actor: "HUMAN REVIEW",
+        emoji: "👩‍💻",
+        heading: "Human review is requested.",
+        body: "QA Agents have reduced the replay evidence to expected change, confirmed regression, residual coverage risk, and a policy-constrained hold recommendation.",
+        handoff: "HUMAN DECIDES",
+        evidenceLabel: "Final authority",
+        boundary: "A human retains final authority over merge decisions.",
+      },
+      panel: {
+        kind: "recommendation",
+        statusLabel: "human review required",
+        action: `Recommendation: ${investigation.summary.recommendation}`,
+        facts: [
+          { label: "Expected differences", value: expectedDiffs.length },
+          {
+            label: "Shared regression",
+            value: regressionFinding?.summary ?? "One shared regression",
+          },
+          { label: "Coverage gap", value: missingWorkflow },
+          {
+            label: "Human decision required",
+            value: String(investigation.human_decision_required),
+          },
+          ...investigation.summary.next_actions.map((action, index) => ({
+            label: `Next action ${index + 1}`,
+            value: action,
+          })),
+        ],
+      },
+    },
+  ]}
+  result={{
+    eyebrow: "Investigation result",
+    heading: "Evidence reduced to a decision",
+    story: [
+      "The replay layer produced the evidence.",
+      `QA Agents reduced ${investigation.replay_summary.sessions_affected} affected sessions to ${investigation.summary.affected_workflows} workflows, separated the expected pricing change from one shared rounding regression, and found one changed workflow without replay coverage.`,
+      "Deterministic policy recommends holding the merge. A human still decides what happens next.",
+    ],
+    items: [
+      {
+        marker: "✓",
+        text: `${investigation.replay_summary.sessions_evaluated.toLocaleString()} sessions evaluated`,
+      },
+      {
+        marker: "✓",
+        text: `${investigation.replay_summary.sessions_selected} relevant sessions selected`,
+      },
+      {
+        marker: "✓",
+        text: `${investigation.replay_summary.sessions_affected} affected sessions investigated`,
+      },
+      {
+        marker: "✓",
+        text: `${investigation.summary.affected_workflows} workflows identified`,
+      },
+      {
+        marker: "✓",
+        text: `${expectedDiffs.length} expected changes separated`,
+      },
+      {
+        marker: "⚠",
+        text: "1 shared rounding regression confirmed",
+        warning: true,
+      },
+      {
+        marker: "⚠",
+        text: "1 uncovered workflow found",
+        warning: true,
+      },
+      {
+        marker: "⚠",
+        text: `Recommendation: ${investigation.summary.recommendation}`,
+        warning: true,
+      },
+    ],
+    boundary: [
+      "Deterministic evidence produced the facts.",
+      "QA Agents interpreted the evidence.",
+      "Policy constrained the recommendation.",
+      "A human retains final authority.",
+    ],
+  }}
+  recordedReplayNote="This workstation is a static interface around vendored simulated source artifacts. It does not start a browser session, call Meticulous APIs, dispatch an agent, generate code, or run tests."
+  technicalDetails={[
+    {
+      summary: "Raw replay summary",
+      items: [
+        {
+          label: "Sessions evaluated",
+          value: investigation.replay_summary.sessions_evaluated,
+        },
+        {
+          label: "Sessions selected",
+          value: investigation.replay_summary.sessions_selected,
+        },
+        {
+          label: "Sessions affected",
+          value: investigation.replay_summary.sessions_affected,
+        },
+        { label: "Total differences", value: allDiffs.length },
+        { label: "Expected differences", value: expectedDiffs.length },
+        { label: "Regression differences", value: regressionDiffs.length },
+      ],
+    },
+    {
+      summary: "Workflow-clustering evidence",
+      items: investigation.workflow_clusters.map((cluster) => ({
+        label: cluster.name,
+        value: `${cluster.session_ids.join(", ")} | routes ${cluster.shared_routes.join(" -> ")} | branches ${cluster.shared_branches.join(", ")}`,
+      })),
+    },
+    {
+      summary: "Finding evidence references",
+      items: [
+        {
+          label: expectedFinding?.finding_id ?? "expected finding",
+          value: `${expectedFinding?.classification}: sessions ${expectedSessionIds}; diffs ${expectedDiffIds}; expectation ${knownExpectation.id}`,
+        },
+        {
+          label: regressionFinding?.finding_id ?? "regression finding",
+          value: `${regressionFinding?.classification}: sessions ${regressionSessionIds}; diffs ${regressionDiffIds}; branch ${regressionFinding?.branch_ids.join(", ")}`,
+        },
+      ],
+    },
+    {
+      summary: "Coverage audit",
+      items: [
+        {
+          label: "Coverage risk",
+          value: investigation.coverage_audit.coverage_risk,
+        },
+        { label: "Missing workflow", value: missingWorkflow },
+        { label: "Uncovered branch", value: uncoveredBranch, code: true },
+        { label: "Branch expectation", value: uncoveredExpectation },
+      ],
+    },
+    {
+      summary: "Matched policy rule",
+      items: [
+        {
+          label: "Matched rule",
+          value: investigation.policy_decision.matched_rule,
+          code: true,
+        },
+        { label: "Decision", value: investigation.policy_decision.decision },
+        { label: "Priority", value: investigation.policy_decision.priority },
+        {
+          label: "Evidence completeness",
+          value: investigation.policy_decision.metrics.evidence_completeness,
+        },
+      ],
+    },
+    {
+      summary: "Source disclaimer",
+      items: [
+        {
+          label: "Input artifact path",
+          value: "src/data/qa-agents/meticulous-pricing-input.json",
+          code: true,
+        },
+        {
+          label: "Investigation artifact path",
+          value: "src/data/qa-agents/meticulous-pricing-investigation.json",
+          code: true,
+        },
+        { label: "Source disclaimer", value: investigation.source.disclaimer },
+        {
+          label: "Strategy disclaimer",
+          value: investigation.strategy.disclaimer,
+        },
+      ],
+    },
+    {
+      summary: "Vendored investigation artifact",
+      raw: rawInvestigationArtifact,
+    },
+    { summary: "Vendored source input fixture", raw: rawInputArtifact },
+  ]}
+/>
