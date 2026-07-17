@@ -31,6 +31,12 @@ const entries = (await getCollection("fieldLog")).sort(
     <section class="entry-list" aria-label="Field Log entries">
       {entries.map((entry) => <FieldLogEntryRow entry={entry} />)}
     </section>
+
+    <nav class="field-log-page-links" aria-label="Field Log next paths">
+      <a href="/explore/trails/how-i-build/">Follow the How I Build trail</a>
+      <a href="/search/">Search the Field Log</a>
+      <a href="/writing/">Open polished writing</a>
+    </nav>
   </section>
 </BaseLayout>
 
@@ -87,5 +93,22 @@ const entries = (await getCollection("fieldLog")).sort(
   .entry-list {
     margin-top: clamp(2rem, 5vw, 3.5rem);
     border-top: var(--border-width) solid var(--color-border);
+  }
+
+  .field-log-page-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.55rem 0.9rem;
+    margin-top: clamp(2.5rem, 5vw, 4rem);
+    border-block: var(--border-width) solid var(--color-border);
+    padding-block: var(--space-4);
+  }
+
+  .field-log-page-links a {
+    color: var(--plum);
+    font-size: var(--font-size-small);
+    font-weight: 850;
+    text-decoration-thickness: 0.08em;
+    text-underline-offset: 0.18em;
   }
 </style>

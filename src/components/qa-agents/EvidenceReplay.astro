@@ -92,6 +92,7 @@ type Props = {
     items: { marker: string; text: string; warning?: boolean }[];
     boundary: string[];
   };
+  completionLinks?: LinkItem[];
   recordedReplayNote: string;
   technicalDetails: TechnicalDetail[];
 };
@@ -114,6 +115,7 @@ const {
   defaultStepIndex = 0,
   steps,
   result,
+  completionLinks = [],
   recordedReplayNote,
   technicalDetails,
 } = Astro.props;
@@ -556,7 +558,19 @@ const stepDetails = steps.map((step) => ({
           }
         </ol><div class="result-boundary">
           {result.boundary.map((line) => <p>{line}</p>)}
-        </div><button class="retro-ok" type="button" data-result-ok>OK</button>
+        </div>{
+          completionLinks.length > 0 && (
+            <nav class="result-links" aria-label="Replay completion links">
+              {completionLinks.map((link) =>
+                link.external ? (
+                  <ExternalLink href={link.href} label={link.label} />
+                ) : (
+                  <a href={link.href}>{link.label}</a>
+                ),
+              )}
+            </nav>
+          )
+        }<button class="retro-ok" type="button" data-result-ok>OK</button>
       </div>
     </dialog>
 
@@ -729,6 +743,25 @@ const stepDetails = steps.map((step) => ({
     margin-top: var(--space-4);
     color: var(--color-text-muted);
     font-size: var(--font-size-small);
+  }
+
+  .result-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.55rem;
+    margin-top: var(--space-4);
+  }
+
+  .result-links :global(a),
+  .result-links a {
+    border: 2px solid rgba(55, 40, 38, 0.65);
+    border-radius: 4px;
+    padding: 0.45rem 0.65rem;
+    background: rgba(248, 240, 231, 0.92);
+    color: var(--color-text);
+    font-size: var(--font-size-small);
+    font-weight: 850;
+    text-decoration: none;
   }
 
   .case-summary {

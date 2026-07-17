@@ -8,16 +8,20 @@ type Props = {
 
 const { title = "Continue Exploring", links } = Astro.props;
 const visibleLinks = links.slice(0, 4);
+const titleId = `continue-exploring-${title
+  .toLowerCase()
+  .replace(/[^a-z0-9]+/g, "-")
+  .replace(/^-|-$/g, "")}`;
 ---
 
 {
   visibleLinks.length > 0 && (
     <aside
       class="continue-exploring"
-      aria-labelledby="continue-exploring-title"
+      aria-labelledby={titleId}
     >
       <p class="eyebrow">Next shelf</p>
-      <h2 id="continue-exploring-title">{title}</h2>
+      <h2 id={titleId}>{title}</h2>
       <div class="continue-links">
         {visibleLinks.map((link) => (
           <a href={link.href}>

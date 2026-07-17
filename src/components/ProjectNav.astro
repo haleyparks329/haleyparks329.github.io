@@ -26,9 +26,6 @@ const links = [
   demoHref
     ? { href: demoHref, label: "Demo", external: demoHref.startsWith("http") }
     : undefined,
-  repositoryUrl
-    ? { href: repositoryUrl, label: "Repository", external: true }
-    : undefined,
   buildLogHref
     ? { href: buildLogHref, label: "Build Log", external: false }
     : undefined,
@@ -38,6 +35,9 @@ const links = [
         label: "Related Writing",
         external: false,
       }
+    : undefined,
+  repositoryUrl
+    ? { href: repositoryUrl, label: "Repository", external: true }
     : undefined,
   connectedHref
     ? {
@@ -52,7 +52,17 @@ const links = [
 ---
 
 <nav class="project-nav" aria-label={`${projectTitle} project navigation`}>
-  {links.map((link) => <a href={link.href}>{link.label}</a>)}
+  {
+    links.map((link) => (
+      <a
+        href={link.href}
+        target={link.external ? "_blank" : undefined}
+        rel={link.external ? "noreferrer" : undefined}
+      >
+        {link.label}
+      </a>
+    ))
+  }
 </nav>
 
 <style>

@@ -6,6 +6,8 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
 import WritingDocumentHeader from "@/components/WritingDocumentHeader.astro";
 import {
   destinationByHref,
+  destinationsForProject,
+  destinationToContentLink,
   relatedLinksForHrefs,
   trailsForHref,
 } from "@/data/navigation";
@@ -63,6 +65,22 @@ const continueLinks = relatedLinksForHrefs(
   entry.data.related,
   pageDestination?.id,
 );
+const associatedProject = entry.data.relatedProject
+  ? destinationsForProject(entry.data.relatedProject).find(
+      (destination) => destination.type === "project",
+    )
+  : undefined;
+const associatedProjectLink = associatedProject
+  ? destinationToContentLink(associatedProject)
+  : undefined;
+const readingLinks = continueLinks.filter(
+  (link) =>
+    link.type === "Writing" && link.href !== associatedProjectLink?.href,
+);
+const connectedLinks = continueLinks.filter(
+  (link) =>
+    link.type !== "Writing" && link.href !== associatedProjectLink?.href,
+);
 const trailMembership = trailsForHref(pageHref);
 ---
 
@@ -98,9 +116,19 @@ const trailMembership = trailsForHref(pageHref);
       )
     }
     {
+      associatedProjectLink && (
+        <ContinueExploring
+          title="Built Alongside"
+          links={[associatedProjectLink]}
+        />
+      )
+    }
+    <ContinueExploring title="Continue Reading" links={readingLinks} />
+    <ContinueExploring title="Related Work" links={connectedLinks} />
+    {
       relatedLinks.length > 0 && (
-        <section class="related-links" aria-labelledby="related-links">
-          <h2 id="related-links">Related links</h2>
+        <section class="source-links" aria-labelledby="source-links">
+          <h2 id="source-links">Source links</h2>
           <ul>
             {relatedLinks.map((link) => (
               <li>
@@ -115,7 +143,6 @@ const trailMembership = trailsForHref(pageHref);
         </section>
       )
     }
-    <ContinueExploring links={continueLinks} />
     <p class="back-link">
       <a href="/writing/">Return to Writing</a>
     </p>
@@ -177,7 +204,7 @@ const trailMembership = trailsForHref(pageHref);
   }
 
   .document-body :global(a),
-  .related-links :global(a),
+  .source-links :global(a),
   .back-link a {
     color: var(--plum);
     font-weight: 850;
@@ -323,13 +350,13 @@ const trailMembership = trailsForHref(pageHref);
     line-height: 1.55;
   }
 
-  .related-links {
+  .source-links {
     margin-top: clamp(2.5rem, 5vw, 4.5rem);
     border-top: var(--border-width) solid var(--color-border);
     padding-top: var(--space-5);
   }
 
-  .related-links h2 {
+  .source-links h2 {
     margin-bottom: var(--space-3);
     font-size: clamp(1.25rem, 1.8vw, 1.55rem);
   }

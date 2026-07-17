@@ -57,14 +57,11 @@ const archiveEntries = featuredEntry
       </div>
     </section>
 
-    <aside class="field-log-bridge">
-      <p>
-        <strong>Looking for active build updates?</strong>
-        {" "}
-        Open the Field Log.
-      </p>
-      <a href="/field-log/">Open Field Log</a>
-    </aside>
+    <nav class="writing-page-links" aria-label="Writing page next paths">
+      <a href="/search/">Search Writing</a>
+      <a href="/explore/?view=topic">Browse topics in What’s Here?</a>
+      <a href="/field-log/">Open Field Log for working notes</a>
+    </nav>
   </section>
 </BaseLayout>
 
@@ -99,7 +96,7 @@ const archiveEntries = featuredEntry
 
   .featured-writing,
   .writing-archive,
-  .field-log-bridge,
+  .writing-page-links,
   .type-intro {
     margin-top: clamp(2.5rem, 5vw, 4.5rem);
   }
@@ -126,17 +123,17 @@ const archiveEntries = featuredEntry
     color: var(--color-text-muted);
   }
 
-  .field-log-bridge {
-    border-left: 0.25rem solid var(--khaki);
-    padding-left: var(--space-4);
+  .writing-page-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.55rem 0.9rem;
+    border-block: var(--border-width) solid var(--color-border);
+    padding-block: var(--space-4);
   }
 
-  .field-log-bridge p {
-    margin-bottom: var(--space-3);
-  }
-
-  .field-log-bridge a {
+  .writing-page-links a {
     color: var(--plum);
+    font-size: var(--font-size-small);
     font-weight: 850;
     text-decoration-thickness: 0.08em;
     text-underline-offset: 0.18em;

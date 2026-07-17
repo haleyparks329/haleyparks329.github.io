@@ -41,6 +41,12 @@ const projects = (await getCollection("projects")).sort(
         }
       </div>
     </div>
+
+    <nav class="project-page-links" aria-label="Project page next paths">
+      <a href="/explore/">Browse all work in What’s Here?</a>
+      <a href="/explore/trails/how-i-build/">Follow the How I Build trail</a>
+      <a href="/explore/trails/ai-systems/">Follow the AI Systems trail</a>
+    </nav>
   </section>
 
   <section class="page-section">
@@ -70,6 +76,22 @@ const projects = (await getCollection("projects")).sort(
     gap: clamp(1rem, 2vw, 1.35rem);
     align-items: start;
     margin-bottom: clamp(2rem, 4vw, 4rem);
+  }
+
+  .project-page-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.55rem;
+    border-block: var(--border-width) solid var(--color-border);
+    padding-block: var(--space-4);
+  }
+
+  .project-page-links a {
+    color: var(--plum);
+    font-size: var(--font-size-small);
+    font-weight: 850;
+    text-decoration-thickness: 0.08em;
+    text-underline-offset: 0.18em;
   }
 
   .project-shelf-primary,

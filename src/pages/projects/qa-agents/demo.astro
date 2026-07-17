@@ -30,7 +30,7 @@ const diffLines = demoArtifact.change.diff_excerpt.split("\n");
   lede="This replay exists for the uncomfortable little gap between CI is green and the new behavior is actually protected."
   safetyNote="Static replay from a canonical Little Bytes artifact. No live browser session, autonomous code change, or hidden agent execution is occurring on this page."
   links={[
-    { href: "/projects/qa-agents/", label: "Main QA Agents page" },
+    { href: "/projects/qa-agents/", label: "Back to Case Study" },
     ...(repositoryUrl
       ? [{ href: repositoryUrl, label: "QA Agents repository", external: true }]
       : []),
@@ -326,6 +326,17 @@ const diffLines = demoArtifact.change.diff_excerpt.split("\n");
       "The evidence is ready for a human reviewer to decide what happens next.",
     ],
   }}
+  completionLinks={[
+    { href: "/projects/qa-agents/", label: "Return to Case Study" },
+    {
+      href: "/writing/meticulous-qa-investigation/",
+      label: "Read Related Writing",
+    },
+    {
+      href: "/projects/qa-agents/meticulous/replay/",
+      label: "View Another Related Demo",
+    },
+  ]}
   recordedReplayNote="This workstation is a static interface around one canonical artifact. It does not start a browser session, dispatch an agent, generate code, or run tests."
   technicalDetails={[
     {
