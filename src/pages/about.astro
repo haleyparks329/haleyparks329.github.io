@@ -1,14 +1,48 @@
 ---
 import BaseLayout from "@/layouts/BaseLayout.astro";
+import ContinueExploring from "@/components/ContinueExploring.astro";
 import PageIntro from "@/components/PageIntro.astro";
 import { siteConfig } from "@/site.config";
+
+const continueLinks = [
+  {
+    href: "/projects/",
+    label: "Projects",
+    type: "Project shelf",
+    summary: "See what I am building.",
+    topics: ["projects", "systems"],
+  },
+  {
+    href: "/writing/",
+    label: "Writing",
+    type: "Notes",
+    summary: "Read how I think.",
+    topics: ["writing", "thinking"],
+  },
+  {
+    href: "/explore/",
+    label: "What’s Here?",
+    type: "Index",
+    summary: "Wander through everything.",
+    topics: ["navigation", "archive"],
+  },
+  {
+    href: "/projects/this-website/",
+    label: "This Website",
+    type: "Project",
+    summary: "See how this place evolved.",
+    topics: ["website", "design"],
+  },
+];
 ---
 
 <BaseLayout
   title="About"
   description="About Haley Parks, an AI Product Engineer building personal AI systems, human modeling tools, and adaptive performance systems."
+  canonicalPath="/about/"
+  breadcrumbs={[{ label: "Home", href: "/" }, { label: "About" }]}
 >
-  <article class="about-page reading-column">
+  <article class="about-page site-shell">
     <PageIntro
       eyebrow="About"
       title="Hi, I'm Haley"
@@ -18,59 +52,104 @@ import { siteConfig } from "@/site.config";
         siteConfig.location,
         "Human-centered systems",
       ]}
-      note="Small note, actual person."
+      note="I build serious systems and refuse to make them emotionally beige."
       accent="plant"
-      width="reading"
+      width="wide"
     />
 
     <div class="about-flow">
-      <p>
-        My work usually starts with a messy human problem, then turns into
-        software, data models, dashboards, automation, or conversational
-        interfaces that can be used, evaluated, and improved.
-      </p>
-      <p>
-        I am drawn to systems where the interesting part is not one isolated
-        metric, page, or workflow, but the relationships between them. Context
-        matters. History matters. Goals change. Good tools should help people
-        notice those patterns instead of asking them to hold everything in their
-        heads.
-      </p>
-      <blockquote>
-        Give the machines the burden of remembering, coordinating, searching,
-        and connecting. Give people their attention back.
-      </blockquote>
-      <p>
-        Outside of work, I am also a bodybuilder. Like many athletes, I wanted a
-        deeper understanding of my training than current wearables and fitness
-        apps could provide. Recovery metrics are useful, and I rely heavily on
-        data from my Apple Watch, but they only tell part of the story.
-      </p>
-      <p>
-        The Human Model began as an attempt to answer those questions for
-        myself: how well I am moving, how much force I am producing, how much
-        effort a set required, and whether I am creating the training stimulus I
-        intended. Along the way, it became a research platform where I can
-        experiment with wearable data, biomechanics, machine learning,
-        conversational interfaces, and decision-support systems to better
-        understand how people adapt over time.
-      </p>
+      <section class="opening-section" aria-labelledby="how-i-think">
+        <div class="section-kicker">
+          <p class="eyebrow">How I think</p>
+          <h2 id="how-i-think">Context first, then the interface.</h2>
+        </div>
+        <div class="prose-block">
+          <p>
+            My work usually starts with a messy human problem, then turns into
+            software, data models, dashboards, automation, or conversational
+            interfaces that can be used, evaluated, and improved.
+          </p>
+          <p>
+            I am drawn to systems where the interesting part is not one isolated
+            metric, page, or workflow, but the relationships between them.
+            Context matters. History matters. Goals change. Good tools should
+            help people notice those patterns instead of asking them to hold
+            everything in their heads.
+          </p>
+        </div>
+      </section>
+
+      <section
+        class="manifesto-note workspace-object surface-raspberry no-tape"
+        aria-labelledby="core-belief"
+      >
+        <p class="eyebrow">Core belief</p>
+        <h2 id="core-belief">
+          Give the machines the burden of remembering, coordinating, searching,
+          and connecting.
+        </h2>
+        <p>Give people their attention back.</p>
+      </section>
+
+      <section class="identity-section" aria-labelledby="two-sides">
+        <div class="section-kicker">
+          <p class="eyebrow">Two sides of the work</p>
+          <h2 id="two-sides">Builder, researcher, actual human.</h2>
+        </div>
+        <div class="identity-grid">
+          <article class="identity-panel builder-panel">
+            <p class="panel-label">Builder</p>
+            <h3>Systems that can be inspected and improved.</h3>
+            <p>
+              I start with messy human problems and turn them into software,
+              data models, automation, and interfaces that preserve context
+              without hiding the work.
+            </p>
+            <nav aria-label="Builder related links">
+              <a href="/projects/">Projects</a>
+              <a href="/projects/career-intelligence/">Career Intelligence</a>
+              <a href="/projects/qa-agents/">QA Agents</a>
+            </nav>
+          </article>
+          <article
+            class="identity-panel researcher-panel"
+            data-note="still collecting evidence"
+          >
+            <p class="panel-label">N=1 researcher</p>
+            <h3>Performance systems from the inside out.</h3>
+            <p>
+              Bodybuilding made the limits of current wearables and fitness apps
+              obvious. The Human Model grew from wanting to understand movement,
+              effort, recovery, and adaptation with more context than a
+              dashboard could provide.
+            </p>
+            <nav aria-label="Human performance related links">
+              <a href="/projects/the-human-model/">The Human Model</a>
+              <a href="/projects/the-human-model/research/">Research notes</a>
+            </nav>
+          </article>
+        </div>
+      </section>
     </div>
 
     <section class="about-section" aria-labelledby="build-beliefs">
-      <h2 id="build-beliefs">How I build</h2>
+      <p class="eyebrow">How I build</p>
+      <h2 id="build-beliefs">Principles I keep coming back to</h2>
       <ul class="belief-list">
         <li>
+          <span>01</span>
           <strong>Systems first, people always.</strong>
           Useful software should preserve context without taking judgment away from
           the person using it.
         </li>
         <li>
+          <span>02</span>
           <strong>Evidence before claims.</strong>
           I care about interfaces and generated output that can point back to the
           source material behind them.
         </li>
         <li>
+          <span>03</span>
           <strong>Automation with boundaries.</strong>
           Machines can remember, coordinate, search, and connect; people keep taste,
           direction, and final decisions.
@@ -78,26 +157,57 @@ import { siteConfig } from "@/site.config";
       </ul>
     </section>
 
-    <section class="about-section" aria-labelledby="current-focus">
-      <h2 id="current-focus">Current focus</h2>
-      <p>
-        I am focused on AI product engineering, personal AI systems, adaptive
-        performance tools, and human-centered automation. The shared thread is
-        software that understands people through context, history, goals, and
-        evidence rather than one-off prompts.
-      </p>
+    <section class="currently-section" aria-labelledby="currently">
+      <div>
+        <p class="eyebrow">Currently on the desk</p>
+        <h2 id="currently">Open tabs, in the broad life sense.</h2>
+      </div>
+      <div class="currently-grid">
+        <article>
+          <h3>Building and refining</h3>
+          <ul>
+            <li><a href="/projects/the-human-model/">The Human Model</a></li>
+            <li>
+              <a href="/projects/career-intelligence/">Career Intelligence</a>
+            </li>
+            <li><a href="/projects/qa-agents/">QA Agents</a></li>
+            <li><a href="/projects/this-website/">This Website</a></li>
+          </ul>
+        </article>
+        <article>
+          <h3>Thinking about</h3>
+          <ul>
+            <li>personal AI systems</li>
+            <li>adaptive interfaces</li>
+            <li>human-centered automation</li>
+          </ul>
+        </article>
+        <article>
+          <h3>Outside the laptop</h3>
+          <ul>
+            <li>bodybuilding</li>
+            <li>exploring Copenhagen</li>
+            <li>trying to keep all the ideas connected</li>
+          </ul>
+        </article>
+      </div>
     </section>
 
-    <aside class="contact-note workspace-object surface-lavender tape-center">
-      <p class="eyebrow">Contact</p>
-      <h2>Open to relevant work</h2>
-      <p>{siteConfig.availability}</p>
-      <nav class="contact-links" aria-label="Contact links">
-        <a href={`mailto:${siteConfig.email}`}>Email</a>
-        <a href={siteConfig.githubUrl}>GitHub</a>
-        <a href={siteConfig.linkedinUrl}>LinkedIn</a>
-      </nav>
-    </aside>
+    <div class="about-footer-grid">
+      <ContinueExploring title="Continue Exploring" links={continueLinks} />
+
+      <aside class="contact-note workspace-object surface-lavender tape-center">
+        <p class="eyebrow">Say hello</p>
+        <h2>Open to relevant work</h2>
+        <p>{siteConfig.availability}</p>
+        <p class="closing-note">Good problems welcome.</p>
+        <nav class="contact-links" aria-label="Contact links">
+          <a href={`mailto:${siteConfig.email}`}>Email</a>
+          <a href={siteConfig.linkedinUrl}>LinkedIn</a>
+          <a href={siteConfig.githubUrl}>GitHub</a>
+        </nav>
+      </aside>
+    </div>
   </article>
 </BaseLayout>
 
@@ -106,66 +216,246 @@ import { siteConfig } from "@/site.config";
     margin-block: var(--space-7) var(--space-12);
   }
 
-  .about-flow,
-  .about-section {
-    max-width: var(--reading-measure);
+  .about-flow {
+    display: grid;
+    gap: clamp(2.25rem, 5vw, 4.75rem);
     margin-top: var(--space-8);
   }
 
-  .about-flow p,
+  .opening-section,
+  .identity-section,
+  .currently-section {
+    display: grid;
+    grid-template-columns: minmax(12rem, 0.36fr) minmax(0, 1fr);
+    gap: clamp(1.5rem, 4vw, 4rem);
+    align-items: start;
+  }
+
+  .section-kicker h2,
+  .about-section h2,
+  .currently-section h2,
+  .contact-note h2 {
+    margin: 0;
+    font-size: var(--text-h2);
+  }
+
+  .prose-block {
+    max-width: var(--reading-measure);
+  }
+
+  .prose-block p,
+  .identity-panel p,
   .about-section p,
-  .belief-list {
+  .belief-list,
+  .currently-section li,
+  .contact-note p:not(.eyebrow) {
     color: var(--color-text-muted);
   }
 
-  blockquote {
-    margin: var(--space-6) 0;
-    border-left: 0.34rem solid var(--rust);
-    padding: var(--space-3) 0 var(--space-3) var(--space-5);
+  .manifesto-note {
+    --object-tilt: -0.35deg;
+    max-width: min(100%, 58rem);
+    border-left: 0.36rem solid var(--rust);
+    padding: clamp(1.35rem, 3vw, 2rem);
+  }
+
+  .manifesto-note h2 {
+    max-width: 24ch;
+    margin: 0;
     color: var(--color-text);
-    font-size: var(--font-size-quote);
+    font-size: clamp(1.45rem, 3vw, 2.45rem);
     font-weight: 600;
-    line-height: 1.25;
+    line-height: 1.08;
+  }
+
+  .manifesto-note p:not(.eyebrow) {
+    margin-top: var(--space-4);
+    color: var(--plum);
+    font-family: var(--font-hand);
+    font-size: clamp(1.25rem, 2vw, 1.7rem);
   }
 
   .about-section {
     border-top: var(--border-width) solid var(--color-border);
-    padding-top: var(--space-6);
+    padding-top: var(--space-7);
   }
 
-  .about-section h2,
-  .contact-note h2 {
+  .about-section h2 {
+    max-width: 18ch;
+  }
+
+  .identity-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-4);
+  }
+
+  .identity-panel {
+    position: relative;
+    min-width: 0;
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-5);
+    background: var(--color-surface-raised);
+  }
+
+  .identity-panel::before {
+    display: block;
+    width: 3rem;
+    height: 0.28rem;
     margin-bottom: var(--space-4);
-    font-size: var(--text-h2);
+    background: var(--panel-accent, var(--khaki));
+    content: "";
+  }
+
+  .builder-panel {
+    --panel-accent: var(--blue);
+    background: color-mix(in srgb, var(--blue-soft) 48%, var(--paper));
+  }
+
+  .researcher-panel {
+    --panel-accent: var(--olive);
+    background: color-mix(in srgb, var(--olive) 12%, var(--paper));
+  }
+
+  .identity-panel[data-note]::after {
+    position: absolute;
+    top: -0.72rem;
+    right: 1.2rem;
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--radius-sm);
+    padding: 0.24rem 0.45rem;
+    background: var(--paper);
+    color: var(--color-text-muted);
+    content: attr(data-note);
+    font-family: var(--font-hand);
+    font-size: 0.88rem;
+  }
+
+  .panel-label {
+    margin: 0 0 var(--space-2);
+    color: var(--color-text-muted);
+    font-family: var(--font-mono);
+    font-size: var(--font-size-micro);
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+
+  .identity-panel h3 {
+    margin-bottom: var(--space-3);
+    font-size: 1.24rem;
+  }
+
+  .identity-panel nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: var(--space-4);
+  }
+
+  .identity-panel a {
+    border-bottom: var(--border-width) solid currentColor;
+    color: var(--plum);
+    font-size: var(--font-size-small);
+    font-weight: 650;
+    text-decoration: none;
   }
 
   .belief-list {
     display: grid;
-    gap: var(--space-4);
-    margin: 0;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-3);
+    margin: var(--space-6) 0 0;
     padding: 0;
     list-style: none;
   }
 
   .belief-list li {
-    border-left: 0.22rem solid var(--khaki);
-    padding-left: var(--space-4);
+    min-width: 0;
+    border-left: 0.24rem solid var(--khaki);
+    padding: var(--space-2) var(--space-4) 0;
   }
 
   .belief-list strong {
     display: block;
+    margin: 0.2rem 0 var(--space-2);
     color: var(--color-text);
+    font-size: 1.08rem;
+    line-height: 1.2;
+  }
+
+  .belief-list span {
+    color: var(--olive);
+    font-family: var(--font-mono);
+    font-size: var(--font-size-micro);
+    font-weight: 700;
+  }
+
+  .currently-section {
+    margin-top: clamp(2.75rem, 5vw, 4.5rem);
+    border-block: var(--border-width) solid var(--color-border);
+    padding-block: var(--space-7);
+  }
+
+  .currently-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-3);
+  }
+
+  .currently-grid article {
+    border-top: 0.24rem solid var(--blue);
+    padding-top: var(--space-3);
+  }
+
+  .currently-grid article:nth-child(2) {
+    border-color: var(--rust);
+  }
+
+  .currently-grid article:nth-child(3) {
+    border-color: var(--olive);
+  }
+
+  .currently-grid h3 {
+    margin-bottom: var(--space-2);
+    font-size: 1rem;
+  }
+
+  .currently-grid ul {
+    display: grid;
+    gap: 0.38rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .currently-grid a {
+    color: var(--plum);
+    font-weight: 650;
   }
 
   .contact-note {
     --object-tilt: 0.2deg;
-    margin-top: var(--space-8);
     border-left: 0.34rem solid var(--houseplant);
     padding: var(--space-5);
   }
 
-  .contact-note p:not(.eyebrow) {
-    color: var(--color-text-muted);
+  .about-footer-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(18rem, 0.7fr);
+    gap: clamp(1.25rem, 3vw, 2rem);
+    align-items: start;
+  }
+
+  .about-footer-grid :global(.continue-exploring) {
+    margin-top: 0;
+  }
+
+  .closing-note {
+    margin-top: var(--space-3);
+    color: var(--plum);
+    font-family: var(--font-hand);
+    font-size: 1.12rem;
   }
 
   .contact-links {
@@ -177,5 +467,37 @@ import { siteConfig } from "@/site.config";
 
   .contact-links a {
     font-weight: 600;
+  }
+
+  @media (max-width: 960px) {
+    .opening-section,
+    .identity-section,
+    .currently-section,
+    .about-footer-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .belief-list,
+    .currently-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 700px) {
+    .identity-grid,
+    .belief-list,
+    .currently-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .manifesto-note h2 {
+      max-width: 100%;
+    }
+
+    .identity-panel[data-note]::after {
+      position: static;
+      display: inline-block;
+      margin-top: var(--space-4);
+    }
   }
 </style>
