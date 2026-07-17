@@ -82,30 +82,73 @@ const searchItems = allDestinations.map((destination) => {
     const count = document.querySelector<HTMLElement>("#result-count");
     const items = JSON.parse(dataElement?.textContent ?? "[]");
 
+    function renderPrompt() {
+      if (!results || !count) return;
+
+      count.textContent = "";
+
+      const prompt = document.createElement("p");
+      prompt.className = "search-empty search-prompt";
+      prompt.textContent =
+        "Start typing to search projects, writing, demos, field notes, trails, and topics.";
+      results.replaceChildren(prompt);
+    }
+
     function render(matches: SearchItem[]) {
       if (!results || !count) return;
 
       count.textContent = `${matches.length} result${matches.length === 1 ? "" : "s"}`;
+
+      if (matches.length === 0) {
+        const empty = document.createElement("p");
+        empty.className = "search-empty";
+        empty.textContent =
+          "Nothing on the desk matches that search yet. Try a project, topic, or system name.";
+        results.replaceChildren(empty);
+        return;
+      }
+
       results.replaceChildren(
         ...matches.map((item: SearchItem) => {
           const link = document.createElement("a");
           link.href = item.href;
+          link.className = "search-result";
+
+          const heading = document.createElement("div");
+          heading.className = "search-result-heading";
 
           const type = document.createElement("span");
+          type.className = "search-result-type";
           type.textContent = item.type;
 
           const title = document.createElement("strong");
+          title.className = "search-result-title";
           title.textContent = item.title;
 
-          const summary = document.createElement("em");
+          heading.append(type, title);
+
+          const summary = document.createElement("p");
+          summary.className = "search-result-summary";
           summary.textContent = item.summary;
 
-          const meta = document.createElement("small");
-          meta.textContent = [...item.topics, ...item.trails]
-            .filter(Boolean)
-            .join(" · ");
+          const metadata = [...item.topics, ...item.trails].filter(Boolean);
 
-          link.append(type, title, summary, meta);
+          link.append(heading, summary);
+
+          if (metadata.length > 0) {
+            const meta = document.createElement("ul");
+            meta.className = "search-result-meta";
+            meta.setAttribute("aria-label", `${item.title} topics`);
+
+            metadata.forEach((value) => {
+              const metaItem = document.createElement("li");
+              metaItem.textContent = value;
+              meta.append(metaItem);
+            });
+
+            link.append(meta);
+          }
+
           return link;
         }),
       );
@@ -116,20 +159,22 @@ const searchItems = allDestinations.map((destination) => {
         .trim()
         .toLowerCase();
       const terms = query.split(/\s+/).filter(Boolean);
-      const matches =
-        terms.length === 0
-          ? items
-          : items.filter((item: SearchItem) => {
-              const haystack =
-                `${item.title} ${item.summary} ${item.text} ${item.topics.join(" ")} ${item.trails.join(" ")}`.toLowerCase();
-              return terms.every((term) => haystack.includes(term));
-            });
+      if (terms.length === 0) {
+        renderPrompt();
+        return;
+      }
+
+      const matches = items.filter((item: SearchItem) => {
+        const haystack =
+          `${item.title} ${item.summary} ${item.text} ${item.topics.join(" ")} ${item.trails.join(" ")}`.toLowerCase();
+        return terms.every((term) => haystack.includes(term));
+      });
 
       render(matches);
     }
 
     input?.addEventListener("input", search);
-    render(items);
+    renderPrompt();
   </script>
 </BaseLayout>
 
@@ -141,51 +186,61 @@ const searchItems = allDestinations.map((destination) => {
 
   .search-header {
     display: grid;
-    gap: var(--space-4);
+    gap: var(--space-2);
     border-bottom: var(--border-width) solid var(--color-border);
-    padding-bottom: clamp(1.5rem, 4vw, 2.5rem);
+    padding-bottom: var(--space-5);
   }
 
   .search-header h1 {
-    max-width: 12ch;
+    max-width: 20ch;
     font-size: var(--text-page-title);
+    font-weight: var(--weight-semibold);
+    line-height: 1.05;
   }
 
   .search-header > p:not(.eyebrow) {
-    max-width: 46rem;
-    color: var(--color-text-muted);
-    font-size: clamp(1.02rem, 1.3vw, 1.2rem);
-    font-weight: 650;
+    max-width: 62ch;
+    margin: 0;
+    color: var(--color-text-secondary, var(--color-text-muted));
+    font-size: var(--text-body);
+    font-weight: var(--weight-regular);
     line-height: 1.5;
   }
 
   .search-box {
     display: grid;
     gap: var(--space-2);
-    margin-top: clamp(2rem, 4vw, 3rem);
+    margin-top: var(--space-6);
   }
 
   .search-box label {
-    font-weight: 600;
+    font-size: var(--text-sm);
+    font-weight: var(--weight-semibold);
   }
 
   .search-box input {
-    min-height: 52px;
+    min-height: 48px;
     border: var(--border-width) solid var(--color-border-strong);
     border-radius: var(--radius-md);
-    padding: 0.75rem 0.9rem;
-    background: var(--color-surface);
+    padding: 0.7rem 0.85rem;
+    background: var(--color-surface-raised);
     color: var(--color-text);
     font: inherit;
   }
 
+  .search-box input:focus {
+    border-color: var(--color-focus);
+    outline: 3px solid color-mix(in srgb, var(--color-focus) 20%, transparent);
+    outline-offset: 2px;
+  }
+
   .result-count {
-    margin-top: var(--space-5);
+    margin: var(--space-4) 0 0;
     color: var(--color-text-muted);
     font-family: var(--font-mono);
-    font-size: var(--font-size-micro);
-    font-weight: 600;
-    text-transform: uppercase;
+    font-size: var(--text-xs);
+    font-weight: var(--weight-medium);
+    text-transform: none;
   }
 
   .search-results {
@@ -194,39 +249,121 @@ const searchItems = allDestinations.map((destination) => {
     margin-top: var(--space-3);
   }
 
-  .search-results a {
+  .search-results :global(.search-result) {
     display: grid;
-    gap: 0.28rem;
+    gap: var(--space-2);
     border: var(--border-width) solid var(--color-border);
     border-radius: var(--radius-md);
     padding: var(--space-4);
-    background: var(--color-surface-raised);
+    background:
+      linear-gradient(
+        180deg,
+        color-mix(in srgb, var(--blue-soft) 18%, transparent),
+        transparent 55%
+      ),
+      var(--color-surface-raised);
+    box-shadow: var(--shadow-paper);
     color: var(--color-text);
     text-decoration: none;
+    transition:
+      border-color var(--motion-fast),
+      background-color var(--motion-fast),
+      box-shadow var(--motion-fast),
+      transform var(--motion-fast);
   }
 
-  .search-results a:hover {
+  .search-results :global(.search-result:hover) {
     border-color: var(--color-border-strong);
     background: var(--color-surface);
+    box-shadow: var(--shadow-raised);
+    transform: translateY(-2px);
   }
 
-  .search-results span,
-  .search-results small {
+  .search-results :global(.search-result:focus-visible) {
+    outline: 3px solid var(--color-focus);
+    outline-offset: 3px;
+  }
+
+  .search-results :global(.search-result-heading) {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    align-items: baseline;
+  }
+
+  .search-results :global(.search-result-type) {
     color: var(--color-text-muted);
     font-family: var(--font-mono);
-    font-size: var(--font-size-micro);
-    font-weight: 600;
+    font-size: var(--text-xs);
+    font-weight: var(--weight-semibold);
+    letter-spacing: 0.06em;
     text-transform: uppercase;
   }
 
-  .search-results small {
-    font-size: 0.68rem;
+  .search-results :global(.search-result-title) {
+    color: var(--color-text);
+    font-size: var(--text-h3);
+    font-weight: var(--weight-semibold);
+    line-height: 1.2;
   }
 
-  .search-results em {
+  .search-results :global(.search-result-summary) {
+    max-width: 68ch;
+    margin: 0;
+    color: var(--color-text-secondary, var(--color-text-muted));
+    font-size: var(--text-sm);
+    line-height: 1.5;
+  }
+
+  .search-results :global(.search-result-meta) {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    margin: var(--space-1) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .search-results :global(.search-result-meta li) {
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--radius-pill);
+    padding: 0.16rem 0.42rem;
+    background: color-mix(in srgb, var(--paper) 80%, transparent);
     color: var(--color-text-muted);
-    font-size: 0.95rem;
-    font-style: normal;
-    line-height: 1.45;
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    font-weight: var(--weight-medium);
+    line-height: 1.25;
+  }
+
+  .search-results :global(.search-empty) {
+    margin: 0;
+    border: var(--border-width) dashed var(--color-border-strong);
+    border-radius: var(--radius-md);
+    padding: var(--space-5);
+    background: var(--color-surface-band);
+    color: var(--color-text-muted);
+    font-size: var(--text-body);
+    line-height: 1.5;
+  }
+
+  @media (max-width: 640px) {
+    .search-page {
+      width: min(100% - 1.5rem, 860px);
+      margin-block: var(--space-5) var(--space-8);
+    }
+
+    .search-results :global(.search-result) {
+      padding: var(--space-3);
+    }
+
+    .search-results :global(.search-result-heading) {
+      display: grid;
+      gap: var(--space-1);
+    }
+
+    .search-results :global(.search-result-title) {
+      font-size: 1.1rem;
+    }
   }
 </style>

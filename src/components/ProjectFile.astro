@@ -6,14 +6,18 @@ import TagList from "./TagList.astro";
 
 type Props = {
   project: CollectionEntry<"projects">;
-  variant?: "featured" | "standard" | "compact";
+  variant?: "featured" | "standard" | "compact" | "desk";
 };
 
 const { project, variant = "standard" } = Astro.props;
 const data = project.data;
-const visibleTags = variant === "compact" ? data.tags.slice(0, 2) : data.tags;
+const visibleTags =
+  variant === "compact" || variant === "desk"
+    ? data.tags.slice(0, 2)
+    : data.tags;
 const demoHref =
   data.slug === "qa-agents" ? "/projects/qa-agents/demo/" : undefined;
+const showQuestion = variant !== "compact" && variant !== "desk";
 const projectNotes: Record<string, string> = {
   "the-human-model": "long-running personal system",
   "career-intelligence": "source-backed reasoning",
@@ -34,7 +38,7 @@ const projectNotes: Record<string, string> = {
   </h3>
   <p>{data.summary}</p>
   {
-    variant !== "compact" && (
+    showQuestion && (
       <p class="question">
         <strong>Question:</strong> {data.coreQuestion}
       </p>
@@ -42,17 +46,21 @@ const projectNotes: Record<string, string> = {
   }
   {visibleTags.length > 0 && <TagList tags={visibleTags} />}
   <nav class="project-file-links" aria-label={`${data.title} links`}>
-    <a href={`/projects/${data.slug}/`}>Case Study</a>
+    <a class="primary-action" href={`/projects/${data.slug}/`}>Case Study</a>
     {
       demoHref && (
-        <a class="is-emphasis" href={demoHref}>
+        <a class="secondary-action is-demo" href={demoHref}>
           Demo
         </a>
       )
     }
     {
       data.repositoryUrl && (
-        <ExternalLink href={data.repositoryUrl} label="Repository" />
+        <ExternalLink
+          class="secondary-action"
+          href={data.repositoryUrl}
+          label="Repository"
+        />
       )
     }
   </nav>
@@ -107,6 +115,10 @@ const projectNotes: Record<string, string> = {
     padding: var(--space-4);
   }
 
+  .project-file-desk {
+    gap: var(--space-2);
+  }
+
   .project-file-tab {
     position: absolute;
     top: -0.7rem;
@@ -152,7 +164,7 @@ const projectNotes: Record<string, string> = {
 
   p {
     margin: 0;
-    color: var(--color-text-muted);
+    color: var(--color-text-secondary);
     font-size: var(--text-body);
     line-height: 1.48;
   }
@@ -167,31 +179,54 @@ const projectNotes: Record<string, string> = {
   .project-file-links {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--space-2);
+    gap: var(--space-3);
     align-items: center;
   }
 
   .project-file-links :global(a) {
     display: inline-flex;
-    min-height: 38px;
     align-items: center;
-    border: var(--border-width) solid var(--color-border);
-    border-radius: var(--radius-md);
-    padding: 0.42rem 0.62rem;
-    background: rgba(255, 248, 239, 0.52);
     color: var(--color-text);
     font-size: var(--text-sm);
     font-weight: 600;
+  }
+
+  .primary-action {
+    min-height: 36px;
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 0.38rem 0.58rem;
+    background: rgba(255, 248, 239, 0.52);
     text-decoration: none;
   }
 
-  .project-file-links :global(a:hover),
-  .project-file-links .is-emphasis {
+  .primary-action:hover {
     border-color: color-mix(
       in srgb,
       var(--file-accent) 55%,
       var(--color-border)
     );
     background: color-mix(in srgb, var(--file-accent) 12%, var(--paper));
+  }
+
+  .secondary-action,
+  .project-file-links :global(.secondary-action) {
+    min-height: 36px;
+    border: 0;
+    padding: 0;
+    background: transparent;
+    color: var(--rust);
+    text-decoration: underline;
+    text-decoration-thickness: 0.06em;
+    text-underline-offset: 0.14em;
+  }
+
+  .secondary-action:hover,
+  .project-file-links :global(.secondary-action:hover) {
+    color: var(--color-link-hover);
+  }
+
+  .is-demo {
+    color: #355f7c;
   }
 </style>

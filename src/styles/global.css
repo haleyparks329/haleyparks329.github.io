@@ -20,6 +20,7 @@
   --color-surface-raised: rgba(248, 240, 231, 0.82);
   --color-surface-band: rgba(248, 240, 231, 0.58);
   --color-text: var(--ink);
+  --color-text-secondary: #5c4b46;
   --color-text-muted: var(--muted);
   --color-link: var(--rust);
   --color-link-hover: #6f9875;
