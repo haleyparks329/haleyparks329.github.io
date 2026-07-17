@@ -231,6 +231,143 @@ const continueLinks = entry.data.related
     text-underline-offset: 0.18em;
   }
 
+  .document-body :global(summary:focus-visible) {
+    outline: 3px solid var(--color-focus);
+    outline-offset: 4px;
+  }
+
+  .document-body :global(.exploration-kicker),
+  .document-body :global(.card-label) {
+    margin-bottom: var(--space-2);
+    color: var(--plum);
+    font-family: var(--font-mono);
+    font-size: var(--font-size-micro);
+    font-weight: 850;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .document-body :global(.exploration-summary),
+  .document-body :global(.status-panel),
+  .document-body :global(.replay-card),
+  .document-body :global(.implementation-panel) {
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: clamp(1rem, 3vw, 1.4rem);
+    background: var(--color-surface-raised);
+    box-shadow: var(--shadow-soft);
+  }
+
+  .document-body :global(.exploration-summary),
+  .document-body :global(.status-panel) {
+    margin-block: clamp(1.5rem, 4vw, 2.5rem);
+  }
+
+  .document-body :global(.exploration-summary summary) {
+    cursor: pointer;
+    color: var(--color-text);
+    font-weight: 850;
+  }
+
+  .document-body :global(.exploration-summary h2),
+  .document-body :global(.status-panel h2),
+  .document-body :global(.replay-card h2) {
+    margin-top: var(--space-5);
+    border-top: 0;
+    padding-top: 0;
+  }
+
+  .document-body :global(.status-panel h2),
+  .document-body :global(.replay-card h2) {
+    margin-top: 0;
+  }
+
+  .document-body :global(.status-grid) {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-4);
+  }
+
+  .document-body :global(.status-grid > div) {
+    border-left: 0.25rem solid var(--houseplant);
+    padding-left: var(--space-4);
+  }
+
+  .document-body :global(.status-grid > div + div) {
+    border-left-color: var(--khaki);
+  }
+
+  .document-body :global(.exploration-actions) {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin-top: var(--space-5);
+  }
+
+  .document-body :global(.button-link) {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 2.6rem;
+    border: var(--border-width) solid var(--accent-primary-border-strong);
+    border-radius: var(--radius-md);
+    padding: 0.62rem 0.86rem;
+    background: var(--plum);
+    color: var(--color-canvas);
+    font-size: var(--font-size-small);
+    font-weight: 850;
+    text-decoration: none;
+  }
+
+  .document-body :global(.button-link:hover) {
+    border-color: var(--houseplant);
+    background: var(--houseplant);
+    color: var(--color-canvas);
+  }
+
+  .document-body :global(.button-secondary) {
+    background: transparent;
+    color: var(--plum);
+  }
+
+  .document-body :global(.button-secondary:hover) {
+    background: var(--color-tint);
+    color: var(--plum);
+  }
+
+  .document-body :global(.replay-card) {
+    margin-block: clamp(2rem, 5vw, 3rem);
+    border-color: var(--accent-tertiary-border);
+    background: linear-gradient(
+        135deg,
+        rgba(207, 231, 246, 0.44),
+        rgba(248, 240, 231, 0.9)
+      ),
+      var(--color-surface-raised);
+  }
+
+  .document-body :global(.replay-metric) {
+    color: var(--color-text);
+    font-family: var(--font-mono);
+    font-size: clamp(0.92rem, 1vw, 1rem);
+    font-weight: 850;
+  }
+
+  .document-body :global(.implementation-panel) {
+    margin-top: var(--space-4);
+  }
+
+  .document-body :global(pre) {
+    overflow-x: auto;
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-4);
+    background: var(--color-code-surface);
+    color: var(--color-text);
+    font-size: 0.92rem;
+    line-height: 1.55;
+  }
+
   .related-links {
     margin-top: clamp(2.5rem, 5vw, 4.5rem);
     border-top: var(--border-width) solid var(--color-border);
@@ -247,5 +384,11 @@ const continueLinks = entry.data.related
     margin-top: clamp(2rem, 5vw, 3.5rem);
     padding-top: var(--space-5);
     padding-bottom: clamp(3rem, 7vw, 6rem);
+  }
+
+  @media (max-width: 680px) {
+    .document-body :global(.status-grid) {
+      grid-template-columns: 1fr;
+    }
   }
 </style>

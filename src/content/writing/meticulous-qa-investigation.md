@@ -1,7 +1,7 @@
 ---
-title: "Extending deterministic replay with QA Agents"
+title: "Extending Deterministic Replay with an Investigation Layer"
 slug: "meticulous-qa-investigation"
-description: "An independent case study on what a QA investigation layer can do after deterministic replay produces inspectable evidence."
+description: "An independent engineering exploration inspired by Meticulous, showing how QA Agents can interpret deterministic replay evidence through quality strategies, workflow clustering, traceable findings, explicit policy, and human review."
 type: "case-study"
 pubDate: 2026-07-16
 status: "published"
@@ -14,121 +14,464 @@ topics:
   - "Software Quality"
 related:
   - "/projects/qa-agents/"
+  - "/projects/qa-agents/meticulous/"
   - "/projects/qa-agents/demo/"
   - "/field-log/evidence-before-claims/"
 relatedProject: "qa-agents"
 featured: true
 draft: false
-readingTime: "8 min"
+readingTime: "10 min"
 subjectName: "Meticulous"
 subjectUrl: "https://www.meticulous.ai/"
-disclaimer: "Independent exploration using simulated data. Not an official Meticulous integration and not built with private APIs or data."
+disclaimer: "Independent exploration · Not affiliated with Meticulous"
 repositoryUrl: "https://github.com/haleyparks329/qa-agents"
-demoUrl: "https://haleyparks329.github.io/projects/qa-agents/meticulous/"
+demoUrl: "https://haleyparks329.github.io/projects/qa-agents/meticulous/replay/"
 ---
+
+<p class="exploration-kicker">QA Agents · Engineering Exploration</p>
+
+An independent technical exploration inspired by Meticulous, asking what happens when deterministic replay becomes the evidence source for an existing investigation system.
+
+<details class="exploration-summary">
+  <summary>Read the 30-second summary</summary>
+  <div>
+    <h2>Executive Summary</h2>
+    <p>I built QA Agents before discovering Meticulous. After learning how deterministic replay works, I wondered what would happen if replay became the evidence source for an existing investigation system.</p>
+    <p>Instead of adding Meticulous-specific behavior directly to QA Agents, I introduced a <strong>Quality Strategy</strong> abstraction that separates two concerns:</p>
+    <ul>
+      <li><strong>Profiles</strong> describe what system is being investigated.</li>
+      <li><strong>Quality Strategies</strong> define how evidence should be interpreted.</li>
+    </ul>
+    <p>The Meticulous-inspired strategy validates and normalizes synthetic replay evidence, groups sessions into workflows, classifies differences, audits coverage, and applies explicit decision policy.</p>
+    <p>The result preserves a clear boundary:</p>
+    <ul>
+      <li>Deterministic replay establishes facts.</li>
+      <li>Investigation systems organize those facts.</li>
+      <li>Humans retain authority over the final decision.</li>
+    </ul>
+    <nav class="exploration-actions" aria-label="Summary actions">
+      <a class="button-link" href="#full-exploration">Read the full exploration</a>
+      <a class="button-link button-secondary" href="/projects/qa-agents/meticulous/replay/">Open the replay</a>
+      <a class="button-link button-secondary" href="https://github.com/haleyparks329/qa-agents">Browse the repository</a>
+    </nav>
+  </div>
+</details>
+
+<section class="status-panel" aria-labelledby="implementation-status">
+  <h2 id="implementation-status">Implementation Status</h2>
+  <div class="status-grid">
+    <div>
+      <h3>Implemented</h3>
+      <ul>
+        <li>QA Agents investigation pipeline</li>
+        <li>Quality Strategy architecture</li>
+        <li>Meticulous-inspired deterministic evidence strategy</li>
+        <li>Workflow clustering</li>
+        <li>Typed investigation findings</li>
+        <li>Explicit policy evaluation</li>
+        <li>Synthetic Little Bytes replay artifact</li>
+        <li>Interactive replay presentation</li>
+      </ul>
+    </div>
+    <div>
+      <h3>Not Implemented</h3>
+      <ul>
+        <li>Official Meticulous integration</li>
+        <li>Meticulous private APIs</li>
+        <li>A browser replay engine</li>
+        <li>Production deployment</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+## Scope
+
+This is an independent technical exploration based on public concepts associated with deterministic browser replay.
+
+It includes:
+
+- investigation architecture
+- quality strategies
+- workflow clustering
+- deterministic evidence processing
+- synthetic replay evidence
+- traceable findings and policy decisions
+
+It does not include:
+
+- an official Meticulous integration
+- private Meticulous APIs or infrastructure
+- a browser replay implementation
+- claims about Meticulous's internal architecture
+
+<div id="full-exploration"></div>
 
 ## Context
 
-Meticulous is a software testing platform built around deterministic replay. It records real user interactions, selects sessions relevant to a code change, replays those sessions against base and head versions, and surfaces visual or functional differences before deployment.
+QA Agents began as an exploration into AI-assisted software investigations. The goal wasn't to build another testing framework, but to explore how a team of specialized QA roles could investigate software changes, organize evidence, evaluate quality, and produce structured recommendations for a human reviewer.
 
-The important engineering constraint is repeatability. Session capture, network-response replay, and deterministic execution make the evidence inspectable before anyone interprets it.
+While researching the broader QA tooling landscape, I came across Meticulous. What immediately stood out wasn't the AI itself, but the deterministic replay system underneath it.
 
-## Why I looked at it
+Replay solves a fundamentally different problem than QA Agents.
 
-I was working on QA Agents, a project about software-quality workflows that preserve evidence and human review. Meticulous was useful to examine because deterministic replay solves a different part of the problem than agents do.
+Instead of asking a model to infer what happened during a test run, deterministic replay records what actually happened. The resulting replay artifacts become reproducible evidence that engineers can inspect, replay, and verify later.
 
-My first instinct was to ask how AI agents might replace more of the testing workflow. The more I read, the less that made sense. Replay is valuable because it is deterministic, reproducible, and inspectable.
+That raised an architectural question for me:
 
-## What I examined
+> If deterministic replay already provides trustworthy evidence, how would QA Agents change if replay became its source of evidence?
 
-The scope was narrow: what could a downstream QA investigation layer do after replay evidence already exists?
+This exploration follows that question.
 
-I did not try to reproduce Meticulous internals, call private APIs, or claim an official integration. The QA Agents example uses simulated replay evidence, a strategy configuration, and a generated investigation artifact.
+## Understanding Deterministic Replay
 
-## Findings
+Looking at Meticulous as a system rather than only as a product, deterministic replay has a well-defined responsibility.
 
-### Finding 1: Deterministic evidence should remain the source of truth
+Its purpose is to observe software execution, faithfully reproduce it, and preserve that replay as deterministic evidence.
 
-**Observation**
+Replay does not need to decide whether a change is important.
 
-Replay is strongest when it produces stable evidence before interpretation starts.
+Replay does not need to evaluate engineering policy.
 
-**Evidence**
+Replay does not need to determine whether additional testing is required.
 
-The QA Agents strategy keeps raw sessions, differences, branch information, and coverage records as the evidence package. The agent layer clusters, classifies, audits, and recommends after that package exists.
+Replay establishes one thing:
 
-**Interpretation**
+**What happened.**
 
-The agent should not sit inside replay execution or rewrite replay output. It should operate downstream where its work can be checked against the evidence.
+That is exactly what a deterministic system should do.
 
-**Why it matters**
+## The Integration Opportunity
 
-This keeps the probabilistic part of the system from weakening the deterministic part.
+Once replay establishes what happened, another question follows:
 
-### Finding 2: Sessions, workflows, and issues are not the same thing
+**Now what?**
 
-**Observation**
+A replay run may show that dozens of sessions changed.
 
-Many affected sessions can point to a smaller number of product workflows or issues.
+It does not necessarily explain which sessions belong to the same user workflow.
 
-**Evidence**
+It does not inherently separate expected product changes from regressions.
 
-The simulated investigation evaluates replay sessions, selects affected sessions, groups them into product workflows, separates expected differences from regressions, and records a coverage gap.
+It does not determine whether an important branch remains uncovered.
 
-**Interpretation**
+It does not tell a reviewer whether an investigation is complete.
 
-A useful QA layer should reduce noisy replay output into traceable findings, not turn every affected session into a separate bug report.
+Those are not replay problems.
 
-**Why it matters**
+They are investigation problems.
 
-Reviewers need fewer, clearer decisions. They still need to trace each decision back to source evidence.
+That is where QA Agents and deterministic replay became complementary rather than overlapping.
 
-### Finding 3: Recommendations need policy boundaries
+Replay establishes evidence.
 
-**Observation**
+QA Agents investigates evidence.
 
-The strategy produces a recommendation only after applying an explicit decision policy.
+## The Integration Problem
 
-**Evidence**
+The obvious implementation initially seemed simple:
 
-The example records a hold recommendation when a confirmed regression and a coverage gap remain.
+1. Take replay artifacts.
+2. Feed them into QA Agents.
+3. Generate findings.
 
-**Interpretation**
+The more I considered that design, the less I liked it.
 
-The system is not deciding to merge or approve. It is preparing a bounded recommendation for a human reviewer.
+It would tightly couple the investigation pipeline to one particular evidence model.
 
-**Why it matters**
+Tomorrow the evidence might come from browser replay.
 
-Policy makes the handoff more trustworthy because it separates evidence, recommendation, and authority.
+Another strategy might use API contract testing.
 
-## What I would change
+A different organization might prioritize accessibility evidence, static analysis, or production traces.
 
-1. Keep replay evidence immutable and inspectable.
-2. Make the investigation layer explicitly downstream from replay.
-3. Model workflow clusters, findings, coverage gaps, and policy decisions as separate objects.
-4. Treat recommendations as review prompts, not as authority.
-5. Make invalid evidence fail with actionable errors.
+The investigation pipeline should not need to change every time the evidence source changes.
 
-## What I would preserve
+The architecture needed another boundary.
 
-I would preserve the deterministic replay boundary. Replay should capture, select, replay, and compare. QA Agents should interpret the evidence after that point.
+## Introducing Quality Strategies
 
-I would also preserve the human decision boundary. The useful output is not “the agent fixed it.” The useful output is “here is the evidence, here is the remaining risk, and here is the next review step.”
+The solution was to introduce a **Quality Strategy** layer.
 
-## Open questions
+QA Agents already had profiles.
 
-- One implemented strategy does not prove every future strategy will fit the same model.
-- Runtime validation is still narrower than the strategy directory shape suggests.
-- The example is simulated and does not prove behavior on a production replay system.
-- This is not a live Meticulous integration.
+Profiles describe the system being investigated, including repository conventions, application routes, test layout, integrations, and tracker configuration.
 
-## Final perspective
+But profiles do not answer another category of questions:
 
-The product lesson is that AI is more useful when it respects the evidence layer it depends on. Replay finds what changed. QA Agents investigate what it may mean. Policy constrains the recommendation. A human decides.
+- Which evidence is authoritative?
+- How should that evidence be normalized?
+- How should sessions be grouped?
+- How should differences be classified?
+- Which coverage rules apply?
+- How should recommendations be derived?
 
-## Related material
+Those questions belong to a separate abstraction.
 
-- [Interactive strategy replay](/projects/qa-agents/meticulous/)
-- [QA Agents project report](/projects/qa-agents/)
-- [QA Agents repository](https://github.com/haleyparks329/qa-agents)
-- [Meticulous](https://www.meticulous.ai/)
+A **Quality Strategy** defines how evidence should be interpreted without changing the investigation pipeline itself.
+
+This creates two independent concepts:
+
+### Profile
+
+> What system is being investigated?
+
+### Quality Strategy
+
+> How should evidence from that system be interpreted?
+
+Separating those responsibilities allows QA Agents to support different evidence models without embedding vendor-specific logic throughout the investigation pipeline.
+
+## The Meticulous-Inspired Strategy
+
+With that separation in place, deterministic replay becomes one possible evidence source.
+
+The Meticulous-inspired strategy defines:
+
+- accepted replay evidence
+- evidence validation
+- normalization rules
+- workflow clustering
+- finding classification
+- coverage evaluation
+- decision policy
+- result serialization
+
+The command-line interface remains intentionally thin.
+
+It loads the evidence, selects the configured strategy, runs the investigation pipeline, and serializes the result.
+
+Conceptually, the system becomes:
+
+```text
+Profile
+    ↓
+Quality Strategy
+
+Raw replay evidence
+    ↓
+Validation
+    ↓
+Normalization
+    ↓
+Workflow clustering
+    ↓
+Classification
+    ↓
+Coverage audit
+    ↓
+Policy evaluation
+    ↓
+InvestigationResult
+    ↓
+JSON
+    ↓
+Human review
+```
+
+Replay produces deterministic evidence.
+
+The strategy defines how that evidence should be interpreted.
+
+QA Agents executes the investigation.
+
+## A Concrete Investigation
+
+To test this architecture, I built a synthetic replay investigation around a pricing change.
+
+The evidence contains seventeen affected replay sessions.
+
+Those sessions are first grouped into workflow clusters rather than reviewed individually.
+
+Configured classification rules then distinguish expected product changes from confirmed regressions.
+
+Coverage evaluation identifies affected behavior that still lacks sufficient test coverage.
+
+Finally, explicit policy rules produce a bounded recommendation for the reviewer.
+
+The resulting investigation is reduced from:
+
+```text
+17 affected sessions
+```
+
+to:
+
+```text
+3 workflow clusters
+1 expected change
+1 confirmed regression
+1 uncovered branch
+Recommendation: Hold
+```
+
+Importantly, none of those conclusions modify the replay evidence itself.
+
+Every finding remains traceable to the underlying sessions.
+
+<section class="replay-card" aria-labelledby="explore-investigation">
+  <p class="card-label">Recorded investigation replay</p>
+  <h2 id="explore-investigation">Explore the Investigation</h2>
+  <p>The article describes the architecture. The interactive replay shows how the synthetic pricing-change investigation was reconstructed for review.</p>
+  <p>Step through the evidence, workflow clusters, findings, and final policy decision without needing to read terminal output.</p>
+  <p class="replay-metric">17 sessions → 3 workflows → Hold</p>
+  <a class="button-link" href="/projects/qa-agents/meticulous/replay/">Open the interactive replay</a>
+</section>
+
+## Workflow Clustering as an Investigation Stage
+
+Workflow clustering became a first-class part of the implementation.
+
+A replay system may generate many individual sessions for what is effectively one user journey.
+
+Reviewing each session independently creates noise and makes it harder to understand the behavioral impact of a change.
+
+The strategy therefore groups related sessions before producing findings.
+
+This turns a collection of replay artifacts into a smaller set of recognizable workflows that can be investigated as units.
+
+The architecture does not discard the underlying sessions.
+
+Each cluster preserves references back to the evidence from which it was derived.
+
+## Typed Investigation Results
+
+The implementation models each stage of the investigation with explicit domain objects, including:
+
+- `WorkflowCluster`
+- `DifferenceFinding`
+- `CoverageFinding`
+- `PolicyDecision`
+- `InvestigationResult`
+
+These objects are separate because they represent different claims.
+
+A workflow cluster says which sessions appear to describe the same user journey.
+
+A difference finding describes how observed behavior should be classified.
+
+A coverage finding identifies behavior that lacks sufficient test evidence.
+
+A policy decision applies explicit rules to the accumulated findings.
+
+Keeping those stages separate makes the investigation inspectable and traceable.
+
+## What the Implementation Preserves
+
+Several architectural decisions remained constant throughout the implementation.
+
+Replay artifacts remain immutable.
+
+Investigation objects reference evidence rather than replacing it.
+
+Workflow clusters, findings, coverage evaluations, and policy decisions remain separate domain objects.
+
+Recommendations are bounded by explicit policy.
+
+Human reviewers retain authority over the final decision.
+
+If a reviewer disagrees with a recommendation, they can trace it backward through:
+
+```text
+Policy decision
+↓
+Coverage and difference findings
+↓
+Workflow clusters
+↓
+Replay sessions
+```
+
+That traceability is essential when an investigation system is interpreting evidence produced elsewhere.
+
+## Deterministic Processing Before Probabilistic Reasoning
+
+Although QA Agents explores AI-assisted software investigation more broadly, the current Meticulous-inspired strategy intentionally keeps replay evidence processing deterministic.
+
+The investigation pipeline answers its questions through:
+
+- configured validation
+- deterministic normalization
+- workflow clustering
+- explicit classification rules
+- coverage analysis
+- policy evaluation
+
+This is deliberate.
+
+The system does not need a model to invent facts that already exist in replay evidence.
+
+Probabilistic reasoning may eventually help explain ambiguous evidence, summarize investigations, or support a reviewer.
+
+It should not replace deterministic evidence processing.
+
+The intended boundary is:
+
+> Deterministic systems produce evidence.  
+> Probabilistic systems interpret evidence.  
+> Humans retain authority.
+
+## Current Limitations
+
+This strategy is a technical exploration rather than an official integration.
+
+The replay evidence is synthetic.
+
+It does not use private Meticulous APIs or infrastructure.
+
+The current investigation pipeline is deterministic rather than an autonomous multi-agent browser system.
+
+The interactive replay is a reconstructed presentation of a recorded investigation artifact, not a live agent or browser run.
+
+Those limitations are intentional and should remain explicit.
+
+## Why This Separation Matters
+
+This exploration began with deterministic browser replay, but the pattern extends beyond QA.
+
+Engineering organizations already generate large amounts of deterministic evidence:
+
+- browser replay
+- logs
+- traces
+- coverage reports
+- mutation testing results
+- static analysis
+- contract testing
+- production telemetry
+
+The challenge often is not collecting more evidence.
+
+It is helping humans organize that evidence into coherent investigations.
+
+That is the architectural insight I found most interesting.
+
+Deterministic systems establish facts.
+
+Quality strategies define how those facts should be interpreted.
+
+Investigation systems organize them into structured findings.
+
+Humans remain responsible for the final decision.
+
+Rather than replacing deterministic replay, systems like QA Agents become more useful when they treat replay as the foundation on which an investigation is built.
+
+## Inspect the Implementation
+
+<section class="implementation-panel" aria-label="Implementation links">
+  <p>The repository contains the Quality Strategy architecture, the Meticulous-inspired strategy, the synthetic Little Bytes evidence artifact, the deterministic investigation runner, tests, and architecture documentation.</p>
+  <ul>
+    <li><code>docs/strategy-architecture.md</code></li>
+    <li><code>strategies/meticulous/README.md</code></li>
+    <li>synthetic Little Bytes replay artifact</li>
+    <li>investigation CLI</li>
+  </ul>
+  <a class="button-link" href="https://github.com/haleyparks329/qa-agents">Browse QA Agents on GitHub</a>
+</section>
+
+## Keep Exploring
+
+- [QA Agents project overview](/projects/qa-agents/)
+- [Interactive replay](/projects/qa-agents/meticulous/replay/)
+- [Meticulous-inspired strategy page](/projects/qa-agents/meticulous/)
+- [Evidence Before Claims](/field-log/evidence-before-claims/)
