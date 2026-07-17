@@ -1,6 +1,7 @@
 ---
 import { getCollection } from "astro:content";
 import BaseLayout from "@/layouts/BaseLayout.astro";
+import PageIntro from "@/components/PageIntro.astro";
 import {
   allDestinations,
   contentTypes,
@@ -125,11 +126,19 @@ const indexPayload = {
   canonicalPath="/explore/"
 >
   <section class="explore-page">
-    <header class="explore-header">
-      <p class="eyebrow">What’s Here?</p>
-      <h1>A compact guide to everything collected here.</h1>
-      <p>Choose a route, start somewhere familiar, or browse the full index.</p>
-    </header>
+    <PageIntro
+      eyebrow="What’s Here?"
+      title="A compact guide to everything collected here"
+      text="Choose a route, start somewhere familiar, or browse the full index."
+      meta={[
+        `${indexDestinations.length} entries`,
+        "Trails",
+        "Projects",
+        "Notes",
+      ]}
+      accent="sky"
+      width="wide"
+    />
 
     <div class="orientation-grid" aria-label="Starting points">
       <section class="orientation-panel" aria-labelledby="trail-heading">
@@ -389,29 +398,8 @@ const indexPayload = {
 
 <style>
   .explore-page {
-    width: min(840px, calc(100% - 2rem));
-    margin: clamp(1.5rem, 4vw, 2.75rem) auto clamp(3rem, 7vw, 5rem);
-  }
-
-  .explore-header {
-    display: grid;
-    gap: var(--space-3);
-    border-bottom: var(--border-width) solid var(--color-border);
-    padding-bottom: var(--space-4);
-  }
-
-  .explore-header h1 {
-    max-width: 19ch;
-    font-size: clamp(1.85rem, 3vw, 2.55rem);
-    line-height: 1;
-  }
-
-  .explore-header > p:not(.eyebrow) {
-    max-width: 42rem;
-    color: var(--color-text-muted);
-    font-size: 1rem;
-    font-weight: 650;
-    line-height: 1.45;
+    width: min(var(--content-standard), calc(100% - var(--container-gutter)));
+    margin: var(--space-7) auto var(--space-12);
   }
 
   .orientation-grid {
@@ -493,7 +481,7 @@ const indexPayload = {
     color: var(--color-text-muted);
     font-family: var(--font-mono);
     font-size: var(--font-size-micro);
-    font-weight: 850;
+    font-weight: 600;
     text-transform: uppercase;
   }
 
@@ -505,7 +493,7 @@ const indexPayload = {
 
   .quick-links a {
     color: var(--color-text);
-    font-weight: 850;
+    font-weight: 600;
     text-decoration-thickness: 0.08em;
     text-underline-offset: 0.18em;
   }
@@ -523,7 +511,7 @@ const indexPayload = {
 
   .index-heading a {
     color: var(--plum);
-    font-weight: 850;
+    font-weight: 600;
     text-decoration-thickness: 0.08em;
     text-underline-offset: 0.18em;
   }
@@ -545,7 +533,7 @@ const indexPayload = {
     cursor: pointer;
     font: inherit;
     font-size: 0.9rem;
-    font-weight: 850;
+    font-weight: 600;
   }
 
   .index-controls button:hover,
@@ -578,7 +566,7 @@ const indexPayload = {
     color: var(--color-text-muted);
     font-family: var(--font-mono);
     font-size: var(--font-size-micro);
-    font-weight: 850;
+    font-weight: 600;
     text-decoration: none;
   }
 

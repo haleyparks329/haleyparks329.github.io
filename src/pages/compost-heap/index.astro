@@ -1,6 +1,6 @@
 ---
 import BaseLayout from "@/layouts/BaseLayout.astro";
-import InteriorHeader from "@/components/InteriorHeader.astro";
+import PageIntro from "@/components/PageIntro.astro";
 import { compostArtifacts } from "@/data/compostArtifacts";
 
 const threadLabels = {
@@ -28,7 +28,7 @@ const firstArtifactByThread = Object.fromEntries(
     class="compost-page interior-container"
     aria-labelledby="compost-title"
   >
-    <InteriorHeader
+    <PageIntro
       eyebrow="Compost Heap"
       title="Compost Heap"
       text="Old ideas never really disappear. They become the soil for whatever grows next. Dig through early prototypes, retired concepts, and previous versions of current projects."
@@ -37,9 +37,9 @@ const firstArtifactByThread = Object.fromEntries(
         `${compostArtifacts.length} artifacts`,
         "Still decomposing",
       ]}
-      objectLabel="Archive note"
-      objectText="Older work is kept here as useful material."
+      note="Older work is kept here as useful material."
       accent="ochre"
+      width="wide"
     />
 
     <nav class="discovery-control" aria-label="Follow a thread">
@@ -128,7 +128,7 @@ const firstArtifactByThread = Object.fromEntries(
     color: var(--color-text-muted);
     font-family: var(--font-mono);
     font-size: var(--font-size-micro);
-    font-weight: 800;
+    font-weight: 600;
     text-transform: uppercase;
   }
 
@@ -139,7 +139,7 @@ const firstArtifactByThread = Object.fromEntries(
     background: rgba(255, 248, 239, 0.5);
     color: var(--color-text);
     font-size: var(--font-size-small);
-    font-weight: 750;
+    font-weight: 600;
     text-decoration: none;
   }
 
@@ -294,15 +294,14 @@ const firstArtifactByThread = Object.fromEntries(
     color: var(--color-text-muted);
     font-family: var(--font-mono);
     font-size: var(--font-size-micro);
-    font-weight: 800;
+    font-weight: 600;
     text-transform: uppercase;
   }
 
   .artifact-title {
     color: var(--color-text);
-    font-family: var(--font-serif);
-    font-size: clamp(1.2rem, 1.8vw, 1.55rem);
-    font-weight: 800;
+    font-size: var(--text-h3);
+    font-weight: 600;
     line-height: 1.12;
   }
 
@@ -319,7 +318,7 @@ const firstArtifactByThread = Object.fromEntries(
     color: var(--color-text-muted);
     font-family: var(--font-mono);
     font-size: 0.72rem;
-    font-weight: 800;
+    font-weight: 600;
     text-transform: uppercase;
   }
 
@@ -346,7 +345,7 @@ const firstArtifactByThread = Object.fromEntries(
     margin-bottom: var(--space-2);
     font-family: var(--font-mono);
     font-size: var(--font-size-micro);
-    font-weight: 850;
+    font-weight: 600;
     text-transform: uppercase;
   }
 
@@ -371,9 +370,8 @@ const firstArtifactByThread = Object.fromEntries(
   .living-end-state p:last-child {
     margin: 0;
     color: var(--color-text);
-    font-family: var(--font-serif);
-    font-size: clamp(1.3rem, 2vw, 1.75rem);
-    font-weight: 800;
+    font-size: var(--text-h2);
+    font-weight: 600;
     line-height: 1.2;
   }
 

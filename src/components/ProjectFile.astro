@@ -1,0 +1,197 @@
+---
+import type { CollectionEntry } from "astro:content";
+import ExternalLink from "./ExternalLink.astro";
+import StatusBadge from "./StatusBadge.astro";
+import TagList from "./TagList.astro";
+
+type Props = {
+  project: CollectionEntry<"projects">;
+  variant?: "featured" | "standard" | "compact";
+};
+
+const { project, variant = "standard" } = Astro.props;
+const data = project.data;
+const visibleTags = variant === "compact" ? data.tags.slice(0, 2) : data.tags;
+const demoHref =
+  data.slug === "qa-agents" ? "/projects/qa-agents/demo/" : undefined;
+const projectNotes: Record<string, string> = {
+  "the-human-model": "long-running personal system",
+  "career-intelligence": "source-backed reasoning",
+  "qa-agents": "recorded evidence loop",
+};
+---
+
+<article
+  class={`project-file project-file-${variant} project-file-${data.accent} project-${data.slug}`}
+>
+  <div class="project-file-tab" aria-hidden="true"></div>
+  <div class="project-file-kicker">
+    <span>{projectNotes[data.slug] ?? "project file"}</span>
+    <StatusBadge status={data.status} accent={data.accent} />
+  </div>
+  <h3>
+    <a href={`/projects/${data.slug}/`}>{data.title}</a>
+  </h3>
+  <p>{data.summary}</p>
+  {
+    variant !== "compact" && (
+      <p class="question">
+        <strong>Question:</strong> {data.coreQuestion}
+      </p>
+    )
+  }
+  {visibleTags.length > 0 && <TagList tags={visibleTags} />}
+  <nav class="project-file-links" aria-label={`${data.title} links`}>
+    <a href={`/projects/${data.slug}/`}>Case Study</a>
+    {
+      demoHref && (
+        <a class="is-emphasis" href={demoHref}>
+          Demo
+        </a>
+      )
+    }
+    {
+      data.repositoryUrl && (
+        <ExternalLink href={data.repositoryUrl} label="Repository" />
+      )
+    }
+  </nav>
+</article>
+
+<style>
+  .project-file {
+    --file-accent: var(--khaki);
+    position: relative;
+    display: grid;
+    min-width: 0;
+    gap: var(--space-3);
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-5);
+    background:
+      linear-gradient(
+        180deg,
+        color-mix(in srgb, var(--file-accent) 9%, transparent),
+        transparent 36%
+      ),
+      var(--color-surface-raised);
+    box-shadow: var(--shadow-paper);
+  }
+
+  .project-file-rust {
+    --file-accent: var(--rust);
+  }
+
+  .project-file-olive {
+    --file-accent: var(--olive);
+  }
+
+  .project-file-blue {
+    --file-accent: var(--blue);
+  }
+
+  .project-file-plum {
+    --file-accent: var(--plum);
+  }
+
+  .project-file-khaki {
+    --file-accent: var(--khaki);
+  }
+
+  .project-file-featured {
+    padding: var(--space-6);
+  }
+
+  .project-file-compact {
+    gap: var(--space-2);
+    padding: var(--space-4);
+  }
+
+  .project-file-tab {
+    position: absolute;
+    top: -0.7rem;
+    left: var(--space-4);
+    width: min(8rem, 46%);
+    height: 0.9rem;
+    border: var(--border-width) solid var(--color-border);
+    border-bottom: 0;
+    border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+    background: color-mix(in srgb, var(--file-accent) 28%, var(--paper));
+  }
+
+  .project-file-kicker {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .project-file-kicker > span {
+    color: var(--color-text-muted);
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    font-weight: 600;
+  }
+
+  h3 {
+    font-size: var(--text-h3);
+    line-height: 1.1;
+  }
+
+  h3 a {
+    color: var(--color-text);
+    text-decoration: none;
+  }
+
+  h3 a:hover {
+    text-decoration: underline;
+    text-decoration-thickness: 0.06em;
+    text-underline-offset: 0.14em;
+  }
+
+  p {
+    margin: 0;
+    color: var(--color-text-muted);
+    font-size: var(--text-body);
+    line-height: 1.48;
+  }
+
+  .question {
+    border-top: var(--border-width) solid var(--color-border);
+    padding-top: var(--space-3);
+    color: var(--color-text);
+    font-size: var(--text-sm);
+  }
+
+  .project-file-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    align-items: center;
+  }
+
+  .project-file-links :global(a) {
+    display: inline-flex;
+    min-height: 38px;
+    align-items: center;
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 0.42rem 0.62rem;
+    background: rgba(255, 248, 239, 0.52);
+    color: var(--color-text);
+    font-size: var(--text-sm);
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .project-file-links :global(a:hover),
+  .project-file-links .is-emphasis {
+    border-color: color-mix(
+      in srgb,
+      var(--file-accent) 55%,
+      var(--color-border)
+    );
+    background: color-mix(in srgb, var(--file-accent) 12%, var(--paper));
+  }
+</style>

@@ -76,7 +76,7 @@ const stops = resolvedTrail.stops.map((stop, index) => ({
 
   .trail-header h1 {
     max-width: 12ch;
-    font-size: clamp(2.35rem, 4vw, 3.6rem);
+    font-size: var(--text-page-title);
   }
 
   .trail-header > p:not(.eyebrow) {
@@ -90,7 +90,7 @@ const stops = resolvedTrail.stops.map((stop, index) => ({
   .trail-header a,
   .stop-card a {
     color: var(--plum);
-    font-weight: 850;
+    font-weight: 600;
     text-decoration-thickness: 0.08em;
     text-underline-offset: 0.18em;
   }
@@ -121,7 +121,7 @@ const stops = resolvedTrail.stops.map((stop, index) => ({
     color: var(--color-text-muted);
     font-family: var(--font-mono);
     font-size: var(--font-size-micro);
-    font-weight: 850;
+    font-weight: 600;
   }
 
   .stop-card {
@@ -137,12 +137,12 @@ const stops = resolvedTrail.stops.map((stop, index) => ({
     color: var(--color-text-muted);
     font-family: var(--font-mono);
     font-size: var(--font-size-micro);
-    font-weight: 850;
+    font-weight: 600;
     text-transform: uppercase;
   }
 
   .stop-card h2 {
-    font-size: clamp(1.25rem, 2vw, 1.65rem);
+    font-size: var(--text-h3);
   }
 
   .stop-card p,

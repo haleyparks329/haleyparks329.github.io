@@ -16,10 +16,7 @@ const titleId = `continue-exploring-${title
 
 {
   visibleLinks.length > 0 && (
-    <aside
-      class="continue-exploring"
-      aria-labelledby={titleId}
-    >
+    <aside class="continue-exploring" aria-labelledby={titleId}>
       <p class="eyebrow">Next shelf</p>
       <h2 id={titleId}>{title}</h2>
       <div class="continue-links">
@@ -45,7 +42,7 @@ const titleId = `continue-exploring-${title
 
   .continue-exploring h2 {
     margin: 0 0 var(--space-4);
-    font-size: clamp(1.35rem, 2vw, 1.8rem);
+    font-size: var(--text-h2);
   }
 
   .continue-links {
@@ -75,7 +72,7 @@ const titleId = `continue-exploring-${title
     color: var(--color-text-muted);
     font-family: var(--font-mono);
     font-size: var(--font-size-micro);
-    font-weight: 850;
+    font-weight: 600;
     text-transform: uppercase;
   }
 
@@ -95,7 +92,7 @@ const titleId = `continue-exploring-${title
     color: var(--color-text-muted);
     font-family: var(--font-mono);
     font-size: 0.68rem;
-    font-weight: 800;
+    font-weight: 600;
     text-transform: uppercase;
   }
 

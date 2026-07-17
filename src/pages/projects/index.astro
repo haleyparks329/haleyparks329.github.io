@@ -1,8 +1,7 @@
 ---
 import { getCollection } from "astro:content";
-import InteriorHeader from "@/components/InteriorHeader.astro";
-import ProjectCard from "@/components/ProjectCard.astro";
-import SectionHeading from "@/components/SectionHeading.astro";
+import PageIntro from "@/components/PageIntro.astro";
+import ProjectFile from "@/components/ProjectFile.astro";
 import BaseLayout from "@/layouts/BaseLayout.astro";
 
 const projects = (await getCollection("projects")).sort(
@@ -14,22 +13,24 @@ const projects = (await getCollection("projects")).sort(
   title="Projects"
   description="Public project summaries for The Human Model, Career Intelligence, and QA Agents."
 >
-  <section class="interior-container projects-page">
-    <InteriorHeader
+  <section class="wide-case projects-page">
+    <PageIntro
       eyebrow="Projects"
-      title="Active systems shelf"
-      text="Each project page frames the system as a public case study: the research question, evidence objects, current boundaries, and where the repository tells the deeper truth."
+      title="Things I'm building"
+      text="Public project files for the systems that are active enough to inspect: what they explore, what exists today, and where the repository tells the deeper truth."
       meta={["3 active systems", "Public notes", "Repo-backed"]}
-      objectLabel="Desk index"
-      objectText="Research objects opened from the homepage desk."
+      note="Same desk, calmer shelf."
       accent="olive"
+      width="wide"
     />
     <div class="project-shelf" aria-label="Active project objects">
       <div class="project-shelf-primary">
         {
           projects
             .filter((project) => project.data.slug === "the-human-model")
-            .map((project) => <ProjectCard project={project} />)
+            .map((project) => (
+              <ProjectFile project={project} variant="featured" />
+            ))
         }
       </div>
 
@@ -37,7 +38,7 @@ const projects = (await getCollection("projects")).sort(
         {
           projects
             .filter((project) => project.data.slug !== "the-human-model")
-            .map((project) => <ProjectCard project={project} />)
+            .map((project) => <ProjectFile project={project} />)
         }
       </div>
     </div>
@@ -48,34 +49,20 @@ const projects = (await getCollection("projects")).sort(
       <a href="/explore/trails/ai-systems/">Follow the AI Systems trail</a>
     </nav>
   </section>
-
-  <section class="page-section">
-    <div class="interior-container section-grid">
-      <SectionHeading
-        eyebrow="Ownership model"
-        title="Presentation here, implementation elsewhere"
-      />
-      <div class="interior-note workspace-object surface-ochre tape-left">
-        <p>
-          This website owns the public story. Each repository owns the
-          implementation and technical documentation.
-        </p>
-      </div>
-    </div>
-  </section>
 </BaseLayout>
 
 <style>
   .projects-page {
-    padding-bottom: clamp(2.5rem, 5vw, 4.5rem);
+    padding-bottom: var(--space-8);
   }
 
   .project-shelf {
     display: grid;
     grid-template-columns: minmax(0, 1.05fr) minmax(19rem, 0.95fr);
-    gap: clamp(1rem, 2vw, 1.35rem);
+    gap: var(--space-6);
     align-items: start;
-    margin-bottom: clamp(2rem, 4vw, 4rem);
+    margin-top: var(--space-8);
+    margin-bottom: var(--space-8);
   }
 
   .project-page-links {
@@ -89,7 +76,7 @@ const projects = (await getCollection("projects")).sort(
   .project-page-links a {
     color: var(--plum);
     font-size: var(--font-size-small);
-    font-weight: 850;
+    font-weight: 600;
     text-decoration-thickness: 0.08em;
     text-underline-offset: 0.18em;
   }
@@ -99,31 +86,12 @@ const projects = (await getCollection("projects")).sort(
     display: grid;
     min-width: 0;
     align-content: start;
-    gap: clamp(1rem, 2vw, 1.35rem);
-  }
-
-  .project-shelf-primary > :global(*),
-  .project-shelf-secondary > :global(*) {
-    height: auto;
-    min-height: 0;
-    align-self: start;
-  }
-
-  :global(.projects-page .interior-header h1) {
-    max-width: 15ch;
-  }
-
-  :global(.project-shelf-secondary .project-career-intelligence) {
-    margin-top: clamp(0.25rem, 1vw, 0.7rem);
+    gap: var(--space-6);
   }
 
   @media (max-width: 980px) {
     .project-shelf {
       grid-template-columns: 1fr;
-    }
-
-    :global(.project-shelf-secondary .project-career-intelligence) {
-      margin-top: 0;
     }
   }
 </style>

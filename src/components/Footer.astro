@@ -24,7 +24,7 @@ const year = new Date().getFullYear();
         <a href={`mailto:${siteConfig.email}`}>Email</a>
       </nav>
     </div>
-    <p class="desk-note">Iced matcha nearby. Notes still open.</p>
+    <p class="desk-note">Notes still open.</p>
     <p class="fine-print">{"(c) "}{year} {siteConfig.name}</p>
   </div>
 </footer>
@@ -32,7 +32,7 @@ const year = new Date().getFullYear();
 <style>
   .site-footer {
     border-top: var(--border-width) solid var(--color-border);
-    background: var(--color-surface-band);
+    background: color-mix(in srgb, var(--color-surface) 78%, transparent);
     color: var(--color-text-muted);
   }
 
@@ -55,7 +55,7 @@ const year = new Date().getFullYear();
   .footer-title {
     margin-bottom: 0.25rem;
     color: var(--color-text);
-    font-weight: var(--font-weight-heavy);
+    font-weight: 600;
   }
 
   .footer-intro p {
@@ -79,7 +79,7 @@ const year = new Date().getFullYear();
   .footer-links a {
     color: var(--color-text);
     font-size: var(--font-size-small);
-    font-weight: 750;
+    font-weight: 600;
   }
 
   .fine-print,

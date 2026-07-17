@@ -1,6 +1,7 @@
 ---
 import { getCollection } from "astro:content";
 import BaseLayout from "@/layouts/BaseLayout.astro";
+import PageIntro from "@/components/PageIntro.astro";
 import WritingEntryRow from "@/components/WritingEntryRow.astro";
 
 const entries = (await getCollection("writing"))
@@ -22,12 +23,16 @@ const archiveEntries = featuredEntry
   description="Case studies, arguments, and small ideas from active work."
   canonicalPath="/writing/"
 >
-  <section class="writing-index">
-    <header class="writing-index-header">
-      <p class="eyebrow">Writing</p>
-      <h1>Case studies, arguments, and small ideas from active work.</h1>
-      <p>Case Studies · Essays · Quick Notes</p>
-    </header>
+  <section class="writing-index reading-column">
+    <PageIntro
+      eyebrow="Writing"
+      title="Notes from the desk"
+      text="Case studies, arguments, and small ideas from active work."
+      meta={["Case studies", "Essays", "Quick notes"]}
+      note="One longer thread, several kinds of notes."
+      accent="lavender"
+      width="reading"
+    />
 
     {
       featuredEntry && (
@@ -67,38 +72,14 @@ const archiveEntries = featuredEntry
 
 <style>
   .writing-index {
-    width: min(900px, calc(100% - 2rem));
-    margin: clamp(2rem, 5vw, 4rem) auto clamp(3rem, 7vw, 6rem);
-  }
-
-  .writing-index-header {
-    display: grid;
-    gap: var(--space-4);
-    border-bottom: var(--border-width) solid var(--color-border);
-    padding-bottom: clamp(1.5rem, 4vw, 2.5rem);
-  }
-
-  .writing-index-header h1 {
-    max-width: 16ch;
-    margin: 0;
-    font-size: clamp(2.25rem, 4vw, 3.5rem);
-    line-height: 0.98;
-  }
-
-  .writing-index-header > p:not(.eyebrow) {
-    color: var(--color-text-muted);
-    font-family: var(--font-mono);
-    font-size: var(--font-size-micro);
-    font-weight: 850;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
+    margin-block: var(--space-7) var(--space-12);
   }
 
   .featured-writing,
   .writing-archive,
   .writing-page-links,
   .type-intro {
-    margin-top: clamp(2.5rem, 5vw, 4.5rem);
+    margin-top: var(--space-8);
   }
 
   .section-heading {
@@ -106,7 +87,7 @@ const archiveEntries = featuredEntry
   }
 
   .section-heading h2 {
-    font-size: clamp(1.45rem, 2.2vw, 2rem);
+    font-size: var(--text-h2);
   }
 
   .writing-list {
@@ -134,7 +115,7 @@ const archiveEntries = featuredEntry
   .writing-page-links a {
     color: var(--plum);
     font-size: var(--font-size-small);
-    font-weight: 850;
+    font-weight: 600;
     text-decoration-thickness: 0.08em;
     text-underline-offset: 0.18em;
   }

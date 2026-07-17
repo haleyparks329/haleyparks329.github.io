@@ -28,7 +28,7 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
 
   .moved-page h1 {
     max-width: 14ch;
-    font-size: clamp(2.35rem, 4vw, 3.6rem);
+    font-size: var(--text-page-title);
   }
 
   .moved-page p:not(.eyebrow) {
@@ -47,7 +47,7 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
     padding: 0.62rem 0.85rem;
     background: var(--color-surface-raised);
     color: var(--color-text);
-    font-weight: 850;
+    font-weight: 600;
     text-decoration: none;
   }
 </style>

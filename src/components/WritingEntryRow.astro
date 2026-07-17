@@ -83,22 +83,26 @@ const dateFormatter = new Intl.DateTimeFormat("en", {
     color: var(--color-text-muted);
     font-family: var(--font-mono);
     font-size: var(--font-size-micro);
-    font-weight: 800;
+    font-weight: 600;
     letter-spacing: 0.06em;
     text-transform: uppercase;
   }
 
   .row-main h3 {
     margin-bottom: var(--space-2);
-    font-family: var(--font-serif);
-    font-size: clamp(1.25rem, 1.8vw, 1.65rem);
-    line-height: 1.1;
+    font-size: var(--text-h3);
+    line-height: 1.2;
   }
 
   .row-main h3 a {
     color: var(--color-text);
-    text-decoration-thickness: 0.08em;
-    text-underline-offset: 0.16em;
+    text-decoration: none;
+  }
+
+  .row-main h3 a:hover {
+    text-decoration: underline;
+    text-decoration-thickness: 0.06em;
+    text-underline-offset: 0.14em;
   }
 
   .row-main p:not(.row-meta) {
@@ -124,7 +128,7 @@ const dateFormatter = new Intl.DateTimeFormat("en", {
     background: var(--color-surface-raised);
     color: var(--color-text-muted);
     font-size: var(--font-size-micro);
-    font-weight: 700;
+    font-weight: 600;
   }
 
   @media (max-width: 720px) {

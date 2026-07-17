@@ -2,6 +2,7 @@
 import type { CollectionEntry } from "astro:content";
 import ContinueExploring from "@/components/ContinueExploring.astro";
 import ExternalLink from "@/components/ExternalLink.astro";
+import PageIntro from "@/components/PageIntro.astro";
 import ProjectNav from "@/components/ProjectNav.astro";
 import StatusBadge from "@/components/StatusBadge.astro";
 import TagList from "@/components/TagList.astro";
@@ -143,9 +144,17 @@ const hasConnectedWork =
         />
       )
     }
-    <p class="report-type">{reportType}</p>
-    <h1>{project.data.title}</h1>
-    <p class="report-summary">{summary}</p>
+    <PageIntro
+      eyebrow={reportType}
+      title={project.data.title}
+      text={summary}
+      accent={project.data.accent === "blue"
+        ? "sky"
+        : project.data.accent === "olive"
+          ? "olive"
+          : "raspberry"}
+      width="wide"
+    />
     <div class="report-meta">
       <span class="meta-label">Status</span>
       <StatusBadge status={project.data.status} />
@@ -374,24 +383,17 @@ const hasConnectedWork =
 
 <style>
   .project-report {
-    width: min(860px, calc(100% - 2rem));
-    margin: clamp(2rem, 5vw, 4rem) auto clamp(3rem, 7vw, 6rem);
-  }
-
-  .project-report h1 {
-    max-width: 12ch;
-    margin: 0;
-    font-size: clamp(2.25rem, 4vw, 3.5rem);
-    line-height: 0.98;
+    width: min(var(--content-reading), calc(100% - var(--container-gutter)));
+    margin: var(--space-7) auto var(--space-12);
   }
 
   .project-report h2 {
-    margin-top: clamp(2.5rem, 5vw, 4.5rem);
+    margin-top: var(--space-8);
     margin-bottom: var(--space-4);
     border-top: var(--border-width) solid var(--color-border);
-    padding-top: clamp(1.5rem, 3vw, 2rem);
-    font-size: clamp(1.5rem, 2.2vw, 2.1rem);
-    line-height: 1.05;
+    padding-top: var(--space-6);
+    font-size: var(--text-h2);
+    line-height: 1.1;
   }
 
   .report-header + section h2 {
@@ -432,27 +434,17 @@ const hasConnectedWork =
   .report-header {
     display: grid;
     gap: var(--space-4);
-    border-bottom: var(--border-width) solid var(--color-border);
-    padding-bottom: clamp(1.5rem, 4vw, 2.5rem);
+    padding-bottom: var(--space-4);
   }
 
-  .report-type,
   .meta-label {
     margin: 0;
     color: var(--color-text-muted);
     font-family: var(--font-mono);
     font-size: var(--font-size-micro);
-    font-weight: 850;
+    font-weight: 600;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-  }
-
-  .report-summary {
-    max-width: 48rem;
-    margin: 0;
-    color: var(--color-text);
-    font-size: clamp(1.05rem, 1.3vw, 1.2rem);
-    font-weight: 650;
   }
 
   .report-meta,
@@ -475,7 +467,7 @@ const hasConnectedWork =
   .appendix-links :global(a),
   .status-table :global(a) {
     color: var(--plum);
-    font-weight: 850;
+    font-weight: 600;
     text-decoration-thickness: 0.08em;
     text-underline-offset: 0.18em;
   }
@@ -490,7 +482,7 @@ const hasConnectedWork =
   }
 
   .technical-block {
-    width: min(980px, calc(100vw - 2rem));
+    width: min(var(--content-standard), calc(100vw - var(--container-gutter)));
     margin-left: 50%;
     transform: translateX(-50%);
   }
@@ -513,7 +505,7 @@ const hasConnectedWork =
   }
 
   .wide-section {
-    width: min(1040px, calc(100vw - 2rem));
+    width: min(var(--content-wide), calc(100vw - var(--container-gutter)));
     margin-left: 50%;
     transform: translateX(-50%);
   }
@@ -543,7 +535,7 @@ const hasConnectedWork =
     color: var(--color-text-muted);
     font-family: var(--font-mono);
     font-size: var(--font-size-micro);
-    font-weight: 850;
+    font-weight: 600;
     letter-spacing: 0.08em;
     text-transform: uppercase;
   }
@@ -561,7 +553,7 @@ const hasConnectedWork =
     background: var(--color-surface-raised);
     font-family: var(--font-mono);
     font-size: 0.78rem;
-    font-weight: 850;
+    font-weight: 600;
   }
 
   .working {
@@ -620,7 +612,7 @@ const hasConnectedWork =
 
   .appendix-details summary {
     cursor: pointer;
-    font-weight: 850;
+    font-weight: 600;
   }
 
   .appendix-details ul {
@@ -671,7 +663,7 @@ const hasConnectedWork =
     color: var(--color-text-muted);
     font-family: var(--font-mono);
     font-size: var(--font-size-micro);
-    font-weight: 850;
+    font-weight: 600;
     text-transform: uppercase;
   }
 

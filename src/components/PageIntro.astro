@@ -1,0 +1,171 @@
+---
+type Props = {
+  eyebrow: string;
+  title: string;
+  text?: string;
+  meta?: string[];
+  note?: string;
+  accent?: "raspberry" | "olive" | "sky" | "lavender" | "ochre" | "plant";
+  width?: "reading" | "standard" | "wide";
+};
+
+const {
+  eyebrow,
+  title,
+  text,
+  meta = [],
+  note,
+  accent = "raspberry",
+  width = "standard",
+} = Astro.props;
+---
+
+<header
+  class={`page-intro page-intro-${accent} page-intro-${width} ${
+    note ? "has-note" : ""
+  }`}
+>
+  <div class="page-intro-copy">
+    <p class="eyebrow">{eyebrow}</p>
+    <h1>{title}</h1>
+    {text && <p class="page-intro-text">{text}</p>}
+    {
+      meta.length > 0 && (
+        <ul class="metadata-row" aria-label={`${title} metadata`}>
+          {meta.map((item) => (
+            <li>{item}</li>
+          ))}
+        </ul>
+      )
+    }
+  </div>
+  {note && <p class="page-intro-note">{note}</p>}
+</header>
+
+<style>
+  .page-intro {
+    --intro-accent: var(--accent-primary);
+    --intro-copy-width: var(--content-standard);
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-4);
+    align-items: end;
+    border-bottom: var(--border-width) solid var(--color-border);
+    padding-block: var(--space-5);
+  }
+
+  .page-intro.has-note {
+    grid-template-columns: minmax(0, 1fr) minmax(12rem, 0.24fr);
+    gap: var(--space-5);
+  }
+
+  .page-intro-reading {
+    --intro-copy-width: var(--content-reading);
+    width: min(var(--content-reading), 100%);
+  }
+
+  .page-intro-wide {
+    --intro-copy-width: var(--content-wide);
+  }
+
+  .page-intro-wide.has-note {
+    grid-template-columns: minmax(0, 1fr) minmax(13rem, 0.22fr);
+  }
+
+  .page-intro-olive {
+    --intro-accent: var(--olive);
+  }
+
+  .page-intro-sky {
+    --intro-accent: var(--blue);
+  }
+
+  .page-intro-lavender {
+    --intro-accent: var(--lavender);
+  }
+
+  .page-intro-ochre {
+    --intro-accent: var(--khaki);
+  }
+
+  .page-intro-plant {
+    --intro-accent: var(--houseplant);
+  }
+
+  .page-intro-copy {
+    max-width: var(--intro-copy-width);
+    border-left: 0.34rem solid var(--intro-accent);
+    padding-left: var(--space-4);
+  }
+
+  h1 {
+    max-width: min(100%, 24ch);
+    font-size: var(--text-page-title);
+    font-weight: var(--weight-semibold);
+    line-height: 1.05;
+  }
+
+  .page-intro-text {
+    max-width: var(--content-reading);
+    margin: var(--space-2) 0 0;
+    color: var(--color-text-muted);
+    font-size: var(--text-body);
+    line-height: 1.48;
+  }
+
+  .page-intro :global(.metadata-row) {
+    gap: 0.35rem;
+    margin-top: var(--space-3);
+  }
+
+  .page-intro :global(.metadata-row li) {
+    padding: 0.14rem 0.42rem;
+    font-size: 0.72rem;
+    font-weight: 650;
+    letter-spacing: 0;
+  }
+
+  .page-intro-note {
+    position: relative;
+    margin: 0;
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--radius-sm);
+    padding: var(--space-3) var(--space-4);
+    background: color-mix(in srgb, var(--intro-accent) 14%, var(--paper));
+    box-shadow: var(--shadow-paper);
+    color: var(--color-text);
+    font-family: var(--font-hand);
+    font-size: 1.05rem;
+    line-height: 1.25;
+  }
+
+  .page-intro-note::before {
+    position: absolute;
+    top: -0.48rem;
+    left: 18%;
+    width: 3.5rem;
+    height: 0.72rem;
+    background: color-mix(in srgb, var(--khaki) 48%, transparent);
+    content: "";
+    transform: rotate(-2deg);
+  }
+
+  @media (max-width: 760px) {
+    .page-intro,
+    .page-intro.has-note,
+    .page-intro-wide {
+      grid-template-columns: 1fr;
+      gap: var(--space-3);
+      padding-block: var(--space-4);
+    }
+
+    h1 {
+      max-width: 100%;
+      font-size: clamp(1.85rem, 8vw, 2.25rem);
+    }
+
+    .page-intro-note {
+      max-width: 24rem;
+    }
+  }
+</style>
