@@ -18,6 +18,7 @@
   --color-canvas: var(--canvas);
   --color-surface: var(--paper);
   --color-surface-raised: #fbfaf7;
+  --color-paper-clean: #fffdf9;
   --color-surface-band: rgba(255, 249, 241, 0.58);
   --color-text: var(--ink);
   --color-text-secondary: #5c4b46;
@@ -114,6 +115,7 @@
   --space-12: 3rem;
   --space-section: clamp(3rem, 8vw, 6rem);
   --space-hero: clamp(4rem, 10vw, 8rem);
+  --page-section-start: clamp(2rem, 4vw, 3rem);
   --grid-gap: var(--space-4);
   --section-gap: clamp(2rem, 6vw, 5rem);
   --radius-sm: 6px;

@@ -17,9 +17,9 @@ const projects = (await getCollection("projects")).sort(
 >
   <section class="site-shell projects-page">
     <PageIntro
-      eyebrow="Projects"
-      title="Project catalogue"
-      text="Active systems, experiments, and long-running bodies of work. Open a project workspace to inspect the overview, demos, related writing, and repository trail."
+      title="Projects"
+      description="Active systems, experiments, and long-running bodies of work."
+      text="Open a project workspace to inspect its overview, demos, related writing, and repository trail."
       meta={["4 active systems", "Public workspaces", "Repo-backed"]}
       note="Choose a file, then wander."
       accent="olive"
@@ -39,6 +39,7 @@ const projects = (await getCollection("projects")).sort(
 
 <style>
   .projects-page {
+    margin-top: 0;
     padding-bottom: var(--space-8);
   }
 
@@ -47,7 +48,7 @@ const projects = (await getCollection("projects")).sort(
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: clamp(1rem, 2vw, 1.5rem);
     align-items: stretch;
-    margin-top: var(--space-8);
+    margin-top: var(--page-section-start);
     margin-bottom: var(--space-8);
   }
 

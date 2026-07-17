@@ -1,7 +1,8 @@
 ---
 type Props = {
-  eyebrow: string;
+  eyebrow?: string;
   title: string;
+  description?: string;
   text?: string;
   meta?: string[];
   note?: string;
@@ -12,12 +13,16 @@ type Props = {
 const {
   eyebrow,
   title,
+  description,
   text,
   meta = [],
   note,
   accent = "raspberry",
   width = "standard",
 } = Astro.props;
+
+const mastheadDescription = description ?? text;
+const supportingText = description ? text : undefined;
 ---
 
 <header
@@ -25,10 +30,17 @@ const {
     note ? "has-note" : ""
   }`}
 >
-  <div class="page-intro-copy">
-    <p class="eyebrow">{eyebrow}</p>
+  <div class="page-intro-title">
+    {eyebrow && <p class="eyebrow">{eyebrow}</p>}
     <h1>{title}</h1>
-    {text && <p class="page-intro-text">{text}</p>}
+  </div>
+  <div class="page-intro-copy">
+    {
+      mastheadDescription && (
+        <p class="page-intro-description">{mastheadDescription}</p>
+      )
+    }
+    {supportingText && <p class="page-intro-text">{supportingText}</p>}
     {
       meta.length > 0 && (
         <ul class="metadata-row" aria-label={`${title} metadata`}>
@@ -38,38 +50,24 @@ const {
         </ul>
       )
     }
+    {note && <p class="page-intro-note">{note}</p>}
   </div>
-  {note && <p class="page-intro-note">{note}</p>}
 </header>
 
 <style>
   .page-intro {
     --intro-accent: var(--accent-primary);
-    --intro-copy-width: var(--content-standard);
     display: grid;
-    grid-template-columns: minmax(0, 1fr);
-    gap: var(--space-4);
-    align-items: end;
+    min-height: 26.5rem;
+    grid-template-columns: minmax(16rem, 0.42fr) minmax(0, 0.58fr);
+    gap: clamp(2rem, 7vw, 7rem);
+    align-items: start;
     border-bottom: var(--border-width) solid var(--color-border);
-    padding-block: var(--space-5);
-  }
-
-  .page-intro.has-note {
-    grid-template-columns: minmax(0, 1fr) minmax(12rem, 0.24fr);
-    gap: var(--space-5);
+    padding-block: 5rem;
   }
 
   .page-intro-reading {
-    --intro-copy-width: var(--content-reading);
     width: min(var(--content-reading), 100%);
-  }
-
-  .page-intro-wide {
-    --intro-copy-width: var(--content-wide);
-  }
-
-  .page-intro-wide.has-note {
-    grid-template-columns: minmax(0, 1fr) minmax(13rem, 0.22fr);
   }
 
   .page-intro-olive {
@@ -92,30 +90,46 @@ const {
     --intro-accent: var(--houseplant);
   }
 
-  .page-intro-copy {
-    max-width: var(--intro-copy-width);
-    border-left: 0.34rem solid var(--intro-accent);
-    padding-left: var(--space-4);
+  .page-intro-title {
+    border-top: 0.3rem solid var(--intro-accent);
+    padding-top: var(--space-4);
   }
 
   h1 {
-    max-width: min(100%, 24ch);
-    font-size: var(--text-page-title);
+    max-width: 12ch;
+    font-size: 5rem;
     font-weight: var(--weight-semibold);
-    line-height: 1.05;
+    line-height: 0.95;
+    letter-spacing: 0;
+    text-wrap: nowrap;
+    white-space: nowrap;
+  }
+
+  .page-intro-copy {
+    display: grid;
+    align-content: start;
+    max-width: 38rem;
+  }
+
+  .page-intro-description {
+    max-width: 34rem;
+    margin: 0;
+    color: var(--color-text);
+    font-size: 1.75rem;
+    line-height: 1.2;
   }
 
   .page-intro-text {
-    max-width: var(--content-reading);
-    margin: var(--space-2) 0 0;
+    max-width: 38rem;
+    margin: var(--space-4) 0 0;
     color: var(--color-text-muted);
     font-size: var(--text-body);
-    line-height: 1.48;
+    line-height: 1.55;
   }
 
   .page-intro :global(.metadata-row) {
     gap: 0.35rem;
-    margin-top: var(--space-3);
+    margin-top: var(--space-4);
   }
 
   .page-intro :global(.metadata-row li) {
@@ -127,11 +141,16 @@ const {
 
   .page-intro-note {
     position: relative;
-    margin: 0;
+    max-width: 15rem;
+    margin: var(--space-5) 0 0;
     border: var(--border-width) solid var(--color-border);
     border-radius: var(--radius-sm);
     padding: var(--space-3) var(--space-4);
-    background: color-mix(in srgb, var(--intro-accent) 14%, var(--paper));
+    background: color-mix(
+      in srgb,
+      var(--intro-accent) 10%,
+      var(--color-paper-clean)
+    );
     box-shadow: var(--shadow-paper);
     color: var(--color-text);
     font-family: var(--font-hand);
@@ -154,14 +173,21 @@ const {
     .page-intro,
     .page-intro.has-note,
     .page-intro-wide {
+      min-height: 0;
       grid-template-columns: 1fr;
-      gap: var(--space-3);
-      padding-block: var(--space-4);
+      gap: var(--space-5);
+      padding-block: 2.25rem 2.75rem;
     }
 
     h1 {
       max-width: 100%;
-      font-size: clamp(1.85rem, 8vw, 2.25rem);
+      font-size: 2.75rem;
+      white-space: normal;
+      text-wrap: balance;
+    }
+
+    .page-intro-description {
+      font-size: 1.35rem;
     }
 
     .page-intro-note {

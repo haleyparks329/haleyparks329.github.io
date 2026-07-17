@@ -1,5 +1,6 @@
 ---
 import BaseLayout from "@/layouts/BaseLayout.astro";
+import PageIntro from "@/components/PageIntro.astro";
 import { allDestinations, trailsForHref, typeLabel } from "@/data/navigation";
 
 const searchItems = allDestinations.map((destination) => {
@@ -33,15 +34,13 @@ const searchItems = allDestinations.map((destination) => {
   breadcrumbs={[{ label: "Home", href: "/" }, { label: "Search" }]}
 >
   <section class="search-page">
-    <header class="search-header">
-      <p class="eyebrow">Search</p>
-      <h1>Find the shelf directly.</h1>
-      <p>
-        Search covers public destinations from the site graph: projects,
-        writing, Field Log entries, demos, trails, summaries, and topics. It
-        runs entirely in the static page.
-      </p>
-    </header>
+    <PageIntro
+      title="Search"
+      description="Find the shelf directly."
+      text="Search public destinations from the site graph: projects, writing, Field Log entries, demos, trails, summaries, and topics."
+      accent="ochre"
+      width="wide"
+    />
 
     <form class="search-box" role="search">
       <label for="site-search">Search the site</label>
@@ -181,37 +180,14 @@ const searchItems = allDestinations.map((destination) => {
 
 <style>
   .search-page {
-    width: min(860px, calc(100% - 2rem));
-    margin: clamp(2rem, 5vw, 4rem) auto clamp(3rem, 7vw, 6rem);
-  }
-
-  .search-header {
-    display: grid;
-    gap: var(--space-2);
-    border-bottom: var(--border-width) solid var(--color-border);
-    padding-bottom: var(--space-5);
-  }
-
-  .search-header h1 {
-    max-width: 20ch;
-    font-size: var(--text-page-title);
-    font-weight: var(--weight-semibold);
-    line-height: 1.05;
-  }
-
-  .search-header > p:not(.eyebrow) {
-    max-width: 62ch;
-    margin: 0;
-    color: var(--color-text-secondary, var(--color-text-muted));
-    font-size: var(--text-body);
-    font-weight: var(--weight-regular);
-    line-height: 1.5;
+    width: min(var(--site-max-width), calc(100% - (var(--site-gutter) * 2)));
+    margin: 0 auto clamp(3rem, 7vw, 6rem);
   }
 
   .search-box {
     display: grid;
     gap: var(--space-2);
-    margin-top: var(--space-6);
+    margin-top: var(--page-section-start);
   }
 
   .search-box label {
@@ -350,8 +326,7 @@ const searchItems = allDestinations.map((destination) => {
 
   @media (max-width: 640px) {
     .search-page {
-      width: min(100% - 1.5rem, 860px);
-      margin-block: var(--space-5) var(--space-8);
+      margin-block: 0 var(--space-8);
     }
 
     .search-results :global(.search-result) {

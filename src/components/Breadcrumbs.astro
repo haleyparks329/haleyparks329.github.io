@@ -14,30 +14,34 @@ const normalizedItems = items.filter((item) => item.label);
 
 {
   normalizedItems.length > 0 && (
-    <nav class="breadcrumbs site-shell" aria-label="Breadcrumb">
-      <ol>
-        {normalizedItems.map((item, index) => {
-          const isCurrent = index === normalizedItems.length - 1;
-          return (
-            <li>
-              {isCurrent || !item.href ? (
-                <span aria-current={isCurrent ? "page" : undefined}>
-                  {item.label}
-                </span>
-              ) : (
-                <a href={item.href}>{item.label}</a>
-              )}
-            </li>
-          );
-        })}
-      </ol>
-    </nav>
+    <div class="breadcrumb-band">
+      <nav class="breadcrumbs" aria-label="Breadcrumb">
+        <ol>
+          {normalizedItems.map((item, index) => {
+            const isCurrent = index === normalizedItems.length - 1;
+            return (
+              <li>
+                {isCurrent || !item.href ? (
+                  <span aria-current={isCurrent ? "page" : undefined}>
+                    {item.label}
+                  </span>
+                ) : (
+                  <a href={item.href}>{item.label}</a>
+                )}
+              </li>
+            );
+          })}
+        </ol>
+      </nav>
+    </div>
   )
 }
 
 <style>
-  .breadcrumbs {
-    margin-top: var(--space-4);
+  .breadcrumb-band {
+    width: min(var(--site-max-width), calc(100% - (var(--site-gutter) * 2)));
+    margin-inline: auto;
+    padding-block: 1rem;
   }
 
   .breadcrumbs ol {
@@ -85,8 +89,8 @@ const normalizedItems = items.filter((item) => item.label);
   }
 
   @media (max-width: 560px) {
-    .breadcrumbs {
-      margin-top: var(--space-3);
+    .breadcrumb-band {
+      padding-block: 0.85rem;
     }
   }
 </style>

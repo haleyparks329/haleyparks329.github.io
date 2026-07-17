@@ -128,8 +128,8 @@ const indexPayload = {
 >
   <section class="explore-page">
     <PageIntro
-      eyebrow="What’s Here?"
-      title="A compact guide to everything collected here"
+      title="What’s Here?"
+      description="A compact guide to everything collected here."
       text="Choose a route, start somewhere familiar, or browse the full index."
       meta={[
         `${indexDestinations.length} entries`,
@@ -400,13 +400,14 @@ const indexPayload = {
 <style>
   .explore-page {
     width: min(var(--site-max-width), calc(100% - (var(--site-gutter) * 2)));
-    margin: var(--space-7) auto var(--space-12);
+    margin: 0 auto var(--space-12);
   }
 
   .orientation-grid {
     display: grid;
     grid-template-columns: minmax(0, 1.35fr) minmax(15rem, 0.65fr);
     gap: clamp(1.25rem, 4vw, 2.25rem);
+    margin-top: var(--page-section-start);
     border-bottom: var(--border-width) solid var(--color-border);
     padding-block: var(--space-5);
   }

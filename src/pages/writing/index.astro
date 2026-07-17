@@ -2,6 +2,7 @@
 import { getCollection } from "astro:content";
 import WritingEditorialRow from "@/components/WritingEditorialRow.astro";
 import BaseLayout from "@/layouts/BaseLayout.astro";
+import PageIntro from "@/components/PageIntro.astro";
 
 const entries = (await getCollection("writing"))
   .filter((entry) => !entry.data.draft)
@@ -33,17 +34,14 @@ const sortOptions = [
   breadcrumbs={[{ label: "Home", href: "/" }, { label: "Writing" }]}
 >
   <section class="writing-editorial">
-    <header class="writing-header">
-      <p class="eyebrow">Writing</p>
-      <h1>Investigations, case studies, and ideas from active work.</h1>
-      <p>
-        Independent explorations and technical case studies connected to the
-        systems I am building.
-      </p>
-      <p class="published-count" id="writing-result-count" aria-live="polite">
-        {entries.length} published investigations
-      </p>
-    </header>
+    <PageIntro
+      title="Writing"
+      description="Investigations, case studies, and ideas from active work."
+      text="Independent explorations and technical case studies connected to the systems I am building."
+      meta={[`${entries.length} published investigations`]}
+      accent="lavender"
+      width="wide"
+    />
 
     <section class="browse-panel" aria-labelledby="browse-writing">
       <h2 id="browse-writing">Browse writing</h2>
@@ -279,27 +277,7 @@ const sortOptions = [
 <style>
   .writing-editorial {
     width: min(var(--site-max-width), calc(100% - (var(--site-gutter) * 2)));
-    margin: var(--space-7) auto var(--space-12);
-  }
-
-  .writing-header {
-    display: grid;
-    gap: var(--space-3);
-    max-width: 54rem;
-    padding-block: var(--space-5) var(--space-6);
-  }
-
-  .writing-header h1 {
-    max-width: 17ch;
-    font-size: clamp(2rem, 4vw, 3.35rem);
-    line-height: 1.02;
-  }
-
-  .writing-header > p:not(.eyebrow):not(.published-count) {
-    max-width: 42rem;
-    color: var(--color-text-secondary);
-    font-size: clamp(1.02rem, 1.2vw, 1.14rem);
-    line-height: 1.55;
+    margin: 0 auto var(--space-12);
   }
 
   .published-count,
@@ -314,6 +292,7 @@ const sortOptions = [
 
   .browse-panel {
     border-block: var(--border-width) solid var(--color-border);
+    margin-top: var(--page-section-start);
     padding-block: var(--space-5);
   }
 
