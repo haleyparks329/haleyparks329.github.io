@@ -4,349 +4,492 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
 import {
   allDestinations,
   contentTypes,
+  destinationById,
   type Destination,
   guidedPaths,
-  surpriseLink,
-  topicPaths,
   typeLabel,
 } from "@/data/navigation";
 
-const writing = (await getCollection("writing"))
-  .filter((entry) => !entry.data.draft)
-  .sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime());
-const fieldLog = (await getCollection("fieldLog")).sort(
-  (a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime(),
-);
-const projects = (await getCollection("projects")).sort(
-  (a, b) => a.data.order - b.data.order,
-);
+type IndexDestination = Destination & {
+  displayType: string;
+  alphaKey: string;
+  date?: Date;
+  dateLabel?: string;
+};
 
-const recentlyUpdated = [
-  ...writing.slice(0, 2).map((entry) => ({
-    href: `/writing/${entry.data.slug}/`,
-    label: entry.data.title,
-    type: typeLabel(entry.data.type),
-    summary: entry.data.description,
-  })),
-  ...fieldLog.slice(0, 2).map((entry) => ({
-    href: `/field-log/${entry.data.slug}/`,
-    label: entry.data.title,
-    type: "Build Log",
-    summary: entry.data.summary,
-  })),
-  ...projects.slice(0, 1).map((entry) => ({
-    href: `/projects/${entry.data.slug}/`,
-    label: entry.data.title,
-    type: "Case Study",
-    summary: entry.data.summary,
-  })),
-];
+const dateFormatter = new Intl.DateTimeFormat("en", {
+  month: "short",
+  day: "2-digit",
+  year: "numeric",
+});
 
-const browseGroups = [
-  {
-    label: "Projects",
-    destinations: allDestinations.filter(
-      (destination) => destination.type === "project",
-    ),
-  },
-  {
-    label: "Writing",
-    destinations: allDestinations.filter(
-      (destination) => destination.type === "writing",
-    ),
-  },
-  {
-    label: "Field Log",
-    destinations: allDestinations.filter(
-      (destination) => destination.type === "field-log",
-    ),
-  },
-  {
-    label: "Demos",
-    destinations: allDestinations.filter(
-      (destination) => destination.type === "demo",
-    ),
-  },
-  {
-    label: "Trails",
-    destinations: allDestinations.filter(
-      (destination) => destination.type === "trail",
-    ),
-  },
-  {
-    label: "Other Places",
-    destinations: allDestinations.filter((destination) =>
-      ["page", "place"].includes(destination.type),
-    ),
-  },
+const writing = (await getCollection("writing")).filter(
+  (entry) => !entry.data.draft,
+);
+const fieldLog = await getCollection("fieldLog");
+const datedHrefs = new Map<string, Date>();
+
+for (const entry of writing) {
+  datedHrefs.set(
+    `/writing/${entry.data.slug}/`,
+    entry.data.updatedDate ?? entry.data.pubDate,
+  );
+}
+
+for (const entry of fieldLog) {
+  datedHrefs.set(`/field-log/${entry.data.slug}/`, entry.data.pubDate);
+}
+
+const indexDestinations: IndexDestination[] = allDestinations
+  .map((destination) => {
+    const date = datedHrefs.get(destination.href);
+    return {
+      ...destination,
+      displayType: typeLabel(destination.type),
+      alphaKey: destination.label.slice(0, 1).toUpperCase(),
+      date,
+      dateLabel: date ? dateFormatter.format(date) : undefined,
+    };
+  })
+  .sort((a, b) => a.label.localeCompare(b.label));
+
+const groupByType = [
+  { label: "Projects", types: ["project"] },
+  { label: "Writing", types: ["writing"] },
+  { label: "Field Log", types: ["field-log"] },
+  { label: "Demos", types: ["demo"] },
+  { label: "Trails", types: ["trail"] },
+  { label: "Other Places", types: ["page", "place"] },
 ]
   .map((group) => ({
-    ...group,
-    destinations: group.destinations.sort((a, b) =>
-      a.label.localeCompare(b.label),
+    label: group.label,
+    destinations: indexDestinations.filter((destination) =>
+      group.types.includes(destination.type),
     ),
   }))
   .filter((group) => group.destinations.length > 0);
+
+const alphaGroups = Array.from(
+  indexDestinations.reduce((groups, destination) => {
+    const key = /^[A-Z]$/.test(destination.alphaKey)
+      ? destination.alphaKey
+      : "#";
+    groups.set(key, [...(groups.get(key) ?? []), destination]);
+    return groups;
+  }, new Map<string, IndexDestination[]>()),
+).sort(([a], [b]) => a.localeCompare(b));
+
+const topicGroups = Array.from(
+  indexDestinations.reduce((groups, destination) => {
+    for (const topic of destination.topics) {
+      groups.set(topic, [...(groups.get(topic) ?? []), destination]);
+    }
+    return groups;
+  }, new Map<string, IndexDestination[]>()),
+).sort(([a], [b]) => a.localeCompare(b));
+
+const recentDestinations = indexDestinations
+  .filter((destination) => destination.date)
+  .sort((a, b) => Number(b.date) - Number(a.date));
+
+const projectDestinations = indexDestinations.filter(
+  (destination) => destination.type === "project",
+);
+
+const enabledLetters = alphaGroups.map(([letter]) => letter);
+const quickLinks = [
+  ...contentTypes.map((item) => ({
+    href: item.href,
+    label: item.label,
+  })),
+  {
+    href: destinationById("about")?.href ?? "/about/",
+    label: "About",
+  },
+];
+const indexPayload = {
+  az: indexDestinations.length,
+  type: indexDestinations.length,
+  topic: topicGroups.reduce(
+    (total, [, destinations]) => total + destinations.length,
+    0,
+  ),
+  latest: recentDestinations.length,
+  projects: projectDestinations.length,
+};
 ---
 
 <BaseLayout
   title="What’s Here?"
-  description="A guide to Haley Parks' projects, writing, experiments, ideas, trails, and public work."
+  description="A compact guide to Haley Parks' projects, writing, experiments, ideas, trails, and public work."
   canonicalPath="/explore/"
 >
   <section class="explore-page">
     <header class="explore-header">
       <p class="eyebrow">What’s Here?</p>
-      <h1>A guide to the work collected here.</h1>
-      <p>
-        Follow a trail if you want a starting point, or browse projects,
-        writing, experiments, and ideas directly below.
-      </p>
-      <div class="explore-actions">
-        <a href="/search/">Search</a>
-        <a href="#browse-everything">Browse Everything</a>
-      </div>
+      <h1>A compact guide to everything collected here.</h1>
+      <p>Choose a route, start somewhere familiar, or browse the full index.</p>
     </header>
 
-    <section class="explore-section" aria-labelledby="start-here">
-      <div class="section-kicker">
-        <p class="eyebrow">Choose a trail</p>
-        <h2 id="start-here">Curated routes through the work</h2>
-      </div>
-      <div class="explore-grid">
-        {
-          guidedPaths.map((path) => (
-            <a href={path.href}>
-              <strong>{path.label}</strong>
-              <span>{path.description}</span>
-              <em>{path.stopCount} stops</em>
-            </a>
-          ))
-        }
-      </div>
-    </section>
-
-    <section class="explore-section" aria-labelledby="browse-type">
-      <div class="section-kicker">
-        <p class="eyebrow">Start somewhere</p>
-        <h2 id="browse-type">Direct doors into the site</h2>
-      </div>
-      <div class="type-grid">
-        {
-          contentTypes.map((item) => (
-            <a href={item.href}>
-              <strong>{item.label}</strong>
-              <span>{item.description}</span>
-            </a>
-          ))
-        }
-      </div>
-    </section>
-
-    <section class="explore-section" aria-labelledby="browse-topic">
-      <div class="section-kicker">
-        <p class="eyebrow">Browse by topic</p>
-        <h2 id="browse-topic">Related shelves</h2>
-      </div>
-      <div class="topic-list">
-        {
-          topicPaths.map((topic) => (
-            <a href={topic.href}>
-              <strong>{topic.label}</strong>
-              <span>{topic.description}</span>
-            </a>
-          ))
-        }
-      </div>
-    </section>
-
-    <section class="explore-section split-section" aria-labelledby="recent">
-      <div>
-        <div class="section-kicker">
-          <p class="eyebrow">Recently updated</p>
-          <h2 id="recent">Recent work</h2>
+    <div class="orientation-grid" aria-label="Starting points">
+      <section class="orientation-panel" aria-labelledby="trail-heading">
+        <div class="compact-heading">
+          <p class="eyebrow">Choose a Trail</p>
+          <h2 id="trail-heading">Suggested routes</h2>
         </div>
-        <div class="recent-list">
+        <ul class="trail-list">
           {
-            recentlyUpdated.map((item) => (
-              <a href={item.href}>
-                <span>{item.type}</span>
-                <strong>{item.label}</strong>
-                <em>{item.summary}</em>
+            guidedPaths.map((path) => (
+              <li>
+                <a href={path.href}>
+                  <span>
+                    <strong>{path.label}</strong>
+                    <em>{path.description}</em>
+                  </span>
+                  <small>{path.stopCount} stops</small>
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </section>
+
+      <section class="orientation-panel" aria-labelledby="start-heading">
+        <div class="compact-heading">
+          <p class="eyebrow">Start Somewhere</p>
+          <h2 id="start-heading">Familiar shelves</h2>
+        </div>
+        <nav class="quick-links" aria-label="Major site areas">
+          {quickLinks.map((link) => <a href={link.href}>{link.label}</a>)}
+        </nav>
+      </section>
+    </div>
+
+    <section class="index-section" aria-labelledby="index-title">
+      <div class="index-heading">
+        <div>
+          <p class="eyebrow">Index</p>
+          <h2 id="index-title">Browse everything collected here.</h2>
+        </div>
+        <a href="/search/">Search the site</a>
+      </div>
+
+      <div class="index-controls" aria-label="Index views">
+        <button type="button" data-view="az" aria-pressed="true">A–Z</button>
+        <button type="button" data-view="type" aria-pressed="false"
+          >By Type</button
+        >
+        <button type="button" data-view="topic" aria-pressed="false"
+          >Topic</button
+        >
+        <button type="button" data-view="latest" aria-pressed="false"
+          >Latest</button
+        >
+        <button type="button" data-view="projects" aria-pressed="false"
+          >Projects</button
+        >
+      </div>
+
+      <p class="index-status" id="index-status" aria-live="polite">
+        Grouped alphabetically.
+      </p>
+
+      <div class="index-view" data-index-view="az">
+        <nav class="alphabet-nav" aria-label="Alphabet jump links">
+          {
+            enabledLetters.map((letter) => (
+              <a href={`#letter-${letter.toLowerCase()}`}>{letter}</a>
+            ))
+          }
+        </nav>
+        {
+          alphaGroups.map(([letter, destinations]) => (
+            <section
+              class="index-group"
+              aria-labelledby={`letter-${letter.toLowerCase()}`}
+            >
+              <h3 id={`letter-${letter.toLowerCase()}`}>{letter}</h3>
+              <div class="index-rows">
+                {destinations.map((destination) => (
+                  <a class="index-row" href={destination.href}>
+                    <strong>{destination.label}</strong>
+                    <span>{destination.displayType}</span>
+                    <em>{destination.summary}</em>
+                  </a>
+                ))}
+              </div>
+            </section>
+          ))
+        }
+      </div>
+
+      <div class="index-view is-hidden" data-index-view="type">
+        {
+          groupByType.map((group) => (
+            <section
+              class="index-group"
+              aria-labelledby={`${group.label.toLowerCase().replaceAll(" ", "-")}-group`}
+            >
+              <h3
+                id={`${group.label.toLowerCase().replaceAll(" ", "-")}-group`}
+              >
+                {group.label}
+              </h3>
+              <div class="index-rows">
+                {group.destinations.map((destination) => (
+                  <a class="index-row" href={destination.href}>
+                    <strong>{destination.label}</strong>
+                    <span>{destination.displayType}</span>
+                    <em>{destination.summary}</em>
+                  </a>
+                ))}
+              </div>
+            </section>
+          ))
+        }
+      </div>
+
+      <div class="index-view is-hidden" data-index-view="topic">
+        {
+          topicGroups.map(([topic, destinations]) => (
+            <section
+              class="index-group"
+              aria-labelledby={`topic-${topic.toLowerCase().replaceAll(" ", "-")}`}
+            >
+              <h3 id={`topic-${topic.toLowerCase().replaceAll(" ", "-")}`}>
+                {topic}
+              </h3>
+              <div class="index-rows compact">
+                {destinations.map((destination) => (
+                  <a class="index-row" href={destination.href}>
+                    <strong>{destination.label}</strong>
+                    <span>{destination.displayType}</span>
+                  </a>
+                ))}
+              </div>
+            </section>
+          ))
+        }
+      </div>
+
+      <div class="index-view is-hidden" data-index-view="latest">
+        <div class="index-rows">
+          {
+            recentDestinations.map((destination) => (
+              <a class="index-row" href={destination.href}>
+                <strong>{destination.label}</strong>
+                <span>{destination.displayType}</span>
+                <time datetime={destination.date?.toISOString()}>
+                  {destination.dateLabel}
+                </time>
+                <em>{destination.summary}</em>
               </a>
             ))
           }
         </div>
       </div>
 
-      <aside class="surprise-note" aria-labelledby="surprise-me">
-        <p class="eyebrow">Wander somewhere unexpected</p>
-        <h2 id="surprise-me">{surpriseLink.label}</h2>
-        <p>{surpriseLink.description}</p>
-        <a href={surpriseLink.href}>Open the odd shelf</a>
-      </aside>
-    </section>
-
-    <section
-      id="browse-everything"
-      class="explore-section browse-everything"
-      aria-labelledby="browse-everything-title"
-    >
-      <div class="section-kicker">
-        <p class="eyebrow">Browse everything</p>
-        <h2 id="browse-everything-title">Complete public index</h2>
-        <p>
-          The same navigation graph, grouped as a straightforward directory.
-        </p>
+      <div class="index-view is-hidden" data-index-view="projects">
+        <div class="index-rows">
+          {
+            projectDestinations.map((destination) => (
+              <a class="index-row" href={destination.href}>
+                <strong>{destination.label}</strong>
+                <span>{destination.displayType}</span>
+                <em>{destination.summary}</em>
+              </a>
+            ))
+          }
+        </div>
       </div>
-      {
-        browseGroups.map((group) => (
-          <section
-            class="destination-group"
-            aria-labelledby={`${group.label.toLowerCase().replaceAll(" ", "-")}-group`}
-          >
-            <h3 id={`${group.label.toLowerCase().replaceAll(" ", "-")}-group`}>
-              {group.label}
-            </h3>
-            <div class="destination-list">
-              {group.destinations.map((destination: Destination) => (
-                <a href={destination.href}>
-                  <span>{typeLabel(destination.type)}</span>
-                  <strong>{destination.label}</strong>
-                  <em>{destination.summary}</em>
-                </a>
-              ))}
-            </div>
-          </section>
-        ))
-      }
     </section>
   </section>
+
+  <script
+    is:inline
+    type="application/json"
+    id="index-counts"
+    set:html={JSON.stringify(indexPayload)}
+  />
+  <script>
+    const buttons = Array.from(
+      document.querySelectorAll<HTMLButtonElement>("[data-view]"),
+    );
+    const views = Array.from(
+      document.querySelectorAll<HTMLElement>("[data-index-view]"),
+    );
+    const status = document.querySelector<HTMLElement>("#index-status");
+    const counts = JSON.parse(
+      document.querySelector("#index-counts")?.textContent ?? "{}",
+    );
+    const statusMessages: Record<string, string> = {
+      az: "Grouped alphabetically.",
+      type: "Grouped by content type.",
+      topic: "Browsing by topic.",
+      latest: `Showing ${counts.latest ?? 0} dated entries, newest first.`,
+      projects: `Showing ${counts.projects ?? 0} projects.`,
+    };
+
+    function setView(view: string, updateUrl = true) {
+      const normalizedView =
+        view === "all" ? "type" : view === "recent" ? "latest" : view;
+      buttons.forEach((button) => {
+        button.setAttribute(
+          "aria-pressed",
+          String(button.dataset.view === normalizedView),
+        );
+      });
+      views.forEach((panel) => {
+        panel.classList.toggle(
+          "is-hidden",
+          panel.dataset.indexView !== normalizedView,
+        );
+      });
+
+      if (status) {
+        status.textContent =
+          statusMessages[normalizedView] ??
+          `Showing ${counts[normalizedView] ?? 0} destinations.`;
+      }
+
+      if (updateUrl) {
+        const url = new URL(window.location.href);
+        if (normalizedView === "az") {
+          url.searchParams.delete("view");
+        } else {
+          url.searchParams.set("view", normalizedView);
+        }
+        window.history.replaceState({}, "", url);
+      }
+    }
+
+    buttons.forEach((button) => {
+      button.addEventListener("click", () =>
+        setView(button.dataset.view ?? "all"),
+      );
+    });
+
+    const initialView = new URLSearchParams(window.location.search).get("view");
+    const normalizedInitialView =
+      initialView === "all"
+        ? "type"
+        : initialView === "recent"
+          ? "latest"
+          : initialView;
+    if (normalizedInitialView === "az") {
+      setView("az");
+    } else if (
+      normalizedInitialView &&
+      buttons.some((button) => button.dataset.view === normalizedInitialView)
+    ) {
+      setView(normalizedInitialView, normalizedInitialView !== initialView);
+    }
+  </script>
 </BaseLayout>
 
 <style>
   .explore-page {
-    width: min(1060px, calc(100% - 2rem));
-    margin: clamp(2rem, 5vw, 4rem) auto clamp(3rem, 7vw, 6rem);
+    width: min(840px, calc(100% - 2rem));
+    margin: clamp(1.5rem, 4vw, 2.75rem) auto clamp(3rem, 7vw, 5rem);
   }
 
   .explore-header {
     display: grid;
-    gap: var(--space-4);
+    gap: var(--space-3);
     border-bottom: var(--border-width) solid var(--color-border);
-    padding-bottom: clamp(1.5rem, 4vw, 2.5rem);
+    padding-bottom: var(--space-4);
   }
 
   .explore-header h1 {
-    max-width: 13ch;
-    font-size: clamp(2.35rem, 4vw, 3.6rem);
+    max-width: 19ch;
+    font-size: clamp(1.85rem, 3vw, 2.55rem);
+    line-height: 1;
   }
 
   .explore-header > p:not(.eyebrow) {
-    max-width: 46rem;
+    max-width: 42rem;
     color: var(--color-text-muted);
-    font-size: clamp(1.02rem, 1.3vw, 1.2rem);
+    font-size: 1rem;
     font-weight: 650;
-    line-height: 1.5;
-  }
-
-  .explore-actions,
-  .explore-grid,
-  .type-grid,
-  .topic-list,
-  .recent-list,
-  .destination-list {
-    display: grid;
-    gap: var(--space-3);
-  }
-
-  .explore-actions {
-    display: flex;
-    flex-wrap: wrap;
-  }
-
-  .explore-actions a,
-  .surprise-note a {
-    min-height: 44px;
-    border: var(--border-width) solid var(--color-border);
-    border-radius: var(--radius-md);
-    padding: 0.62rem 0.85rem;
-    background: var(--color-surface-raised);
-    color: var(--color-text);
-    font-weight: 850;
-    text-decoration: none;
-  }
-
-  .explore-section {
-    margin-top: clamp(2.5rem, 5vw, 4.5rem);
-  }
-
-  .section-kicker {
-    margin-bottom: var(--space-5);
-  }
-
-  .section-kicker h2,
-  .surprise-note h2 {
-    font-size: clamp(1.45rem, 2.4vw, 2.1rem);
-  }
-
-  .explore-grid,
-  .type-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .topic-list {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-
-  .explore-grid a,
-  .type-grid a,
-  .topic-list a,
-  .recent-list a,
-  .destination-list a,
-  .surprise-note {
-    display: grid;
-    gap: 0.35rem;
-    border: var(--border-width) solid var(--color-border);
-    border-radius: var(--radius-md);
-    padding: var(--space-4);
-    background: var(--color-surface-raised);
-    color: var(--color-text);
-    text-decoration: none;
-  }
-
-  .explore-grid a:hover,
-  .type-grid a:hover,
-  .topic-list a:hover,
-  .recent-list a:hover,
-  .destination-list a:hover {
-    border-color: var(--color-border-strong);
-    background: var(--color-surface);
-  }
-
-  .explore-grid span,
-  .explore-grid em,
-  .type-grid span,
-  .topic-list span,
-  .recent-list em,
-  .destination-list em,
-  .browse-everything .section-kicker p:not(.eyebrow),
-  .surprise-note p {
-    color: var(--color-text-muted);
-    font-size: 0.95rem;
-    font-style: normal;
     line-height: 1.45;
   }
 
-  .explore-grid em {
-    font-family: var(--font-mono);
-    font-size: var(--font-size-micro);
-    font-weight: 850;
-    text-transform: uppercase;
+  .orientation-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.35fr) minmax(15rem, 0.65fr);
+    gap: clamp(1.25rem, 4vw, 2.25rem);
+    border-bottom: var(--border-width) solid var(--color-border);
+    padding-block: var(--space-5);
   }
 
-  .recent-list span,
-  .destination-list span {
+  .orientation-panel {
+    min-width: 0;
+  }
+
+  .compact-heading {
+    display: grid;
+    gap: 0.18rem;
+    margin-bottom: var(--space-3);
+  }
+
+  .compact-heading h2,
+  .index-heading h2 {
+    font-size: clamp(1.15rem, 1.8vw, 1.45rem);
+    line-height: 1.12;
+  }
+
+  .trail-list {
+    display: grid;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .trail-list li,
+  .index-row {
+    border-top: var(--border-width) solid var(--color-border);
+  }
+
+  .trail-list li:last-child,
+  .index-rows .index-row:last-child {
+    border-bottom: var(--border-width) solid var(--color-border);
+  }
+
+  .trail-list a {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: var(--space-3);
+    padding-block: 0.62rem;
+    color: var(--color-text);
+    text-decoration: none;
+  }
+
+  .trail-list a:hover strong,
+  .trail-list a:focus-visible strong,
+  .index-row:hover strong,
+  .index-row:focus-visible strong,
+  .quick-links a:hover,
+  .quick-links a:focus-visible {
+    color: var(--plum);
+  }
+
+  .trail-list span {
+    display: grid;
+    gap: 0.16rem;
+  }
+
+  .trail-list em,
+  .index-row em {
+    color: var(--color-text-muted);
+    font-size: 0.88rem;
+    font-style: normal;
+    line-height: 1.35;
+  }
+
+  .trail-list small,
+  .index-row span,
+  .index-row time,
+  .index-status {
     color: var(--color-text-muted);
     font-family: var(--font-mono);
     font-size: var(--font-size-micro);
@@ -354,52 +497,147 @@ const browseGroups = [
     text-transform: uppercase;
   }
 
-  .split-section {
-    display: grid;
-    grid-template-columns: minmax(0, 1.4fr) minmax(18rem, 0.6fr);
-    gap: clamp(1rem, 3vw, 2rem);
-    align-items: start;
+  .quick-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem 0.7rem;
   }
 
-  .surprise-note {
-    border-color: rgba(122, 91, 139, 0.22);
-    background: color-mix(in srgb, var(--lavender) 72%, var(--paper));
+  .quick-links a {
+    color: var(--color-text);
+    font-weight: 850;
+    text-decoration-thickness: 0.08em;
+    text-underline-offset: 0.18em;
   }
 
-  .browse-everything {
-    border-top: var(--border-width) solid var(--color-border);
+  .index-section {
     padding-top: var(--space-5);
   }
 
-  .browse-everything h2 {
-    font-size: clamp(1.45rem, 2.4vw, 2.1rem);
+  .index-heading {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: var(--space-4);
   }
 
-  .destination-group {
+  .index-heading a {
+    color: var(--plum);
+    font-weight: 850;
+    text-decoration-thickness: 0.08em;
+    text-underline-offset: 0.18em;
+  }
+
+  .index-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-top: var(--space-4);
+  }
+
+  .index-controls button {
+    min-height: 36px;
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--radius-pill);
+    padding: 0.32rem 0.7rem;
+    background: transparent;
+    color: var(--color-text-muted);
+    cursor: pointer;
+    font: inherit;
+    font-size: 0.9rem;
+    font-weight: 850;
+  }
+
+  .index-controls button:hover,
+  .index-controls button[aria-pressed="true"] {
+    border-color: var(--color-border-strong);
+    background: var(--color-surface-raised);
+    color: var(--color-text);
+  }
+
+  .index-status {
+    margin-top: var(--space-3);
+  }
+
+  .index-view {
+    margin-top: var(--space-4);
+  }
+
+  .index-view.is-hidden {
+    display: none;
+  }
+
+  .alphabet-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.28rem 0.48rem;
+    margin-bottom: var(--space-4);
+  }
+
+  .alphabet-nav a {
+    color: var(--color-text-muted);
+    font-family: var(--font-mono);
+    font-size: var(--font-size-micro);
+    font-weight: 850;
+    text-decoration: none;
+  }
+
+  .alphabet-nav a:hover,
+  .alphabet-nav a:focus-visible {
+    color: var(--plum);
+  }
+
+  .index-group + .index-group {
     margin-top: var(--space-5);
   }
 
-  .destination-group h3 {
-    margin-bottom: var(--space-3);
-    font-size: clamp(1.1rem, 1.6vw, 1.35rem);
-  }
-
-  .destination-list {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .destination-list strong {
+  .index-group h3 {
+    margin-bottom: var(--space-2);
+    color: var(--color-text);
     font-size: 1rem;
-    line-height: 1.25;
   }
 
-  @media (max-width: 840px) {
-    .explore-grid,
-    .type-grid,
-    .topic-list,
-    .split-section,
-    .destination-list {
+  .index-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(6.8rem, auto) minmax(
+        6.4rem,
+        auto
+      );
+    gap: var(--space-3);
+    align-items: baseline;
+    padding-block: 0.58rem;
+    color: var(--color-text);
+    text-decoration: none;
+  }
+
+  .index-row em {
+    grid-column: 1 / -1;
+    max-width: 48rem;
+  }
+
+  .index-rows.compact .index-row {
+    grid-template-columns: minmax(0, 1fr) minmax(6.8rem, auto);
+  }
+
+  @media (max-width: 760px) {
+    .orientation-grid,
+    .index-row,
+    .index-rows.compact .index-row {
       grid-template-columns: 1fr;
+    }
+
+    .index-heading {
+      align-items: flex-start;
+      flex-direction: column;
+      gap: var(--space-2);
+    }
+
+    .index-row {
+      gap: 0.22rem;
+    }
+
+    .index-row em {
+      grid-column: auto;
     }
   }
 </style>
