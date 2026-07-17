@@ -1,7 +1,7 @@
 ---
 import { getCollection } from "astro:content";
 import PageIntro from "@/components/PageIntro.astro";
-import ProjectFile from "@/components/ProjectFile.astro";
+import ProjectDirectoryCard from "@/components/ProjectDirectoryCard.astro";
 import BaseLayout from "@/layouts/BaseLayout.astro";
 
 const projects = (await getCollection("projects")).sort(
@@ -11,36 +11,20 @@ const projects = (await getCollection("projects")).sort(
 
 <BaseLayout
   title="Projects"
-  description="Public project summaries for The Human Model, Career Intelligence, and QA Agents."
+  description="Public project workspaces for Haley Parks' active systems, experiments, and publishing environment."
 >
-  <section class="wide-case projects-page">
+  <section class="site-shell projects-page">
     <PageIntro
       eyebrow="Projects"
-      title="Things I'm building"
-      text="Public project files for the systems that are active enough to inspect: what they explore, what exists today, and where the repository tells the deeper truth."
-      meta={["3 active systems", "Public notes", "Repo-backed"]}
-      note="Same desk, calmer shelf."
+      title="Project catalogue"
+      text="Active systems, experiments, and long-running bodies of work. Open a project workspace to inspect the overview, demos, related writing, and repository trail."
+      meta={["4 active systems", "Public workspaces", "Repo-backed"]}
+      note="Choose a file, then wander."
       accent="olive"
       width="wide"
     />
-    <div class="project-shelf" aria-label="Active project objects">
-      <div class="project-shelf-primary">
-        {
-          projects
-            .filter((project) => project.data.slug === "the-human-model")
-            .map((project) => (
-              <ProjectFile project={project} variant="featured" />
-            ))
-        }
-      </div>
-
-      <div class="project-shelf-secondary">
-        {
-          projects
-            .filter((project) => project.data.slug !== "the-human-model")
-            .map((project) => <ProjectFile project={project} />)
-        }
-      </div>
+    <div class="project-directory-grid" aria-label="Project catalogue">
+      {projects.map((project) => <ProjectDirectoryCard project={project} />)}
     </div>
 
     <nav class="project-page-links" aria-label="Project page next paths">
@@ -56,11 +40,11 @@ const projects = (await getCollection("projects")).sort(
     padding-bottom: var(--space-8);
   }
 
-  .project-shelf {
+  .project-directory-grid {
     display: grid;
-    grid-template-columns: minmax(0, 1.05fr) minmax(19rem, 0.95fr);
-    gap: var(--space-6);
-    align-items: start;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: clamp(1rem, 2vw, 1.5rem);
+    align-items: stretch;
     margin-top: var(--space-8);
     margin-bottom: var(--space-8);
   }
@@ -81,16 +65,14 @@ const projects = (await getCollection("projects")).sort(
     text-underline-offset: 0.18em;
   }
 
-  .project-shelf-primary,
-  .project-shelf-secondary {
-    display: grid;
-    min-width: 0;
-    align-content: start;
-    gap: var(--space-6);
+  @media (max-width: 960px) {
+    .project-directory-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
   }
 
-  @media (max-width: 980px) {
-    .project-shelf {
+  @media (max-width: 640px) {
+    .project-directory-grid {
       grid-template-columns: 1fr;
     }
   }

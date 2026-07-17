@@ -1,0 +1,44 @@
+---
+import { getCollection } from "astro:content";
+import ProjectDocumentContent from "@/components/ProjectDocumentContent.astro";
+import { projectDocumentForSlug } from "@/data/project-documents";
+import { relatedLinksForHrefs } from "@/data/navigation";
+import { workspaceForSlug } from "@/data/project-workspaces";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import ProjectWorkspaceLayout from "@/layouts/ProjectWorkspaceLayout.astro";
+
+const project = (await getCollection("projects")).find(
+  (entry) => entry.data.slug === "the-human-model",
+);
+if (!project) {
+  throw new Error("Missing The Human Model project entry");
+}
+
+const workspace = workspaceForSlug(project.data.slug);
+const document = projectDocumentForSlug(project.data.slug);
+const continueLinks = relatedLinksForHrefs(
+  ["/projects/the-human-model/system/", "/projects/the-human-model/research/"],
+  "project-the-human-model",
+);
+---
+
+<BaseLayout
+  title={`Current Project | ${project.data.title}`}
+  description="Current status, active work, limitations, and direction for The Human Model."
+  canonicalPath="/projects/the-human-model/current/"
+>
+  <ProjectWorkspaceLayout
+    project={project}
+    workspace={workspace}
+    documentTitle="Current Project"
+    documentSummary="What exists today, what is active now, and where the project is being cleaned up next."
+  >
+    <ProjectDocumentContent
+      statusRows={document.statusRows}
+      currentDirection={document.currentDirection}
+      continueLinks={continueLinks}
+      nextHref="/projects/the-human-model/system/"
+      nextLabel="Open the system file"
+    />
+  </ProjectWorkspaceLayout>
+</BaseLayout>

@@ -1,0 +1,101 @@
+---
+type Props = {
+  variant?: "default" | "design" | "evolution";
+};
+
+const { variant = "default" } = Astro.props;
+---
+
+<article class={`website-project-document website-project-document-${variant}`}>
+  <slot />
+</article>
+
+<style>
+  .website-project-document {
+    display: grid;
+    gap: clamp(1.75rem, 4vw, 3rem);
+  }
+
+  .website-project-document :global(section) {
+    max-width: var(--reading-measure);
+  }
+
+  .website-project-document :global(h3) {
+    margin-bottom: var(--space-3);
+    border-top: var(--border-width) solid var(--color-border);
+    padding-top: var(--space-5);
+    font-size: var(--text-h2);
+    line-height: 1.1;
+  }
+
+  .website-project-document :global(section:first-child h3) {
+    border-top: 0;
+    padding-top: 0;
+  }
+
+  .website-project-document :global(h4) {
+    margin-bottom: var(--space-2);
+    font-size: clamp(1.08rem, 1.4vw, 1.25rem);
+  }
+
+  .website-project-document :global(p),
+  .website-project-document :global(li) {
+    color: var(--color-text-secondary);
+    font-size: clamp(0.98rem, 1vw, 1.05rem);
+    line-height: 1.62;
+  }
+
+  .website-project-document :global(p),
+  .website-project-document :global(ul),
+  .website-project-document :global(ol) {
+    margin-bottom: var(--space-4);
+  }
+
+  .website-project-document :global(ul),
+  .website-project-document :global(ol) {
+    padding-left: 1.25rem;
+  }
+
+  .website-project-document :global(li + li) {
+    margin-top: 0.45rem;
+  }
+
+  .website-project-document :global(.principle-list),
+  .website-project-document :global(.ia-list) {
+    display: grid;
+    gap: var(--space-3);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .website-project-document :global(.principle-list li),
+  .website-project-document :global(.ia-list li) {
+    border-left: 0.22rem solid var(--khaki);
+    padding-left: var(--space-4);
+  }
+
+  .website-project-document :global(.note-panel) {
+    max-width: var(--reading-measure-wide);
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: clamp(1rem, 2vw, 1.35rem);
+    background: color-mix(in srgb, var(--lavender) 28%, transparent);
+  }
+
+  .website-project-document :global(.continue-cue) {
+    max-width: var(--reading-measure);
+    margin: 0;
+    border-top: var(--border-width) solid var(--color-border);
+    padding-top: var(--space-4);
+    font-family: var(--font-hand);
+    font-size: 1.08rem;
+  }
+
+  .website-project-document :global(.continue-cue a) {
+    color: var(--plum);
+    font-weight: 600;
+    text-decoration-thickness: 0.08em;
+    text-underline-offset: 0.18em;
+  }
+</style>

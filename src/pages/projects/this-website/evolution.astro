@@ -1,0 +1,170 @@
+---
+import { getCollection } from "astro:content";
+import EvolutionEntry from "@/components/EvolutionEntry.astro";
+import WebsiteProjectDocument from "@/components/WebsiteProjectDocument.astro";
+import { workspaceForSlug } from "@/data/project-workspaces";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import ProjectWorkspaceLayout from "@/layouts/ProjectWorkspaceLayout.astro";
+
+const project = (await getCollection("projects")).find(
+  (entry) => entry.data.slug === "this-website",
+);
+if (!project) {
+  throw new Error("Missing This Website project entry");
+}
+
+const workspace = workspaceForSlug(project.data.slug);
+---
+
+<BaseLayout
+  title={`Evolution | ${project.data.title}`}
+  description="A design-reasoning archive for how This Website changed over time and why."
+  canonicalPath="/projects/this-website/evolution/"
+>
+  <ProjectWorkspaceLayout
+    project={project}
+    workspace={workspace}
+    documentTitle="Evolution"
+    documentSummary="A record of design decisions: what changed, what felt wrong, what improved, and what remains open."
+  >
+    <WebsiteProjectDocument variant="evolution">
+      <section aria-labelledby="evolution-intro">
+        <h3 id="evolution-intro">Evolution</h3>
+        <p>
+          This website did not arrive fully formed. It changed through repeated
+          cycles of building, noticing what felt wrong, complaining loudly, and
+          making the structure more honest.
+        </p>
+        <p>
+          Evolution documents those decisions, not only what changed visually,
+          but why.
+        </p>
+      </section>
+
+      <section aria-label="Website evolution entries" class="evolution-list">
+        <EvolutionEntry
+          phase="Early direction"
+          title="The conventional portfolio"
+          lookedLike="A simple Astro site with conventional project pages."
+          feltWrong={[
+            "It looked like a standard personal website.",
+            "It did not reflect Haley’s personality.",
+            "Projects felt like static portfolio items.",
+          ]}
+          decision={[
+            "Move toward a warm research-desk visual language.",
+            "Make the homepage feel explorable.",
+          ]}
+          changed={[
+            "Introduced warmer paper surfaces, softer colors, object-like cards, and more personality.",
+            "Started treating the site as a place to explore rather than a page to skim once.",
+          ]}
+        />
+
+        <EvolutionEntry
+          phase="Layout correction"
+          title="The pages did not match"
+          lookedLike="The homepage felt warm and cohesive, while interior pages used narrower and more generic layouts."
+          feltWrong={[
+            "Interior pages felt disconnected from the homepage.",
+            "Headings were too large.",
+            "Page widths changed between routes.",
+          ]}
+          decision={[
+            "Create one shared wide site shell.",
+            "Reduce interior title scale.",
+            "Align pages to the homepage width.",
+          ]}
+          changed={[
+            "Added a canonical site shell and separate reading measures.",
+            "Kept prose readable while allowing project workspaces and structured content to use more width.",
+          ]}
+        />
+
+        <EvolutionEntry
+          phase="Projects catalogue"
+          title="The project shelf was hard to scan"
+          lookedLike="The Human Model was featured differently while other projects appeared in a secondary stack."
+          feltWrong={[
+            "Other projects looked secondary.",
+            "Cards contained too many actions.",
+            "It was hard to choose a project quickly.",
+          ]}
+          decision={[
+            "Turn Projects into a catalogue.",
+            "Use equal cards.",
+            "Give every card one destination.",
+            "Move demos and repositories into workspaces.",
+          ]}
+          changed={[
+            "Projects became a shelf of consistent objects.",
+            "The directory now asks one question: which project do you want to open?",
+          ]}
+        />
+
+        <EvolutionEntry
+          phase="Workspace identity"
+          title="The first workspace was too sterile"
+          lookedLike="The workspace was tidy, but it read like generic documentation."
+          feltWrong={[
+            "Cards faded into the background.",
+            "Project visuals were meaningless line-and-dot diagrams.",
+            "The workspace had almost no personality.",
+          ]}
+          decision={[
+            "Add distinct project surfaces.",
+            "Create project emblems.",
+            "Use project-specific microcopy.",
+            "Increase whimsy without reducing readability.",
+          ]}
+          changed={[
+            "Each project gained a small identity system.",
+            "The workspace kept its structure but became warmer and more recognizably Haley.",
+          ]}
+        />
+
+        <EvolutionEntry
+          phase="Route architecture"
+          title="Infinite scroll was the wrong model"
+          lookedLike="Project sections all lived on one giant page with sidebar links jumping down the document."
+          feltWrong={[
+            "Navigation caused disorientation.",
+            "Content felt endless.",
+            "Project structure was unclear.",
+          ]}
+          decision={[
+            "Split projects into major documents.",
+            "Use real Astro routes.",
+            "Replace flat anchor lists with collapsible file-tree navigation.",
+            "Keep one manageable document visible at a time.",
+          ]}
+          changed={[
+            "Project workspaces now behave like small knowledge vaults.",
+            "The browser back button stays predictable, and each page has a clearer job.",
+          ]}
+        />
+
+        <EvolutionEntry
+          phase="Self-documentation"
+          title="The website became a project"
+          lookedLike="The website was treated as packaging around the other systems."
+          feltWrong={[
+            "The design and IA work were hidden.",
+            "The most visible demonstration of Haley’s product thinking was not documented.",
+          ]}
+          decision={[
+            "Add This Website as a first-class project.",
+            "Document its design philosophy.",
+            "Document its information architecture.",
+            "Create Evolution as a record of design reasoning.",
+          ]}
+          changed={[
+            "The site now explains itself as one of the systems.",
+            "The design process is visible instead of only implied by the final interface.",
+          ]}
+          note="Very meta. Acceptably meta."
+        />
+      </section>
+    </WebsiteProjectDocument>
+  </ProjectWorkspaceLayout>
+</BaseLayout>

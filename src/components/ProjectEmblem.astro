@@ -1,0 +1,323 @@
+---
+type Props = {
+  slug: string;
+  size?: "small" | "medium" | "large";
+};
+
+const { slug, size = "medium" } = Astro.props;
+---
+
+<span
+  class={`project-emblem project-emblem-${slug} project-emblem-${size}`}
+  aria-hidden="true"
+>
+  {
+    slug === "the-human-model" && (
+      <span class="human-bloom">
+        <span class="stem" />
+        <span class="petal petal-one" />
+        <span class="petal petal-two" />
+        <span class="petal petal-three" />
+        <span class="signal signal-one" />
+        <span class="signal signal-two" />
+      </span>
+    )
+  }
+  {
+    slug === "career-intelligence" && (
+      <span class="career-map">
+        <span class="path" />
+        <span class="map-node node-one" />
+        <span class="map-node node-two" />
+        <span class="map-node node-three" />
+        <span class="map-node node-four" />
+      </span>
+    )
+  }
+  {
+    slug === "qa-agents" && (
+      <span class="qa-case">
+        <span class="evidence evidence-one" />
+        <span class="evidence evidence-two" />
+        <span class="evidence evidence-three" />
+        <span class="stamp" />
+      </span>
+    )
+  }
+  {
+    slug === "this-website" && (
+      <span class="website-room">
+        <span class="page page-one" />
+        <span class="page page-two" />
+        <span class="doorway" />
+        <span class="room-path" />
+        <span class="spark" />
+      </span>
+    )
+  }
+</span>
+
+<style>
+  .project-emblem {
+    --emblem-accent: var(--rust);
+    position: relative;
+    display: inline-grid;
+    flex: 0 0 auto;
+    place-items: center;
+    border: var(--border-width) solid var(--color-border-strong);
+    border-radius: var(--radius-md);
+    background: var(--color-surface);
+    box-shadow: 0.28rem 0.28rem 0
+      color-mix(in srgb, var(--emblem-accent) 18%, transparent);
+  }
+
+  .project-emblem-small {
+    width: 2.65rem;
+    height: 2.65rem;
+  }
+
+  .project-emblem-medium {
+    width: 7.25rem;
+    height: 7.25rem;
+  }
+
+  .project-emblem-large {
+    width: 8.5rem;
+    height: 8.5rem;
+  }
+
+  .project-emblem-the-human-model {
+    --emblem-accent: var(--rust);
+    background: #f4dfe2;
+  }
+
+  .project-emblem-career-intelligence {
+    --emblem-accent: var(--olive);
+    background: #f2e7bc;
+  }
+
+  .project-emblem-qa-agents {
+    --emblem-accent: var(--blue);
+    background: #dcecf2;
+  }
+
+  .project-emblem-this-website {
+    --emblem-accent: var(--plum);
+    background: #ead9e8;
+  }
+
+  .human-bloom,
+  .career-map,
+  .qa-case,
+  .website-room {
+    position: relative;
+    width: 72%;
+    height: 72%;
+  }
+
+  .stem,
+  .path {
+    position: absolute;
+    inset: 12% 48% 18% auto;
+    width: var(--border-width);
+    background: color-mix(in srgb, var(--emblem-accent) 60%, var(--ink));
+    transform: rotate(-16deg);
+    transform-origin: bottom;
+  }
+
+  .petal,
+  .signal,
+  .map-node {
+    position: absolute;
+    border: var(--border-width) solid
+      color-mix(in srgb, var(--emblem-accent) 62%, var(--ink));
+    border-radius: 999px;
+    background: color-mix(in srgb, white 70%, var(--emblem-accent));
+  }
+
+  .petal {
+    width: 28%;
+    height: 28%;
+  }
+
+  .petal-one {
+    top: 20%;
+    left: 36%;
+  }
+
+  .petal-two {
+    top: 36%;
+    left: 18%;
+  }
+
+  .petal-three {
+    top: 43%;
+    right: 18%;
+  }
+
+  .signal {
+    width: 12%;
+    height: 12%;
+  }
+
+  .signal-one {
+    right: 6%;
+    bottom: 10%;
+  }
+
+  .signal-two {
+    left: 8%;
+    bottom: 18%;
+  }
+
+  .path {
+    inset: 12% auto auto 13%;
+    width: 75%;
+    height: 58%;
+    border: var(--border-width) solid
+      color-mix(in srgb, var(--olive) 62%, var(--ink));
+    border-right: 0;
+    border-bottom: 0;
+    border-radius: 60% 0 0;
+    background: transparent;
+    transform: rotate(-12deg);
+  }
+
+  .map-node {
+    width: 16%;
+    height: 16%;
+  }
+
+  .node-one {
+    bottom: 12%;
+    left: 10%;
+  }
+
+  .node-two {
+    top: 42%;
+    left: 32%;
+  }
+
+  .node-three {
+    top: 20%;
+    right: 28%;
+  }
+
+  .node-four {
+    right: 8%;
+    bottom: 20%;
+  }
+
+  .evidence {
+    position: absolute;
+    width: 42%;
+    height: 30%;
+    border: var(--border-width) solid
+      color-mix(in srgb, var(--blue) 58%, var(--ink));
+    border-radius: var(--radius-sm);
+    background: color-mix(in srgb, white 74%, var(--blue-soft));
+    box-shadow: 0 2px 0 rgba(55, 40, 38, 0.08);
+  }
+
+  .evidence-one {
+    top: 10%;
+    left: 8%;
+    transform: rotate(-7deg);
+  }
+
+  .evidence-two {
+    top: 28%;
+    right: 8%;
+    transform: rotate(6deg);
+  }
+
+  .evidence-three {
+    bottom: 8%;
+    left: 24%;
+    transform: rotate(-2deg);
+  }
+
+  .stamp {
+    position: absolute;
+    right: 18%;
+    bottom: 15%;
+    width: 26%;
+    height: 26%;
+    border: 0.18rem solid var(--rust);
+    border-radius: 999px;
+    opacity: 0.78;
+    transform: rotate(-12deg);
+  }
+
+  .project-emblem-small .evidence,
+  .project-emblem-small .stamp {
+    border-width: 1px;
+  }
+
+  .page,
+  .doorway {
+    position: absolute;
+    border: var(--border-width) solid
+      color-mix(in srgb, var(--plum) 62%, var(--ink));
+    border-radius: var(--radius-sm);
+    background: color-mix(in srgb, white 72%, var(--lavender));
+  }
+
+  .page {
+    width: 42%;
+    height: 52%;
+    box-shadow: 0 2px 0 rgba(55, 40, 38, 0.08);
+  }
+
+  .page-one {
+    top: 9%;
+    left: 12%;
+    transform: rotate(-5deg);
+  }
+
+  .page-two {
+    top: 18%;
+    right: 10%;
+    transform: rotate(4deg);
+  }
+
+  .doorway {
+    right: 27%;
+    bottom: 10%;
+    width: 25%;
+    height: 42%;
+    border-bottom: 0;
+    border-radius: 999px 999px 0 0;
+    background: color-mix(in srgb, white 60%, var(--paper));
+  }
+
+  .room-path {
+    position: absolute;
+    right: 38%;
+    bottom: 4%;
+    width: 44%;
+    height: var(--border-width);
+    background: color-mix(in srgb, var(--plum) 60%, var(--ink));
+    transform: rotate(-13deg);
+    transform-origin: right;
+  }
+
+  .spark {
+    position: absolute;
+    top: 8%;
+    right: 18%;
+    width: 0.6rem;
+    height: 0.6rem;
+    background: var(--khaki);
+    clip-path: polygon(
+      50% 0,
+      62% 38%,
+      100% 50%,
+      62% 62%,
+      50% 100%,
+      38% 62%,
+      0 50%,
+      38% 38%
+    );
+  }
+</style>

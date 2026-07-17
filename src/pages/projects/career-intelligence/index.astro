@@ -1,0 +1,51 @@
+---
+import { getCollection } from "astro:content";
+import ProjectDocumentContent from "@/components/ProjectDocumentContent.astro";
+import { projectDocumentForSlug } from "@/data/project-documents";
+import { relatedLinksForHrefs } from "@/data/navigation";
+import { workspaceForSlug } from "@/data/project-workspaces";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import ProjectWorkspaceLayout from "@/layouts/ProjectWorkspaceLayout.astro";
+
+const project = (await getCollection("projects")).find(
+  (entry) => entry.data.slug === "career-intelligence",
+);
+if (!project) {
+  throw new Error("Missing Career Intelligence project entry");
+}
+
+const workspace = workspaceForSlug(project.data.slug);
+const document = projectDocumentForSlug(project.data.slug);
+const continueLinks = relatedLinksForHrefs(
+  [
+    "/projects/career-intelligence/system/",
+    "/writing/what-happens-after-the-ai-interview/",
+    "/projects/the-human-model/",
+    "/explore/",
+  ],
+  "project-career-intelligence",
+);
+---
+
+<BaseLayout
+  title={project.data.title}
+  description={project.data.summary}
+  canonicalPath="/projects/career-intelligence/"
+>
+  <ProjectWorkspaceLayout
+    project={project}
+    workspace={workspace}
+    documentTitle="Overview"
+    documentSummary="What Career Intelligence is, why it exists, and how it keeps career reasoning attached to evidence."
+  >
+    <ProjectDocumentContent
+      abstract={document.abstract}
+      why={document.why}
+      actuallyDoes={document.actuallyDoes}
+      links={document.links}
+      continueLinks={continueLinks}
+      nextHref="/projects/career-intelligence/system/"
+      nextLabel="Open the system file"
+    />
+  </ProjectWorkspaceLayout>
+</BaseLayout>

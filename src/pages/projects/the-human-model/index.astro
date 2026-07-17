@@ -1,0 +1,51 @@
+---
+import { getCollection } from "astro:content";
+import ProjectDocumentContent from "@/components/ProjectDocumentContent.astro";
+import { projectDocumentForSlug } from "@/data/project-documents";
+import { relatedLinksForHrefs } from "@/data/navigation";
+import { workspaceForSlug } from "@/data/project-workspaces";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import ProjectWorkspaceLayout from "@/layouts/ProjectWorkspaceLayout.astro";
+
+const project = (await getCollection("projects")).find(
+  (entry) => entry.data.slug === "the-human-model",
+);
+if (!project) {
+  throw new Error("Missing The Human Model project entry");
+}
+
+const workspace = workspaceForSlug(project.data.slug);
+const document = projectDocumentForSlug(project.data.slug);
+const continueLinks = relatedLinksForHrefs(
+  [
+    "/projects/the-human-model/current/",
+    "/writing/attention-is-the-scarce-resource/",
+    "/projects/career-intelligence/",
+    "/explore/",
+  ],
+  "project-the-human-model",
+);
+---
+
+<BaseLayout
+  title={project.data.title}
+  description={project.data.summary}
+  canonicalPath="/projects/the-human-model/"
+>
+  <ProjectWorkspaceLayout
+    project={project}
+    workspace={workspace}
+    documentTitle="Overview"
+    documentSummary="What The Human Model is, why it exists, and what kind of work it is trying to make easier to reason about."
+  >
+    <ProjectDocumentContent
+      abstract={document.abstract}
+      why={document.why}
+      actuallyDoes={document.actuallyDoes}
+      links={document.links}
+      continueLinks={continueLinks}
+      nextHref="/projects/the-human-model/current/"
+      nextLabel="Open the current project file"
+    />
+  </ProjectWorkspaceLayout>
+</BaseLayout>

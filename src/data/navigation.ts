@@ -291,6 +291,36 @@ export const destinations: Destination[] = [
     trails: ["ai-systems", "adaptive-interfaces", "human-performance"],
   },
   {
+    id: "project-the-human-model-current",
+    href: "/projects/the-human-model/current/",
+    label: "The Human Model current project",
+    type: "project",
+    summary:
+      "Current status, active work, limits, and next direction for The Human Model.",
+    topics: ["Human Model", "Human Performance"],
+    project: "the-human-model",
+  },
+  {
+    id: "project-the-human-model-system",
+    href: "/projects/the-human-model/system/",
+    label: "The Human Model system",
+    type: "project",
+    summary:
+      "Inputs, processing, outputs, storage notes, and technical structure for The Human Model.",
+    topics: ["Human Model", "Human Performance"],
+    project: "the-human-model",
+  },
+  {
+    id: "project-the-human-model-research",
+    href: "/projects/the-human-model/research/",
+    label: "The Human Model research",
+    type: "project",
+    summary:
+      "Examples, lessons, and current research limits for The Human Model.",
+    topics: ["Human Model", "Human Performance"],
+    project: "the-human-model",
+  },
+  {
     id: "project-career-intelligence",
     href: "/projects/career-intelligence/",
     label: "Career Intelligence",
@@ -302,6 +332,26 @@ export const destinations: Destination[] = [
     trails: ["adaptive-interfaces", "human-performance"],
   },
   {
+    id: "project-career-intelligence-system",
+    href: "/projects/career-intelligence/system/",
+    label: "Career Intelligence system",
+    type: "project",
+    summary:
+      "Inputs, processing, outputs, and status for the source-backed career reasoning system.",
+    topics: ["Career Intelligence", "Human-Centered Technology"],
+    project: "career-intelligence",
+  },
+  {
+    id: "project-career-intelligence-research",
+    href: "/projects/career-intelligence/research/",
+    label: "Career Intelligence deep dives",
+    type: "project",
+    summary:
+      "Examples, lessons, and limits from source-backed career reasoning.",
+    topics: ["Career Intelligence", "Human-Centered Technology"],
+    project: "career-intelligence",
+  },
+  {
     id: "project-qa-agents",
     href: "/projects/qa-agents/",
     label: "QA Agents",
@@ -311,6 +361,60 @@ export const destinations: Destination[] = [
     topics: ["Agent Systems", "Software Quality", "Human-Centered Technology"],
     project: "qa-agents",
     trails: ["ai-systems", "how-i-build"],
+  },
+  {
+    id: "project-qa-agents-system",
+    href: "/projects/qa-agents/system/",
+    label: "QA Agents system",
+    type: "project",
+    summary:
+      "Agent responsibilities, evidence routing, status, and human-review boundaries.",
+    topics: ["Agent Systems", "Software Quality"],
+    project: "qa-agents",
+  },
+  {
+    id: "project-qa-agents-case-studies",
+    href: "/projects/qa-agents/case-studies/",
+    label: "QA Agents case studies",
+    type: "project",
+    summary:
+      "Recorded investigation examples, learnings, and public project limits.",
+    topics: ["Agent Systems", "Software Quality"],
+    project: "qa-agents",
+  },
+  {
+    id: "project-this-website",
+    href: "/projects/this-website/",
+    label: "This Website",
+    type: "project",
+    summary:
+      "A human-centered knowledge environment for projects, writing, experiments, and the systems connecting them.",
+    topics: [
+      "Adaptive UI",
+      "Information Architecture",
+      "Human-Centered Technology",
+    ],
+    project: "this-website",
+  },
+  {
+    id: "project-this-website-design",
+    href: "/projects/this-website/design/",
+    label: "This Website design",
+    type: "project",
+    summary:
+      "The design philosophy, information architecture, visual language, interaction patterns, and implementation choices behind the site.",
+    topics: ["Adaptive UI", "Information Architecture", "Design Systems"],
+    project: "this-website",
+  },
+  {
+    id: "project-this-website-evolution",
+    href: "/projects/this-website/evolution/",
+    label: "This Website evolution",
+    type: "project",
+    summary:
+      "A design-reasoning archive for how the website changed over time and why.",
+    topics: ["Adaptive UI", "Information Architecture", "Design Systems"],
+    project: "this-website",
   },
   {
     id: "demo-qa-agents-little-bytes",

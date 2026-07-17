@@ -52,7 +52,7 @@ function isCurrent(href: string) {
 
   .site-header-inner {
     display: flex;
-    width: min(var(--container-width), calc(100% - var(--container-gutter)));
+    width: min(var(--site-max-width), calc(100% - (var(--site-gutter) * 2)));
     align-items: center;
     justify-content: space-between;
     gap: var(--space-4);

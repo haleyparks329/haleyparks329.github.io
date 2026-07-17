@@ -1,0 +1,40 @@
+---
+type Props = {
+  title: string;
+  open?: boolean;
+};
+
+const { title, open = false } = Astro.props;
+---
+
+<details class="collapsible-section" open={open}>
+  <summary>{title}</summary>
+  <div class="collapsible-section-body">
+    <slot />
+  </div>
+</details>
+
+<style>
+  .collapsible-section {
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-surface);
+  }
+
+  .collapsible-section summary {
+    min-height: 44px;
+    cursor: pointer;
+    padding: 0.75rem 0.95rem;
+    color: var(--color-text);
+    font-weight: 650;
+  }
+
+  .collapsible-section-body {
+    border-top: var(--border-width) solid var(--color-border);
+    padding: var(--space-4);
+  }
+
+  .collapsible-section-body :global(ul) {
+    margin-bottom: 0;
+  }
+</style>

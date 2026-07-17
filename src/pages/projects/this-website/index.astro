@@ -1,0 +1,106 @@
+---
+import { getCollection } from "astro:content";
+import WebsiteProjectDocument from "@/components/WebsiteProjectDocument.astro";
+import { workspaceForSlug } from "@/data/project-workspaces";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import ProjectWorkspaceLayout from "@/layouts/ProjectWorkspaceLayout.astro";
+
+const project = (await getCollection("projects")).find(
+  (entry) => entry.data.slug === "this-website",
+);
+if (!project) {
+  throw new Error("Missing This Website project entry");
+}
+
+const workspace = workspaceForSlug(project.data.slug);
+---
+
+<BaseLayout
+  title={project.data.title}
+  description={project.data.summary}
+  canonicalPath="/projects/this-website/"
+>
+  <ProjectWorkspaceLayout
+    project={project}
+    workspace={workspace}
+    documentTitle="Overview"
+    documentSummary="What this website is, why it exists, and what it demonstrates as a product and design system."
+  >
+    <WebsiteProjectDocument>
+      <section aria-labelledby="what-this-is">
+        <h3 id="what-this-is">What this project is</h3>
+        <p>
+          This website is a continuously evolving experiment in designing a
+          personal knowledge environment that feels less like a portfolio and
+          more like a place people want to explore.
+        </p>
+        <p>
+          It brings together projects, writing, experiments, research, and the
+          systems connecting them. The point is not only to present finished
+          work, but to make the shape of the work navigable while it is still
+          alive.
+        </p>
+      </section>
+
+      <section aria-labelledby="why-built">
+        <h3 id="why-built">Why I built it</h3>
+        <p>
+          Many personal websites follow the same hero-section structure, flatten
+          projects into static case studies, and remove personality in the name
+          of professionalism. They can be useful for quick scanning, but they
+          often make evolving work look falsely finished.
+        </p>
+        <p>
+          This site was built to reward curiosity, preserve context, show how
+          projects connect, and make technical work feel human. It is a public
+          home for ongoing ideas, not a sealed display case.
+        </p>
+      </section>
+
+      <section aria-labelledby="meant-to-feel">
+        <h3 id="meant-to-feel">What the website is meant to feel like</h3>
+        <ul class="principle-list">
+          <li>Technology should feel human.</li>
+          <li>Curiosity should be rewarded.</li>
+          <li>Documentation should not feel like homework.</li>
+          <li>Projects should be allowed to stay alive.</li>
+          <li>Warmth is not the opposite of professionalism.</li>
+          <li>Personality belongs in technical work.</li>
+        </ul>
+      </section>
+
+      <section aria-labelledby="demonstrates">
+        <h3 id="demonstrates">What it demonstrates</h3>
+        <p>
+          Building this site required product thinking, UX reasoning,
+          information architecture, visual hierarchy, frontend architecture,
+          design-system thinking, content strategy, interaction design,
+          accessibility, public storytelling, and iterative product development.
+        </p>
+        <p>
+          Those are not listed here as separate badges. They became necessary
+          because the design problem was real: how do you make a growing body of
+          technical and personal work legible without sanding off the person who
+          made it?
+        </p>
+      </section>
+
+      <section aria-labelledby="current-direction" class="note-panel">
+        <h3 id="current-direction">Current direction</h3>
+        <p>
+          The current work is focused on making the site easier to navigate
+          without losing its warmth and personality.
+        </p>
+        <p>
+          Projects now open into structured workspaces, major sections use real
+          routes instead of endless anchor scrolling, and the site is moving
+          toward a clearer public knowledge environment.
+        </p>
+      </section>
+
+      <p class="continue-cue">
+        <a href="/projects/this-website/design/">Open the design file →</a>
+      </p>
+    </WebsiteProjectDocument>
+  </ProjectWorkspaceLayout>
+</BaseLayout>

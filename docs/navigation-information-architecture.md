@@ -45,6 +45,55 @@ The website should continue feeling like:
 
 The interface should reward curiosity.
 
+## Replay-Inspired Visual Language
+
+Borrow selected visual cues from the QA replay workstation, but apply them very lightly.
+
+The project workspaces should not look like terminals, dashboards, or desktop applications.
+
+Use only restrained elements such as:
+
+- thin outlined content frames
+- quiet inset surfaces
+- small monospace metadata labels
+- compact status markers
+- subtle tab-like section labels
+- simple directional arrows
+- occasional "case note," "system note," or "current state" annotations
+- very light accent-color blocks
+- understated dividers and panel headers
+
+The visual hierarchy must remain:
+
+1. content
+2. navigation and structure
+3. whimsy
+
+Do not add:
+
+- fake browser or terminal chrome
+- command-line motifs
+- dense toolbars
+- replay controls
+- multiple nested panels
+- unnecessary pills, switches, or badges
+- anything that makes the workspace feel like a product dashboard
+
+The workspace should feel like a carefully organized project file with a few playful technical details, not a simulated operating system.
+
+Use playful elements sparingly, approximately 5% of the visual surface. Most of the page should remain calm, readable, and editorial.
+
+Suggested applications:
+
+- a small monospace project-status label above the title
+- quiet framed sections for technical content
+- subtle "current state" or "system note" callouts
+- sidebar section headings styled like case-file labels
+- a restrained arrow or continuation cue at the end of a section
+- one or two project-specific whimsical details per page
+
+Content readability must always take priority over decorative treatment.
+
 ## Success Criteria
 
 A recruiter should reach a GitHub repository in under 20 seconds.

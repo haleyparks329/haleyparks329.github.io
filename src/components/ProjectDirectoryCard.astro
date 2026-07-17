@@ -1,0 +1,164 @@
+---
+import type { CollectionEntry } from "astro:content";
+import ProjectEmblem from "@/components/ProjectEmblem.astro";
+import StatusBadge from "@/components/StatusBadge.astro";
+import { workspaceForSlug } from "@/data/project-workspaces";
+
+type Props = {
+  project: CollectionEntry<"projects">;
+};
+
+const { project } = Astro.props;
+const data = project.data;
+const projectHref = `/projects/${data.slug}/`;
+const workspace = workspaceForSlug(data.slug);
+---
+
+<article
+  class={`project-directory-card project-${data.slug} accent-${data.accent}`}
+>
+  <a href={projectHref} aria-label={`Open ${data.title} project workspace`}>
+    <span class="project-category">{workspace.cardLabel}</span>
+    <span class="project-title">{data.title}</span>
+    <span class="project-summary">{data.summary}</span>
+    <span class="project-visual" aria-hidden="true">
+      <ProjectEmblem slug={data.slug} size="medium" />
+      <span class="visual-note">
+        {workspace.cardMicrocopy ?? workspace.annotation}
+      </span>
+    </span>
+    <span class="project-card-footer">
+      <StatusBadge status={data.status} accent={data.accent} />
+      <span class="open-cue">Open workspace →</span>
+    </span>
+  </a>
+</article>
+
+<style>
+  .project-directory-card {
+    --card-accent: var(--khaki);
+    --card-surface: #f5ecd8;
+    min-width: 0;
+    height: 100%;
+  }
+
+  .accent-rust {
+    --card-accent: var(--rust);
+    --card-surface: #f2dfe1;
+  }
+
+  .accent-olive {
+    --card-accent: var(--olive);
+    --card-surface: #f0e5bc;
+  }
+
+  .accent-blue {
+    --card-accent: var(--blue);
+    --card-surface: #dcebf1;
+  }
+
+  .accent-plum {
+    --card-accent: var(--plum);
+    --card-surface: #ead9e8;
+  }
+
+  .accent-khaki {
+    --card-accent: var(--khaki);
+  }
+
+  a {
+    display: grid;
+    grid-template-rows:
+      auto
+      auto
+      minmax(6.5rem, auto)
+      minmax(8rem, 1fr)
+      auto;
+    min-height: 100%;
+    gap: var(--space-4);
+    border: var(--border-width) solid
+      color-mix(in srgb, var(--card-accent) 35%, var(--color-border));
+    border-radius: var(--radius-md);
+    padding: var(--space-5);
+    background: var(--card-surface);
+    box-shadow:
+      0.35rem 0.35rem 0 color-mix(in srgb, var(--card-accent) 13%, transparent),
+      var(--shadow-paper);
+    color: var(--color-text);
+    text-decoration: none;
+  }
+
+  a:hover,
+  a:focus-visible {
+    border-color: color-mix(
+      in srgb,
+      var(--card-accent) 62%,
+      var(--color-border)
+    );
+    background: color-mix(in srgb, var(--card-surface) 86%, white);
+    color: var(--color-text);
+    transform: translateY(-2px);
+  }
+
+  .project-category,
+  .open-cue {
+    color: var(--color-text-muted);
+    font-family: var(--font-mono);
+    font-size: var(--font-size-micro);
+    font-weight: 650;
+    text-transform: uppercase;
+  }
+
+  .project-title {
+    font-size: clamp(1.35rem, 2vw, 1.75rem);
+    font-weight: 650;
+    line-height: 1.08;
+  }
+
+  .project-summary {
+    color: var(--color-text-secondary);
+    font-size: var(--text-body);
+    line-height: 1.48;
+  }
+
+  .project-visual {
+    display: flex;
+    gap: var(--space-4);
+    align-items: center;
+    justify-content: space-between;
+    min-height: 8rem;
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--radius-sm);
+    padding: var(--space-4);
+    background: color-mix(in srgb, var(--card-surface) 58%, white);
+  }
+
+  .visual-note {
+    max-width: 12rem;
+    color: var(--color-text-muted);
+    font-family: var(--font-hand);
+    font-size: clamp(1rem, 1.5vw, 1.14rem);
+    line-height: 1.2;
+  }
+
+  .project-card-footer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    align-items: center;
+    justify-content: space-between;
+    margin-top: auto;
+    border-top: var(--border-width) solid var(--color-border);
+    padding-top: var(--space-4);
+  }
+
+  .open-cue {
+    color: var(--plum);
+  }
+
+  @media (max-width: 640px) {
+    a {
+      grid-template-rows: auto auto auto auto auto;
+    }
+  }
+</style>

@@ -1,0 +1,485 @@
+---
+import CollapsibleSection from "@/components/CollapsibleSection.astro";
+import ContinueExploring from "@/components/ContinueExploring.astro";
+import ExternalLink from "@/components/ExternalLink.astro";
+import type { ContentLink } from "@/data/navigation";
+import type {
+  AppendixDetail,
+  Learning,
+  ReportLink,
+  ReportStep,
+  StatusRow,
+  TechnicalGroup,
+} from "@/data/project-documents";
+
+type Props = {
+  abstract?: string[];
+  why?: string[];
+  actuallyDoes?: {
+    intro: string;
+    steps: string[];
+  };
+  howItWorks?: {
+    groups: TechnicalGroup[];
+    note: string;
+  };
+  statusRows?: StatusRow[];
+  example?: {
+    title: string;
+    steps: ReportStep[];
+  };
+  learnings?: Learning[];
+  notSolved?: string[];
+  appendix?: {
+    intro: string;
+    details: AppendixDetail[];
+    links: ReportLink[];
+  };
+  currentDirection?: string[];
+  continueLinks?: ContentLink[];
+  links?: ReportLink[];
+  nextHref?: string;
+  nextLabel?: string;
+};
+
+const {
+  abstract,
+  why,
+  actuallyDoes,
+  howItWorks,
+  statusRows,
+  example,
+  learnings,
+  notSolved,
+  appendix,
+  currentDirection,
+  continueLinks = [],
+  links = [],
+  nextHref,
+  nextLabel,
+} = Astro.props;
+---
+
+<article class="project-document">
+  {
+    abstract && (
+      <section aria-labelledby="abstract">
+        <h3 id="abstract">Abstract</h3>
+        {abstract.map((paragraph) => (
+          <p>{paragraph}</p>
+        ))}
+      </section>
+    )
+  }
+
+  {
+    why && (
+      <section aria-labelledby="why-built">
+        <h3 id="why-built">Why I built it</h3>
+        {why.map((paragraph) => (
+          <p>{paragraph}</p>
+        ))}
+      </section>
+    )
+  }
+
+  {
+    actuallyDoes && (
+      <section aria-labelledby="actually-does">
+        <h3 id="actually-does">What it actually does</h3>
+        <p>{actuallyDoes.intro}</p>
+        <ol>
+          {actuallyDoes.steps.map((step) => (
+            <li>{step}</li>
+          ))}
+        </ol>
+      </section>
+    )
+  }
+
+  {
+    statusRows && (
+      <section aria-labelledby="exists-today" class="wide-section">
+        <h3 id="exists-today">What exists today</h3>
+        <div class="status-table-wrap">
+          <table class="status-table">
+            <thead>
+              <tr>
+                <th scope="col">Part</th>
+                <th scope="col">Status</th>
+                <th scope="col">What it does</th>
+                <th scope="col">Where to inspect it</th>
+              </tr>
+            </thead>
+            <tbody>
+              {statusRows.map((row) => (
+                <tr>
+                  <th scope="row">{row.part}</th>
+                  <td>
+                    <span
+                      class={`table-status ${row.status.toLowerCase().replaceAll(" ", "-")}`}
+                    >
+                      {row.status}
+                    </span>
+                  </td>
+                  <td>{row.does}</td>
+                  <td>
+                    {row.inspect.external ? (
+                      <ExternalLink
+                        href={row.inspect.href}
+                        label={row.inspect.label}
+                      />
+                    ) : (
+                      <a href={row.inspect.href}>{row.inspect.label}</a>
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
+    )
+  }
+
+  {
+    currentDirection && (
+      <section aria-labelledby="current-direction" class="current-direction">
+        <h3 id="current-direction">Current direction</h3>
+        {currentDirection.map((paragraph) => (
+          <p>{paragraph}</p>
+        ))}
+      </section>
+    )
+  }
+
+  {
+    howItWorks && (
+      <section aria-labelledby="how-it-works" class="technical-block">
+        <h3 id="how-it-works">How it works</h3>
+        <div class="technical-groups">
+          {howItWorks.groups.map((group) => (
+            <section class="technical-group" aria-label={group.title}>
+              <h4>{group.title}</h4>
+              <ul>
+                {group.items.map((item) => (
+                  <li>{item}</li>
+                ))}
+              </ul>
+            </section>
+          ))}
+        </div>
+        <p>{howItWorks.note}</p>
+      </section>
+    )
+  }
+
+  {
+    appendix && (
+      <section aria-labelledby="appendix">
+        <h3 id="appendix">Technical appendix</h3>
+        <p>{appendix.intro}</p>
+        <div class="appendix-details">
+          {appendix.details.map((detail) => (
+            <CollapsibleSection title={detail.summary}>
+              <ul>
+                {detail.items.map((item) => (
+                  <li>{item}</li>
+                ))}
+              </ul>
+            </CollapsibleSection>
+          ))}
+        </div>
+        <nav class="appendix-links" aria-label="Project appendix links">
+          {appendix.links.map((link) =>
+            link.external ? (
+              <ExternalLink href={link.href} label={link.label} />
+            ) : (
+              <a href={link.href}>{link.label}</a>
+            ),
+          )}
+        </nav>
+      </section>
+    )
+  }
+
+  {
+    example && (
+      <section aria-labelledby="concrete-example" class="example-block">
+        <h3 id="concrete-example">One concrete example</h3>
+        <h4>{example.title}</h4>
+        <ol class="step-list">
+          {example.steps.map((step) => (
+            <li>
+              <strong>{step.title}</strong>
+              <p>{step.text}</p>
+            </li>
+          ))}
+        </ol>
+      </section>
+    )
+  }
+
+  {
+    learnings && (
+      <section aria-labelledby="learned">
+        <h3 id="learned">What I learned</h3>
+        <div class="learning-list">
+          {learnings.map((learning) => (
+            <article>
+              <h4>{learning.title}</h4>
+              <p>{learning.text}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+    )
+  }
+
+  {
+    notSolved && (
+      <section aria-labelledby="not-solved" class="limitations-block">
+        <h3 id="not-solved">What is not solved</h3>
+        <ul>
+          {notSolved.map((item) => (
+            <li>{item}</li>
+          ))}
+        </ul>
+      </section>
+    )
+  }
+
+  {
+    links.length > 0 && (
+      <nav class="document-links" aria-label="Project document links">
+        {links.map((link) =>
+          link.external ? (
+            <ExternalLink href={link.href} label={link.label} />
+          ) : (
+            <a href={link.href}>{link.label}</a>
+          ),
+        )}
+      </nav>
+    )
+  }
+
+  {
+    nextHref && nextLabel && (
+      <p class="continue-cue">
+        <a href={nextHref}>{nextLabel} →</a>
+      </p>
+    )
+  }
+
+  <ContinueExploring links={continueLinks} />
+</article>
+
+<style>
+  .project-document {
+    display: grid;
+    gap: clamp(1.75rem, 4vw, 3rem);
+  }
+
+  .project-document > section:not(.wide-section):not(.technical-block) {
+    max-width: var(--reading-measure);
+  }
+
+  h3 {
+    margin-bottom: var(--space-3);
+    border-top: var(--border-width) solid var(--color-border);
+    padding-top: var(--space-5);
+    font-size: var(--text-h2);
+    line-height: 1.1;
+  }
+
+  .project-document > section:first-child h3 {
+    border-top: 0;
+    padding-top: 0;
+  }
+
+  h4 {
+    margin-bottom: var(--space-2);
+    font-size: clamp(1.08rem, 1.4vw, 1.25rem);
+    line-height: 1.18;
+  }
+
+  p,
+  li,
+  td,
+  th {
+    color: var(--color-text-secondary);
+    font-size: clamp(0.98rem, 1vw, 1.05rem);
+    line-height: 1.62;
+  }
+
+  p,
+  ul,
+  ol {
+    margin-bottom: var(--space-4);
+  }
+
+  ul,
+  ol {
+    padding-left: 1.25rem;
+  }
+
+  li + li {
+    margin-top: 0.45rem;
+  }
+
+  .technical-block,
+  .example-block,
+  .limitations-block {
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: clamp(1rem, 2vw, 1.35rem);
+    background: color-mix(in srgb, var(--blue-soft) 20%, transparent);
+  }
+
+  .technical-groups {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--grid-gap);
+    margin-bottom: var(--space-4);
+  }
+
+  .technical-group {
+    border-top: 0.16rem solid var(--khaki);
+    padding-top: var(--space-3);
+  }
+
+  .status-table-wrap {
+    overflow-x: auto;
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-surface);
+  }
+
+  .status-table {
+    width: 100%;
+    min-width: 760px;
+    border-collapse: collapse;
+  }
+
+  .status-table th,
+  .status-table td {
+    border-bottom: var(--border-width) solid var(--color-border);
+    padding: 0.8rem;
+    text-align: left;
+    vertical-align: top;
+  }
+
+  .status-table thead th {
+    color: var(--color-text-muted);
+    font-family: var(--font-mono);
+    font-size: var(--font-size-micro);
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+
+  .status-table tbody tr:last-child th,
+  .status-table tbody tr:last-child td {
+    border-bottom: 0;
+  }
+
+  .table-status {
+    display: inline-flex;
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--radius-pill);
+    padding: 0.15rem 0.48rem;
+    background: var(--color-surface-raised);
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    font-weight: 600;
+  }
+
+  .working {
+    color: var(--olive);
+  }
+
+  .prototype,
+  .partial {
+    color: var(--blue);
+  }
+
+  .experimental {
+    color: var(--rust);
+  }
+
+  .planned,
+  .not-built {
+    color: var(--color-text-muted);
+  }
+
+  .step-list li {
+    margin-bottom: var(--space-4);
+  }
+
+  .step-list p {
+    margin: 0.2rem 0 0;
+  }
+
+  .learning-list {
+    display: grid;
+    gap: var(--space-4);
+  }
+
+  .learning-list article {
+    border-left: 0.22rem solid var(--khaki);
+    padding-left: var(--space-4);
+  }
+
+  .appendix-details {
+    display: grid;
+    gap: var(--space-3);
+    margin-bottom: var(--space-4);
+  }
+
+  .appendix-links,
+  .document-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    align-items: center;
+  }
+
+  .appendix-links :global(a),
+  .document-links :global(a),
+  .status-table :global(a),
+  .continue-cue a {
+    color: var(--plum);
+    font-weight: 600;
+    text-decoration-thickness: 0.08em;
+    text-underline-offset: 0.18em;
+  }
+
+  .appendix-links :global(a),
+  .document-links :global(a) {
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 0.42rem 0.7rem;
+    background: var(--color-surface-raised);
+    text-decoration: none;
+  }
+
+  .continue-cue {
+    max-width: var(--reading-measure);
+    margin: 0;
+    border-top: var(--border-width) solid var(--color-border);
+    padding-top: var(--space-4);
+    font-family: var(--font-hand);
+    font-size: 1.08rem;
+  }
+
+  @media (max-width: 780px) {
+    .technical-groups {
+      grid-template-columns: 1fr;
+    }
+
+    .appendix-links :global(a),
+    .document-links :global(a) {
+      width: 100%;
+      text-align: center;
+    }
+  }
+</style>

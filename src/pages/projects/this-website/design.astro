@@ -1,0 +1,132 @@
+---
+import { getCollection } from "astro:content";
+import WebsiteProjectDocument from "@/components/WebsiteProjectDocument.astro";
+import { workspaceForSlug } from "@/data/project-workspaces";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import ProjectWorkspaceLayout from "@/layouts/ProjectWorkspaceLayout.astro";
+
+const project = (await getCollection("projects")).find(
+  (entry) => entry.data.slug === "this-website",
+);
+if (!project) {
+  throw new Error("Missing This Website project entry");
+}
+
+const workspace = workspaceForSlug(project.data.slug);
+---
+
+<BaseLayout
+  title={`Design | ${project.data.title}`}
+  description="Design philosophy, information architecture, visual language, interaction patterns, and technical implementation for This Website."
+  canonicalPath="/projects/this-website/design/"
+>
+  <ProjectWorkspaceLayout
+    project={project}
+    workspace={workspace}
+    documentTitle="Design"
+    documentSummary="How the site is structured, why it behaves the way it does, and what design choices keep it warm without making it decorative noise."
+  >
+    <WebsiteProjectDocument variant="design">
+      <section aria-labelledby="design-philosophy">
+        <h3 id="design-philosophy">Design philosophy</h3>
+        <p>
+          The homepage is the desk. Projects is a catalogue. Each project opens
+          into a workspace. Writing is a quieter reading environment. What’s
+          Here? helps people wander across connected work.
+        </p>
+        <p>
+          The website should feel handcrafted, not handcrafted-looking. That
+          means no fake paper overload, no fake tape everywhere, and no forced
+          scrapbook styling. Warmth comes from care, spacing, color, writing,
+          and interaction.
+        </p>
+      </section>
+
+      <section aria-labelledby="information-architecture">
+        <h3 id="information-architecture">Information architecture</h3>
+        <ul class="ia-list">
+          <li>
+            <strong>Homepage</strong>
+            <span>Discovery and personality.</span>
+          </li>
+          <li>
+            <strong>Projects</strong>
+            <span>A catalogue of major bodies of work.</span>
+          </li>
+          <li>
+            <strong>Project workspaces</strong>
+            <span>Organized documents for one project.</span>
+          </li>
+          <li>
+            <strong>Writing</strong>
+            <span>Long-form ideas and research.</span>
+          </li>
+          <li>
+            <strong>What’s Here?</strong>
+            <span>Cross-project exploration and trails.</span>
+          </li>
+          <li>
+            <strong>Field Log</strong>
+            <span>Dated changes and observations.</span>
+          </li>
+        </ul>
+        <p>
+          Project navigation changed from one long report to separate documents
+          because anchor jumping caused disorientation and infinite scroll made
+          projects feel unstructured. Major areas now use full Astro routes, the
+          sidebar behaves like a small file explorer, and one manageable
+          document is read at a time.
+        </p>
+      </section>
+
+      <section aria-labelledby="visual-language">
+        <h3 id="visual-language">Visual language</h3>
+        <p>
+          The current visual language uses a warm paper background, pale
+          project-specific colors, restrained borders, editorial typography,
+          monospace metadata, project emblems, small handwritten notes, and
+          limited replay-inspired technical framing.
+        </p>
+        <p>
+          The site moved away from generic minimalism, oversized headings,
+          washed-out cards, dashboard styling, overly literal desk decoration,
+          and corporate case-study layouts. Content stays first; the identity
+          helps the work feel placed rather than packaged.
+        </p>
+      </section>
+
+      <section aria-labelledby="interaction-patterns">
+        <h3 id="interaction-patterns">Interaction patterns</h3>
+        <p>
+          Project cards have one primary destination. Project workspaces use
+          real routes. Major navigation does not use anchor jumps, view
+          transitions, smooth scrolling, or client-side tab replacement.
+        </p>
+        <p>
+          Native <code>&lt;details&gt;</code> elements support collapsible file groups,
+          content changes through normal page loads, browser history remains predictable,
+          external links stay clearly separated, and mobile navigation remains native
+          and accessible.
+        </p>
+      </section>
+
+      <section aria-labelledby="technical-implementation" class="note-panel">
+        <h3 id="technical-implementation">Technical implementation</h3>
+        <p>
+          The site uses Astro, TypeScript, Markdown content collections, static
+          routes, plain CSS, and GitHub Pages. It intentionally avoids React,
+          Tailwind, a CMS, backend code, and unnecessary JavaScript.
+        </p>
+        <p>
+          The architecture stays deliberately simple and auditable because this
+          is a public publishing system, not an app pretending to be a website.
+        </p>
+      </section>
+
+      <p class="continue-cue">
+        <a href="/projects/this-website/evolution/">Open the evolution file →</a
+        >
+      </p>
+    </WebsiteProjectDocument>
+  </ProjectWorkspaceLayout>
+</BaseLayout>

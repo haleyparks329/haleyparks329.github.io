@@ -1,0 +1,153 @@
+---
+type Props = {
+  phase: string;
+  title: string;
+  lookedLike: string;
+  feltWrong: string[];
+  decision: string[];
+  changed: string[];
+  note?: string;
+  imageSrc?: string;
+  imageAlt?: string;
+};
+
+const {
+  phase,
+  title,
+  lookedLike,
+  feltWrong,
+  decision,
+  changed,
+  note,
+  imageSrc,
+  imageAlt = "",
+} = Astro.props;
+---
+
+<article class="evolution-entry">
+  <div class="entry-marker" aria-hidden="true"></div>
+  <div class="entry-body">
+    <p class="entry-phase">{phase}</p>
+    <h3>{title}</h3>
+    <section aria-label={`${title}: what it looked like`}>
+      <h4>What it looked like</h4>
+      <p>{lookedLike}</p>
+    </section>
+    <section aria-label={`${title}: what felt wrong`}>
+      <h4>What felt wrong</h4>
+      <ul>
+        {feltWrong.map((item) => <li>{item}</li>)}
+      </ul>
+    </section>
+    <section aria-label={`${title}: decision`}>
+      <h4>Decision</h4>
+      <ul>
+        {decision.map((item) => <li>{item}</li>)}
+      </ul>
+    </section>
+    <section aria-label={`${title}: what changed`}>
+      <h4>What changed</h4>
+      <ul>
+        {changed.map((item) => <li>{item}</li>)}
+      </ul>
+    </section>
+    {imageSrc && <img src={imageSrc} alt={imageAlt} loading="lazy" />}
+    {note && <p class="entry-note">{note}</p>}
+  </div>
+</article>
+
+<style>
+  .evolution-entry {
+    position: relative;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: var(--space-4);
+    max-width: var(--reading-measure-wide);
+  }
+
+  .evolution-entry::before {
+    position: absolute;
+    top: 1.35rem;
+    bottom: calc(-1 * var(--space-8));
+    left: 0.44rem;
+    width: var(--border-width);
+    background: var(--color-border);
+    content: "";
+  }
+
+  .evolution-entry:last-child::before {
+    display: none;
+  }
+
+  .entry-marker {
+    position: relative;
+    z-index: 1;
+    width: 0.9rem;
+    height: 0.9rem;
+    border: var(--border-width) solid var(--plum);
+    border-radius: 999px;
+    margin-top: 0.48rem;
+    background: var(--color-surface);
+    box-shadow: 0 0 0 0.28rem
+      color-mix(in srgb, var(--lavender) 35%, transparent);
+  }
+
+  .entry-body {
+    display: grid;
+    gap: var(--space-4);
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: clamp(1rem, 2vw, 1.35rem);
+    background: color-mix(in srgb, var(--paper) 78%, white);
+    box-shadow: var(--shadow-paper);
+  }
+
+  .entry-phase {
+    margin: 0;
+    color: var(--color-text-muted);
+    font-family: var(--font-mono);
+    font-size: var(--font-size-micro);
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+
+  h3 {
+    border: 0;
+    margin: 0;
+    padding: 0;
+    font-size: clamp(1.25rem, 2vw, 1.65rem);
+  }
+
+  h4 {
+    margin: 0 0 var(--space-2);
+    font-size: 0.95rem;
+  }
+
+  p,
+  li {
+    color: var(--color-text-secondary);
+    line-height: 1.58;
+  }
+
+  p,
+  ul {
+    margin-bottom: 0;
+  }
+
+  ul {
+    padding-left: 1.1rem;
+  }
+
+  .entry-note {
+    border-top: var(--border-width) solid var(--color-border);
+    padding-top: var(--space-3);
+    color: var(--color-text-muted);
+    font-family: var(--font-hand);
+    font-size: 1.04rem;
+  }
+
+  img {
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--radius-sm);
+  }
+</style>

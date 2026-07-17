@@ -1,0 +1,259 @@
+---
+import ProjectEmblem from "@/components/ProjectEmblem.astro";
+import type { ProjectWorkspaceConfig } from "@/data/project-workspaces";
+
+type Props = {
+  workspace: ProjectWorkspaceConfig;
+  projectTitle: string;
+  mobile?: boolean;
+};
+
+const { workspace, projectTitle, mobile = false } = Astro.props;
+const currentPath = Astro.url.pathname;
+
+function normalizePath(href: string) {
+  if (href.startsWith("http")) return href;
+  const [path] = href.split("#");
+  return path.endsWith("/") ? path : `${path}/`;
+}
+
+function isCurrent(href: string) {
+  return !href.startsWith("http") && normalizePath(href) === currentPath;
+}
+
+function groupIsOpen(group: ProjectWorkspaceConfig["groups"][number]) {
+  return group.links.some((link) => isCurrent(link.href));
+}
+
+const nonEmptyGroups = workspace.groups.filter(
+  (group) => group.links.length > 0,
+);
+const navLabel = mobile
+  ? `${projectTitle} mobile files`
+  : `${projectTitle} files`;
+---
+
+{
+  mobile ? (
+    <details class="mobile-project-navigation">
+      <summary>Project files</summary>
+      <nav aria-label={navLabel}>
+        <div class="project-sidebar-heading">
+          <ProjectEmblem slug={workspace.slug} size="small" />
+          <span>
+            <strong>{projectTitle}</strong>
+            <em>{workspace.projectType}</em>
+          </span>
+        </div>
+        {nonEmptyGroups.map((group) => (
+          <details class="project-sidebar-group" open={groupIsOpen(group)}>
+            <summary>{group.label}</summary>
+            <ul>
+              {group.links.map((link) => (
+                <li>
+                  <a
+                    href={link.href}
+                    aria-current={isCurrent(link.href) ? "page" : undefined}
+                    target={link.external ? "_blank" : undefined}
+                    rel={link.external ? "noreferrer" : undefined}
+                  >
+                    <span>{link.label}</span>
+                    {link.external && <span aria-hidden="true">↗</span>}
+                    {link.external && (
+                      <span class="sr-only"> Opens externally</span>
+                    )}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </details>
+        ))}
+      </nav>
+    </details>
+  ) : (
+    <nav class="project-sidebar" aria-label={navLabel}>
+      <div class="project-sidebar-heading">
+        <ProjectEmblem slug={workspace.slug} size="small" />
+        <span>
+          <strong>{projectTitle}</strong>
+          <em>{workspace.projectType}</em>
+        </span>
+      </div>
+      {nonEmptyGroups.map((group) => (
+        <details class="project-sidebar-group" open={groupIsOpen(group)}>
+          <summary>{group.label}</summary>
+          <ul>
+            {group.links.map((link) => (
+              <li>
+                <a
+                  href={link.href}
+                  aria-current={isCurrent(link.href) ? "page" : undefined}
+                  target={link.external ? "_blank" : undefined}
+                  rel={link.external ? "noreferrer" : undefined}
+                >
+                  <span>{link.label}</span>
+                  {link.external && <span aria-hidden="true">↗</span>}
+                  {link.external && (
+                    <span class="sr-only"> Opens externally</span>
+                  )}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </details>
+      ))}
+      <p class="project-sidebar-note">{workspace.annotation}</p>
+    </nav>
+  )
+}
+
+<style>
+  .project-sidebar {
+    position: sticky;
+    top: calc(var(--site-header-height) + 1rem);
+    display: grid;
+    max-height: calc(100vh - var(--site-header-height) - 2rem);
+    gap: var(--space-4);
+    overflow-y: auto;
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-4);
+    background: color-mix(in srgb, var(--paper) 76%, white);
+    box-shadow: var(--shadow-paper);
+  }
+
+  .project-sidebar-heading {
+    display: flex;
+    gap: var(--space-3);
+    align-items: center;
+    border-bottom: var(--border-width) solid var(--color-border);
+    padding-bottom: var(--space-4);
+  }
+
+  .project-sidebar-heading span {
+    display: grid;
+    gap: 0.1rem;
+    min-width: 0;
+  }
+
+  .project-sidebar-heading strong {
+    color: var(--color-text);
+    font-size: 0.98rem;
+    line-height: 1.15;
+  }
+
+  .project-sidebar-heading em,
+  .project-sidebar-note {
+    color: var(--color-text-muted);
+    font-style: normal;
+  }
+
+  .project-sidebar-heading em {
+    font-family: var(--font-mono);
+    font-size: var(--font-size-micro);
+    font-weight: 650;
+    text-transform: uppercase;
+  }
+
+  .project-sidebar-group {
+    display: grid;
+    gap: 0.25rem;
+  }
+
+  .project-sidebar-group summary {
+    min-height: 36px;
+    cursor: pointer;
+    border-radius: var(--radius-sm);
+    padding: 0.42rem 0.5rem;
+    color: var(--color-text-muted);
+    font-family: var(--font-mono);
+    font-size: var(--font-size-micro);
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+
+  .project-sidebar-group summary:hover,
+  .project-sidebar-group summary:focus-visible {
+    background: color-mix(in srgb, var(--khaki) 12%, transparent);
+    color: var(--color-text);
+  }
+
+  ul {
+    display: grid;
+    gap: 0.12rem;
+    margin: 0;
+    padding: 0 0 0 0.45rem;
+    list-style: none;
+  }
+
+  a {
+    display: flex;
+    min-height: 40px;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-2);
+    border-left: 0.18rem solid transparent;
+    border-radius: var(--radius-sm);
+    padding: 0.48rem 0.65rem;
+    color: var(--color-text-muted);
+    font-size: 0.92rem;
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  a:hover,
+  a:focus-visible,
+  a[aria-current="page"] {
+    background: color-mix(in srgb, var(--khaki) 10%, transparent);
+    color: var(--color-text);
+  }
+
+  a[aria-current="page"] {
+    border-left-color: var(--rust);
+  }
+
+  .project-sidebar-note {
+    margin: 0;
+    border-top: var(--border-width) solid var(--color-border);
+    padding-top: var(--space-3);
+    font-family: var(--font-hand);
+    font-size: 1rem;
+    line-height: 1.25;
+  }
+
+  .mobile-project-navigation {
+    display: none;
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-surface-raised);
+  }
+
+  .mobile-project-navigation > summary {
+    min-height: 44px;
+    cursor: pointer;
+    padding: 0.72rem 0.9rem;
+    color: var(--color-text);
+    font-weight: 650;
+  }
+
+  .mobile-project-navigation nav {
+    display: grid;
+    gap: var(--space-4);
+    border-top: var(--border-width) solid var(--color-border);
+    padding: var(--space-4);
+  }
+
+  .mobile-project-navigation a {
+    min-height: 44px;
+  }
+
+  @media (max-width: 800px) {
+    .project-sidebar {
+      display: none;
+    }
+
+    .mobile-project-navigation {
+      display: block;
+    }
+  }
+</style>
