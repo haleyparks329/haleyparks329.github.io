@@ -5,7 +5,14 @@ import ExternalLink from "@/components/ExternalLink.astro";
 import ProjectNav from "@/components/ProjectNav.astro";
 import StatusBadge from "@/components/StatusBadge.astro";
 import TagList from "@/components/TagList.astro";
-import type { ContentLink } from "@/data/navigation";
+import {
+  connectedDestinations,
+  destinationByHref,
+  destinationsForProject,
+  destinationToContentLink,
+  trailsForDestination,
+  type ContentLink,
+} from "@/data/navigation";
 
 type ReportLink = {
   href: string;
@@ -103,6 +110,22 @@ const {
   projectNav,
   continueLinks = [],
 } = Astro.props;
+
+const projectHref = `/projects/${project.data.slug}/`;
+const currentDestination = destinationByHref(projectHref);
+const localDestinations = destinationsForProject(project.data.slug)
+  .filter((destination) => destination.href !== projectHref)
+  .map((destination) => destinationToContentLink(destination));
+const nearbyDestinations = currentDestination
+  ? connectedDestinations(currentDestination.id)
+  : [];
+const trailMembership = currentDestination
+  ? trailsForDestination(currentDestination.id)
+  : [];
+const hasConnectedWork =
+  localDestinations.length > 0 ||
+  nearbyDestinations.length > 0 ||
+  trailMembership.length > 0;
 ---
 
 <article class="project-report">
@@ -116,6 +139,7 @@ const {
           repositoryUrl={projectNav.repositoryUrl}
           buildLogHref={projectNav.buildLogHref}
           relatedWriting={projectNav.relatedWriting}
+          connectedHref={hasConnectedWork ? "#connected-work" : undefined}
         />
       )
     }
@@ -296,6 +320,55 @@ const {
     <h2 id="current-direction">Current direction</h2>
     {currentDirection.map((paragraph) => <p>{paragraph}</p>)}
   </section>
+  {
+    hasConnectedWork && (
+      <section id="connected-work" aria-labelledby="connected-work-title">
+        <h2 id="connected-work-title">Related work</h2>
+        {localDestinations.length > 0 && (
+          <div class="connected-group">
+            <h3>Local map</h3>
+            <div class="connected-links">
+              {localDestinations.map((link) => (
+                <a href={link.href}>
+                  <span>{link.type}</span>
+                  <strong>{link.label}</strong>
+                  <em>{link.summary}</em>
+                </a>
+              ))}
+            </div>
+          </div>
+        )}
+        {nearbyDestinations.length > 0 && (
+          <div class="connected-group">
+            <h3>Nearby ideas</h3>
+            <div class="connected-links">
+              {nearbyDestinations.map((link) => (
+                <a href={link.href}>
+                  <span>{link.relationshipLabel ?? link.type}</span>
+                  <strong>{link.label}</strong>
+                  <em>{link.relationshipReason ?? link.summary}</em>
+                </a>
+              ))}
+            </div>
+          </div>
+        )}
+        {trailMembership.length > 0 && (
+          <div class="connected-group">
+            <h3>Appears in trails</h3>
+            <div class="connected-links">
+              {trailMembership.map((trail) => (
+                <a href={`/explore/trails/${trail.slug}/`}>
+                  <span>Trail</span>
+                  <strong>{trail.label}</strong>
+                  <em>{trail.summary}</em>
+                </a>
+              ))}
+            </div>
+          </div>
+        )}
+      </section>
+    )
+  }
   <ContinueExploring links={continueLinks} />
 </article>
 
@@ -567,8 +640,59 @@ const {
     padding-top: 0;
   }
 
+  .connected-group + .connected-group {
+    margin-top: var(--space-5);
+  }
+
+  .connected-links {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-3);
+  }
+
+  .connected-links a {
+    display: grid;
+    min-height: 44px;
+    gap: 0.22rem;
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-4);
+    background: var(--color-surface-raised);
+    color: var(--color-text);
+    text-decoration: none;
+  }
+
+  .connected-links a:hover {
+    border-color: var(--color-border-strong);
+    background: var(--color-surface);
+  }
+
+  .connected-links span {
+    color: var(--color-text-muted);
+    font-family: var(--font-mono);
+    font-size: var(--font-size-micro);
+    font-weight: 850;
+    text-transform: uppercase;
+  }
+
+  .connected-links strong {
+    font-size: 1.02rem;
+    line-height: 1.25;
+  }
+
+  .connected-links em {
+    color: var(--color-text-muted);
+    font-size: 0.9rem;
+    font-style: normal;
+    line-height: 1.45;
+  }
+
   @media (max-width: 780px) {
     .technical-groups {
+      grid-template-columns: 1fr;
+    }
+
+    .connected-links {
       grid-template-columns: 1fr;
     }
 

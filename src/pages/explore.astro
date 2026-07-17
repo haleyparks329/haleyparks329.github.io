@@ -2,7 +2,9 @@
 import { getCollection } from "astro:content";
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import {
+  allDestinations,
   contentTypes,
+  type Destination,
   guidedPaths,
   surpriseLink,
   topicPaths,
@@ -39,31 +41,77 @@ const recentlyUpdated = [
     summary: entry.data.summary,
   })),
 ];
+
+const browseGroups = [
+  {
+    label: "Projects",
+    destinations: allDestinations.filter(
+      (destination) => destination.type === "project",
+    ),
+  },
+  {
+    label: "Writing",
+    destinations: allDestinations.filter(
+      (destination) => destination.type === "writing",
+    ),
+  },
+  {
+    label: "Field Log",
+    destinations: allDestinations.filter(
+      (destination) => destination.type === "field-log",
+    ),
+  },
+  {
+    label: "Demos",
+    destinations: allDestinations.filter(
+      (destination) => destination.type === "demo",
+    ),
+  },
+  {
+    label: "Trails",
+    destinations: allDestinations.filter(
+      (destination) => destination.type === "trail",
+    ),
+  },
+  {
+    label: "Other Places",
+    destinations: allDestinations.filter((destination) =>
+      ["page", "place"].includes(destination.type),
+    ),
+  },
+]
+  .map((group) => ({
+    ...group,
+    destinations: group.destinations.sort((a, b) =>
+      a.label.localeCompare(b.label),
+    ),
+  }))
+  .filter((group) => group.destinations.length > 0);
 ---
 
 <BaseLayout
-  title="Explore"
-  description="Multiple ways into Haley Parks' projects, writing, demos, and build notes."
+  title="What’s Here?"
+  description="A guide to Haley Parks' projects, writing, experiments, ideas, trails, and public work."
   canonicalPath="/explore/"
 >
   <section class="explore-page">
     <header class="explore-header">
-      <p class="eyebrow">Explore</p>
-      <h1>Find the thing, or follow the thread.</h1>
+      <p class="eyebrow">What’s Here?</p>
+      <h1>A guide to the work collected here.</h1>
       <p>
-        This page gives the site two speeds: direct routes for people who know
-        what they need, and looser paths for people who want to wander.
+        Follow a trail if you want a starting point, or browse projects,
+        writing, experiments, and ideas directly below.
       </p>
       <div class="explore-actions">
         <a href="/search/">Search</a>
-        <a href="/projects/">Projects</a>
+        <a href="#browse-everything">Browse Everything</a>
       </div>
     </header>
 
     <section class="explore-section" aria-labelledby="start-here">
       <div class="section-kicker">
-        <p class="eyebrow">Start here</p>
-        <h2 id="start-here">Guided paths</h2>
+        <p class="eyebrow">Choose a trail</p>
+        <h2 id="start-here">Curated routes through the work</h2>
       </div>
       <div class="explore-grid">
         {
@@ -71,6 +119,7 @@ const recentlyUpdated = [
             <a href={path.href}>
               <strong>{path.label}</strong>
               <span>{path.description}</span>
+              <em>{path.stopCount} stops</em>
             </a>
           ))
         }
@@ -79,8 +128,8 @@ const recentlyUpdated = [
 
     <section class="explore-section" aria-labelledby="browse-type">
       <div class="section-kicker">
-        <p class="eyebrow">Browse by type</p>
-        <h2 id="browse-type">Same archive, different doors</h2>
+        <p class="eyebrow">Start somewhere</p>
+        <h2 id="browse-type">Direct doors into the site</h2>
       </div>
       <div class="type-grid">
         {
@@ -97,7 +146,7 @@ const recentlyUpdated = [
     <section class="explore-section" aria-labelledby="browse-topic">
       <div class="section-kicker">
         <p class="eyebrow">Browse by topic</p>
-        <h2 id="browse-topic">Curated shelves</h2>
+        <h2 id="browse-topic">Related shelves</h2>
       </div>
       <div class="topic-list">
         {
@@ -115,7 +164,7 @@ const recentlyUpdated = [
       <div>
         <div class="section-kicker">
           <p class="eyebrow">Recently updated</p>
-          <h2 id="recent">Fresh notes on the desk</h2>
+          <h2 id="recent">Recent work</h2>
         </div>
         <div class="recent-list">
           {
@@ -131,11 +180,46 @@ const recentlyUpdated = [
       </div>
 
       <aside class="surprise-note" aria-labelledby="surprise-me">
-        <p class="eyebrow">Surprise me</p>
+        <p class="eyebrow">Wander somewhere unexpected</p>
         <h2 id="surprise-me">{surpriseLink.label}</h2>
         <p>{surpriseLink.description}</p>
         <a href={surpriseLink.href}>Open the odd shelf</a>
       </aside>
+    </section>
+
+    <section
+      id="browse-everything"
+      class="explore-section browse-everything"
+      aria-labelledby="browse-everything-title"
+    >
+      <div class="section-kicker">
+        <p class="eyebrow">Browse everything</p>
+        <h2 id="browse-everything-title">Complete public index</h2>
+        <p>
+          The same navigation graph, grouped as a straightforward directory.
+        </p>
+      </div>
+      {
+        browseGroups.map((group) => (
+          <section
+            class="destination-group"
+            aria-labelledby={`${group.label.toLowerCase().replaceAll(" ", "-")}-group`}
+          >
+            <h3 id={`${group.label.toLowerCase().replaceAll(" ", "-")}-group`}>
+              {group.label}
+            </h3>
+            <div class="destination-list">
+              {group.destinations.map((destination: Destination) => (
+                <a href={destination.href}>
+                  <span>{typeLabel(destination.type)}</span>
+                  <strong>{destination.label}</strong>
+                  <em>{destination.summary}</em>
+                </a>
+              ))}
+            </div>
+          </section>
+        ))
+      }
     </section>
   </section>
 </BaseLayout>
@@ -170,7 +254,8 @@ const recentlyUpdated = [
   .explore-grid,
   .type-grid,
   .topic-list,
-  .recent-list {
+  .recent-list,
+  .destination-list {
     display: grid;
     gap: var(--space-3);
   }
@@ -218,6 +303,7 @@ const recentlyUpdated = [
   .type-grid a,
   .topic-list a,
   .recent-list a,
+  .destination-list a,
   .surprise-note {
     display: grid;
     gap: 0.35rem;
@@ -232,15 +318,19 @@ const recentlyUpdated = [
   .explore-grid a:hover,
   .type-grid a:hover,
   .topic-list a:hover,
-  .recent-list a:hover {
+  .recent-list a:hover,
+  .destination-list a:hover {
     border-color: var(--color-border-strong);
     background: var(--color-surface);
   }
 
   .explore-grid span,
+  .explore-grid em,
   .type-grid span,
   .topic-list span,
   .recent-list em,
+  .destination-list em,
+  .browse-everything .section-kicker p:not(.eyebrow),
   .surprise-note p {
     color: var(--color-text-muted);
     font-size: 0.95rem;
@@ -248,7 +338,15 @@ const recentlyUpdated = [
     line-height: 1.45;
   }
 
-  .recent-list span {
+  .explore-grid em {
+    font-family: var(--font-mono);
+    font-size: var(--font-size-micro);
+    font-weight: 850;
+    text-transform: uppercase;
+  }
+
+  .recent-list span,
+  .destination-list span {
     color: var(--color-text-muted);
     font-family: var(--font-mono);
     font-size: var(--font-size-micro);
@@ -268,11 +366,39 @@ const recentlyUpdated = [
     background: color-mix(in srgb, var(--lavender) 72%, var(--paper));
   }
 
+  .browse-everything {
+    border-top: var(--border-width) solid var(--color-border);
+    padding-top: var(--space-5);
+  }
+
+  .browse-everything h2 {
+    font-size: clamp(1.45rem, 2.4vw, 2.1rem);
+  }
+
+  .destination-group {
+    margin-top: var(--space-5);
+  }
+
+  .destination-group h3 {
+    margin-bottom: var(--space-3);
+    font-size: clamp(1.1rem, 1.6vw, 1.35rem);
+  }
+
+  .destination-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .destination-list strong {
+    font-size: 1rem;
+    line-height: 1.25;
+  }
+
   @media (max-width: 840px) {
     .explore-grid,
     .type-grid,
     .topic-list,
-    .split-section {
+    .split-section,
+    .destination-list {
       grid-template-columns: 1fr;
     }
   }

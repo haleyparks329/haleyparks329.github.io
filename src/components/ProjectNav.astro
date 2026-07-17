@@ -8,6 +8,7 @@ type Props = {
   repositoryUrl?: string;
   buildLogHref?: string;
   relatedWriting?: ContentLink[];
+  connectedHref?: string;
 };
 
 const {
@@ -17,6 +18,7 @@ const {
   repositoryUrl,
   buildLogHref,
   relatedWriting = [],
+  connectedHref,
 } = Astro.props;
 
 const links = [
@@ -34,6 +36,13 @@ const links = [
     ? {
         href: relatedWriting[0].href,
         label: "Related Writing",
+        external: false,
+      }
+    : undefined,
+  connectedHref
+    ? {
+        href: connectedHref,
+        label: "Related Work",
         external: false,
       }
     : undefined,

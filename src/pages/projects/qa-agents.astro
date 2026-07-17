@@ -2,6 +2,7 @@
 import { getCollection } from "astro:content";
 import ProjectReportLayout from "@/components/ProjectReportLayout.astro";
 import BaseLayout from "@/layouts/BaseLayout.astro";
+import { relatedLinksForHrefs } from "@/data/navigation";
 
 const project = (await getCollection("projects")).find(
   (entry) => entry.data.slug === "qa-agents",
@@ -38,31 +39,15 @@ const relatedWriting = [
     topics: ["Agent Systems", "Software Quality"],
   },
 ];
-const continueLinks = [
-  relatedWriting[0],
-  {
-    href: "/projects/qa-agents/demo/",
-    label: "Little Bytes evidence replay",
-    type: "Demo",
-    summary: "Replay a recorded pricing investigation from source evidence.",
-    topics: ["Software Quality"],
-  },
-  {
-    href: "/field-log/evidence-before-claims/",
-    label: "Evidence Before Claims",
-    type: "Build Log",
-    summary: "A public writing rule for AI work that needs visible boundaries.",
-    topics: ["Human-Centered Technology"],
-  },
-  {
-    href: "/explore/",
-    label: "Explore by topic",
-    type: "Explore",
-    summary:
-      "Browse the same work by topic, content type, or current activity.",
-    topics: ["Navigation"],
-  },
-];
+const continueLinks = relatedLinksForHrefs(
+  [
+    "/writing/meticulous-qa-investigation/",
+    "/projects/qa-agents/demo/",
+    "/field-log/evidence-before-claims/",
+    "/explore/",
+  ],
+  "project-qa-agents",
+);
 ---
 
 <BaseLayout

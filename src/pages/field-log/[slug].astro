@@ -3,7 +3,11 @@ import { getCollection, render } from "astro:content";
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import ContinueExploring from "@/components/ContinueExploring.astro";
 import FieldLogDocumentHeader from "@/components/FieldLogDocumentHeader.astro";
-import { typeLabel } from "@/data/navigation";
+import {
+  destinationByHref,
+  relatedLinksForHrefs,
+  trailsForHref,
+} from "@/data/navigation";
 
 export async function getStaticPaths() {
   const entries = (await getCollection("fieldLog")).sort(
@@ -22,90 +26,13 @@ export async function getStaticPaths() {
 
 const { entry, previous, next } = Astro.props;
 const { Content } = await render(entry);
-const projects = await getCollection("projects");
-const writing = (await getCollection("writing")).filter(
-  (item) => !item.data.draft,
+const pageHref = `/field-log/${entry.data.slug}/`;
+const pageDestination = destinationByHref(pageHref);
+const continueLinks = relatedLinksForHrefs(
+  entry.data.related,
+  pageDestination?.id,
 );
-const allFieldLog = await getCollection("fieldLog");
-
-function linkForHref(href: string) {
-  const project = projects.find(
-    (item) => `/projects/${item.data.slug}/` === href,
-  );
-  if (project) {
-    return {
-      href,
-      label: project.data.title,
-      type: "Case Study",
-      summary: project.data.summary,
-      topics: project.data.topics,
-    };
-  }
-
-  const writingEntry = writing.find(
-    (item) => `/writing/${item.data.slug}/` === href,
-  );
-  if (writingEntry) {
-    return {
-      href,
-      label: writingEntry.data.title,
-      type: typeLabel(writingEntry.data.type),
-      summary: writingEntry.data.description,
-      topics: writingEntry.data.topics,
-    };
-  }
-
-  const logEntry = allFieldLog.find(
-    (item) => `/field-log/${item.data.slug}/` === href,
-  );
-  if (logEntry) {
-    return {
-      href,
-      label: logEntry.data.title,
-      type: "Build Log",
-      summary: logEntry.data.summary,
-      topics: logEntry.data.topics,
-    };
-  }
-
-  if (href === "/explore/") {
-    return {
-      href,
-      label: "Explore",
-      type: "Explore",
-      summary: "Browse the site by topic, type, current work, or surprise.",
-      topics: ["Navigation"],
-    };
-  }
-
-  if (href === "/compost-heap/") {
-    return {
-      href,
-      label: "The Compost Heap",
-      type: "Archive",
-      summary: "Loose fragments and odd notes from the edge of the work.",
-      topics: ["Adaptive UI"],
-    };
-  }
-
-  if (href === "/projects/qa-agents/demo/") {
-    return {
-      href,
-      label: "Little Bytes evidence replay",
-      type: "Demo",
-      summary: "Replay a recorded QA investigation from source evidence.",
-      topics: ["Software Quality"],
-    };
-  }
-
-  return undefined;
-}
-
-const continueLinks = entry.data.related
-  .map(linkForHref)
-  .filter((link): link is NonNullable<ReturnType<typeof linkForHref>> =>
-    Boolean(link),
-  );
+const trailMembership = trailsForHref(pageHref);
 ---
 
 <BaseLayout
@@ -123,6 +50,22 @@ const continueLinks = entry.data.related
     <div class="document-body">
       <Content />
     </div>
+    {
+      trailMembership.length > 0 && (
+        <aside class="trail-context" aria-label="Trail membership">
+          <p>
+            Appears in{" "}
+            {trailMembership.map((trail, index) => (
+              <>
+                <a href={`/explore/trails/${trail.slug}/`}>{trail.label}</a>
+                {index < trailMembership.length - 1 ? ", " : ""}
+              </>
+            ))}
+            .
+          </p>
+        </aside>
+      )
+    }
     <ContinueExploring links={continueLinks} />
     <nav class="entry-nav" aria-label="Field Log entry navigation">
       {
@@ -202,6 +145,26 @@ const continueLinks = entry.data.related
     border-top: var(--border-width) solid var(--color-border);
     margin-top: clamp(2.5rem, 5vw, 4.5rem);
     padding-top: var(--space-5);
+  }
+
+  .trail-context {
+    border-top: var(--border-width) solid var(--color-border);
+    margin-top: clamp(2rem, 5vw, 3.5rem);
+    padding-top: var(--space-4);
+  }
+
+  .trail-context p {
+    color: var(--color-text-muted);
+    font-family: var(--font-mono);
+    font-size: var(--font-size-micro);
+    font-weight: 850;
+    text-transform: uppercase;
+  }
+
+  .trail-context a {
+    color: var(--plum);
+    text-decoration-thickness: 0.08em;
+    text-underline-offset: 0.18em;
   }
 
   .entry-nav a:last-child {

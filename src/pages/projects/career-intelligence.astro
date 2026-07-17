@@ -2,6 +2,7 @@
 import { getCollection } from "astro:content";
 import ProjectReportLayout from "@/components/ProjectReportLayout.astro";
 import BaseLayout from "@/layouts/BaseLayout.astro";
+import { relatedLinksForHrefs } from "@/data/navigation";
 
 const project = (await getCollection("projects")).find(
   (entry) => entry.data.slug === "career-intelligence",
@@ -34,30 +35,15 @@ const relatedWriting = [
     topics: ["Human-Centered Technology"],
   },
 ];
-const continueLinks = [
-  relatedWriting[0],
-  {
-    href: "/field-log/evidence-before-claims/",
-    label: "Evidence Before Claims",
-    type: "Build Log",
-    summary: "A note on keeping public AI claims attached to artifacts.",
-    topics: ["Human-Centered Technology"],
-  },
-  {
-    href: "/projects/the-human-model/",
-    label: "The Human Model",
-    type: "Case Study",
-    summary: "Another long-running system for evidence-backed person modeling.",
-    topics: ["Human Model"],
-  },
-  {
-    href: "/explore/",
-    label: "Explore by topic",
-    type: "Explore",
-    summary: "Browse systems, writing, demos, and working notes.",
-    topics: ["Navigation"],
-  },
-];
+const continueLinks = relatedLinksForHrefs(
+  [
+    "/writing/what-happens-after-the-ai-interview/",
+    "/field-log/evidence-before-claims/",
+    "/projects/the-human-model/",
+    "/explore/",
+  ],
+  "project-career-intelligence",
+);
 ---
 
 <BaseLayout

@@ -2,6 +2,7 @@
 import { getCollection } from "astro:content";
 import ProjectReportLayout from "@/components/ProjectReportLayout.astro";
 import BaseLayout from "@/layouts/BaseLayout.astro";
+import { relatedLinksForHrefs } from "@/data/navigation";
 
 const project = (await getCollection("projects")).find(
   (entry) => entry.data.slug === "the-human-model",
@@ -34,30 +35,15 @@ const relatedWriting = [
     topics: ["Human-Centered Technology", "Human Model"],
   },
 ];
-const continueLinks = [
-  relatedWriting[0],
-  {
-    href: "/field-log/attention-is-the-scarce-resource/",
-    label: "Attention Is the Scarce Resource",
-    type: "Build Log",
-    summary: "The working principle behind memory, coordination, and context.",
-    topics: ["Human-Centered Technology"],
-  },
-  {
-    href: "/projects/career-intelligence/",
-    label: "Career Intelligence",
-    type: "Case Study",
-    summary: "A sibling system for source-backed person reasoning.",
-    topics: ["Career Intelligence"],
-  },
-  {
-    href: "/explore/",
-    label: "Explore by topic",
-    type: "Explore",
-    summary: "Browse related systems, writing, demos, and notes.",
-    topics: ["Navigation"],
-  },
-];
+const continueLinks = relatedLinksForHrefs(
+  [
+    "/writing/attention-is-the-scarce-resource/",
+    "/field-log/attention-is-the-scarce-resource/",
+    "/projects/career-intelligence/",
+    "/explore/",
+  ],
+  "project-the-human-model",
+);
 ---
 
 <BaseLayout

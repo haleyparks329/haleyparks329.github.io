@@ -1,79 +1,29 @@
 ---
-import { getCollection } from "astro:content";
 import BaseLayout from "@/layouts/BaseLayout.astro";
-import { typeLabel } from "@/data/navigation";
+import { allDestinations, trailsForHref, typeLabel } from "@/data/navigation";
 
-const projects = await getCollection("projects");
-const writing = (await getCollection("writing")).filter(
-  (entry) => !entry.data.draft,
-);
-const fieldLog = await getCollection("fieldLog");
+const searchItems = allDestinations.map((destination) => {
+  const trailNames = trailsForHref(destination.href).map(
+    (trail) => trail.label,
+  );
 
-const searchItems = [
-  ...projects.map((entry) => ({
-    title: entry.data.title,
-    href: `/projects/${entry.data.slug}/`,
-    type: "Case Study",
-    summary: entry.data.summary,
-    topics: entry.data.topics,
+  return {
+    title: destination.label,
+    href: destination.href,
+    type: typeLabel(destination.type),
+    summary: destination.summary,
+    topics: destination.topics,
+    trails: trailNames,
+    project: destination.project,
     text: [
-      entry.data.title,
-      entry.data.summary,
-      entry.data.longDescription,
-      entry.data.coreQuestion,
-      ...entry.data.tags,
-      ...entry.data.topics,
+      destination.label,
+      destination.summary,
+      destination.project ?? "",
+      ...destination.topics,
+      ...trailNames,
     ].join(" "),
-  })),
-  {
-    title: "Little Bytes evidence replay",
-    href: "/projects/qa-agents/demo/",
-    type: "Demo",
-    summary:
-      "Recorded QA investigation showing change, test result, coverage gap, and handoff.",
-    topics: ["Software Quality", "Agent Systems"],
-    text: "QA Agents Little Bytes evidence replay demo software quality coverage gap Scribe handoff",
-  },
-  {
-    title: "Meticulous-inspired strategy replay",
-    href: "/projects/qa-agents/meticulous/",
-    type: "Demo",
-    summary:
-      "Secondary replay showing workflow clusters, findings, and policy-constrained recommendation.",
-    topics: ["Software Quality", "Agent Systems"],
-    text: "Meticulous deterministic replay QA Agents strategy replay workflow clusters policy recommendation",
-  },
-  ...writing.map((entry) => ({
-    title: entry.data.title,
-    href: `/writing/${entry.data.slug}/`,
-    type: typeLabel(entry.data.type),
-    summary: entry.data.description,
-    topics: entry.data.topics,
-    text: [
-      entry.data.title,
-      entry.data.description,
-      entry.data.relatedProject ?? "",
-      ...entry.data.tags,
-      ...entry.data.topics,
-    ].join(" "),
-  })),
-  ...fieldLog.map((entry) => ({
-    title: entry.data.title,
-    href: `/field-log/${entry.data.slug}/`,
-    type: "Build Log",
-    summary: entry.data.summary,
-    topics: entry.data.topics,
-    text: [
-      entry.data.title,
-      entry.data.summary,
-      entry.data.excerpt ?? "",
-      entry.data.category,
-      entry.data.relatedProject ?? "",
-      ...entry.data.tags,
-      ...entry.data.topics,
-    ].join(" "),
-  })),
-];
+  };
+});
 ---
 
 <BaseLayout
@@ -86,8 +36,9 @@ const searchItems = [
       <p class="eyebrow">Search</p>
       <h1>Find the shelf directly.</h1>
       <p>
-        Search covers projects, writing, Field Log entries, demos, summaries,
-        tags, and topics. It runs entirely in the static page.
+        Search covers public destinations from the site graph: projects,
+        writing, Field Log entries, demos, trails, summaries, and topics. It
+        runs entirely in the static page.
       </p>
     </header>
 
@@ -119,6 +70,8 @@ const searchItems = [
       type: string;
       summary: string;
       topics: string[];
+      trails: string[];
+      project?: string;
       text: string;
     };
 
@@ -147,7 +100,12 @@ const searchItems = [
           const summary = document.createElement("em");
           summary.textContent = item.summary;
 
-          link.append(type, title, summary);
+          const meta = document.createElement("small");
+          meta.textContent = [...item.topics, ...item.trails]
+            .filter(Boolean)
+            .join(" · ");
+
+          link.append(type, title, summary, meta);
           return link;
         }),
       );
@@ -163,7 +121,7 @@ const searchItems = [
           ? items
           : items.filter((item: SearchItem) => {
               const haystack =
-                `${item.title} ${item.summary} ${item.text} ${item.topics.join(" ")}`.toLowerCase();
+                `${item.title} ${item.summary} ${item.text} ${item.topics.join(" ")} ${item.trails.join(" ")}`.toLowerCase();
               return terms.every((term) => haystack.includes(term));
             });
 
@@ -252,12 +210,17 @@ const searchItems = [
     background: var(--color-surface);
   }
 
-  .search-results span {
+  .search-results span,
+  .search-results small {
     color: var(--color-text-muted);
     font-family: var(--font-mono);
     font-size: var(--font-size-micro);
     font-weight: 850;
     text-transform: uppercase;
+  }
+
+  .search-results small {
+    font-size: 0.68rem;
   }
 
   .search-results em {

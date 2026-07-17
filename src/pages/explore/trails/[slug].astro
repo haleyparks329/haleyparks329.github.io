@@ -1,0 +1,166 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import {
+  destinationById,
+  trailBySlug,
+  trails,
+  typeLabel,
+} from "@/data/navigation";
+
+export function getStaticPaths() {
+  return trails.map((trail) => ({
+    params: { slug: trail.slug },
+    props: { trail },
+  }));
+}
+
+const { trail } = Astro.props;
+const resolvedTrail = trailBySlug(trail.slug) ?? trail;
+const stops = resolvedTrail.stops.map((stop, index) => ({
+  ...stop,
+  number: index + 1,
+  destination: destinationById(stop.destinationId),
+}));
+---
+
+<BaseLayout
+  title={`${resolvedTrail.label} Trail`}
+  description={resolvedTrail.summary}
+  canonicalPath={`/explore/trails/${resolvedTrail.slug}/`}
+>
+  <section class="trail-page">
+    <header class="trail-header">
+      <p class="eyebrow">Trail</p>
+      <h1>{resolvedTrail.label}</h1>
+      <p>{resolvedTrail.summary}</p>
+      <a href="/explore/">Back to What’s Here?</a>
+    </header>
+
+    <ol class="trail-stops" aria-label={`${resolvedTrail.label} stops`}>
+      {
+        stops.map(
+          (stop) =>
+            stop.destination && (
+              <li>
+                <div class="stop-number" aria-hidden="true">
+                  {stop.number}
+                </div>
+                <div class="stop-card">
+                  <span>{typeLabel(stop.destination.type)}</span>
+                  <h2>
+                    <a href={stop.destination.href}>{stop.destination.label}</a>
+                  </h2>
+                  <p>{stop.reason}</p>
+                  <em>{stop.destination.summary}</em>
+                </div>
+              </li>
+            ),
+        )
+      }
+    </ol>
+  </section>
+</BaseLayout>
+
+<style>
+  .trail-page {
+    width: min(900px, calc(100% - 2rem));
+    margin: clamp(2rem, 5vw, 4rem) auto clamp(3rem, 7vw, 6rem);
+  }
+
+  .trail-header {
+    display: grid;
+    gap: var(--space-4);
+    border-bottom: var(--border-width) solid var(--color-border);
+    padding-bottom: clamp(1.5rem, 4vw, 2.5rem);
+  }
+
+  .trail-header h1 {
+    max-width: 12ch;
+    font-size: clamp(2.35rem, 4vw, 3.6rem);
+  }
+
+  .trail-header > p:not(.eyebrow) {
+    max-width: 46rem;
+    color: var(--color-text-muted);
+    font-size: clamp(1.02rem, 1.3vw, 1.2rem);
+    font-weight: 650;
+    line-height: 1.5;
+  }
+
+  .trail-header a,
+  .stop-card a {
+    color: var(--plum);
+    font-weight: 850;
+    text-decoration-thickness: 0.08em;
+    text-underline-offset: 0.18em;
+  }
+
+  .trail-stops {
+    display: grid;
+    gap: var(--space-4);
+    margin: clamp(2rem, 5vw, 3.5rem) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .trail-stops li {
+    display: grid;
+    grid-template-columns: 3rem minmax(0, 1fr);
+    gap: var(--space-4);
+    align-items: start;
+  }
+
+  .stop-number {
+    display: grid;
+    width: 2.4rem;
+    height: 2.4rem;
+    place-items: center;
+    border: var(--border-width) solid var(--color-border);
+    border-radius: 50%;
+    background: var(--color-surface-raised);
+    color: var(--color-text-muted);
+    font-family: var(--font-mono);
+    font-size: var(--font-size-micro);
+    font-weight: 850;
+  }
+
+  .stop-card {
+    display: grid;
+    gap: 0.35rem;
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-4);
+    background: var(--color-surface-raised);
+  }
+
+  .stop-card span {
+    color: var(--color-text-muted);
+    font-family: var(--font-mono);
+    font-size: var(--font-size-micro);
+    font-weight: 850;
+    text-transform: uppercase;
+  }
+
+  .stop-card h2 {
+    font-size: clamp(1.25rem, 2vw, 1.65rem);
+  }
+
+  .stop-card p,
+  .stop-card em {
+    color: var(--color-text-muted);
+    font-style: normal;
+    line-height: 1.5;
+  }
+
+  .stop-card p {
+    color: var(--color-text);
+    font-weight: 650;
+  }
+
+  @media (max-width: 620px) {
+    .trail-stops li {
+      grid-template-columns: 1fr;
+      gap: var(--space-2);
+    }
+  }
+</style>

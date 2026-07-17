@@ -27,8 +27,16 @@ const latestFieldLog = fieldLogEntries[0];
       </p>
       <div class="button-row">
         <a class="button" href="/projects/">View Projects</a>
-        <a class="button secondary" href="/explore/">Explore</a>
+        <a class="button secondary" href="/explore/">What’s Here?</a>
       </div>
+      <a
+        class="whats-here-link"
+        href="/explore/"
+        aria-label="Open What’s Here?"
+      >
+        <span aria-hidden="true"></span>
+        <strong>What’s Here?</strong>
+      </a>
     </div>
 
     <aside
@@ -386,6 +394,45 @@ const latestFieldLog = fieldLogEntries[0];
     min-height: 40px;
     padding: 0.62rem 0.78rem;
     font-size: 0.86rem;
+  }
+
+  .whats-here-link {
+    display: inline-flex;
+    width: fit-content;
+    align-items: center;
+    gap: 0.45rem;
+    margin-top: var(--space-3);
+    color: var(--color-text-muted);
+    font-family: var(--font-mono);
+    font-size: var(--font-size-micro);
+    font-weight: 850;
+    text-decoration: none;
+    text-transform: uppercase;
+  }
+
+  .whats-here-link span {
+    position: relative;
+    display: inline-grid;
+    width: 1.45rem;
+    height: 1.45rem;
+    place-items: center;
+    border: var(--border-width) solid var(--color-border);
+    border-radius: 50%;
+    background: var(--color-surface-raised);
+  }
+
+  .whats-here-link span::before {
+    width: 0.52rem;
+    height: 0.52rem;
+    border-top: 2px solid var(--plum);
+    border-right: 2px solid var(--plum);
+    content: "";
+    transform: rotate(45deg);
+  }
+
+  .whats-here-link:hover,
+  .whats-here-link:focus-visible {
+    color: var(--color-text);
   }
 
   .mini-me-note {

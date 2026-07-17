@@ -1,0 +1,53 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+---
+
+<BaseLayout
+  title="What’s Here?"
+  description="Browse the projects, writing, demos, trails, and public work collected on Haley Parks' website."
+  canonicalPath="/explore/"
+>
+  <section class="moved-page">
+    <p class="eyebrow">What’s Here?</p>
+    <h1>Browse Everything now lives on What’s Here?</h1>
+    <p>
+      The complete public index has been folded into the main guide, alongside
+      trails, topics, recent work, and direct links.
+    </p>
+    <a href="/explore/">Open What’s Here?</a>
+  </section>
+</BaseLayout>
+
+<style>
+  .moved-page {
+    display: grid;
+    width: min(760px, calc(100% - 2rem));
+    gap: var(--space-4);
+    margin: clamp(2rem, 5vw, 4rem) auto clamp(3rem, 7vw, 6rem);
+  }
+
+  .moved-page h1 {
+    max-width: 14ch;
+    font-size: clamp(2.35rem, 4vw, 3.6rem);
+  }
+
+  .moved-page p:not(.eyebrow) {
+    max-width: 44rem;
+    color: var(--color-text-muted);
+    font-size: clamp(1.02rem, 1.3vw, 1.2rem);
+    font-weight: 650;
+    line-height: 1.5;
+  }
+
+  .moved-page a {
+    width: fit-content;
+    min-height: 44px;
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 0.62rem 0.85rem;
+    background: var(--color-surface-raised);
+    color: var(--color-text);
+    font-weight: 850;
+    text-decoration: none;
+  }
+</style>
