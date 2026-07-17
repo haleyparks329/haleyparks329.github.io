@@ -31,6 +31,12 @@ const continueLinks = relatedLinksForHrefs(
   title={`Deep Dives | ${project.data.title}`}
   description="Career Intelligence examples, learnings, current limits, and related writing."
   canonicalPath="/projects/career-intelligence/research/"
+  breadcrumbs={[
+    { label: "Home", href: "/" },
+    { label: "Projects", href: "/projects/" },
+    { label: project.data.title, href: "/projects/career-intelligence/" },
+    { label: "Deep Dives" },
+  ]}
 >
   <ProjectWorkspaceLayout
     project={project}

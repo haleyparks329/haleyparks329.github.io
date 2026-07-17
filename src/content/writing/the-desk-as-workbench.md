@@ -18,7 +18,7 @@ related:
   - "/compost-heap/"
 relatedProject: "website"
 featured: false
-draft: false
+draft: true
 readingTime: "2 min"
 ---
 

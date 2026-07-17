@@ -12,6 +12,8 @@ const projects = (await getCollection("projects")).sort(
 <BaseLayout
   title="Projects"
   description="Public project workspaces for Haley Parks' active systems, experiments, and publishing environment."
+  canonicalPath="/projects/"
+  breadcrumbs={[{ label: "Home", href: "/" }, { label: "Projects" }]}
 >
   <section class="site-shell projects-page">
     <PageIntro

@@ -19,6 +19,11 @@ const workspace = workspaceForSlug(project.data.slug);
   title={project.data.title}
   description={project.data.summary}
   canonicalPath="/projects/this-website/"
+  breadcrumbs={[
+    { label: "Home", href: "/" },
+    { label: "Projects", href: "/projects/" },
+    { label: project.data.title },
+  ]}
 >
   <ProjectWorkspaceLayout
     project={project}

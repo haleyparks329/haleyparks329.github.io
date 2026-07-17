@@ -31,6 +31,11 @@ const continueLinks = relatedLinksForHrefs(
   title={project.data.title}
   description={project.data.summary}
   canonicalPath="/projects/qa-agents/"
+  breadcrumbs={[
+    { label: "Home", href: "/" },
+    { label: "Projects", href: "/projects/" },
+    { label: project.data.title },
+  ]}
 >
   <ProjectWorkspaceLayout
     project={project}

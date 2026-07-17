@@ -1,0 +1,215 @@
+---
+import type { CollectionEntry } from "astro:content";
+
+type Props = {
+  entry: CollectionEntry<"writing">;
+};
+
+const { entry } = Astro.props;
+
+const dateFormatter = new Intl.DateTimeFormat("en", {
+  month: "short",
+  day: "2-digit",
+  year: "numeric",
+});
+
+const typeLabels: Record<string, string> = {
+  "case-study": "Case Study",
+  essay: "Essay",
+  "quick-note": "Quick Note",
+};
+
+const projectLabels: Record<string, string> = {
+  "career-intelligence": "Career Intelligence",
+  "qa-agents": "QA Agents",
+  website: "This Website",
+};
+
+const projectTone =
+  entry.data.relatedProject === "career-intelligence"
+    ? "career"
+    : entry.data.relatedProject === "qa-agents"
+      ? "qa"
+      : "default";
+const typeLabel = typeLabels[entry.data.type] ?? entry.data.type;
+const projectLabel = entry.data.relatedProject
+  ? (projectLabels[entry.data.relatedProject] ?? entry.data.relatedProject)
+  : undefined;
+const topics = entry.data.topics.slice(0, 3);
+---
+
+<article
+  class={`writing-editorial-row writing-editorial-row-${projectTone}`}
+  data-title={entry.data.title}
+  data-pub-date={entry.data.pubDate.toISOString()}
+  data-writing-type={entry.data.type}
+  data-related-project={entry.data.relatedProject ?? ""}
+>
+  <div class="row-date">
+    <time datetime={entry.data.pubDate.toISOString()}>
+      {dateFormatter.format(entry.data.pubDate)}
+    </time>
+  </div>
+  <div class="row-taxonomy">
+    <span>{typeLabel}</span>
+    {projectLabel && <span class="project-marker">{projectLabel}</span>}
+  </div>
+  <div class="row-article">
+    <h2>
+      <a href={`/writing/${entry.data.slug}/`}>{entry.data.title}</a>
+    </h2>
+    <p>{entry.data.description}</p>
+    <div class="row-footer">
+      {topics.length > 0 && <p>{topics.join(" · ")}</p>}
+      <a class="read-link" href={`/writing/${entry.data.slug}/`}>
+        Read investigation →
+      </a>
+    </div>
+  </div>
+</article>
+
+<style>
+  .writing-editorial-row {
+    --project-accent: var(--color-border-strong);
+    display: grid;
+    grid-template-columns:
+      minmax(7rem, 0.18fr)
+      minmax(9rem, 0.24fr)
+      minmax(0, 1fr);
+    gap: clamp(1rem, 3vw, 2.5rem);
+    border-top: var(--border-width) solid var(--color-border);
+    padding-block: clamp(1.35rem, 3vw, 2rem);
+    transition:
+      background-color var(--motion-fast),
+      border-color var(--motion-fast);
+  }
+
+  .writing-editorial-row:last-child {
+    border-bottom: var(--border-width) solid var(--color-border);
+  }
+
+  .writing-editorial-row-career {
+    --project-accent: var(--olive);
+  }
+
+  .writing-editorial-row-qa {
+    --project-accent: var(--blue);
+  }
+
+  .writing-editorial-row:hover,
+  .writing-editorial-row:focus-within {
+    border-color: var(--color-border-strong);
+    background: color-mix(in srgb, var(--project-accent) 5%, transparent);
+  }
+
+  .row-date,
+  .row-taxonomy,
+  .row-footer,
+  .read-link {
+    color: var(--color-text-muted);
+    font-family: var(--font-mono);
+    font-size: var(--font-size-micro);
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+
+  .row-taxonomy {
+    display: grid;
+    align-content: start;
+    gap: 0.4rem;
+  }
+
+  .project-marker {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    color: var(--color-text);
+  }
+
+  .project-marker::before {
+    content: "";
+    width: 0.42rem;
+    height: 0.42rem;
+    border-radius: 50%;
+    background: var(--project-accent);
+  }
+
+  .row-article {
+    min-width: 0;
+  }
+
+  h2 {
+    max-width: 40rem;
+    font-size: clamp(1.35rem, 2.4vw, 2rem);
+    line-height: 1.08;
+  }
+
+  h2 a {
+    color: var(--color-text);
+    text-decoration: none;
+  }
+
+  .writing-editorial-row:hover h2 a,
+  h2 a:focus-visible {
+    text-decoration: underline;
+    text-decoration-thickness: 0.06em;
+    text-underline-offset: 0.14em;
+  }
+
+  .row-article > p {
+    max-width: 48rem;
+    margin-top: var(--space-3);
+    color: var(--color-text-secondary);
+    font-size: clamp(0.98rem, 1vw, 1.04rem);
+    line-height: 1.58;
+  }
+
+  .row-footer {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: var(--space-3);
+    margin-top: var(--space-4);
+  }
+
+  .row-footer p {
+    margin: 0;
+  }
+
+  .read-link {
+    color: var(--plum);
+    text-decoration: none;
+    transition: transform var(--motion-fast);
+  }
+
+  .writing-editorial-row:hover .read-link,
+  .read-link:focus-visible {
+    transform: translateX(0.18rem);
+    text-decoration: underline;
+    text-decoration-thickness: 0.08em;
+    text-underline-offset: 0.18em;
+  }
+
+  @media (max-width: 760px) {
+    .writing-editorial-row {
+      grid-template-columns: 1fr;
+      gap: var(--space-2);
+    }
+
+    .row-date {
+      order: -2;
+    }
+
+    .row-taxonomy {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem 0.8rem;
+      order: -1;
+    }
+
+    .row-footer {
+      align-items: flex-start;
+      flex-direction: column;
+    }
+  }
+</style>

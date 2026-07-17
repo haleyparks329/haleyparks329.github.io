@@ -27,6 +27,11 @@ const stops = resolvedTrail.stops.map((stop, index) => ({
   title={`${resolvedTrail.label} Trail`}
   description={resolvedTrail.summary}
   canonicalPath={`/explore/trails/${resolvedTrail.slug}/`}
+  breadcrumbs={[
+    { label: "Home", href: "/" },
+    { label: "What’s Here?", href: "/explore/" },
+    { label: `${resolvedTrail.label} Trail` },
+  ]}
 >
   <section class="trail-page">
     <header class="trail-header">

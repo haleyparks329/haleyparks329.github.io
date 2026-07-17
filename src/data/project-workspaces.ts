@@ -61,7 +61,7 @@ export const projectWorkspaces: Record<string, ProjectWorkspaceConfig> = {
           },
           {
             label: "Related Writing",
-            href: "/writing/attention-is-the-scarce-resource/",
+            href: "/field-log/attention-is-the-scarce-resource/",
           },
         ],
       },
@@ -117,7 +117,7 @@ export const projectWorkspaces: Record<string, ProjectWorkspaceConfig> = {
           },
           {
             label: "Related Writing",
-            href: "/writing/attention-is-the-scarce-resource/",
+            href: "/writing/what-happens-after-the-ai-interview/",
           },
         ],
       },

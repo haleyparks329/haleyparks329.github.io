@@ -18,8 +18,8 @@ const workspace = workspaceForSlug(project.data.slug);
 const document = projectDocumentForSlug(project.data.slug);
 const continueLinks = relatedLinksForHrefs(
   [
-    "/writing/attention-is-the-scarce-resource/",
     "/field-log/attention-is-the-scarce-resource/",
+    "/writing/what-happens-after-the-ai-interview/",
     "/projects/career-intelligence/",
     "/explore/",
   ],
@@ -31,6 +31,12 @@ const continueLinks = relatedLinksForHrefs(
   title={`Research | ${project.data.title}`}
   description="Research examples, learnings, open limits, and public-safe evidence for The Human Model."
   canonicalPath="/projects/the-human-model/research/"
+  breadcrumbs={[
+    { label: "Home", href: "/" },
+    { label: "Projects", href: "/projects/" },
+    { label: project.data.title, href: "/projects/the-human-model/" },
+    { label: "Research" },
+  ]}
 >
   <ProjectWorkspaceLayout
     project={project}

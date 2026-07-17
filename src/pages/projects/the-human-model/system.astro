@@ -21,6 +21,12 @@ const document = projectDocumentForSlug(project.data.slug);
   title={`System | ${project.data.title}`}
   description="How The Human Model connects inputs, processing, outputs, storage notes, and technical appendix details."
   canonicalPath="/projects/the-human-model/system/"
+  breadcrumbs={[
+    { label: "Home", href: "/" },
+    { label: "Projects", href: "/projects/" },
+    { label: project.data.title, href: "/projects/the-human-model/" },
+    { label: "System" },
+  ]}
 >
   <ProjectWorkspaceLayout
     project={project}

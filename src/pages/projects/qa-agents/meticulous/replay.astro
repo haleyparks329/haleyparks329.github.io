@@ -78,6 +78,16 @@ const packageContents = [
   pageTitle="Meticulous-Inspired Interactive Replay | QA Agents"
   pageDescription="An interactive simulated replay showing how QA Agents investigate deterministic replay evidence downstream of a replay platform."
   canonicalPath="/projects/qa-agents/meticulous/replay/"
+  breadcrumbs={[
+    { label: "Home", href: "/" },
+    { label: "Projects", href: "/projects/" },
+    { label: project.data.title, href: "/projects/qa-agents/" },
+    {
+      label: "Meticulous-Inspired Investigation",
+      href: "/projects/qa-agents/meticulous/",
+    },
+    { label: "Strategy Replay" },
+  ]}
   eyebrow="QA AGENTS STRATEGY EXPLORATION"
   titleLines={["From deterministic replay", "to engineering decision"]}
   lede="A simulated pricing change moves through two distinct layers: a replay engine produces deterministic base-versus-head evidence, then QA Agents group, interpret, audit, and convert that evidence into a policy-constrained recommendation."

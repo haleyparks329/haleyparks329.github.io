@@ -18,7 +18,7 @@ topics:
 related:
   - "/projects/career-intelligence/"
   - "/projects/qa-agents/"
-  - "/writing/attention-is-the-scarce-resource/"
+  - "/field-log/evidence-before-claims/"
 relatedProject: "career-intelligence"
 featured: true
 draft: false

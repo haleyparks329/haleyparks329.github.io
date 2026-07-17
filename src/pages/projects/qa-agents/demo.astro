@@ -22,6 +22,12 @@ const diffLines = demoArtifact.change.diff_excerpt.split("\n");
   pageTitle="QA Replay Workstation"
   pageDescription="Recorded QA Agents investigation replay for the Little Bytes pricing scenario."
   canonicalPath="/projects/qa-agents/demo/"
+  breadcrumbs={[
+    { label: "Home", href: "/" },
+    { label: "Projects", href: "/projects/" },
+    { label: project.data.title, href: "/projects/qa-agents/" },
+    { label: "Investigation Replay" },
+  ]}
   eyebrow="Recorded investigation replay"
   titleLines={[
     "The tests passed.",

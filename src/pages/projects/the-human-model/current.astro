@@ -26,6 +26,12 @@ const continueLinks = relatedLinksForHrefs(
   title={`Current Project | ${project.data.title}`}
   description="Current status, active work, limitations, and direction for The Human Model."
   canonicalPath="/projects/the-human-model/current/"
+  breadcrumbs={[
+    { label: "Home", href: "/" },
+    { label: "Projects", href: "/projects/" },
+    { label: project.data.title, href: "/projects/the-human-model/" },
+    { label: "Current Project" },
+  ]}
 >
   <ProjectWorkspaceLayout
     project={project}

@@ -16,7 +16,6 @@ topics:
   - "Adaptive UI"
   - "Human-Centered Technology"
 related:
-  - "/writing/the-desk-as-workbench/"
   - "/explore/"
   - "/compost-heap/"
 order: 2

@@ -1,5 +1,6 @@
 ---
 import ExternalLink from "@/components/ExternalLink.astro";
+import type { BreadcrumbItem } from "@/components/Breadcrumbs.astro";
 import BaseLayout from "@/layouts/BaseLayout.astro";
 
 type DetailItem = {
@@ -67,6 +68,7 @@ type Props = {
   pageTitle: string;
   pageDescription: string;
   canonicalPath: string;
+  breadcrumbs?: BreadcrumbItem[];
   eyebrow: string;
   titleLines: string[];
   lede: string;
@@ -101,6 +103,7 @@ const {
   pageTitle,
   pageDescription,
   canonicalPath,
+  breadcrumbs,
   eyebrow,
   titleLines,
   lede,
@@ -153,6 +156,7 @@ const stepDetails = steps.map((step) => ({
   title={pageTitle}
   description={pageDescription}
   canonicalPath={canonicalPath}
+  breadcrumbs={breadcrumbs}
 >
   <section class="page-section wide-case replay-page" data-replay-root>
     <div class="replay-hero">

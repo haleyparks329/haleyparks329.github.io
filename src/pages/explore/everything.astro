@@ -6,6 +6,11 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
   title="What’s Here?"
   description="Browse the projects, writing, demos, trails, and public work collected on Haley Parks' website."
   canonicalPath="/explore/"
+  breadcrumbs={[
+    { label: "Home", href: "/" },
+    { label: "What’s Here?", href: "/explore/" },
+    { label: "Browse Everything" },
+  ]}
 >
   <section class="moved-page">
     <p class="eyebrow">What’s Here?</p>

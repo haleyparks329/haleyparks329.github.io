@@ -1,7 +1,7 @@
 :root {
   /* Core palette */
-  --canvas: #fff8ef;
-  --paper: #f8f0e7;
+  --canvas: #f7f6f2;
+  --paper: #fff9f1;
   --ink: #372826;
   --muted: #6c5b55;
   --olive: #afba43;
@@ -17,8 +17,8 @@
   --color-page: var(--canvas);
   --color-canvas: var(--canvas);
   --color-surface: var(--paper);
-  --color-surface-raised: rgba(248, 240, 231, 0.82);
-  --color-surface-band: rgba(248, 240, 231, 0.58);
+  --color-surface-raised: #fbfaf7;
+  --color-surface-band: rgba(255, 249, 241, 0.58);
   --color-text: var(--ink);
   --color-text-secondary: #5c4b46;
   --color-text-muted: var(--muted);
@@ -149,7 +149,7 @@ body {
   margin: 0;
   min-width: 320px;
   background:
-    linear-gradient(180deg, rgba(248, 240, 231, 0.58), rgba(255, 248, 239, 0)),
+    linear-gradient(180deg, rgba(255, 249, 241, 0.42), rgba(247, 246, 242, 0)),
     var(--color-canvas);
   color: var(--color-text);
   font-size: var(--font-size-body);

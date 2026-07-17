@@ -17,7 +17,7 @@ topics:
   - "Human Model"
   - "Agent Systems"
 related:
-  - "/writing/attention-is-the-scarce-resource/"
+  - "/writing/what-happens-after-the-ai-interview/"
   - "/projects/the-human-model/"
   - "/projects/qa-agents/"
 order: 1

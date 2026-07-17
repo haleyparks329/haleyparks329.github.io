@@ -19,7 +19,7 @@ related:
   - "/projects/career-intelligence/"
 relatedProject: "qa-agents"
 featured: false
-draft: false
+draft: true
 readingTime: "4 min"
 ---
 

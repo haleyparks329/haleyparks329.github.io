@@ -20,7 +20,7 @@ topics:
 related:
   - "/projects/"
   - "/explore/"
-  - "/writing/the-desk-as-workbench/"
+  - "/field-log/the-desk-as-workbench/"
 repositoryUrl: "https://github.com/haleyparks329/haleyparks329.github.io"
 order: 4
 ---

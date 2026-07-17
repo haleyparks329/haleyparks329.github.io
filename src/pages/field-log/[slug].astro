@@ -39,6 +39,11 @@ const trailMembership = trailsForHref(pageHref);
   title={entry.data.title}
   description={entry.data.summary}
   canonicalPath={`/field-log/${entry.data.slug}/`}
+  breadcrumbs={[
+    { label: "Home", href: "/" },
+    { label: "Field Log", href: "/field-log/" },
+    { label: entry.data.title },
+  ]}
 >
   <article
     class="field-log-document"

@@ -21,6 +21,12 @@ const document = projectDocumentForSlug(project.data.slug);
   title={`System | ${project.data.title}`}
   description="How Career Intelligence connects career evidence, role matching, positioning, prep, and generated public-safe artifacts."
   canonicalPath="/projects/career-intelligence/system/"
+  breadcrumbs={[
+    { label: "Home", href: "/" },
+    { label: "Projects", href: "/projects/" },
+    { label: project.data.title, href: "/projects/career-intelligence/" },
+    { label: "System" },
+  ]}
 >
   <ProjectWorkspaceLayout
     project={project}

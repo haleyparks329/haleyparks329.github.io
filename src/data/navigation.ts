@@ -91,9 +91,9 @@ export const trails: Trail[] = [
       "A route through attention, evidence, QA handoff, and personal context systems.",
     stops: [
       {
-        destinationId: "writing-attention-is-the-scarce-resource",
+        destinationId: "field-log-attention-is-the-scarce-resource",
         reason:
-          "Begin with the shared principle behind the AI work: attention is the scarce resource.",
+          "Begin with the shared working principle behind the AI work: attention is the scarce resource.",
       },
       {
         destinationId: "project-qa-agents",
@@ -153,9 +153,9 @@ export const trails: Trail[] = [
       "A route through the desk metaphor, evidence-based reasoning, and context-aware personal systems.",
     stops: [
       {
-        destinationId: "writing-the-desk-as-workbench",
+        destinationId: "project-this-website",
         reason:
-          "Start with the design argument for a site that behaves like a workbench.",
+          "Start with the project that treats the site as a navigable public work surface.",
       },
       {
         destinationId: "field-log-the-desk-as-workbench",
@@ -192,14 +192,14 @@ export const trails: Trail[] = [
           "This build note connects performance work to memory, coordination, and context.",
       },
       {
-        destinationId: "writing-attention-is-the-scarce-resource",
-        reason:
-          "The essay explains the broader argument behind preserving human context.",
-      },
-      {
         destinationId: "project-career-intelligence",
         reason:
           "A sibling person-modeling system shows the same evidence-first pattern in another domain.",
+      },
+      {
+        destinationId: "writing-what-happens-after-the-ai-interview",
+        reason:
+          "The career investigation shows how richer human context can survive beyond one AI-led conversation.",
       },
     ],
   },
@@ -448,28 +448,6 @@ export const destinations: Destination[] = [
     project: "qa-agents",
   },
   {
-    id: "writing-attention-is-the-scarce-resource",
-    href: "/writing/attention-is-the-scarce-resource/",
-    label: "Attention Is the Scarce Resource",
-    type: "writing",
-    summary:
-      "An essay on personal AI that reduces coordination burden instead of adding another surface.",
-    topics: ["Human-Centered Technology", "Human Model", "Agent Systems"],
-    project: "qa-agents",
-    trails: ["ai-systems", "human-performance"],
-  },
-  {
-    id: "writing-the-desk-as-workbench",
-    href: "/writing/the-desk-as-workbench/",
-    label: "The Desk as Workbench",
-    type: "writing",
-    summary:
-      "A note on organizing the homepage as a desk instead of a polished funnel.",
-    topics: ["Adaptive UI", "Human-Centered Technology"],
-    project: "website",
-    trails: ["adaptive-interfaces"],
-  },
-  {
     id: "writing-meticulous-qa-investigation",
     href: "/writing/meticulous-qa-investigation/",
     label: "Extending deterministic replay with QA Agents",
@@ -488,6 +466,7 @@ export const destinations: Destination[] = [
       "A case study on AI interview tooling and career reasoning pressure.",
     topics: ["Career Intelligence", "Human-Centered Technology"],
     project: "career-intelligence",
+    trails: ["human-performance"],
   },
   {
     id: "field-log-attention-is-the-scarce-resource",
@@ -548,14 +527,6 @@ export const relationships: Relationship[] = [
   },
   {
     from: "project-the-human-model",
-    to: "writing-attention-is-the-scarce-resource",
-    type: "nearby",
-    label: "Nearby Idea",
-    reason:
-      "The essay names the same coordination burden The Human Model tries to reduce.",
-  },
-  {
-    from: "project-the-human-model",
     to: "field-log-attention-is-the-scarce-resource",
     type: "continued-in",
     label: "Continues In",
@@ -587,38 +558,6 @@ export const relationships: Relationship[] = [
       "The public claim boundary matters especially for source-backed career materials.",
   },
   {
-    from: "writing-attention-is-the-scarce-resource",
-    to: "project-the-human-model",
-    type: "evidence-for",
-    label: "Evidence For",
-    reason:
-      "The Human Model is one concrete system shaped by the attention argument.",
-  },
-  {
-    from: "writing-attention-is-the-scarce-resource",
-    to: "project-qa-agents",
-    type: "evidence-for",
-    label: "Evidence For",
-    reason:
-      "QA Agents shows the same principle in software-quality handoff and review.",
-  },
-  {
-    from: "writing-the-desk-as-workbench",
-    to: "field-log-the-desk-as-workbench",
-    type: "continued-in",
-    label: "Continues In",
-    reason:
-      "The Field Log captures how the desk idea became a working navigation layer.",
-  },
-  {
-    from: "field-log-the-desk-as-workbench",
-    to: "writing-the-desk-as-workbench",
-    type: "became",
-    label: "Eventually Became",
-    reason:
-      "The working note points back to the longer explanation of the desk-as-workbench model.",
-  },
-  {
     from: "field-log-the-desk-as-workbench",
     to: "explore",
     type: "continued-in",
@@ -628,7 +567,7 @@ export const relationships: Relationship[] = [
   },
   {
     from: "compost-heap",
-    to: "writing-the-desk-as-workbench",
+    to: "field-log-the-desk-as-workbench",
     type: "nearby",
     label: "Nearby Idea",
     reason:
@@ -658,7 +597,7 @@ export const contentTypes = [
   {
     href: "/writing/",
     label: "Writing",
-    description: "Case studies, essays, and quick notes.",
+    description: "Investigations and case studies from active work.",
   },
   {
     href: "/field-log/",
@@ -690,7 +629,7 @@ export const topicPaths = [
   },
   {
     label: "Adaptive UI",
-    href: "/writing/the-desk-as-workbench/",
+    href: "/field-log/the-desk-as-workbench/",
     description:
       "Interfaces that change around context without becoming opaque.",
   },
@@ -711,7 +650,7 @@ export const topicPaths = [
   },
   {
     label: "Human-Centered Technology",
-    href: "/writing/attention-is-the-scarce-resource/",
+    href: "/field-log/attention-is-the-scarce-resource/",
     description:
       "Systems that give attention back instead of creating more overhead.",
   },

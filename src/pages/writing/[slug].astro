@@ -88,6 +88,11 @@ const trailMembership = trailsForHref(pageHref);
   title={entry.data.title}
   description={entry.data.description}
   canonicalPath={`/writing/${entry.data.slug}/`}
+  breadcrumbs={[
+    { label: "Home", href: "/" },
+    { label: "Writing", href: "/writing/" },
+    { label: entry.data.title },
+  ]}
 >
   <article
     class="writing-document"
