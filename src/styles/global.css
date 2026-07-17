@@ -30,6 +30,11 @@
   --color-border-strong: rgba(55, 40, 38, 0.22);
   --color-tint: rgba(145, 80, 91, 0.08);
   --color-code-surface: rgba(207, 231, 246, 0.36);
+  --project-paper-olive: #f0edc9;
+  --project-paper-blue: #dcecf4;
+  --project-paper-raspberry: #f1dde1;
+  --project-paper-lavender: #e9dcec;
+  --sunny-note: #f4e4a3;
   --accent-primary: var(--rust);
   --accent-secondary: var(--olive);
   --accent-tertiary: #4f86a8;

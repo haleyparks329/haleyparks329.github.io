@@ -119,6 +119,33 @@ const projectNotes: Record<string, string> = {
     gap: var(--space-2);
   }
 
+  .project-file-featured,
+  .project-file-desk {
+    background:
+      linear-gradient(135deg, rgba(255, 255, 255, 0.12), transparent 45%),
+      var(--project-file-paper, var(--color-surface-raised));
+  }
+
+  .project-file-featured.project-file-rust,
+  .project-file-desk.project-file-rust {
+    --project-file-paper: var(--project-paper-raspberry);
+  }
+
+  .project-file-featured.project-file-olive,
+  .project-file-desk.project-file-olive {
+    --project-file-paper: var(--project-paper-olive);
+  }
+
+  .project-file-featured.project-file-blue,
+  .project-file-desk.project-file-blue {
+    --project-file-paper: var(--project-paper-blue);
+  }
+
+  .project-file-featured.project-file-plum,
+  .project-file-desk.project-file-plum {
+    --project-file-paper: var(--project-paper-lavender);
+  }
+
   .project-file-tab {
     position: absolute;
     top: -0.7rem;
@@ -128,7 +155,11 @@ const projectNotes: Record<string, string> = {
     border: var(--border-width) solid var(--color-border);
     border-bottom: 0;
     border-radius: var(--radius-sm) var(--radius-sm) 0 0;
-    background: color-mix(in srgb, var(--file-accent) 28%, var(--paper));
+    background: color-mix(
+      in srgb,
+      var(--file-accent) 34%,
+      var(--project-file-paper, var(--paper))
+    );
   }
 
   .project-file-kicker {

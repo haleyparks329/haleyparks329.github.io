@@ -211,7 +211,7 @@ const latestFieldLog = fieldLogEntries[0];
     --desk-tilt: 0deg;
     position: relative;
     min-width: 0;
-    transform: rotate(var(--desk-tilt)) translateY(var(--desk-lift));
+    transform: translateY(var(--desk-lift)) rotate(var(--desk-tilt));
     transform-origin: center;
     transition:
       border-color var(--motion-fast),
@@ -233,6 +233,14 @@ const latestFieldLog = fieldLogEntries[0];
     z-index: 10;
     border-color: var(--color-border-strong);
     box-shadow: 0 16px 36px rgba(55, 40, 38, 0.085);
+  }
+
+  .project-object,
+  .current-desk,
+  .field-log-preview,
+  .desk-intro,
+  .project-heading {
+    --desk-tilt: 0deg;
   }
 
   .decorative-object.surface:hover,
@@ -371,7 +379,7 @@ const latestFieldLog = fieldLogEntries[0];
   }
 
   .mini-me-note {
-    --desk-tilt: -1.4deg;
+    --desk-tilt: 0deg;
     grid-column: 12 / span 3;
     grid-row: 3;
     align-self: start;
@@ -579,7 +587,6 @@ const latestFieldLog = fieldLogEntries[0];
   }
 
   .project-object.olive {
-    --desk-tilt: -0.7deg;
     grid-column: 4 / span 4;
     grid-row: 2;
     border-color: rgba(111, 126, 29, 0.2);
@@ -590,7 +597,6 @@ const latestFieldLog = fieldLogEntries[0];
   }
 
   .project-object.blue {
-    --desk-tilt: 0.6deg;
     grid-column: 8 / span 4;
     grid-row: 2;
     border-color: rgba(79, 134, 168, 0.18);
@@ -732,7 +738,7 @@ const latestFieldLog = fieldLogEntries[0];
   }
 
   .about-note {
-    --desk-tilt: -2deg;
+    --desk-tilt: -0.35deg;
     grid-column: 14 / span 2;
     grid-row: 3;
     border-color: rgba(122, 91, 139, 0.2);
@@ -741,20 +747,20 @@ const latestFieldLog = fieldLogEntries[0];
   }
 
   .writing-note {
-    --desk-tilt: 1.5deg;
+    --desk-tilt: 0.35deg;
     grid-column: 8 / span 2;
     grid-row: 3;
-    border-color: rgba(125, 91, 20, 0.14);
-    background: var(--khaki);
+    border-color: color-mix(in srgb, var(--khaki) 55%, var(--color-border));
+    background: var(--sunny-note);
     color: #4d3710;
   }
 
   .writing-note .eyebrow {
-    color: #4d3710;
+    color: #665114;
   }
 
   .desk-photo {
-    --desk-tilt: 1.2deg;
+    --desk-tilt: 0.45deg;
     grid-column: 14 / span 3;
     grid-row: 1;
     display: grid;
