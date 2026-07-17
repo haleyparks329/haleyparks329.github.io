@@ -1,8 +1,10 @@
 ---
 import { getCollection, render } from "astro:content";
+import ContinueExploring from "@/components/ContinueExploring.astro";
 import ExternalLink from "@/components/ExternalLink.astro";
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import WritingDocumentHeader from "@/components/WritingDocumentHeader.astro";
+import { typeLabel } from "@/data/navigation";
 
 export async function getStaticPaths() {
   const entries = (await getCollection("writing")).filter(
@@ -17,6 +19,11 @@ export async function getStaticPaths() {
 
 const { entry } = Astro.props;
 const { Content } = await render(entry);
+const projects = await getCollection("projects");
+const fieldLog = await getCollection("fieldLog");
+const writing = (await getCollection("writing")).filter(
+  (item) => !item.data.draft,
+);
 
 const relatedLinks = [
   entry.data.subjectUrl
@@ -50,6 +57,75 @@ const relatedLinks = [
 ].filter((link): link is { href: string; label: string; external: boolean } =>
   Boolean(link),
 );
+
+function linkForHref(href: string) {
+  const project = projects.find(
+    (item) => `/projects/${item.data.slug}/` === href,
+  );
+  if (project) {
+    return {
+      href,
+      label: project.data.title,
+      type: "Case Study",
+      summary: project.data.summary,
+      topics: project.data.topics,
+    };
+  }
+
+  const logEntry = fieldLog.find(
+    (item) => `/field-log/${item.data.slug}/` === href,
+  );
+  if (logEntry) {
+    return {
+      href,
+      label: logEntry.data.title,
+      type: "Build Log",
+      summary: logEntry.data.summary,
+      topics: logEntry.data.topics,
+    };
+  }
+
+  const writingEntry = writing.find(
+    (item) => `/writing/${item.data.slug}/` === href,
+  );
+  if (writingEntry) {
+    return {
+      href,
+      label: writingEntry.data.title,
+      type: typeLabel(writingEntry.data.type),
+      summary: writingEntry.data.description,
+      topics: writingEntry.data.topics,
+    };
+  }
+
+  if (href === "/explore/") {
+    return {
+      href,
+      label: "Explore",
+      type: "Explore",
+      summary: "Browse the site by topic, type, current work, or surprise.",
+      topics: ["Navigation"],
+    };
+  }
+
+  if (href === "/compost-heap/") {
+    return {
+      href,
+      label: "The Compost Heap",
+      type: "Archive",
+      summary: "Loose fragments and odd notes from the edge of the work.",
+      topics: ["Adaptive UI"],
+    };
+  }
+
+  return undefined;
+}
+
+const continueLinks = entry.data.related
+  .map(linkForHref)
+  .filter((link): link is NonNullable<ReturnType<typeof linkForHref>> =>
+    Boolean(link),
+  );
 ---
 
 <BaseLayout
@@ -85,6 +161,7 @@ const relatedLinks = [
         </section>
       )
     }
+    <ContinueExploring links={continueLinks} />
     <p class="back-link">
       <a href="/writing/">Return to Writing</a>
     </p>

@@ -11,6 +11,14 @@ tags:
   - "Software quality"
   - "AI-assisted workflows"
   - "Experiment"
+topics:
+  - "Agent Systems"
+  - "Software Quality"
+  - "Human-Centered Technology"
+related:
+  - "/projects/qa-agents/demo/"
+  - "/writing/meticulous-qa-investigation/"
+  - "/field-log/evidence-before-claims/"
 repositoryUrl: "https://github.com/haleyparks329/qa-agents"
 order: 3
 ---

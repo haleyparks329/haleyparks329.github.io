@@ -9,6 +9,13 @@ tags:
   - "Portfolio"
   - "Design system"
   - "Public work"
+topics:
+  - "Adaptive UI"
+  - "Human-Centered Technology"
+related:
+  - "/explore/"
+  - "/field-log/the-desk-as-workbench/"
+  - "/compost-heap/"
 relatedProject: "website"
 featured: false
 draft: false

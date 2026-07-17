@@ -12,6 +12,14 @@ tags:
   - "Job matching"
   - "Positioning"
   - "Person-model reasoning"
+topics:
+  - "Career Intelligence"
+  - "Human-Centered Technology"
+  - "Adaptive UI"
+related:
+  - "/projects/the-human-model/"
+  - "/writing/attention-is-the-scarce-resource/"
+  - "/field-log/evidence-before-claims/"
 repositoryUrl: "https://github.com/haleyparks329/career-intelligence"
 order: 2
 ---

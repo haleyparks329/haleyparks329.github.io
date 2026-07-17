@@ -25,6 +25,39 @@ const demoLink = {
 };
 
 const links = [...(repositoryLink ? [repositoryLink] : []), demoLink];
+const relatedWriting = [
+  {
+    href: "/writing/attention-is-the-scarce-resource/",
+    label: "Attention Is the Scarce Resource",
+    type: "Essay",
+    summary: "A shared design pressure behind the site's person-model systems.",
+    topics: ["Human-Centered Technology"],
+  },
+];
+const continueLinks = [
+  relatedWriting[0],
+  {
+    href: "/field-log/evidence-before-claims/",
+    label: "Evidence Before Claims",
+    type: "Build Log",
+    summary: "A note on keeping public AI claims attached to artifacts.",
+    topics: ["Human-Centered Technology"],
+  },
+  {
+    href: "/projects/the-human-model/",
+    label: "The Human Model",
+    type: "Case Study",
+    summary: "Another long-running system for evidence-backed person modeling.",
+    topics: ["Human Model"],
+  },
+  {
+    href: "/explore/",
+    label: "Explore by topic",
+    type: "Explore",
+    summary: "Browse systems, writing, demos, and working notes.",
+    topics: ["Navigation"],
+  },
+];
 ---
 
 <BaseLayout
@@ -204,5 +237,13 @@ const links = [...(repositoryLink ? [repositoryLink] : []), demoLink];
       "The current work is to keep the reasoning layer source-backed while making the public example easier to inspect. The next meaningful milestone is clearer comparison output that shows fit, gaps, and boundaries without collapsing them into one score.",
       "The open question is how much structure is needed before career reasoning becomes helpful rather than just another polished generator.",
     ]}
+    projectNav={{
+      overviewHref: "/projects/career-intelligence/",
+      demoHref: demoLink.href,
+      repositoryUrl: project.data.repositoryUrl,
+      buildLogHref: "/field-log/evidence-before-claims/",
+      relatedWriting,
+    }}
+    continueLinks={continueLinks}
   />
 </BaseLayout>

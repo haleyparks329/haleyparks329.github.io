@@ -25,6 +25,39 @@ const examplesLink = {
 };
 
 const links = [...(repositoryLink ? [repositoryLink] : []), examplesLink];
+const relatedWriting = [
+  {
+    href: "/writing/attention-is-the-scarce-resource/",
+    label: "Attention Is the Scarce Resource",
+    type: "Essay",
+    summary: "Why useful personal AI should give people attention back.",
+    topics: ["Human-Centered Technology", "Human Model"],
+  },
+];
+const continueLinks = [
+  relatedWriting[0],
+  {
+    href: "/field-log/attention-is-the-scarce-resource/",
+    label: "Attention Is the Scarce Resource",
+    type: "Build Log",
+    summary: "The working principle behind memory, coordination, and context.",
+    topics: ["Human-Centered Technology"],
+  },
+  {
+    href: "/projects/career-intelligence/",
+    label: "Career Intelligence",
+    type: "Case Study",
+    summary: "A sibling system for source-backed person reasoning.",
+    topics: ["Career Intelligence"],
+  },
+  {
+    href: "/explore/",
+    label: "Explore by topic",
+    type: "Explore",
+    summary: "Browse related systems, writing, demos, and notes.",
+    topics: ["Navigation"],
+  },
+];
 ---
 
 <BaseLayout
@@ -204,5 +237,13 @@ const links = [...(repositoryLink ? [repositoryLink] : []), examplesLink];
       "The current work is to make the data pipeline and review layers more coherent without overstating what the models know. The next useful milestone is a cleaner path from recorded training and recovery context to a reviewable next-session hypothesis.",
       "The open question is how much personal evidence is enough to support better decisions while still keeping the system honest about uncertainty.",
     ]}
+    projectNav={{
+      overviewHref: "/projects/the-human-model/",
+      demoHref: examplesLink.href,
+      repositoryUrl: project.data.repositoryUrl,
+      buildLogHref: "/field-log/attention-is-the-scarce-resource/",
+      relatedWriting,
+    }}
+    continueLinks={continueLinks}
   />
 </BaseLayout>

@@ -1,0 +1,279 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import {
+  contentTypes,
+  guidedPaths,
+  surpriseLink,
+  topicPaths,
+  typeLabel,
+} from "@/data/navigation";
+
+const writing = (await getCollection("writing"))
+  .filter((entry) => !entry.data.draft)
+  .sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime());
+const fieldLog = (await getCollection("fieldLog")).sort(
+  (a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime(),
+);
+const projects = (await getCollection("projects")).sort(
+  (a, b) => a.data.order - b.data.order,
+);
+
+const recentlyUpdated = [
+  ...writing.slice(0, 2).map((entry) => ({
+    href: `/writing/${entry.data.slug}/`,
+    label: entry.data.title,
+    type: typeLabel(entry.data.type),
+    summary: entry.data.description,
+  })),
+  ...fieldLog.slice(0, 2).map((entry) => ({
+    href: `/field-log/${entry.data.slug}/`,
+    label: entry.data.title,
+    type: "Build Log",
+    summary: entry.data.summary,
+  })),
+  ...projects.slice(0, 1).map((entry) => ({
+    href: `/projects/${entry.data.slug}/`,
+    label: entry.data.title,
+    type: "Case Study",
+    summary: entry.data.summary,
+  })),
+];
+---
+
+<BaseLayout
+  title="Explore"
+  description="Multiple ways into Haley Parks' projects, writing, demos, and build notes."
+  canonicalPath="/explore/"
+>
+  <section class="explore-page">
+    <header class="explore-header">
+      <p class="eyebrow">Explore</p>
+      <h1>Find the thing, or follow the thread.</h1>
+      <p>
+        This page gives the site two speeds: direct routes for people who know
+        what they need, and looser paths for people who want to wander.
+      </p>
+      <div class="explore-actions">
+        <a href="/search/">Search</a>
+        <a href="/projects/">Projects</a>
+      </div>
+    </header>
+
+    <section class="explore-section" aria-labelledby="start-here">
+      <div class="section-kicker">
+        <p class="eyebrow">Start here</p>
+        <h2 id="start-here">Guided paths</h2>
+      </div>
+      <div class="explore-grid">
+        {
+          guidedPaths.map((path) => (
+            <a href={path.href}>
+              <strong>{path.label}</strong>
+              <span>{path.description}</span>
+            </a>
+          ))
+        }
+      </div>
+    </section>
+
+    <section class="explore-section" aria-labelledby="browse-type">
+      <div class="section-kicker">
+        <p class="eyebrow">Browse by type</p>
+        <h2 id="browse-type">Same archive, different doors</h2>
+      </div>
+      <div class="type-grid">
+        {
+          contentTypes.map((item) => (
+            <a href={item.href}>
+              <strong>{item.label}</strong>
+              <span>{item.description}</span>
+            </a>
+          ))
+        }
+      </div>
+    </section>
+
+    <section class="explore-section" aria-labelledby="browse-topic">
+      <div class="section-kicker">
+        <p class="eyebrow">Browse by topic</p>
+        <h2 id="browse-topic">Curated shelves</h2>
+      </div>
+      <div class="topic-list">
+        {
+          topicPaths.map((topic) => (
+            <a href={topic.href}>
+              <strong>{topic.label}</strong>
+              <span>{topic.description}</span>
+            </a>
+          ))
+        }
+      </div>
+    </section>
+
+    <section class="explore-section split-section" aria-labelledby="recent">
+      <div>
+        <div class="section-kicker">
+          <p class="eyebrow">Recently updated</p>
+          <h2 id="recent">Fresh notes on the desk</h2>
+        </div>
+        <div class="recent-list">
+          {
+            recentlyUpdated.map((item) => (
+              <a href={item.href}>
+                <span>{item.type}</span>
+                <strong>{item.label}</strong>
+                <em>{item.summary}</em>
+              </a>
+            ))
+          }
+        </div>
+      </div>
+
+      <aside class="surprise-note" aria-labelledby="surprise-me">
+        <p class="eyebrow">Surprise me</p>
+        <h2 id="surprise-me">{surpriseLink.label}</h2>
+        <p>{surpriseLink.description}</p>
+        <a href={surpriseLink.href}>Open the odd shelf</a>
+      </aside>
+    </section>
+  </section>
+</BaseLayout>
+
+<style>
+  .explore-page {
+    width: min(1060px, calc(100% - 2rem));
+    margin: clamp(2rem, 5vw, 4rem) auto clamp(3rem, 7vw, 6rem);
+  }
+
+  .explore-header {
+    display: grid;
+    gap: var(--space-4);
+    border-bottom: var(--border-width) solid var(--color-border);
+    padding-bottom: clamp(1.5rem, 4vw, 2.5rem);
+  }
+
+  .explore-header h1 {
+    max-width: 13ch;
+    font-size: clamp(2.35rem, 4vw, 3.6rem);
+  }
+
+  .explore-header > p:not(.eyebrow) {
+    max-width: 46rem;
+    color: var(--color-text-muted);
+    font-size: clamp(1.02rem, 1.3vw, 1.2rem);
+    font-weight: 650;
+    line-height: 1.5;
+  }
+
+  .explore-actions,
+  .explore-grid,
+  .type-grid,
+  .topic-list,
+  .recent-list {
+    display: grid;
+    gap: var(--space-3);
+  }
+
+  .explore-actions {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .explore-actions a,
+  .surprise-note a {
+    min-height: 44px;
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 0.62rem 0.85rem;
+    background: var(--color-surface-raised);
+    color: var(--color-text);
+    font-weight: 850;
+    text-decoration: none;
+  }
+
+  .explore-section {
+    margin-top: clamp(2.5rem, 5vw, 4.5rem);
+  }
+
+  .section-kicker {
+    margin-bottom: var(--space-5);
+  }
+
+  .section-kicker h2,
+  .surprise-note h2 {
+    font-size: clamp(1.45rem, 2.4vw, 2.1rem);
+  }
+
+  .explore-grid,
+  .type-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .topic-list {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .explore-grid a,
+  .type-grid a,
+  .topic-list a,
+  .recent-list a,
+  .surprise-note {
+    display: grid;
+    gap: 0.35rem;
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-4);
+    background: var(--color-surface-raised);
+    color: var(--color-text);
+    text-decoration: none;
+  }
+
+  .explore-grid a:hover,
+  .type-grid a:hover,
+  .topic-list a:hover,
+  .recent-list a:hover {
+    border-color: var(--color-border-strong);
+    background: var(--color-surface);
+  }
+
+  .explore-grid span,
+  .type-grid span,
+  .topic-list span,
+  .recent-list em,
+  .surprise-note p {
+    color: var(--color-text-muted);
+    font-size: 0.95rem;
+    font-style: normal;
+    line-height: 1.45;
+  }
+
+  .recent-list span {
+    color: var(--color-text-muted);
+    font-family: var(--font-mono);
+    font-size: var(--font-size-micro);
+    font-weight: 850;
+    text-transform: uppercase;
+  }
+
+  .split-section {
+    display: grid;
+    grid-template-columns: minmax(0, 1.4fr) minmax(18rem, 0.6fr);
+    gap: clamp(1rem, 3vw, 2rem);
+    align-items: start;
+  }
+
+  .surprise-note {
+    border-color: rgba(122, 91, 139, 0.22);
+    background: color-mix(in srgb, var(--lavender) 72%, var(--paper));
+  }
+
+  @media (max-width: 840px) {
+    .explore-grid,
+    .type-grid,
+    .topic-list,
+    .split-section {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

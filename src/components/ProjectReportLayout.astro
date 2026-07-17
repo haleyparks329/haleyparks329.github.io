@@ -1,8 +1,11 @@
 ---
 import type { CollectionEntry } from "astro:content";
+import ContinueExploring from "@/components/ContinueExploring.astro";
 import ExternalLink from "@/components/ExternalLink.astro";
+import ProjectNav from "@/components/ProjectNav.astro";
 import StatusBadge from "@/components/StatusBadge.astro";
 import TagList from "@/components/TagList.astro";
+import type { ContentLink } from "@/data/navigation";
 
 type ReportLink = {
   href: string;
@@ -72,6 +75,14 @@ type Props = {
     links: ReportLink[];
   };
   currentDirection: string[];
+  projectNav?: {
+    overviewHref: string;
+    demoHref?: string;
+    repositoryUrl?: string;
+    buildLogHref?: string;
+    relatedWriting?: ContentLink[];
+  };
+  continueLinks?: ContentLink[];
 };
 
 const {
@@ -89,11 +100,25 @@ const {
   notSolved,
   appendix,
   currentDirection,
+  projectNav,
+  continueLinks = [],
 } = Astro.props;
 ---
 
 <article class="project-report">
   <header class="report-header">
+    {
+      projectNav && (
+        <ProjectNav
+          projectTitle={project.data.title}
+          overviewHref={projectNav.overviewHref}
+          demoHref={projectNav.demoHref}
+          repositoryUrl={projectNav.repositoryUrl}
+          buildLogHref={projectNav.buildLogHref}
+          relatedWriting={projectNav.relatedWriting}
+        />
+      )
+    }
     <p class="report-type">{reportType}</p>
     <h1>{project.data.title}</h1>
     <p class="report-summary">{summary}</p>
@@ -271,6 +296,7 @@ const {
     <h2 id="current-direction">Current direction</h2>
     {currentDirection.map((paragraph) => <p>{paragraph}</p>)}
   </section>
+  <ContinueExploring links={continueLinks} />
 </article>
 
 <style>

@@ -12,6 +12,14 @@ tags:
   - "AI systems"
   - "Evidence"
   - "Public writing"
+topics:
+  - "Software Quality"
+  - "Agent Systems"
+  - "Human-Centered Technology"
+related:
+  - "/projects/qa-agents/"
+  - "/writing/meticulous-qa-investigation/"
+  - "/projects/qa-agents/demo/"
 order: 3
 ---
 

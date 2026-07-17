@@ -1,0 +1,78 @@
+---
+import type { ContentLink } from "@/data/navigation";
+
+type Props = {
+  projectTitle: string;
+  overviewHref: string;
+  demoHref?: string;
+  repositoryUrl?: string;
+  buildLogHref?: string;
+  relatedWriting?: ContentLink[];
+};
+
+const {
+  projectTitle,
+  overviewHref,
+  demoHref,
+  repositoryUrl,
+  buildLogHref,
+  relatedWriting = [],
+} = Astro.props;
+
+const links = [
+  { href: overviewHref, label: "Overview", external: false },
+  demoHref
+    ? { href: demoHref, label: "Demo", external: demoHref.startsWith("http") }
+    : undefined,
+  repositoryUrl
+    ? { href: repositoryUrl, label: "Repository", external: true }
+    : undefined,
+  buildLogHref
+    ? { href: buildLogHref, label: "Build Log", external: false }
+    : undefined,
+  relatedWriting[0]
+    ? {
+        href: relatedWriting[0].href,
+        label: "Related Writing",
+        external: false,
+      }
+    : undefined,
+].filter((link): link is { href: string; label: string; external: boolean } =>
+  Boolean(link),
+);
+---
+
+<nav class="project-nav" aria-label={`${projectTitle} project navigation`}>
+  {links.map((link) => <a href={link.href}>{link.label}</a>)}
+</nav>
+
+<style>
+  .project-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    margin-bottom: var(--space-6);
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 0.4rem;
+    background: var(--color-surface-raised);
+  }
+
+  .project-nav a {
+    min-height: 40px;
+    border: var(--border-width) solid transparent;
+    border-radius: calc(var(--radius-md) - 2px);
+    padding: 0.48rem 0.72rem;
+    color: var(--color-text-muted);
+    font-size: 0.9rem;
+    font-weight: 850;
+    text-decoration: none;
+  }
+
+  .project-nav a:hover,
+  .project-nav a:focus-visible {
+    border-color: var(--color-border);
+    background: var(--color-surface);
+    color: var(--color-text);
+  }
+</style>

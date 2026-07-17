@@ -12,6 +12,14 @@ tags:
   - "Adaptive modeling"
   - "Biomechanics"
   - "AI-assisted reasoning"
+topics:
+  - "Human Model"
+  - "Human Performance"
+  - "Human-Centered Technology"
+related:
+  - "/writing/attention-is-the-scarce-resource/"
+  - "/field-log/attention-is-the-scarce-resource/"
+  - "/projects/career-intelligence/"
 repositoryUrl: "https://github.com/haleyparks329/the-human-model"
 order: 1
 ---

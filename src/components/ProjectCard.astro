@@ -11,8 +11,8 @@ type Props = {
 const { project } = Astro.props;
 const data = project.data;
 const visibleTags = data.tags.slice(0, 2);
-const projectNotesLabel = "Open project notes";
-const repositoryLabel = "Explore the repository";
+const projectNotesLabel = "Case Study";
+const repositoryLabel = "Repository";
 const demoHref =
   data.slug === "qa-agents" ? "/projects/qa-agents/demo/" : undefined;
 const objectNotes: Record<string, string> = {
@@ -84,7 +84,7 @@ const toneClass =
         <ExternalLink href={data.repositoryUrl} label={repositoryLabel} />
       )
     }
-    {demoHref && <a href={demoHref}>Replay the investigation</a>}
+    {demoHref && <a href={demoHref}>Demo</a>}
   </div>
 </article>
 

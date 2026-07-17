@@ -26,10 +26,8 @@ const latestFieldLog = fieldLogEntries[0];
         career reasoning, and software that pays attention to context.
       </p>
       <div class="button-row">
-        <a class="button" href="/projects/the-human-model/">
-          Open the flagship project
-        </a>
-        <a class="button secondary" href="/projects/">Browse the shelves</a>
+        <a class="button" href="/projects/">View Projects</a>
+        <a class="button secondary" href="/explore/">Explore</a>
       </div>
     </div>
 
@@ -57,35 +55,35 @@ const latestFieldLog = fieldLogEntries[0];
       <div class="current-note-list" aria-labelledby="current-desk">
         <article>
           <a
-            href="/projects/the-human-model/"
-            title="Open The Human Model project notes"
+            href="/projects/qa-agents/meticulous/"
+            title="Open the QA Agents strategy replay"
           >
-            <h3>The Human Model</h3>
+            <h3>Improving QA replay UX</h3>
           </a>
           <p>
-            Turning wearable data, training logs, movement video, and
-            conversational context into a living model of adaptation.
+            Making the replay-to-investigation handoff easier to inspect without
+            overstating what the agent layer has built.
           </p>
         </article>
         <article>
           <a
-            href="/projects/career-intelligence/"
-            title="Open Career Intelligence project notes"
+            href="/writing/the-desk-as-workbench/"
+            title="Open the desk-as-workbench note"
           >
-            <h3>Career Intelligence</h3>
+            <h3>Designing adaptive navigation</h3>
           </a>
           <p>
-            Keeping career reasoning tied to evidence, fit, preferences, and
-            boundaries instead of flattening a person into keywords.
+            Letting visitors search directly or wander through connected
+            projects, notes, topics, and demos.
           </p>
         </article>
         <article>
-          <a href="/projects/qa-agents/" title="Open QA Agents project notes">
-            <h3>QA Agents</h3>
+          <a href="/projects/the-human-model/" title="Open The Human Model">
+            <h3>Working on Human Model review layers</h3>
           </a>
           <p>
-            Testing where agent-shaped workflows can help software-quality work
-            while keeping uncertainty and human review visible.
+            Keeping Bridget, dashboards, and model outputs connected to the
+            evidence they are meant to preserve.
           </p>
         </article>
       </div>
@@ -142,25 +140,49 @@ const latestFieldLog = fieldLogEntries[0];
                 class="project-action project-action-notes"
                 href="/projects/qa-agents/"
               >
-                <span aria-hidden="true">📂</span>
-                <span>Read project notes</span>
+                <span aria-hidden="true">CS</span>
+                <span>Case Study</span>
               </a>
               <a
                 class="project-action project-action-replay"
                 href="/projects/qa-agents/demo/"
               >
-                <span aria-hidden="true">▶</span>
-                <span>Replay investigation</span>
+                <span aria-hidden="true">D</span>
+                <span>Demo</span>
+              </a>
+              <a
+                class="project-action"
+                href={project.data.repositoryUrl}
+                target="_blank"
+                rel="noreferrer"
+              >
+                <span aria-hidden="true">R</span>
+                <span>Repository</span>
               </a>
             </nav>
           ) : (
-            <a
-              class="project-action"
-              href={`/projects/${project.data.slug}/`}
-              aria-label={`Open ${project.data.title} project notes`}
+            <nav
+              class="project-actions"
+              aria-label={`${project.data.title} links`}
             >
-              Open project notes
-            </a>
+              <a
+                class="project-action"
+                href={`/projects/${project.data.slug}/`}
+                aria-label={`Open ${project.data.title} case study`}
+              >
+                <span aria-hidden="true">CS</span>
+                <span>Case Study</span>
+              </a>
+              <a
+                class="project-action"
+                href={project.data.repositoryUrl}
+                target="_blank"
+                rel="noreferrer"
+              >
+                <span aria-hidden="true">R</span>
+                <span>Repository</span>
+              </a>
+            </nav>
           )}
         </article>
       ))
@@ -219,7 +241,7 @@ const latestFieldLog = fieldLogEntries[0];
     </a>
 
     <div
-      class="desk-photo desk-object photo-object surface"
+      class="desk-photo desk-object photo-object surface decorative-object"
       aria-hidden="true"
       data-note="Caffeine status: plausibly structural."
     >
@@ -266,6 +288,14 @@ const latestFieldLog = fieldLogEntries[0];
     z-index: 10;
     border-color: var(--color-border-strong);
     box-shadow: 0 16px 36px rgba(55, 40, 38, 0.085);
+  }
+
+  .decorative-object.surface:hover,
+  .decorative-object.surface:focus-within {
+    --desk-lift: 0;
+    z-index: auto;
+    border-color: var(--color-border);
+    box-shadow: 0 12px 26px rgba(55, 40, 38, 0.055);
   }
 
   .desk-object[data-note]::after {

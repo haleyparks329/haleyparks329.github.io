@@ -9,6 +9,13 @@ tags:
   - "QA"
   - "Replay testing"
   - "Product analysis"
+topics:
+  - "Agent Systems"
+  - "Software Quality"
+related:
+  - "/projects/qa-agents/"
+  - "/projects/qa-agents/demo/"
+  - "/field-log/evidence-before-claims/"
 relatedProject: "qa-agents"
 featured: true
 draft: false

@@ -1,0 +1,269 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { typeLabel } from "@/data/navigation";
+
+const projects = await getCollection("projects");
+const writing = (await getCollection("writing")).filter(
+  (entry) => !entry.data.draft,
+);
+const fieldLog = await getCollection("fieldLog");
+
+const searchItems = [
+  ...projects.map((entry) => ({
+    title: entry.data.title,
+    href: `/projects/${entry.data.slug}/`,
+    type: "Case Study",
+    summary: entry.data.summary,
+    topics: entry.data.topics,
+    text: [
+      entry.data.title,
+      entry.data.summary,
+      entry.data.longDescription,
+      entry.data.coreQuestion,
+      ...entry.data.tags,
+      ...entry.data.topics,
+    ].join(" "),
+  })),
+  {
+    title: "Little Bytes evidence replay",
+    href: "/projects/qa-agents/demo/",
+    type: "Demo",
+    summary:
+      "Recorded QA investigation showing change, test result, coverage gap, and handoff.",
+    topics: ["Software Quality", "Agent Systems"],
+    text: "QA Agents Little Bytes evidence replay demo software quality coverage gap Scribe handoff",
+  },
+  {
+    title: "Meticulous-inspired strategy replay",
+    href: "/projects/qa-agents/meticulous/",
+    type: "Demo",
+    summary:
+      "Secondary replay showing workflow clusters, findings, and policy-constrained recommendation.",
+    topics: ["Software Quality", "Agent Systems"],
+    text: "Meticulous deterministic replay QA Agents strategy replay workflow clusters policy recommendation",
+  },
+  ...writing.map((entry) => ({
+    title: entry.data.title,
+    href: `/writing/${entry.data.slug}/`,
+    type: typeLabel(entry.data.type),
+    summary: entry.data.description,
+    topics: entry.data.topics,
+    text: [
+      entry.data.title,
+      entry.data.description,
+      entry.data.relatedProject ?? "",
+      ...entry.data.tags,
+      ...entry.data.topics,
+    ].join(" "),
+  })),
+  ...fieldLog.map((entry) => ({
+    title: entry.data.title,
+    href: `/field-log/${entry.data.slug}/`,
+    type: "Build Log",
+    summary: entry.data.summary,
+    topics: entry.data.topics,
+    text: [
+      entry.data.title,
+      entry.data.summary,
+      entry.data.excerpt ?? "",
+      entry.data.category,
+      entry.data.relatedProject ?? "",
+      ...entry.data.tags,
+      ...entry.data.topics,
+    ].join(" "),
+  })),
+];
+---
+
+<BaseLayout
+  title="Search"
+  description="Fast static search across projects, writing, demos, field log entries, summaries, and topics."
+  canonicalPath="/search/"
+>
+  <section class="search-page">
+    <header class="search-header">
+      <p class="eyebrow">Search</p>
+      <h1>Find the shelf directly.</h1>
+      <p>
+        Search covers projects, writing, Field Log entries, demos, summaries,
+        tags, and topics. It runs entirely in the static page.
+      </p>
+    </header>
+
+    <form class="search-box" role="search">
+      <label for="site-search">Search the site</label>
+      <input
+        id="site-search"
+        name="q"
+        type="search"
+        autocomplete="off"
+        placeholder="Try QA Agents, replay, Human Model, evidence..."
+      />
+    </form>
+
+    <p class="result-count" id="result-count" aria-live="polite"></p>
+    <div class="search-results" id="search-results"></div>
+  </section>
+
+  <script
+    is:inline
+    type="application/json"
+    id="search-data"
+    set:html={JSON.stringify(searchItems)}
+  />
+  <script>
+    type SearchItem = {
+      title: string;
+      href: string;
+      type: string;
+      summary: string;
+      topics: string[];
+      text: string;
+    };
+
+    const dataElement =
+      document.querySelector<HTMLScriptElement>("#search-data");
+    const input = document.querySelector<HTMLInputElement>("#site-search");
+    const results = document.querySelector<HTMLElement>("#search-results");
+    const count = document.querySelector<HTMLElement>("#result-count");
+    const items = JSON.parse(dataElement?.textContent ?? "[]");
+
+    function render(matches: SearchItem[]) {
+      if (!results || !count) return;
+
+      count.textContent = `${matches.length} result${matches.length === 1 ? "" : "s"}`;
+      results.replaceChildren(
+        ...matches.map((item: SearchItem) => {
+          const link = document.createElement("a");
+          link.href = item.href;
+
+          const type = document.createElement("span");
+          type.textContent = item.type;
+
+          const title = document.createElement("strong");
+          title.textContent = item.title;
+
+          const summary = document.createElement("em");
+          summary.textContent = item.summary;
+
+          link.append(type, title, summary);
+          return link;
+        }),
+      );
+    }
+
+    function search() {
+      const query = String(input?.value ?? "")
+        .trim()
+        .toLowerCase();
+      const terms = query.split(/\s+/).filter(Boolean);
+      const matches =
+        terms.length === 0
+          ? items
+          : items.filter((item: SearchItem) => {
+              const haystack =
+                `${item.title} ${item.summary} ${item.text} ${item.topics.join(" ")}`.toLowerCase();
+              return terms.every((term) => haystack.includes(term));
+            });
+
+      render(matches);
+    }
+
+    input?.addEventListener("input", search);
+    render(items);
+  </script>
+</BaseLayout>
+
+<style>
+  .search-page {
+    width: min(860px, calc(100% - 2rem));
+    margin: clamp(2rem, 5vw, 4rem) auto clamp(3rem, 7vw, 6rem);
+  }
+
+  .search-header {
+    display: grid;
+    gap: var(--space-4);
+    border-bottom: var(--border-width) solid var(--color-border);
+    padding-bottom: clamp(1.5rem, 4vw, 2.5rem);
+  }
+
+  .search-header h1 {
+    max-width: 12ch;
+    font-size: clamp(2.35rem, 4vw, 3.6rem);
+  }
+
+  .search-header > p:not(.eyebrow) {
+    max-width: 46rem;
+    color: var(--color-text-muted);
+    font-size: clamp(1.02rem, 1.3vw, 1.2rem);
+    font-weight: 650;
+    line-height: 1.5;
+  }
+
+  .search-box {
+    display: grid;
+    gap: var(--space-2);
+    margin-top: clamp(2rem, 4vw, 3rem);
+  }
+
+  .search-box label {
+    font-weight: 850;
+  }
+
+  .search-box input {
+    min-height: 52px;
+    border: var(--border-width) solid var(--color-border-strong);
+    border-radius: var(--radius-md);
+    padding: 0.75rem 0.9rem;
+    background: var(--color-surface);
+    color: var(--color-text);
+    font: inherit;
+  }
+
+  .result-count {
+    margin-top: var(--space-5);
+    color: var(--color-text-muted);
+    font-family: var(--font-mono);
+    font-size: var(--font-size-micro);
+    font-weight: 850;
+    text-transform: uppercase;
+  }
+
+  .search-results {
+    display: grid;
+    gap: var(--space-3);
+    margin-top: var(--space-3);
+  }
+
+  .search-results a {
+    display: grid;
+    gap: 0.28rem;
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-4);
+    background: var(--color-surface-raised);
+    color: var(--color-text);
+    text-decoration: none;
+  }
+
+  .search-results a:hover {
+    border-color: var(--color-border-strong);
+    background: var(--color-surface);
+  }
+
+  .search-results span {
+    color: var(--color-text-muted);
+    font-family: var(--font-mono);
+    font-size: var(--font-size-micro);
+    font-weight: 850;
+    text-transform: uppercase;
+  }
+
+  .search-results em {
+    color: var(--color-text-muted);
+    font-size: 0.95rem;
+    font-style: normal;
+    line-height: 1.45;
+  }
+</style>

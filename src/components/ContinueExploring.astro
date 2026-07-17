@@ -1,0 +1,94 @@
+---
+import type { ContentLink } from "@/data/navigation";
+
+type Props = {
+  title?: string;
+  links: ContentLink[];
+};
+
+const { title = "Continue Exploring", links } = Astro.props;
+const visibleLinks = links.slice(0, 4);
+---
+
+{
+  visibleLinks.length > 0 && (
+    <aside
+      class="continue-exploring"
+      aria-labelledby="continue-exploring-title"
+    >
+      <p class="eyebrow">Next shelf</p>
+      <h2 id="continue-exploring-title">{title}</h2>
+      <div class="continue-links">
+        {visibleLinks.map((link) => (
+          <a href={link.href}>
+            <span>{link.type}</span>
+            <strong>{link.label}</strong>
+            <em>{link.summary}</em>
+          </a>
+        ))}
+      </div>
+    </aside>
+  )
+}
+
+<style>
+  .continue-exploring {
+    margin-top: clamp(2.5rem, 5vw, 4.5rem);
+    border-top: var(--border-width) solid var(--color-border);
+    padding-top: var(--space-5);
+  }
+
+  .continue-exploring h2 {
+    margin: 0 0 var(--space-4);
+    font-size: clamp(1.35rem, 2vw, 1.8rem);
+  }
+
+  .continue-links {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-3);
+  }
+
+  .continue-links a {
+    display: grid;
+    min-height: 44px;
+    gap: 0.22rem;
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-4);
+    background: var(--color-surface-raised);
+    color: var(--color-text);
+    text-decoration: none;
+  }
+
+  .continue-links a:hover {
+    border-color: var(--color-border-strong);
+    background: var(--color-surface);
+  }
+
+  .continue-links span {
+    color: var(--color-text-muted);
+    font-family: var(--font-mono);
+    font-size: var(--font-size-micro);
+    font-weight: 850;
+    text-transform: uppercase;
+  }
+
+  .continue-links strong {
+    font-size: 1.02rem;
+    line-height: 1.25;
+  }
+
+  .continue-links em {
+    color: var(--color-text-muted);
+    font-size: 0.9rem;
+    font-style: normal;
+    line-height: 1.45;
+  }
+
+  @media (max-width: 700px) {
+    .continue-links {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
