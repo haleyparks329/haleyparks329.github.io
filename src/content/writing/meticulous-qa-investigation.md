@@ -163,31 +163,25 @@ They are investigation problems.
 
 That is where QA Agents and deterministic replay became complementary rather than overlapping.
 
-Replay establishes evidence.
+Replay establishes facts.
 
-QA Agents investigates evidence.
+Investigation interprets facts.
+
+Humans decide.
 
 ## The Integration Problem
 
-The obvious implementation initially seemed simple:
+My first instinct was to wire replay artifacts directly into QA Agents.
 
-1. Take replay artifacts.
-2. Feed them into QA Agents.
-3. Generate findings.
+Technically, that would have worked.
 
-The more I considered that design, the less I liked it.
+Architecturally, it would have been a mistake.
 
-It would tightly couple the investigation pipeline to one particular evidence model.
+It would have coupled the investigation pipeline to one evidence source. Browser replay happened to be the current input, but another organization might investigate API contract tests, production traces, accessibility audits, or static analysis instead.
 
-Tomorrow the evidence might come from browser replay.
+The investigation pipeline should not need to change simply because the evidence changes.
 
-Another strategy might use API contract testing.
-
-A different organization might prioritize accessibility evidence, static analysis, or production traces.
-
-The investigation pipeline should not need to change every time the evidence source changes.
-
-The architecture needed another boundary.
+That realization led to the Quality Strategy abstraction.
 
 ## Introducing Quality Strategies
 
@@ -209,6 +203,12 @@ But profiles do not answer another category of questions:
 Those questions belong to a separate abstraction.
 
 A **Quality Strategy** defines how evidence should be interpreted without changing the investigation pipeline itself.
+
+Quality Strategy became the extension point.
+
+The investigation pipeline no longer cares whether evidence originates from deterministic replay, API testing, accessibility tooling, or another future source. Each strategy answers the same question:
+
+> Given this evidence, how should it be interpreted?
 
 This creates two independent concepts:
 
@@ -320,7 +320,11 @@ Every finding remains traceable to the underlying sessions.
 
 ## Workflow Clustering as an Investigation Stage
 
-Workflow clustering became a first-class part of the implementation.
+Workflow clustering groups affected sessions into product workflows.
+
+In the current implementation this is performed by the Quality Strategy pipeline.
+
+Longer term, Beacon becomes the natural owner of this responsibility.
 
 A replay system may generate many individual sessions for what is effectively one user journey.
 
@@ -353,6 +357,8 @@ A difference finding describes how observed behavior should be classified.
 A coverage finding identifies behavior that lacks sufficient test evidence.
 
 A policy decision applies explicit rules to the accumulated findings.
+
+The investigation pipeline classifies deterministic differences using explicit rules. That stage naturally maps to Inspector as the investigation system expands.
 
 Keeping those stages separate makes the investigation inspectable and traceable.
 

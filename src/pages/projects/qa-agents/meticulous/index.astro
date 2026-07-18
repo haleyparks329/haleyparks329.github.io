@@ -200,17 +200,17 @@ const strategyFiles = [
           </div>
           <span aria-hidden="true">↓</span>
           <div>
-            <strong>QA Agents</strong>
-            <span>cluster • classify • audit • recommend</span>
+            <strong>Quality Strategy</strong>
+            <span>configure interpretation rules</span>
           </div>
           <span aria-hidden="true">↓</span>
           <div>
-            <strong>Policy</strong>
-            <span>constrain the recommendation</span>
+            <strong>Investigation pipeline</strong>
+            <span>cluster • classify • audit • evaluate policy</span>
           </div>
           <span aria-hidden="true">↓</span>
           <div>
-            <strong>Human</strong>
+            <strong>Human review</strong>
             <span>review and decide</span>
           </div>
         </div>
@@ -501,10 +501,12 @@ const strategyFiles = [
           </p>
         </div>
         <div class="closing-principles">
-          <span>Replay finds what changed.</span>
-          <span>QA Agents investigate what it means.</span>
-          <span>Policy constrains the recommendation.</span>
-          <span>A human decides.</span>
+          <span>Replay produces deterministic evidence.</span>
+          <span
+            >Quality Strategy determines how that evidence should be
+            interpreted.</span
+          >
+          <span>Humans retain authority.</span>
         </div>
         <div class="closing-links">
           <ExternalLink href={meticulousUrl} label="Visit Meticulous" />

@@ -121,26 +121,41 @@ const packageContents = [
     heading: "The replay engine finishes first. The investigation starts next.",
     paragraphs: [
       "A pull request changes annual-plan pricing. The replay layer evaluates recorded user sessions, selects those relevant to the changed code, replays base and head behavior, and produces a deterministic comparison package.",
-      "QA Agents do not replace that machinery. They begin where it ends: turning 17 affected sessions into workflows, separating expected changes from a real regression, exposing missing coverage, and handing a bounded recommendation to a human.",
+      "The replay engine finishes first. Everything that follows is deterministic investigation over deterministic evidence.",
     ],
     explanation:
-      "PHASE 1 - DETERMINISTIC EVIDENCE: replay finds what changed. PHASE 2 - QA INVESTIGATION: QA Agents investigate what it means.",
+      "Replay establishes facts. Investigation interprets facts. Humans decide.",
   }}
-  castTitle="Responsibility map"
+  castTitle="Investigation pipeline"
   cast={[
-    "Replay Engine - captures, replays, and compares deterministic evidence",
-    "Beacon - groups affected sessions into product workflows",
-    "Inspector - separates expected changes from regressions",
-    "Inspector - audits missing workflow coverage",
-    "Scribe / Policy - applies bounded decision rules",
-    "Human - makes the final decision",
+    {
+      heading: "Current implementation",
+      items: [
+        "Replay Engine - captures, replays, and compares deterministic evidence",
+        "Quality Strategy - configures evidence interpretation",
+        "Workflow Clustering - groups affected sessions into product workflows",
+        "Difference Classification - separates expected changes from regressions",
+        "Coverage Audit - identifies missing workflow coverage",
+        "Policy Evaluation - applies explicit decision rules",
+        "Human Review - makes the final decision",
+      ],
+    },
+    {
+      heading: "Future agent ownership",
+      items: [
+        "Beacon - workflow clustering",
+        "Inspector - classification and coverage audit",
+        "Scribe - test recommendations",
+        "Human - final decision",
+      ],
+    },
   ]}
   sessionMeta={[
     "PHASE 1 - DETERMINISTIC EVIDENCE",
     "PHASE 2 - QA INVESTIGATION",
     investigation.case_id,
   ]}
-  gapNote="Replay finds what changed. QA Agents investigate what it means."
+  gapNote="Recorded evidence moves through a deterministic investigation pipeline."
   defaultStepIndex={0}
   steps={[
     {
@@ -268,7 +283,7 @@ const packageContents = [
           "The package preserves session, diff, branch, expectation, and coverage references so every later conclusion can be traced back.",
         why: "This is the boundary between execution and interpretation.",
         boundary:
-          "Replay finds the differences. QA Agents investigate what they mean.",
+          "Replay produces deterministic evidence. Quality Strategy determines how that evidence should be interpreted.",
       },
       story: {
         actor: "QA AGENTS",
@@ -278,7 +293,7 @@ const packageContents = [
         handoff: "BEGIN INVESTIGATION",
         evidenceLabel: "PHASE 2",
         boundary:
-          "Replay finds the differences. QA Agents investigate what they mean.",
+          "Replay produces deterministic evidence. Quality Strategy determines how that evidence should be interpreted.",
       },
       panel: {
         kind: "record",
@@ -320,10 +335,11 @@ const packageContents = [
         why: "Engineers can reason about the product paths that changed instead of treating every affected session as a separate bug report.",
       },
       story: {
-        actor: "Beacon",
+        actor: "WORKFLOW CLUSTERING",
         emoji: "🧭",
-        heading: "Beacon groups affected sessions into workflows.",
-        body: "The replay engine found 17 affected sessions, but that does not mean there are 17 separate bugs. The next step is to group them by the user workflows and code paths they share.",
+        heading:
+          "Workflow clustering groups affected sessions into product workflows.",
+        body: "In the current implementation this is performed by the Quality Strategy pipeline. Longer term, Beacon becomes the natural owner of this responsibility.",
         handoff: "CHECK EXPECTATIONS",
         evidenceLabel: "Scope",
       },
@@ -358,10 +374,11 @@ const packageContents = [
         why: "A visual or textual difference is not automatically a defect. Expected changes should be separated before searching for regressions.",
       },
       story: {
-        actor: "Inspector",
+        actor: "DIFFERENCE CLASSIFICATION",
         emoji: "🔍",
-        heading: "Inspector separates the intentional pricing-copy change.",
-        body: `${expectedDiffs.length} differences reflect the expected annual discount copy update, so they should not be treated as regressions.`,
+        heading:
+          "The investigation pipeline classifies deterministic differences using explicit rules.",
+        body: `${expectedDiffs.length} differences reflect the expected annual discount copy update. This stage naturally maps to Inspector as the investigation system expands.`,
         handoff: "REMOVE EXPECTED NOISE",
         evidenceLabel: "Expected",
       },
@@ -402,10 +419,11 @@ const packageContents = [
         why: "The investigation reduces uncertainty by separating expected product change from one confirmed functional regression.",
       },
       story: {
-        actor: "Inspector",
+        actor: "DIFFERENCE CLASSIFICATION",
         emoji: "🔍",
-        heading: "Inspector confirms one shared rounding regression.",
-        body: "After expected copy changes are removed, two affected sessions trace to the same one-cent pricing mismatch.",
+        heading:
+          "The investigation pipeline confirms one shared rounding regression.",
+        body: "After expected copy changes are removed, explicit classification rules trace two affected sessions to the same one-cent pricing mismatch.",
         handoff: "AUDIT COVERAGE",
         evidenceLabel: "Regression",
       },
@@ -455,10 +473,10 @@ const packageContents = [
         why: "Residual coverage risk matters because a hold recommendation should account for both known regressions and changed paths that were not exercised.",
       },
       story: {
-        actor: "Inspector",
+        actor: "COVERAGE AUDIT",
         emoji: "🔍",
-        heading: "Inspector finds one changed workflow still uncovered.",
-        body: "The legacy coupon plus prorated annual upgrade branch was changed, but the selected replay evidence did not exercise that workflow.",
+        heading: "Coverage audit finds one changed workflow still uncovered.",
+        body: "The legacy coupon plus prorated annual upgrade branch was changed, but the selected replay evidence did not exercise that missing workflow.",
         handoff: "APPLY POLICY",
         evidenceLabel: "Residual risk",
       },
@@ -500,9 +518,9 @@ const packageContents = [
         why: "The LLM is not independently deciding to block the merge; the recommendation is constrained by explicit policy and deterministic evidence.",
       },
       story: {
-        actor: "Scribe / Policy",
+        actor: "POLICY EVALUATION",
         emoji: "✍️",
-        heading: "Policy constrains the merge recommendation.",
+        heading: "Policy evaluation constrains the merge recommendation.",
         body: "The confirmed-functional-regression rule matches the evidence, so the bounded recommendation is hold.",
         handoff: "REQUEST HUMAN REVIEW",
         evidenceLabel: "Policy",

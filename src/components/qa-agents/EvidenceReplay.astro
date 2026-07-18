@@ -58,6 +58,11 @@ type LinkItem = {
   external?: boolean;
 };
 
+type CastSection = {
+  heading: string;
+  items: string[];
+};
+
 type TechnicalDetail = {
   summary: string;
   items?: DetailItem[];
@@ -82,7 +87,7 @@ type Props = {
     explanation: string;
   };
   castTitle: string;
-  cast: string[];
+  cast: string[] | CastSection[];
   sessionMeta: string[];
   gapNote: string;
   defaultStepIndex?: number;
@@ -210,7 +215,24 @@ const stepDetails = steps.map((step) => ({
 
     <aside class="cast-key" aria-label={castTitle}>
       <h2>{castTitle}</h2>
-      <ul>{cast.map((item) => <li>{item}</li>)}</ul>
+      {
+        cast.map((item) =>
+          typeof item === "string" ? (
+            <ul>
+              <li>{item}</li>
+            </ul>
+          ) : (
+            <section>
+              <h3>{item.heading}</h3>
+              <ul>
+                {item.items.map((entry) => (
+                  <li>{entry}</li>
+                ))}
+              </ul>
+            </section>
+          ),
+        )
+      }
     </aside>
 
     <div class="workstation-shell" id="replay-workstation">
@@ -843,6 +865,19 @@ const stepDetails = steps.map((step) => ({
     font-weight: 600;
     letter-spacing: 0.08em;
     text-transform: uppercase;
+  }
+
+  .cast-key section + section {
+    margin-top: 0.75rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid rgba(55, 40, 38, 0.14);
+  }
+
+  .cast-key h3 {
+    margin: 0 0 0.45rem;
+    color: var(--color-text);
+    font-size: var(--font-size-small);
+    font-weight: 700;
   }
 
   .cast-key ul {
