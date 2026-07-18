@@ -18,7 +18,7 @@ topics:
   - "Human-Centered Technology"
 related:
   - "/projects/qa-agents/"
-  - "/writing/meticulous-qa-investigation/"
+  - "/projects/qa-agents/meticulous/"
   - "/projects/qa-agents/demo/"
 order: 3
 ---

@@ -104,7 +104,7 @@ const qaReplay = {
 
 const qaStrategyReplay = {
   href: "/projects/qa-agents/meticulous/",
-  label: "View strategy replay",
+  label: "Read investigation layer case study",
 };
 
 export const projectDocuments: Record<string, ProjectDocumentData> = {
@@ -541,7 +541,7 @@ export const projectDocuments: Record<string, ProjectDocumentData> = {
         inspect: qaRepository,
       },
       {
-        part: "Meticulous-inspired strategy replay",
+        part: "Investigation layer case study",
         status: "Prototype",
         does: "Shows how deterministic replay evidence can become workflow clusters, findings, and a policy-constrained recommendation.",
         inspect: qaStrategyReplay,

@@ -429,10 +429,10 @@ export const destinations: Destination[] = [
   {
     id: "demo-qa-agents-meticulous",
     href: "/projects/qa-agents/meticulous/",
-    label: "Meticulous-inspired strategy replay",
-    type: "demo",
+    label: "Extending Deterministic Replay with an Investigation Layer",
+    type: "writing",
     summary:
-      "A secondary QA replay showing workflow clusters and policy-constrained recommendations.",
+      "How deterministic replay evidence can enter QA Agents through a configurable investigation layer.",
     topics: ["Software Quality", "Agent Systems"],
     project: "qa-agents",
     trails: ["how-i-build"],
@@ -445,16 +445,6 @@ export const destinations: Destination[] = [
     summary:
       "The focused replay route for the Meticulous-inspired QA investigation.",
     topics: ["Software Quality", "Agent Systems"],
-    project: "qa-agents",
-  },
-  {
-    id: "writing-meticulous-qa-investigation",
-    href: "/writing/meticulous-qa-investigation/",
-    label: "Extending deterministic replay with QA Agents",
-    type: "writing",
-    summary:
-      "How QA Agents can work downstream of deterministic replay evidence.",
-    topics: ["Agent Systems", "Software Quality"],
     project: "qa-agents",
   },
   {
@@ -503,11 +493,11 @@ export const destinations: Destination[] = [
 export const relationships: Relationship[] = [
   {
     from: "project-qa-agents",
-    to: "writing-meticulous-qa-investigation",
+    to: "demo-qa-agents-meticulous",
     type: "related-investigation",
     label: "Related Investigation",
     reason:
-      "This writing explains how replay evidence can hand off into the QA Agents layer.",
+      "This case study explains how replay evidence can hand off into the QA Agents layer.",
   },
   {
     from: "project-qa-agents",

@@ -70,25 +70,26 @@ const strategyFiles = [
 ---
 
 <BaseLayout
-  title="Extending Deterministic Replay with QA Agents | Meticulous-Inspired Case Study"
-  description="An independent technical exploration inspired by Meticulous, showing how QA Agents can interpret deterministic replay evidence through workflow clustering, traceable findings, explicit policy, and human review."
+  title="Extending Deterministic Replay with an Investigation Layer"
+  description="An independent engineering exploration of how deterministic replay evidence can enter QA Agents through a configurable investigation layer, explicit policy, and human review."
   canonicalPath="/projects/qa-agents/meticulous/"
   breadcrumbs={[
     { label: "Home", href: "/" },
     { label: "Projects", href: "/projects/" },
     { label: project.data.title, href: "/projects/qa-agents/" },
-    { label: "Meticulous-Inspired Investigation" },
+    { label: "Extending Deterministic Replay with an Investigation Layer" },
   ]}
 >
   <article class="meticulous-writeup">
     <header class="case-hero wide-case">
       <p class="eyebrow">INDEPENDENT ENGINEERING EXPLORATION</p>
-      <h1>Extending deterministic replay with QA Agents</h1>
+      <h1>Extending deterministic replay with an investigation layer</h1>
       <p class="lede">
-        After studying Meticulous's publicly documented replay model, I extended
-        QA Agents with a replay-first quality strategy. The goal was not to
-        replace deterministic replay, but to explore what a downstream
-        investigation layer could do once trustworthy evidence already exists.
+        This project tested whether deterministic replay evidence could become
+        an input to QA Agents without turning QA Agents into a replay engine or
+        a Meticulous-specific runtime. The useful architectural result was an
+        investigation layer, configured through Quality Strategy, that separates
+        evidence acquisition from evidence interpretation.
       </p>
       <p class="disclaimer">
         Independent exploration using simulated data. Not an official Meticulous
@@ -120,65 +121,159 @@ const strategyFiles = [
 
     <section class="page-section wide-case opening-grid">
       <div>
-        <p class="eyebrow">About Meticulous</p>
-        <h2>About Meticulous</h2>
+        <h2>Overview</h2>
       </div>
       <div class="prose">
         <p>
-          Meticulous is a software testing platform built around deterministic
-          replay. It records real user interactions, selects sessions relevant
-          to a code change, replays those sessions against base and head
-          versions, and surfaces visual or functional differences before
-          deployment.
+          QA Agents already existed as an investigation system for organizing
+          software-quality evidence, identifying gaps, and producing
+          recommendations that remain subject to human review. After studying
+          Meticulous's publicly documented replay model, I wanted to test
+          whether replay evidence could become one input to that investigation
+          system.
         </p>
         <p>
-          The important engineering constraint is repeatability: session
-          capture, network-response replay, and deterministic execution make the
-          evidence inspectable before anyone interprets it.
+          The purpose was narrow: preserve deterministic replay as the source of
+          truth, pass a simulated replay artifact into QA Agents, and examine
+          what had to change inside QA Agents for that integration to stay
+          modular. The project uses synthetic replay data inspired by public
+          replay-testing concepts. It does not use Meticulous internals, private
+          APIs, or production data.
         </p>
-        <ExternalLink
-          href={meticulousUrl}
-          label="Learn about Meticulous's replay testing platform"
-        />
       </div>
     </section>
 
     <section class="page-section content-band">
-      <div class="wide-case observation">
-        <p class="eyebrow">Observation</p>
-        <h2>The part I did not want to replace</h2>
+      <div class="wide-case split-section">
+        <div>
+          <h2>QA Agents and deterministic replay</h2>
+        </div>
+        <div class="prose">
+          <p>
+            QA Agents is not another browser automation tool. Its existing role
+            is downstream of test execution: collect evidence, organize what is
+            known, expose uncertainty, and make the next human decision easier
+            to review.
+          </p>
+          <p>
+            Meticulous's public product model describes a different and valuable
+            layer. A replay platform captures user sessions, selects sessions
+            relevant to a code change, replays them against base and head
+            versions, compares the results, and produces inspectable evidence.
+            The value of that layer comes from repeatability: before anyone
+            interprets the result, the changed behavior has already been
+            reproduced against a stable replay process.
+          </p>
+          <p>
+            That made the integration boundary direct rather than dramatic.
+            Replay should produce evidence. QA Agents should investigate that
+            evidence without mutating it, reproducing replay, or claiming
+            authority over the final merge decision.
+          </p>
+          <ExternalLink
+            href={meticulousUrl}
+            label="Learn about Meticulous's replay testing platform"
+          />
+        </div>
+      </div>
+    </section>
+
+    <section class="page-section wide-case split-section">
+      <div>
+        <h2>The integration problem</h2>
+      </div>
+      <div class="prose">
         <p>
-          My first instinct was to ask how AI agents might replace more of the
-          testing workflow. The more I read, the less that made sense. Replay is
-          valuable because it is deterministic, reproducible, and inspectable.
+          Introducing replay-shaped evidence exposed a coupling problem in QA
+          Agents. Some behavior that should have belonged to an interpretation
+          layer still lived too close to the investigation engine: evidence
+          validation, clustering inputs, classification assumptions, summary
+          behavior, decision rules, and CLI strategy selection.
         </p>
         <p>
-          The useful extension was downstream: once the replay system has
-          produced stable evidence, another layer can group related differences,
-          separate expected product changes from regressions, expose missing
-          coverage, and prepare a bounded recommendation for a human reviewer.
+          A narrow solution would have been to add a <code>meticulous</code>{
+            " "
+          }
+          runtime mode and branch through the engine whenever replay evidence appeared.
+          That would have worked for the demo, but it would have mixed evidence-source
+          identity with investigation behavior. The next evidence source, such as
+          API contract tests, accessibility audits, production traces, or static analysis,
+          would have required another branch and another special case.
+        </p>
+        <p>
+          The engine should not need to know where evidence originated in order
+          to validate it, cluster it, classify it, summarize it, and evaluate a
+          recommendation. QA Agents needed an abstraction for interpretation
+          behavior, not a vendor-inspired mode embedded throughout the runtime.
         </p>
       </div>
     </section>
 
-    <section class="page-section wide-case question-section">
-      <p class="eyebrow">Question</p>
-      <h2>The question I wanted to explore</h2>
-      <blockquote>
-        What happens after deterministic replay finds the differences?
-      </blockquote>
-      <p>
-        Could specialized QA agents turn a large replay result into a smaller
-        set of product workflows, traceable findings, residual risks, and an
-        explicit engineering recommendation?
-      </p>
+    <section class="page-section content-band">
+      <div class="wide-case split-section">
+        <div>
+          <h2>The Quality Strategy abstraction</h2>
+        </div>
+        <div class="prose">
+          <p>
+            The resulting split is between a <code>Profile</code>{" "}and a{" "}
+            <code>Quality Strategy</code>. A profile describes who or what is
+            being investigated: repository conventions, application routes, test
+            layout, integrations, and tracker metadata. A Quality Strategy
+            describes how a class of evidence should be validated, interpreted,
+            clustered, classified, summarized, and constrained.
+          </p>
+          <p>
+            The implemented strategy layer includes a filesystem-backed
+            {" "}<code>StrategyRegistry</code>, strategy discovery through{" "}
+            <code>strategy.yaml</code>, explicit decision rules in{" "}
+            <code>decision-policy.yaml</code>, typed investigation domain
+            objects, replay evidence validation, clustering features,
+            classification rules, summary actions, CLI-boundary serialization,
+            tests, and generated artifacts.
+          </p>
+          <p>
+            Runtime loading is intentionally narrower than the directory shape.
+            The current investigation path loads <code>strategy.yaml</code>,
+            {" "}<code>decision-policy.yaml</code>, and the input evidence. The
+            schema, prompts, example artifact, README, and strategy-specific
+            tests document, validate, or demonstrate the strategy.
+          </p>
+          <div
+            class="definition-pair"
+            aria-label="Profile and quality strategy distinction"
+          >
+            <div>
+              <strong>Profile</strong>
+              <span>the target under investigation</span>
+            </div>
+            <div>
+              <strong>Quality Strategy</strong>
+              <span>the rules for interpreting a class of evidence</span>
+            </div>
+          </div>
+          <ul class="compact-list">
+            {implementationItems.map((item) => <li>{item}</li>)}
+          </ul>
+          <details class="supporting-details">
+            <summary>Strategy directory excerpt</summary>
+            <pre><code>{strategyFiles.join("\n")}</code></pre>
+          </details>
+        </div>
+      </div>
     </section>
 
     <section class="page-section content-band">
       <div class="wide-case">
         <div class="section-heading">
-          <p class="eyebrow">Architectural boundary</p>
-          <h2>Where replay ends and QA Agents begin</h2>
+          <h2>Investigation pipeline</h2>
+          <p>
+            Replay remains responsible for capturing, selecting, executing, and
+            comparing sessions. QA Agents starts after an immutable evidence
+            package exists, then applies the configured strategy to produce
+            traceable findings and a policy-constrained recommendation for human
+            review.
+          </p>
         </div>
         <div
           class="architecture-diagram"
@@ -219,11 +314,10 @@ const strategyFiles = [
             <h3>Replay platform responsibilities</h3>
             <ul>
               <li>session capture</li>
+              <li>session selection</li>
               <li>deterministic execution</li>
-              <li>network replay</li>
               <li>base-versus-head comparison</li>
-              <li>raw visual and functional differences</li>
-              <li>branch and workflow evidence</li>
+              <li>raw evidence production</li>
             </ul>
           </section>
           <section>
@@ -231,9 +325,8 @@ const strategyFiles = [
             <ul>
               <li>evidence validation</li>
               <li>workflow clustering</li>
-              <li>expected-change classification</li>
-              <li>regression synthesis</li>
-              <li>coverage-gap audit</li>
+              <li>difference classification</li>
+              <li>coverage analysis</li>
               <li>policy evaluation</li>
               <li>human-facing recommendation</li>
             </ul>
@@ -248,131 +341,114 @@ const strategyFiles = [
 
     <section class="page-section wide-case split-section">
       <div>
-        <p class="eyebrow">What I built</p>
-        <h2>A quality strategy, not a Meticulous mode</h2>
+        <h2>A simulated pricing investigation</h2>
       </div>
       <div class="prose">
-        <div
-          class="definition-pair"
-          aria-label="Profile and quality strategy distinction"
-        >
-          <div>
-            <strong>Profile</strong>
-            <span>who or what is being investigated</span>
-          </div>
-          <div>
-            <strong>Quality strategy</strong>
-            <span
-              >how evidence is interpreted and how decisions are constrained</span
-            >
-          </div>
-        </div>
         <p>
-          The QA Agents repo now has a strategy layer for replay-first
-          investigation behavior, without pretending that Meticulous itself is a
-          runtime mode.
+          The worked example uses a simulated annual-plan pricing change. The
+          replay summary contains {evaluatedSessions} evaluated sessions,{" "}
+          {selectedSessions} selected sessions, and {affectedSessions} affected sessions.
+          QA Agents does not treat those affected sessions as separate issues. Multiple
+          sessions can represent the same product workflow or the same underlying
+          defect, so the strategy groups them into{" "}
+          {workflowCount} workflow clusters before producing findings.
         </p>
-        <ul class="compact-list">
-          {implementationItems.map((item) => <li>{item}</li>)}
-        </ul>
-        <details class="supporting-details">
-          <summary>Strategy directory excerpt</summary>
-          <pre><code>{strategyFiles.join("\n")}</code></pre>
-          <p>
-            Runtime use is intentionally narrower than the directory shape:
-            current investigation loads <code>strategy.yaml</code>, <code
-              >decision-policy.yaml</code
-            >, and the input evidence. The schema, prompts, example artifact,
-            README, and tests document, validate, or demonstrate the strategy.
-          </p>
-        </details>
-      </div>
-    </section>
-
-    <section class="page-section content-band">
-      <div class="wide-case split-section">
-        <div>
-          <p class="eyebrow">One simulated investigation</p>
-          <h2>One simulated investigation</h2>
-        </div>
-        <div class="prose">
-          <pre
-            class="terminal"><code>python3 -m qa_agents investigate \
+        <p>
+          The generated investigation separates {expectedDiffCount} expected textual
+          differences from {regressionDiffCount} functional differences. The expected
+          differences match <code>{knownExpectation.id}</code>, an explicit
+          expectation that the annual discount label changed from{" "}
+          <code>Save 10%</code> to <code>Save 12%</code>. The functional
+          differences identify one shared one-cent rounding regression, where
+          the annual total changes from <code>$108.00</code> to{" "}
+          <code>$107.99</code>.
+        </p>
+        <p>
+          The coverage audit also finds one changed branch without selected
+          replay coverage: legacy coupon plus prorated annual upgrade. Because a
+          confirmed functional regression matches the configured policy rule,
+          the generated recommendation is <code>{recommendation}</code>. The
+          artifact also marks <code>human_decision_required</code>, so the
+          recommendation is advisory rather than autonomous authority.
+        </p>
+        <pre
+          class="terminal"><code>python3 -m qa_agents investigate \
   --strategy meticulous \
   --input strategies/meticulous/fixtures/pricing-change.input.json \
   --output strategies/meticulous/examples/pricing-change.investigation.json</code></pre>
-          <div class="run-output" aria-label="Simulated investigation outcome">
-            <span>{evaluatedSessions} sessions evaluated</span>
-            <span>{selectedSessions} sessions selected</span>
-            <span>{affectedSessions} sessions affected</span>
-            <span aria-hidden="true">↓</span>
-            <span>{workflowCount} product workflows</span>
-            <span aria-hidden="true">↓</span>
-            <span>{expectedDiffCount} expected differences</span>
-            <span
-              >{investigation.summary.confirmed_regressions} shared rounding regression</span
-            >
-            <span>{coverageGapCount} uncovered changed branch</span>
-            <span aria-hidden="true">↓</span>
-            <span>Recommendation: {recommendation}</span>
-            <span>Human decision required</span>
-          </div>
-          {
-            artifactUrl && (
-              <ExternalLink
-                href={artifactUrl}
-                label="View generated artifact"
-              />
-            )
-          }
+        <div class="run-output" aria-label="Simulated investigation outcome">
+          <span>{evaluatedSessions} sessions evaluated</span>
+          <span>{selectedSessions} sessions selected</span>
+          <span>{affectedSessions} sessions affected</span>
+          <span>{workflowCount} product workflows</span>
+          <span>{expectedDiffCount} expected differences</span>
+          <span
+            >{investigation.summary.confirmed_regressions} shared rounding regression</span
+          >
+          <span>{coverageGapCount} uncovered changed branch</span>
+          <span>Policy rule: {matchedRule}</span>
+          <span>Recommendation: {recommendation}</span>
         </div>
-      </div>
-    </section>
-
-    <section class="page-section wide-case">
-      <div class="section-heading">
-        <p class="eyebrow">Strategy result</p>
-        <h2>From replay output to engineering meaning</h2>
-        <p>Session != Workflow != Issue</p>
-      </div>
-      <div class="finding-grid">
-        <article>
-          <h3>Expected product change</h3>
-          <ul>
-            <li>{expectedDiffCount} textual differences</li>
-            <li><code>Save 10%</code> → <code>Save 12%</code></li>
-            <li>matched explicit expectation evidence</li>
-            <li><code>{knownExpectation.id}</code></li>
-          </ul>
-        </article>
-        <article>
-          <h3>Confirmed regression</h3>
-          <ul>
-            <li>{regressionDiffCount} functional differences</li>
-            <li><code>$108.00</code> → <code>$107.99</code></li>
-            <li>one shared rounding regression</li>
-          </ul>
-        </article>
-        <article>
-          <h3>Residual coverage risk</h3>
-          <ul>
-            <li>one changed branch not exercised</li>
-            <li>legacy coupon + prorated annual upgrade</li>
-            <li>coverage risk: {investigation.coverage_audit.coverage_risk}</li>
-          </ul>
-        </article>
-      </div>
-      <div class="policy-strip">
-        <span><strong>Policy result:</strong> HOLD</span>
-        <span><strong>Matched rule:</strong> <code>{matchedRule}</code></span>
+        <div class="finding-grid">
+          <article>
+            <h3>Expected product change</h3>
+            <ul>
+              <li>{expectedDiffCount} textual differences</li>
+              <li><code>Save 10%</code> to <code>Save 12%</code></li>
+              <li>matched explicit expectation evidence</li>
+              <li><code>{knownExpectation.id}</code></li>
+            </ul>
+          </article>
+          <article>
+            <h3>Confirmed regression</h3>
+            <ul>
+              <li>{regressionDiffCount} functional differences</li>
+              <li><code>$108.00</code> to <code>$107.99</code></li>
+              <li>one shared rounding regression</li>
+            </ul>
+          </article>
+          <article>
+            <h3>Residual coverage risk</h3>
+            <ul>
+              <li>one changed branch not exercised</li>
+              <li>legacy coupon plus prorated annual upgrade</li>
+              <li>
+                coverage risk: {investigation.coverage_audit.coverage_risk}
+              </li>
+            </ul>
+          </article>
+        </div>
+        <details class="supporting-details">
+          <summary>Generated artifact and replay</summary>
+          <p>
+            The linked artifact is generated from simulated source data checked
+            into the QA Agents repository. The interactive replay route remains
+            a static presentation around the same investigation artifact.
+          </p>
+          <div class="inline-links">
+            {
+              artifactUrl && (
+                <ExternalLink
+                  href={artifactUrl}
+                  label="View generated artifact"
+                />
+              )
+            }
+            <a
+              class="button secondary"
+              href="/projects/qa-agents/meticulous/replay/"
+            >
+              Open the interactive evidence replay
+            </a>
+          </div>
+        </details>
       </div>
     </section>
 
     <section class="page-section content-band">
       <div class="wide-case">
         <div class="section-heading">
-          <p class="eyebrow">Design decisions</p>
-          <h2>Three decisions that made the strategy credible</h2>
+          <h2>Implementation decisions</h2>
         </div>
         <div class="decision-list">
           <article>
@@ -380,32 +456,31 @@ const strategyFiles = [
             <p>
               QA Agents do not sit inside replay execution or rewrite its
               output. Raw sessions, differences, branches, and coverage records
-              remain the source of truth.
+              remain the source of truth, while clusters and findings preserve
+              references back to session IDs, difference IDs, branch IDs, and
+              workflow cluster IDs.
             </p>
-            <code
-              >Deterministic systems produce evidence. Probabilistic systems
-              interpret evidence.</code
-            >
           </article>
           <article>
             <h3>Model workflows and findings explicitly</h3>
             <p>
-              Seventeen sessions should not become seventeen bug reports. Typed
-              objects preserve clear invariants, and every finding remains
-              traceable to source evidence.
+              The implementation uses typed domain objects such as
+              {" "}<code>WorkflowCluster</code>,{" "}
+              <code>DifferenceFinding</code>, <code>CoverageFinding</code>,{" "}
+              <code>PolicyDecision</code>, and{" "}
+              <code>InvestigationResult</code>. Those objects represent
+              different claims, so the system does not collapse raw session
+              counts into bug reports.
             </p>
-            <code
-              >WorkflowCluster • DifferenceFinding • CoverageFinding •
-              PolicyDecision • InvestigationResult</code
-            >
           </article>
           <article>
             <h3>Constrain recommendations with policy</h3>
             <p>
-              Finding: confirmed functional regression. Policy: confirmed
-              regressions require hold. Recommendation: hold. Authority: human.
+              <code>apply_decision_policy</code> computes metrics from the investigation
+              and applies explicit deterministic rules. A recommendation can explain
+              why the system suggests holding or reviewing a change, but it does not
+              merge, approve, or bypass the reviewer.
             </p>
-            <code>The system does not autonomously merge or approve.</code>
           </article>
         </div>
       </div>
@@ -413,19 +488,21 @@ const strategyFiles = [
 
     <section class="page-section wide-case split-section">
       <div>
-        <p class="eyebrow">Review refinement</p>
-        <h2>The architecture improved during review</h2>
+        <h2>How the architecture changed during review</h2>
       </div>
       <div class="prose">
         <p>
-          The initial implementation looked like a strategy layer, but some
-          classification and summary behavior still lived in Python.
+          The first pass was strategy-shaped, but review showed that some
+          important behavior still lived directly in Python. Clustering and
+          classification were partly configurable, while summary behavior and
+          CLI discovery still made the strategy boundary less explicit than it
+          needed to be.
         </p>
         <p>
           The refinement moved clustering features, classification rules, and
           summary next actions into strategy configuration; kept decision rules
           explicit and deterministic; separated discovery from the CLI through
-          <code>StrategyRegistry</code>; retained typed objects until
+          {" "}<code>StrategyRegistry</code>; retained typed objects until
           serialization; and made malformed evidence actionable.
         </p>
         <pre
@@ -439,7 +516,6 @@ const strategyFiles = [
     <section class="page-section content-band">
       <div class="wide-case split-section">
         <div>
-          <p class="eyebrow">Verification</p>
           <h2>Verification</h2>
         </div>
         <div class="prose">
@@ -463,26 +539,25 @@ const strategyFiles = [
 
     <section class="page-section wide-case split-section">
       <div>
-        <p class="eyebrow">Limitations</p>
-        <h2>Current limitations</h2>
+        <h2>Limitations</h2>
       </div>
       <div class="prose">
         <ul class="compact-list single">
           <li>
-            one implemented strategy does not prove every future strategy will
-            fit;
+            One implemented strategy does not prove every future strategy will
+            fit.
           </li>
-          <li>the engine remains replay-evidence-specific in places;</li>
+          <li>The engine remains replay-evidence-specific in places.</li>
           <li>
-            runtime validation is currently hand-coded rather than driven by
-            <code>evidence-schema.json</code>;
+            Runtime validation is currently hand-coded rather than driven by
+            {" "}<code>evidence-schema.json</code>.
           </li>
           <li>
             <code>decision-policy.yaml</code> currently contains JSON-shaped policy
-            configuration;
+            configuration.
           </li>
-          <li>this is not a live Meticulous integration;</li>
-          <li>this does not build or reproduce a replay engine.</li>
+          <li>This is not a live Meticulous integration.</li>
+          <li>This does not build or reproduce a replay engine.</li>
         </ul>
       </div>
     </section>
@@ -490,23 +565,21 @@ const strategyFiles = [
     <section class="page-section content-band">
       <div class="wide-case closing-section">
         <div>
-          <p class="eyebrow">Closing reflection</p>
           <h2>What changed in QA Agents</h2>
           <p>
-            This exploration changed QA Agents beyond the Meticulous-inspired
-            example. Profiles now describe the target under investigation;
-            strategies describe how evidence should be interpreted. Replay
-            remains deterministic, findings remain traceable, policy remains
-            explicit, and a human retains final authority.
+            The Meticulous-inspired strategy is useful as a concrete
+            implementation, but the broader result is the separation it forced
+            inside QA Agents. The target being investigated, the source of
+            evidence, the rules used to interpret that evidence, and the final
+            human decision now sit behind clearer boundaries.
           </p>
-        </div>
-        <div class="closing-principles">
-          <span>Replay produces deterministic evidence.</span>
-          <span
-            >Quality Strategy determines how that evidence should be
-            interpreted.</span
-          >
-          <span>Humans retain authority.</span>
+          <p>
+            That separation lets replay remain an evidence-producing layer while
+            QA Agents performs a bounded investigation over the evidence. Future
+            evidence sources should be able to enter through additional
+            strategies instead of becoming new engine modes scattered across the
+            runtime.
+          </p>
         </div>
         <div class="closing-links">
           <ExternalLink href={meticulousUrl} label="Visit Meticulous" />
@@ -535,8 +608,9 @@ const strategyFiles = [
             )
           }
           <a href="/projects/qa-agents/meticulous/replay/">
-            Prefer the interactive walkthrough? Explore the evidence replay.
+            Open the interactive evidence replay
           </a>
+          <a href="/projects/qa-agents/">Main QA Agents project</a>
         </div>
       </div>
     </section>
@@ -593,35 +667,9 @@ const strategyFiles = [
 
   .prose p,
   .section-heading p,
-  .closing-section p,
-  .observation p,
-  .question-section p {
+  .closing-section p {
     max-width: var(--reading-width);
     color: var(--color-text-muted);
-  }
-
-  .observation {
-    display: grid;
-    gap: var(--space-5);
-    max-width: 960px;
-  }
-
-  .observation h2 {
-    font-size: var(--text-h2);
-  }
-
-  .question-section {
-    display: grid;
-    gap: var(--space-5);
-  }
-
-  .question-section blockquote {
-    max-width: 920px;
-    margin: 0;
-    border-left: 0.42rem solid var(--khaki);
-    padding-left: var(--space-5);
-    font-size: clamp(1.25rem, 2vw, 1.75rem);
-    line-height: 1.08;
   }
 
   .section-heading {
@@ -788,13 +836,6 @@ const strategyFiles = [
     background: rgba(255, 248, 239, 0.76);
   }
 
-  .run-output span[aria-hidden] {
-    justify-self: center;
-    color: var(--blue);
-    font-family: var(--font-mono);
-    font-weight: 600;
-  }
-
   .finding-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
@@ -809,17 +850,6 @@ const strategyFiles = [
 
   .finding-grid article:nth-child(3) {
     border-left-color: var(--khaki);
-  }
-
-  .policy-strip {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-4);
-    margin-top: var(--space-5);
-    border: 1px solid rgba(55, 40, 38, 0.18);
-    border-radius: 6px;
-    padding: var(--space-4);
-    background: rgba(248, 240, 231, 0.72);
   }
 
   .decision-list {
@@ -846,33 +876,18 @@ const strategyFiles = [
     color: var(--color-text-muted);
   }
 
-  .decision-list code {
-    grid-column: 2;
-    white-space: normal;
-    color: var(--plum);
-    font-weight: 600;
-  }
-
   .closing-section {
     display: grid;
     gap: var(--space-6);
     padding-bottom: var(--space-hero);
   }
 
-  .closing-principles,
+  .inline-links,
   .closing-links {
     display: flex;
     flex-wrap: wrap;
     gap: var(--space-3);
     align-items: center;
-  }
-
-  .closing-principles span {
-    border: 1px solid rgba(55, 40, 38, 0.18);
-    border-radius: 4px;
-    padding: 0.42rem 0.58rem;
-    background: rgba(255, 248, 239, 0.76);
-    font-weight: 600;
   }
 
   @media (max-width: 900px) {
@@ -883,10 +898,6 @@ const strategyFiles = [
     .finding-grid,
     .decision-list article {
       grid-template-columns: 1fr;
-    }
-
-    .decision-list code {
-      grid-column: auto;
     }
 
     .compact-list,

@@ -167,15 +167,9 @@ export const projectWorkspaces: Record<string, ProjectWorkspaceConfig> = {
         links: [
           { label: "Case Studies", href: "/projects/qa-agents/case-studies/" },
           { label: "Investigation Replay", href: "/projects/qa-agents/demo/" },
-          { label: "Strategy Replay", href: "/projects/qa-agents/meticulous/" },
-        ],
-      },
-      {
-        label: "Research",
-        links: [
           {
-            label: "Related Writing",
-            href: "/writing/meticulous-qa-investigation/",
+            label: "Extending Deterministic Replay with an Investigation Layer",
+            href: "/projects/qa-agents/meticulous/",
           },
         ],
       },

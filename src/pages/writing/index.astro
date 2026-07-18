@@ -4,9 +4,31 @@ import WritingEditorialRow from "@/components/WritingEditorialRow.astro";
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import PageIntro from "@/components/PageIntro.astro";
 
-const entries = (await getCollection("writing"))
+const collectionEntries = (await getCollection("writing"))
   .filter((entry) => !entry.data.draft)
-  .sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime());
+  .map((entry) => ({
+    data: entry.data,
+    href: `/writing/${entry.data.slug}/`,
+  }));
+
+const routeBackedEntries = [
+  {
+    data: {
+      title: "Extending Deterministic Replay with an Investigation Layer",
+      description:
+        "An independent engineering exploration of how deterministic replay evidence can enter QA Agents through a configurable investigation layer, explicit policy, and human review.",
+      type: "case-study" as const,
+      pubDate: new Date("2026-07-16"),
+      topics: ["Agent Systems", "Software Quality"],
+      relatedProject: "qa-agents",
+    },
+    href: "/projects/qa-agents/meticulous/",
+  },
+];
+
+const entries = [...collectionEntries, ...routeBackedEntries].sort(
+  (a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime(),
+);
 
 const projectFilters = [
   { label: "All", value: "all" },
@@ -107,10 +129,13 @@ const sortOptions = [
       {entries.map((entry) => <WritingEditorialRow entry={entry} />)}
     </div>
 
-    <p class="empty-state" data-empty-state hidden>
-      <strong>Nothing filed here yet.</strong>
-      <span>Try another project or return to all writing.</span>
-    </p>
+    <div data-empty-state-region></div>
+    <template data-empty-state-template>
+      <p class="empty-state" data-empty-state>
+        <strong>Nothing filed here yet.</strong>
+        <span>Try another project or return to all writing.</span>
+      </p>
+    </template>
   </section>
 
   <script>
@@ -131,8 +156,12 @@ const sortOptions = [
     );
     const status = document.querySelector<HTMLElement>("#writing-status");
     const count = document.querySelector<HTMLElement>("#writing-result-count");
-    const emptyState =
-      document.querySelector<HTMLElement>("[data-empty-state]");
+    const emptyStateRegion = document.querySelector<HTMLElement>(
+      "[data-empty-state-region]",
+    );
+    const emptyStateTemplate = document.querySelector<HTMLTemplateElement>(
+      "[data-empty-state-template]",
+    );
 
     const state = {
       sort: "newest",
@@ -165,6 +194,19 @@ const sortOptions = [
         if (state.sort === "reverse-alpha") return bTitle.localeCompare(aTitle);
         return bDate - aDate;
       });
+    }
+
+    function setEmptyState(isEmpty: boolean) {
+      if (!emptyStateRegion || !emptyStateTemplate) return;
+
+      const existing =
+        emptyStateRegion.querySelector<HTMLElement>("[data-empty-state]");
+      if (isEmpty && !existing) {
+        emptyStateRegion.append(emptyStateTemplate.content.cloneNode(true));
+      }
+      if (!isEmpty && existing) {
+        existing.remove();
+      }
     }
 
     function updateUrl() {
@@ -221,7 +263,7 @@ const sortOptions = [
       if (count) {
         count.textContent = `${visibleRows.length} ${investigationLabel}`;
       }
-      if (emptyState) emptyState.hidden = visibleRows.length > 0;
+      setEmptyState(visibleRows.length === 0);
       if (updateHistory) updateUrl();
     }
 
