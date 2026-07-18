@@ -197,9 +197,9 @@ export const trails: Trail[] = [
           "A sibling person-modeling system shows the same evidence-first pattern in another domain.",
       },
       {
-        destinationId: "writing-what-happens-after-the-ai-interview",
+        destinationId: "writing-why-fika-jobs-felt-familiar",
         reason:
-          "The career investigation shows how richer human context can survive beyond one AI-led conversation.",
+          "The career investigation connects Fika Jobs to the same evidence-first pressure in another domain.",
       },
     ],
   },
@@ -458,12 +458,12 @@ export const destinations: Destination[] = [
     project: "qa-agents",
   },
   {
-    id: "writing-what-happens-after-the-ai-interview",
-    href: "/writing/what-happens-after-the-ai-interview/",
-    label: "What Happens After the AI Interview",
+    id: "writing-why-fika-jobs-felt-familiar",
+    href: "/writing/why-fika-jobs-felt-familiar/",
+    label: "Why Fika Jobs Felt Familiar",
     type: "writing",
     summary:
-      "A case study on AI interview tooling and career reasoning pressure.",
+      "A product investigation into Fika Jobs and private career knowledge graphs.",
     topics: ["Career Intelligence", "Human-Centered Technology"],
     project: "career-intelligence",
     trails: ["human-performance"],
@@ -543,11 +543,11 @@ export const relationships: Relationship[] = [
   },
   {
     from: "project-career-intelligence",
-    to: "writing-what-happens-after-the-ai-interview",
+    to: "writing-why-fika-jobs-felt-familiar",
     type: "related",
     label: "Related Writing",
     reason:
-      "The case study applies the same evidence-first career reasoning pressure to interview tooling.",
+      "The writing compares Career Intelligence with Fika Jobs at the product-philosophy level.",
   },
   {
     from: "project-career-intelligence",

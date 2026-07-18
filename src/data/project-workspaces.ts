@@ -117,7 +117,7 @@ export const projectWorkspaces: Record<string, ProjectWorkspaceConfig> = {
           },
           {
             label: "Related Writing",
-            href: "/writing/what-happens-after-the-ai-interview/",
+            href: "/writing/why-fika-jobs-felt-familiar/",
           },
         ],
       },

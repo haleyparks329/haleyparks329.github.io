@@ -18,7 +18,7 @@ topics:
   - "Adaptive UI"
 related:
   - "/projects/the-human-model/"
-  - "/writing/what-happens-after-the-ai-interview/"
+  - "/writing/why-fika-jobs-felt-familiar/"
   - "/field-log/evidence-before-claims/"
 repositoryUrl: "https://github.com/haleyparks329/career-intelligence"
 order: 2

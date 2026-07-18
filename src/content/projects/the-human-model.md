@@ -18,7 +18,7 @@ topics:
   - "Human-Centered Technology"
 related:
   - "/field-log/attention-is-the-scarce-resource/"
-  - "/writing/what-happens-after-the-ai-interview/"
+  - "/writing/why-fika-jobs-felt-familiar/"
   - "/projects/career-intelligence/"
 repositoryUrl: "https://github.com/haleyparks329/the-human-model"
 order: 1

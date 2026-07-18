@@ -334,6 +334,54 @@ const trailMembership = trailsForHref(pageHref);
       var(--color-surface-raised);
   }
 
+  .document-body :global(.graph-placeholder) {
+    display: grid;
+    gap: var(--space-3);
+    margin-block: clamp(2rem, 5vw, 3rem);
+    border: var(--border-width) solid var(--accent-tertiary-border);
+    border-radius: var(--radius-md);
+    padding: clamp(1rem, 3vw, 1.4rem);
+    background:
+      linear-gradient(
+        135deg,
+        rgba(207, 231, 246, 0.36),
+        rgba(248, 240, 231, 0.86)
+      ),
+      var(--color-surface-raised);
+    box-shadow: var(--shadow-soft);
+  }
+
+  .document-body :global(.graph-placeholder h3) {
+    margin: 0;
+    color: var(--color-text);
+    font-size: clamp(1.12rem, 1.5vw, 1.35rem);
+    line-height: 1.2;
+  }
+
+  .document-body :global(.graph-placeholder p) {
+    margin: 0;
+  }
+
+  .document-body :global(.graph-status) {
+    display: inline-flex;
+    width: fit-content;
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--radius-pill);
+    padding: 0.24rem 0.65rem;
+    background: var(--color-canvas);
+    color: var(--plum);
+    font-family: var(--font-mono);
+    font-size: var(--font-size-micro);
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+
+  .document-body :global(.graph-caption) {
+    border-top: var(--border-width) solid var(--color-border);
+    padding-top: var(--space-3);
+    font-size: var(--font-size-small);
+  }
+
   .document-body :global(.replay-metric) {
     color: var(--color-text);
     font-family: var(--font-mono);

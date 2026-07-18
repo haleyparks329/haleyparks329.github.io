@@ -17,7 +17,7 @@ topics:
   - "Human Model"
   - "Agent Systems"
 related:
-  - "/writing/what-happens-after-the-ai-interview/"
+  - "/writing/why-fika-jobs-felt-familiar/"
   - "/projects/the-human-model/"
   - "/projects/qa-agents/"
 order: 1
