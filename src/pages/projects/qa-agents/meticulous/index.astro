@@ -93,9 +93,10 @@ const strategyFiles = [
             <div>
               <dt>Problem</dt>
               <dd>
-                QA Agents could accept replay evidence, but parts of
-                investigation behavior were still coupled to that evidence
-                shape.
+                QA Agents already organized software-quality evidence into
+                findings and recommendations. Adding deterministic replay
+                exposed places where investigation behavior was still coupled to
+                one evidence shape.
               </dd>
             </div>
             <div>
@@ -141,14 +142,49 @@ const strategyFiles = [
 
     <section class="page-section wide-case split-section">
       <div>
+        <h2>QA Agents and deterministic replay</h2>
+      </div>
+      <div class="prose">
+        <p>
+          QA Agents began as an experimental software-quality investigation
+          system. It works downstream of test execution by collecting available
+          evidence, organizing findings, identifying gaps and uncertainty, and
+          preparing a structured recommendation for a human reviewer. It is not
+          intended to replace browser automation, test runners, or the systems
+          that produce the original evidence.
+        </p>
+        <p>
+          Meticulous's public product model describes one such
+          evidence-producing layer. A replay platform captures user sessions,
+          selects those relevant to a code change, replays them against base and
+          head versions, and produces inspectable differences. The value of that
+          system comes from repeatability: the behavior has already been
+          reproduced through a deterministic process before anyone attempts to
+          interpret it.
+        </p>
+        <p>
+          The systems therefore have separate responsibilities. Replay
+          establishes what changed. QA Agents investigates the resulting
+          evidence without rewriting it, reproducing the replay engine, or
+          taking authority away from the reviewer. Introducing replay-shaped
+          evidence into QA Agents exposed assumptions inside the existing
+          investigation engine, which led to the integration problem described
+          below.
+        </p>
+      </div>
+    </section>
+
+    <section class="page-section wide-case split-section">
+      <div>
         <h2>The integration problem</h2>
       </div>
       <div class="prose">
         <p>
-          Introducing replay-shaped evidence exposed a coupling problem in QA
-          Agents. Validation, clustering inputs, classification assumptions,
-          summary behavior, decision rules, and CLI strategy selection still
-          lived too close to the investigation engine.
+          Passing replay-shaped evidence through the existing investigation path
+          exposed a coupling problem inside QA Agents. Validation, clustering
+          inputs, classification assumptions, summary behavior, decision rules,
+          and CLI strategy selection still lived too close to the investigation
+          engine.
         </p>
         <p>
           A narrow solution would have been to add a <code>meticulous</code>{
