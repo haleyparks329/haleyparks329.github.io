@@ -2,6 +2,7 @@
 import CollapsibleSection from "@/components/CollapsibleSection.astro";
 import ContinueExploring from "@/components/ContinueExploring.astro";
 import ExternalLink from "@/components/ExternalLink.astro";
+import PublicGraphCallout from "@/components/PublicGraphCallout.astro";
 import type { ContentLink } from "@/data/navigation";
 import type {
   AppendixDetail,
@@ -14,6 +15,14 @@ import type {
 
 type Props = {
   abstract?: string[];
+  featuredResource?: {
+    eyebrow?: string;
+    title: string;
+    description: string;
+    href: string;
+    linkLabel?: string;
+    caption?: string;
+  };
   why?: string[];
   actuallyDoes?: {
     intro: string;
@@ -44,6 +53,7 @@ type Props = {
 
 const {
   abstract,
+  featuredResource,
   why,
   actuallyDoes,
   howItWorks,
@@ -69,6 +79,12 @@ const {
           <p>{paragraph}</p>
         ))}
       </section>
+    )
+  }
+
+  {
+    featuredResource && (
+      <PublicGraphCallout {...featuredResource} context="project" />
     )
   }
 

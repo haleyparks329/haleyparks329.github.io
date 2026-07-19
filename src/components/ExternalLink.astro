@@ -2,17 +2,19 @@
 type Props = {
   href: string;
   label: string;
+  ariaLabel?: string;
   class?: string;
 };
 
-const { href, label } = Astro.props;
+const { href, label, ariaLabel } = Astro.props;
 const className = Astro.props.class;
 ---
 
 <a
+  aria-label={ariaLabel}
   class={`external-link ${className ?? ""}`}
   href={href}
-  rel="noreferrer"
+  rel="noopener noreferrer"
   target="_blank"
 >
   <span>{label}</span>

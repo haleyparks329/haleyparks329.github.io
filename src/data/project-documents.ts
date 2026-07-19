@@ -91,6 +91,12 @@ const careerDemo = {
   external: true,
 };
 
+const careerKnowledgeGraph = {
+  href: "https://publish.obsidian.md/career-knowledge-graph/Career+Knowledge+Graph",
+  label: "Explore public knowledge graph",
+  external: true,
+};
+
 const qaRepository = {
   href: "https://github.com/haleyparks329/qa-agents",
   label: "View repository",
@@ -285,7 +291,7 @@ export const projectDocuments: Record<string, ProjectDocumentData> = {
     reportType: "Career reasoning project",
     summary:
       "A source-backed career reasoning system that compares roles against evidence, preferences, capabilities, and boundaries instead of keywords alone.",
-    links: [careerRepository, careerDemo],
+    links: [careerRepository, careerKnowledgeGraph, careerDemo],
     abstract: [
       "Career Intelligence is a project about making career reasoning more evidence-based. It explores how a person's work history, skills, preferences, and goals can be represented as structured source material instead of flattened into resume keywords.",
       "The current public implementation includes validated synthetic career data, evidence ranking, role matching, positioning outputs, interview-prep outputs, and generated demo artifacts. The public example uses synthetic data so the workflow can be inspected without exposing private career history.",
@@ -371,7 +377,7 @@ export const projectDocuments: Record<string, ProjectDocumentData> = {
         part: "Evidence graph or atlas",
         status: "Experimental",
         does: "Represents relationships among roles, skills, claims, and source evidence.",
-        inspect: careerRepository,
+        inspect: careerKnowledgeGraph,
       },
       {
         part: "Automated career decisions",

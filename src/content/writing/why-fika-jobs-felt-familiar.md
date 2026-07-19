@@ -62,19 +62,36 @@ Today, the project helps me answer questions that a CV cannot. It explains not o
 
 ## Career Intelligence Graph
 
-<!-- TODO: Replace with public Career Intelligence Obsidian graph. -->
-<aside class="graph-placeholder" aria-label="Career Intelligence knowledge graph placeholder">
-  <p class="card-label">Career Intelligence knowledge graph</p>
-  <h3>An explorable public view is coming soon.</h3>
-  <p>
-    A curated public graph will show the projects, technologies, ideas,
-    writing, decisions, and preferences that shaped my career.
+<aside class="public-graph-callout public-graph-callout--writing" aria-labelledby="fika-public-graph-title">
+  <div class="public-graph-copy">
+    <p class="public-graph-status">Live artifact</p>
+    <h3 id="fika-public-graph-title">Explore my Career Knowledge Graph</h3>
+    <p>
+      This curated public graph shows how projects, technologies, ideas,
+      decisions, and recurring interests connect across my work.
+    </p>
+    <a class="public-graph-link" href="https://publish.obsidian.md/career-knowledge-graph/Career+Knowledge+Graph" target="_blank" rel="noopener noreferrer" aria-label="Open the public Career Knowledge Graph in Obsidian">
+      <span>Open the public graph</span>
+      <span aria-hidden="true">-&gt;</span>
+    </a>
+  </div>
+  <div class="public-graph-preview" aria-hidden="true">
+    <span class="graph-node graph-node--one"></span>
+    <span class="graph-node graph-node--two"></span>
+    <span class="graph-node graph-node--three"></span>
+    <span class="graph-node graph-node--four"></span>
+    <span class="graph-line graph-line--one"></span>
+    <span class="graph-line graph-line--two"></span>
+    <span class="graph-line graph-line--three"></span>
+  </div>
+  <p class="sr-only">
+    Decorative network preview only. Open the link to view the live public
+    Career Knowledge Graph in Obsidian.
   </p>
-  <p class="graph-status">Interactive Obsidian graph coming soon.</p>
-  <p class="graph-caption">
-    The public graph will contain a curated subset of the private Career
-    Intelligence system. It should demonstrate structure and relationships
-    without publishing sensitive personal data or the complete private graph.
+  <p class="public-graph-caption">
+    The public vault contains a curated subset of the private Career
+    Intelligence system. Sensitive personal records and unsupported private
+    interpretations remain excluded.
   </p>
 </aside>
 

@@ -1,0 +1,55 @@
+---
+import ExternalLink from "@/components/ExternalLink.astro";
+
+type Props = {
+  eyebrow?: string;
+  title: string;
+  description: string;
+  href: string;
+  linkLabel?: string;
+  caption?: string;
+  context?: "writing" | "project";
+};
+
+const {
+  eyebrow = "Live artifact",
+  title,
+  description,
+  href,
+  linkLabel = "Explore the public graph",
+  caption,
+  context = "project",
+} = Astro.props;
+const titleId = `public-graph-title-${context}`;
+---
+
+<aside
+  class={`public-graph-callout public-graph-callout--${context}`}
+  aria-labelledby={titleId}
+>
+  <div class="public-graph-copy">
+    <p class="public-graph-status">{eyebrow}</p>
+    <h3 id={titleId}>{title}</h3>
+    <p>{description}</p>
+    <ExternalLink
+      href={href}
+      label={linkLabel}
+      ariaLabel={`Open the public ${title} in Obsidian`}
+      class="public-graph-link"
+    />
+  </div>
+  <div class="public-graph-preview" aria-hidden="true">
+    <span class="graph-node graph-node--one"></span>
+    <span class="graph-node graph-node--two"></span>
+    <span class="graph-node graph-node--three"></span>
+    <span class="graph-node graph-node--four"></span>
+    <span class="graph-line graph-line--one"></span>
+    <span class="graph-line graph-line--two"></span>
+    <span class="graph-line graph-line--three"></span>
+  </div>
+  <p class="sr-only">
+    Decorative network preview only. Open the link to view the live public
+    Career Knowledge Graph in Obsidian.
+  </p>
+  {caption && <p class="public-graph-caption">{caption}</p>}
+</aside>
