@@ -20,10 +20,11 @@ const demoHref =
 const showQuestion = variant !== "compact" && variant !== "desk";
 const projectNotes: Record<string, string> = {
   "the-human-model": "long-running personal system",
-  bridget: "personal orchestration without another app",
+  bridget: "personal orchestration system",
   "career-intelligence": "source-backed reasoning",
   "qa-agents": "recorded evidence loop",
 };
+const primaryActionLabel = data.slug === "bridget" ? "Project" : "Case Study";
 ---
 
 <article
@@ -47,7 +48,9 @@ const projectNotes: Record<string, string> = {
   }
   {visibleTags.length > 0 && <TagList tags={visibleTags} />}
   <nav class="project-file-links" aria-label={`${data.title} links`}>
-    <a class="primary-action" href={`/projects/${data.slug}/`}>Case Study</a>
+    <a class="primary-action" href={`/projects/${data.slug}/`}>
+      {primaryActionLabel}
+    </a>
     {
       demoHref && (
         <a class="secondary-action is-demo" href={demoHref}>

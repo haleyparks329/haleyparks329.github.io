@@ -7,7 +7,19 @@ import { siteConfig } from "@/site.config";
 const projects = (await getCollection("projects")).sort(
   (a, b) => a.data.order - b.data.order,
 );
-const featuredProjects = projects.filter((project) => project.data.featured);
+const homepageProjectOrder: Record<string, number> = {
+  "the-human-model": 1,
+  bridget: 2,
+  "career-intelligence": 3,
+  "qa-agents": 4,
+};
+const featuredProjects = projects
+  .filter((project) => project.data.featured)
+  .sort(
+    (a, b) =>
+      (homepageProjectOrder[a.data.slug] ?? a.data.order) -
+      (homepageProjectOrder[b.data.slug] ?? b.data.order),
+  );
 const fieldLogEntries = (await getCollection("fieldLog")).sort(
   (a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime(),
 );
@@ -587,7 +599,7 @@ const latestFieldLog = fieldLogEntries[0];
   }
 
   .project-object.olive {
-    grid-column: 4 / span 4;
+    grid-column: 8 / span 4;
     grid-row: 2;
     border-color: rgba(111, 126, 29, 0.2);
     background:
@@ -597,8 +609,8 @@ const latestFieldLog = fieldLogEntries[0];
   }
 
   .project-object.blue {
-    grid-column: 8 / span 4;
-    grid-row: 2;
+    grid-column: 3 / span 5;
+    grid-row: 3;
     border-color: rgba(79, 134, 168, 0.18);
     background:
       linear-gradient(rgba(79, 134, 168, 0.14) 1px, transparent 1px),
@@ -608,6 +620,13 @@ const latestFieldLog = fieldLogEntries[0];
       1.8rem 1.8rem,
       1.8rem 1.8rem,
       auto;
+  }
+
+  .project-object.plum {
+    grid-column: 4 / span 4;
+    grid-row: 2;
+    border-color: rgba(122, 91, 139, 0.2);
+    background: color-mix(in srgb, var(--plum-soft) 72%, var(--paper));
   }
 
   .project-object.is-focal::after {
@@ -844,6 +863,11 @@ const latestFieldLog = fieldLogEntries[0];
       grid-row: 4;
     }
 
+    .project-object.plum {
+      grid-column: 4 / span 4;
+      grid-row: 6;
+    }
+
     .field-log-preview {
       grid-column: 4 / span 3;
       grid-row: 4;
@@ -881,6 +905,7 @@ const latestFieldLog = fieldLogEntries[0];
     .project-object.rust,
     .project-object.olive,
     .project-object.blue,
+    .project-object.plum,
     .field-log-preview,
     .about-note,
     .writing-note,
