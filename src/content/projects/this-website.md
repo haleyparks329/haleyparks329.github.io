@@ -22,7 +22,7 @@ related:
   - "/explore/"
   - "/field-log/the-desk-as-workbench/"
 repositoryUrl: "https://github.com/haleyparks329/haleyparks329.github.io"
-order: 4
+order: 5
 ---
 
 This Website is the public system that connects Haley's projects, writing, experiments, and navigation ideas into one evolving knowledge environment.

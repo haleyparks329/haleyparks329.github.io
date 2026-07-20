@@ -106,6 +106,11 @@ export const trails: Trail[] = [
           "The replay shows the QA evidence trail as an inspectable public demo.",
       },
       {
+        destinationId: "project-bridget",
+        reason:
+          "Bridget shows how personal context can be maintained before any autonomous layer is added.",
+      },
+      {
         destinationId: "project-the-human-model",
         reason:
           "The Human Model applies similar context-preserving ideas to personal performance data.",
@@ -280,6 +285,21 @@ export const destinations: Destination[] = [
     topics: ["Adaptive UI", "Human-Centered Technology"],
   },
   {
+    id: "project-bridget",
+    href: "/projects/bridget/",
+    label: "Bridget",
+    type: "project",
+    summary:
+      "A deterministic personal orchestration system that preserves continuity without replacing human judgment.",
+    topics: [
+      "Agent Systems",
+      "Human-Centered Technology",
+      "Information Architecture",
+    ],
+    project: "bridget",
+    trails: ["ai-systems"],
+  },
+  {
     id: "project-the-human-model",
     href: "/projects/the-human-model/",
     label: "The Human Model",
@@ -448,6 +468,28 @@ export const destinations: Destination[] = [
     project: "qa-agents",
   },
   {
+    id: "writing-i-did-not-want-another-app",
+    href: "/writing/i-did-not-want-another-app/",
+    label: "I Did Not Want Another App",
+    type: "writing",
+    summary:
+      "How an AI coaching idea grew into a broader personal orchestration system.",
+    topics: ["Agent Systems", "Human-Centered Technology"],
+    project: "bridget",
+    trails: ["ai-systems"],
+  },
+  {
+    id: "writing-what-i-built-instead-of-an-agent",
+    href: "/writing/what-i-built-instead-of-an-agent/",
+    label: "What I Built Instead of an Agent",
+    type: "writing",
+    summary:
+      "Why Bridget uses deterministic state, visible uncertainty, and human reconciliation before autonomy.",
+    topics: ["Agent Systems", "Human-Centered Technology"],
+    project: "bridget",
+    trails: ["ai-systems"],
+  },
+  {
     id: "writing-why-fika-jobs-felt-familiar",
     href: "/writing/why-fika-jobs-felt-familiar/",
     label: "Why Fika Jobs Felt Familiar",
@@ -491,6 +533,70 @@ export const destinations: Destination[] = [
 ];
 
 export const relationships: Relationship[] = [
+  {
+    from: "project-bridget",
+    to: "writing-i-did-not-want-another-app",
+    type: "built-from",
+    label: "Origin Story",
+    reason:
+      "The essay explains the product constraint and personal problem that Bridget grew from.",
+  },
+  {
+    from: "project-bridget",
+    to: "writing-what-i-built-instead-of-an-agent",
+    type: "continued-in",
+    label: "Architecture Case Study",
+    reason:
+      "The case study explains Bridget's deterministic domains and boundary before autonomy.",
+  },
+  {
+    from: "project-bridget",
+    to: "project-the-human-model",
+    type: "nearby",
+    label: "Related System",
+    reason:
+      "The Human Model understands performance patterns; Bridget coordinates context that domain systems can use.",
+  },
+  {
+    from: "writing-i-did-not-want-another-app",
+    to: "writing-what-i-built-instead-of-an-agent",
+    type: "continued-in",
+    label: "Companion Case Study",
+    reason:
+      "The origin story leads into the engineering account of what Bridget became.",
+  },
+  {
+    from: "writing-i-did-not-want-another-app",
+    to: "project-bridget",
+    type: "continued-in",
+    label: "Project Hub",
+    reason:
+      "The project hub keeps the origin, architecture, and public reference together.",
+  },
+  {
+    from: "writing-what-i-built-instead-of-an-agent",
+    to: "writing-i-did-not-want-another-app",
+    type: "built-from",
+    label: "Origin Story",
+    reason:
+      "The essay explains the personal problem and interface constraint behind the architecture.",
+  },
+  {
+    from: "writing-what-i-built-instead-of-an-agent",
+    to: "project-bridget",
+    type: "continued-in",
+    label: "Project Hub",
+    reason:
+      "The project hub connects the technical account to the broader Bridget story.",
+  },
+  {
+    from: "project-the-human-model",
+    to: "project-bridget",
+    type: "nearby",
+    label: "Related System",
+    reason:
+      "Bridget coordinates continuity; The Human Model interprets performance evidence.",
+  },
   {
     from: "project-qa-agents",
     to: "demo-qa-agents-meticulous",

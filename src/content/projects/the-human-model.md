@@ -17,6 +17,7 @@ topics:
   - "Human Performance"
   - "Human-Centered Technology"
 related:
+  - "/projects/bridget/"
   - "/field-log/attention-is-the-scarce-resource/"
   - "/writing/why-fika-jobs-felt-familiar/"
   - "/projects/career-intelligence/"

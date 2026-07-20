@@ -19,6 +19,7 @@ const document = projectDocumentForSlug(project.data.slug);
 const continueLinks = relatedLinksForHrefs(
   [
     "/projects/the-human-model/current/",
+    "/projects/bridget/",
     "/field-log/attention-is-the-scarce-resource/",
     "/projects/career-intelligence/",
     "/explore/",
@@ -52,5 +53,28 @@ const continueLinks = relatedLinksForHrefs(
       nextHref="/projects/the-human-model/current/"
       nextLabel="Open the current project file"
     />
+    <p class="bridget-relationship">
+      The Human Model tries to understand patterns in my performance. <a
+        href="/projects/bridget/">Bridget</a
+      > is a separate orchestration system that helps keep the information those patterns
+      depend on from getting lost.
+    </p>
   </ProjectWorkspaceLayout>
 </BaseLayout>
+
+<style>
+  .bridget-relationship {
+    max-width: var(--reading-measure);
+    margin-top: var(--space-6);
+    border-left: 0.22rem solid var(--plum);
+    padding: var(--space-3) var(--space-4);
+    background: color-mix(in srgb, var(--plum) 7%, var(--paper));
+    color: var(--color-text-muted);
+    line-height: 1.6;
+  }
+
+  .bridget-relationship a {
+    color: var(--plum);
+    font-weight: 650;
+  }
+</style>

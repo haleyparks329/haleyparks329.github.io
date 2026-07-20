@@ -12,6 +12,19 @@ const { slug, size = "medium" } = Astro.props;
   aria-hidden="true"
 >
   {
+    slug === "bridget" && (
+      <span class="bridget-flow">
+        <span class="thread thread-one" />
+        <span class="thread thread-two" />
+        <span class="thread thread-three" />
+        <span class="brief" />
+        <span class="flow-node flow-node-one" />
+        <span class="flow-node flow-node-two" />
+        <span class="flow-node flow-node-three" />
+      </span>
+    )
+  }
+  {
     slug === "the-human-model" && (
       <span class="human-bloom">
         <span class="stem" />
@@ -106,6 +119,11 @@ const { slug, size = "medium" } = Astro.props;
     background: #ead9e8;
   }
 
+  .project-emblem-bridget {
+    --emblem-accent: var(--plum);
+    background: #ead9e8;
+  }
+
   .human-bloom,
   .career-map,
   .qa-case,
@@ -113,6 +131,77 @@ const { slug, size = "medium" } = Astro.props;
     position: relative;
     width: 72%;
     height: 72%;
+  }
+
+  .bridget-flow {
+    position: relative;
+    width: 72%;
+    height: 72%;
+  }
+
+  .thread {
+    position: absolute;
+    left: 12%;
+    width: 48%;
+    height: var(--border-width);
+    background: color-mix(in srgb, var(--plum) 64%, var(--ink));
+    transform-origin: left;
+  }
+
+  .thread-one {
+    top: 24%;
+    transform: rotate(18deg);
+  }
+
+  .thread-two {
+    top: 50%;
+  }
+
+  .thread-three {
+    bottom: 24%;
+    transform: rotate(-18deg);
+  }
+
+  .brief {
+    position: absolute;
+    top: 25%;
+    right: 6%;
+    width: 34%;
+    height: 50%;
+    border: var(--border-width) solid
+      color-mix(in srgb, var(--plum) 64%, var(--ink));
+    border-radius: var(--radius-sm);
+    background:
+      linear-gradient(var(--plum) 0 0) 25% 30% / 50% var(--border-width)
+        no-repeat,
+      linear-gradient(var(--plum) 0 0) 25% 50% / 50% var(--border-width)
+        no-repeat,
+      linear-gradient(var(--plum) 0 0) 25% 70% / 38% var(--border-width)
+        no-repeat,
+      color-mix(in srgb, white 72%, var(--plum-soft));
+  }
+
+  .flow-node {
+    position: absolute;
+    left: 6%;
+    width: 12%;
+    aspect-ratio: 1;
+    border: var(--border-width) solid
+      color-mix(in srgb, var(--plum) 64%, var(--ink));
+    border-radius: 999px;
+    background: color-mix(in srgb, white 68%, var(--plum));
+  }
+
+  .flow-node-one {
+    top: 17%;
+  }
+
+  .flow-node-two {
+    top: 43%;
+  }
+
+  .flow-node-three {
+    bottom: 17%;
   }
 
   .stem,

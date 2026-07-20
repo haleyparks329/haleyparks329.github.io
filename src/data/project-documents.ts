@@ -121,7 +121,7 @@ export const projectDocuments: Record<string, ProjectDocumentData> = {
     links: [humanModelRepository, humanModelExamples],
     abstract: [
       "The Human Model is an ongoing personal research project exploring whether wearable data, training history, conversational context, and movement analysis can be combined into a continuously updated record of human performance.",
-      "The current implementation includes health-data ingestion, workout logging, predictive performance models, dashboard experiments, Bridget as a conversational memory layer, and exploratory movement analysis from video. These parts are used to preserve context across training sessions instead of treating each measurement as an isolated signal.",
+      "The current implementation includes health-data ingestion, workout logging, predictive performance models, dashboard experiments, and exploratory movement analysis from video. Bridget is a separate orchestration system that can preserve and coordinate context used by this work; it is not a Human Model feature or its memory model.",
       "The longer-term direction is better personal decision support through accumulated evidence. It is an n=1 research system, not a finished coaching product or a generalized model of human performance.",
     ],
     why: [
@@ -147,7 +147,7 @@ export const projectDocuments: Record<string, ProjectDocumentData> = {
           items: [
             "Apple Health and wearable exports",
             "workout logs and performance history",
-            "Bridget conversations and check-ins",
+            "context coordinated through Bridget",
             "body measurements and recovery notes",
             "movement video for technique review",
           ],
@@ -159,7 +159,7 @@ export const projectDocuments: Record<string, ProjectDocumentData> = {
             "structured records for training and health signals",
             "feature generation for prediction experiments",
             "movement-analysis prototypes",
-            "dashboard and Bridget review flows",
+            "dashboard review flows and Bridget handoff points",
           ],
         },
         {
@@ -173,7 +173,7 @@ export const projectDocuments: Record<string, ProjectDocumentData> = {
           ],
         },
       ],
-      note: "The technical structure matters because the system is only useful if the data, model output, and human interpretation stay connected. Bridget is the conversational memory layer; dashboards and reports are review layers; model output is treated as a hypothesis to inspect.",
+      note: "The technical structure matters because the system is only useful if the data, model output, and human interpretation stay connected. Bridget remains a separate orchestration layer that can coordinate relevant context; dashboards and reports are Human Model review layers; model output is treated as a hypothesis to inspect.",
     },
     statusRows: [
       {
@@ -189,10 +189,13 @@ export const projectDocuments: Record<string, ProjectDocumentData> = {
         inspect: humanModelRepository,
       },
       {
-        part: "Bridget memory layer",
+        part: "Bridget orchestration handoff",
         status: "Working",
-        does: "Captures conversational context, observations, and check-ins that numbers alone miss.",
-        inspect: humanModelRepository,
+        does: "Coordinates relevant context through a separate system without becoming part of the Human Model domain.",
+        inspect: {
+          href: "/projects/bridget/",
+          label: "Open Bridget project",
+        },
       },
       {
         part: "Performance prediction model",

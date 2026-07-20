@@ -15,7 +15,10 @@ topics:
   - "Agent Systems"
 related:
   - "/writing/what-i-built-instead-of-an-agent/"
+  - "/projects/bridget/"
   - "/projects/the-human-model/"
+relatedProject: "bridget"
+repositoryUrl: "https://github.com/haleyparks329/bridget-architecture"
 featured: true
 draft: false
 readingTime: "8 min"
@@ -174,4 +177,4 @@ Bridget is now a private, deterministic personal orchestration system. Version 1
 
 That is a more technical story than the one here. I wrote the companion case study, [What I Built Instead of an Agent](/writing/what-i-built-instead-of-an-agent/), to explain the architecture, its boundaries, and why I chose deterministic orchestration before autonomy.
 
-The story explains why Bridget exists. The architecture explains what she became.
+The story explains why Bridget exists. The architecture explains what she became. The [Bridget project page](/projects/bridget/) keeps both stories beside the public engineering reference.

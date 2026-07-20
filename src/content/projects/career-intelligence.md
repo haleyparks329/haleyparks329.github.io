@@ -21,7 +21,7 @@ related:
   - "/writing/why-fika-jobs-felt-familiar/"
   - "/field-log/evidence-before-claims/"
 repositoryUrl: "https://github.com/haleyparks329/career-intelligence"
-order: 2
+order: 4
 ---
 
 Career Intelligence treats career work as a connected system of evidence, capabilities, preferences, and opportunities.

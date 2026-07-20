@@ -14,6 +14,9 @@ topics:
   - "Human-Centered Technology"
 related:
   - "/writing/i-did-not-want-another-app/"
+  - "/projects/bridget/"
+relatedProject: "bridget"
+repositoryUrl: "https://github.com/haleyparks329/bridget-architecture"
 featured: true
 draft: false
 readingTime: "12 min"
@@ -176,3 +179,5 @@ I chose to build the missing layer underneath instead.
 Version 1 records what arrived, extracts only what it can support, maintains continuity across time, preserves ambiguity, gives the operator a way to reconcile mistakes, evaluates only explicit expectations, and presents one coherent brief. It does less than an agent by design.
 
 Autonomy should not replace operational continuity. If it belongs in the system at all, it should be layered on top of continuity that is already durable, inspectable, and correctable.
+
+The [Bridget project page](/projects/bridget/) connects this architecture to its origin story, while the [public architecture repository](https://github.com/haleyparks329/bridget-architecture) provides the V1 engineering reference and synthetic examples.

@@ -11,7 +11,11 @@ export type ProjectWorkspaceGroup = {
 
 export type ProjectWorkspaceConfig = {
   slug:
-    "the-human-model" | "career-intelligence" | "qa-agents" | "this-website";
+    | "the-human-model"
+    | "bridget"
+    | "career-intelligence"
+    | "qa-agents"
+    | "this-website";
   cardLabel: string;
   cardMicrocopy?: string;
   projectType: string;
@@ -22,6 +26,55 @@ export type ProjectWorkspaceConfig = {
 };
 
 export const projectWorkspaces: Record<string, ProjectWorkspaceConfig> = {
+  bridget: {
+    slug: "bridget",
+    cardLabel: "Personal orchestration",
+    cardMicrocopy: "replaces remembering, not thinking",
+    projectType: "Personal orchestration system",
+    headerSummary:
+      "A private, deterministic system that turns scattered inputs into durable, inspectable context without replacing human judgment.",
+    currentNote:
+      "Using the private V1 system while documenting its architecture and design boundaries in public.",
+    annotation: "threads in; coherent context out; uncertainty stays visible",
+    groups: [
+      {
+        label: "Project",
+        links: [{ label: "Overview", href: "/projects/bridget/" }],
+      },
+      {
+        label: "Writing",
+        links: [
+          {
+            label: "Origin story",
+            href: "/writing/i-did-not-want-another-app/",
+          },
+          {
+            label: "Architecture case study",
+            href: "/writing/what-i-built-instead-of-an-agent/",
+          },
+        ],
+      },
+      {
+        label: "Related system",
+        links: [
+          {
+            label: "The Human Model",
+            href: "/projects/the-human-model/",
+          },
+        ],
+      },
+      {
+        label: "External",
+        links: [
+          {
+            label: "Architecture repository",
+            href: "https://github.com/haleyparks329/bridget-architecture",
+            external: true,
+          },
+        ],
+      },
+    ],
+  },
   "the-human-model": {
     slug: "the-human-model",
     cardLabel: "Personal research",

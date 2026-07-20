@@ -1,0 +1,529 @@
+---
+import { getCollection } from "astro:content";
+import ExternalLink from "@/components/ExternalLink.astro";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import ProjectWorkspaceLayout from "@/layouts/ProjectWorkspaceLayout.astro";
+import { workspaceForSlug } from "@/data/project-workspaces";
+
+const project = (await getCollection("projects")).find(
+  (entry) => entry.data.slug === "bridget",
+);
+if (!project) {
+  throw new Error("Missing Bridget project entry");
+}
+
+const workspace = workspaceForSlug(project.data.slug);
+const repositoryUrl = "https://github.com/haleyparks329/bridget-architecture";
+
+const responsibilities = [
+  [
+    "Event",
+    "Receives information through a low-friction interface and preserves each input as a durable source record.",
+  ],
+  [
+    "Observation",
+    "Extracts only facts supported by the source and a known, versioned rule.",
+  ],
+  [
+    "Continuity",
+    "Connects related observations across time without treating chat history as memory.",
+  ],
+  [
+    "Expectation",
+    "Evaluates only anticipated inputs or outcomes that the operator configured explicitly.",
+  ],
+  [
+    "Reconciliation",
+    "Keeps ambiguous, conflicting, or incorrectly linked cases visible for audited human correction.",
+  ],
+  [
+    "Daily Brief",
+    "Projects existing canonical state into one bounded, read-only view.",
+  ],
+];
+
+const boundaries = [
+  "No unrestricted autonomous action or general-purpose agent behavior.",
+  "No hidden memory inside prompts; durable, inspectable state is the system of record.",
+  "No inferred obligations presented as facts.",
+  "No recommendation or decision engine in V1.",
+  "No replacement of human judgment.",
+];
+
+const artifacts = [
+  {
+    type: "Origin story",
+    title: "I Did Not Want Another App",
+    description:
+      "How an AI coaching idea grew into a broader personal orchestration system.",
+    href: "/writing/i-did-not-want-another-app/",
+    external: false,
+  },
+  {
+    type: "Architecture case study",
+    title: "What I Built Instead of an Agent",
+    description:
+      "Why Bridget uses deterministic state, visible uncertainty, and human reconciliation before autonomy.",
+    href: "/writing/what-i-built-instead-of-an-agent/",
+    external: false,
+  },
+  {
+    type: "Public architecture repository",
+    title: "Bridget Architecture",
+    description:
+      "The V1 architecture, domain model, synthetic examples, and design principles.",
+    href: repositoryUrl,
+    external: true,
+  },
+];
+---
+
+<BaseLayout
+  title="Bridget | Personal Orchestration System"
+  description="Bridget is a deterministic personal orchestration system that turns scattered inputs into durable context, visible uncertainty, and coherent daily state."
+  canonicalPath="/projects/bridget/"
+  breadcrumbs={[
+    { label: "Home", href: "/" },
+    { label: "Projects", href: "/projects/" },
+    { label: "Bridget" },
+  ]}
+>
+  <ProjectWorkspaceLayout
+    project={project}
+    workspace={workspace}
+    documentTitle="Overview"
+    documentSummary="What Bridget is, the continuity problem it solves, and the deliberate boundary it keeps before autonomy."
+  >
+    <div class="bridget-document">
+      <section class="lead-section" aria-labelledby="bridget-overview">
+        <p class="section-label">Project brief</p>
+        <h2 id="bridget-overview">
+          Personal orchestration without another app
+        </h2>
+        <p class="lead">
+          Bridget is a private, deterministic system for turning scattered
+          messages and inputs into durable, inspectable context. It organizes
+          information, maintains continuity across time, exposes uncertainty for
+          correction, and returns one coherent view through interfaces I already
+          use.
+        </p>
+        <nav class="hero-links" aria-label="Bridget primary resources">
+          <a href="/writing/i-did-not-want-another-app/"
+            >Read the origin story</a
+          >
+          <a href="/writing/what-i-built-instead-of-an-agent/">
+            Read the architecture case study
+          </a>
+          <ExternalLink
+            href={repositoryUrl}
+            label="Explore the public architecture repository"
+            ariaLabel="Explore the Bridget public architecture repository (opens externally)"
+          />
+        </nav>
+      </section>
+
+      <section aria-labelledby="the-problem">
+        <p class="section-label">Why it exists</p>
+        <h2 id="the-problem">The problem was reconstructing context</h2>
+        <p>
+          Useful information lived across messages, tools, projects, and
+          personal systems. Remembering both the context and where it had been
+          recorded became work of its own. Isolated logs lost meaning over time,
+          while another dashboard would have added another behavior to maintain.
+        </p>
+        <p>
+          Bridget began with the opposite constraint: let the software adapt to
+          behavior already in place. The full evolution is in
+          <a href="/writing/i-did-not-want-another-app/">
+            I Did Not Want Another App
+          </a>.
+        </p>
+      </section>
+
+      <section aria-labelledby="what-bridget-does">
+        <p class="section-label">V1 responsibilities</p>
+        <h2 id="what-bridget-does">What Bridget does</h2>
+        <p>
+          Each domain has a bounded job. Together they preserve evidence,
+          continuity, explicit anticipation, and a route for human correction.
+        </p>
+        <div class="responsibility-grid">
+          {
+            responsibilities.map(([title, text]) => (
+              <article>
+                <h3>{title}</h3>
+                <p>{text}</p>
+              </article>
+            ))
+          }
+        </div>
+      </section>
+
+      <section
+        class="boundary-section"
+        aria-labelledby="what-bridget-does-not-do"
+      >
+        <p class="section-label">Deliberate boundary</p>
+        <h2 id="what-bridget-does-not-do">What Bridget does not do</h2>
+        <p>
+          These limits keep fluent behavior from obscuring what the system
+          actually knows. V1 establishes trustworthy state before adding
+          higher-order behavior.
+        </p>
+        <ul>
+          {boundaries.map((boundary) => <li>{boundary}</li>)}
+        </ul>
+      </section>
+
+      <section aria-labelledby="architecture-overview">
+        <p class="section-label">System map</p>
+        <h2 id="architecture-overview">Architecture overview</h2>
+        <figure class="architecture-flow">
+          <div class="flow-track">
+            <span>Message or input</span><i aria-hidden="true">→</i>
+            <span>Event</span><i aria-hidden="true">→</i>
+            <span>Observation</span><i aria-hidden="true">→</i>
+            <span>Continuity</span>
+          </div>
+          <div class="flow-branches">
+            <span>Expectation evaluation</span>
+            <span>Human reconciliation ↺</span>
+          </div>
+          <div class="flow-output"><span>Bounded Daily Brief</span></div>
+          <figcaption>
+            An accessible high-level view of the V1 pipeline. Inputs become
+            durable Events, supported Observations update Continuity, explicit
+            Expectations are evaluated, and ambiguous state returns through
+            human Reconciliation before a read-only Daily Brief is composed.
+          </figcaption>
+        </figure>
+        <p>
+          The stages remain operationally separate; receiving a message does not
+          silently run the entire pipeline. For responsibilities, boundaries,
+          and synthetic examples,
+          <ExternalLink
+            href={repositoryUrl}
+            label="explore the public architecture repository"
+            ariaLabel="Explore the Bridget public architecture repository (opens externally)"
+          />.
+        </p>
+      </section>
+
+      <section aria-labelledby="human-model-relationship">
+        <p class="section-label">Related, not nested</p>
+        <h2 id="human-model-relationship">Bridget and The Human Model</h2>
+        <p>
+          <a href="/projects/the-human-model/">The Human Model</a> focuses on understanding
+          patterns in my training, recovery, movement, and performance. Bridget preserves
+          and coordinates the information that systems like it depend on. One models
+          the human; the other maintains continuity around the work.
+        </p>
+        <blockquote>
+          The Human Model tries to understand me. Bridget makes sure the
+          information needed for that understanding does not get lost.
+        </blockquote>
+      </section>
+
+      <section aria-labelledby="public-artifacts">
+        <p class="section-label">Read, then inspect</p>
+        <h2 id="public-artifacts">Public artifacts</h2>
+        <div class="artifact-grid">
+          {
+            artifacts.map((artifact) => (
+              <a
+                href={artifact.href}
+                target={artifact.external ? "_blank" : undefined}
+                rel={artifact.external ? "noopener noreferrer" : undefined}
+              >
+                <span>
+                  {artifact.type}
+                  {artifact.external && (
+                    <span class="sr-only"> (opens externally)</span>
+                  )}
+                </span>
+                <strong>{artifact.title}</strong>
+                <p>{artifact.description}</p>
+                <em aria-hidden="true">
+                  {artifact.external ? "Open ↗" : "Read →"}
+                </em>
+              </a>
+            ))
+          }
+        </div>
+      </section>
+
+      <section class="status-section" aria-labelledby="current-status">
+        <p class="section-label">Current state</p>
+        <h2 id="current-status">Working privately, documented publicly</h2>
+        <p>
+          Bridget V1 is implemented privately and actively used. The public
+          repository documents the architecture and design principles without
+          exposing production code, private data, prompts, deployment details,
+          or exact production schemas. It is an engineering reference, not a
+          downloadable product.
+        </p>
+      </section>
+
+      <section aria-labelledby="future-direction">
+        <p class="section-label">Possible next layers</p>
+        <h2 id="future-direction">Future direction</h2>
+        <p>
+          Publicly documented possibilities include richer retrieval, additional
+          ingress sources, stronger reconciliation tools, broader workspace
+          views, bounded recommendations, calendar coordination, and specialized
+          companion systems. These are possible future layers, not shipped V1
+          capabilities.
+        </p>
+      </section>
+    </div>
+  </ProjectWorkspaceLayout>
+</BaseLayout>
+
+<style>
+  .bridget-document {
+    display: grid;
+    gap: clamp(2.5rem, 6vw, 4.75rem);
+    max-width: var(--reading-measure-wide);
+  }
+
+  section {
+    scroll-margin-top: calc(var(--site-header-height) + 1rem);
+  }
+
+  section:not(:first-child) {
+    border-top: var(--border-width) solid var(--color-border);
+    padding-top: clamp(1.5rem, 3vw, 2.25rem);
+  }
+
+  .section-label {
+    margin: 0 0 var(--space-2);
+    color: var(--color-text-muted);
+    font-family: var(--font-mono);
+    font-size: var(--font-size-micro);
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+
+  h2 {
+    margin-bottom: var(--space-3);
+    font-size: clamp(1.5rem, 2.4vw, 2.15rem);
+    line-height: 1.08;
+  }
+
+  h3 {
+    font-size: 1.05rem;
+  }
+
+  p,
+  li,
+  figcaption {
+    color: var(--color-text-muted);
+    line-height: 1.65;
+  }
+
+  p {
+    max-width: var(--reading-measure);
+  }
+
+  .lead {
+    color: var(--color-text-secondary);
+    font-size: clamp(1.04rem, 1.4vw, 1.18rem);
+  }
+
+  a {
+    color: var(--plum);
+    font-weight: 600;
+    text-decoration-thickness: 0.08em;
+    text-underline-offset: 0.18em;
+  }
+
+  .hero-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin-top: var(--space-5);
+  }
+
+  .hero-links > :global(a) {
+    min-height: 44px;
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--radius-sm);
+    padding: 0.72rem 0.9rem;
+    background: var(--color-surface-raised);
+    text-decoration: none;
+  }
+
+  .hero-links > :global(a:hover),
+  .hero-links > :global(a:focus-visible) {
+    border-color: var(--color-border-strong);
+    background: var(--color-surface);
+  }
+
+  .responsibility-grid,
+  .artifact-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-3);
+    margin-top: var(--space-5);
+  }
+
+  .responsibility-grid article,
+  .boundary-section,
+  .status-section {
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-4);
+    background: var(--color-surface-raised);
+  }
+
+  .responsibility-grid p {
+    margin: var(--space-2) 0 0;
+    font-size: 0.94rem;
+  }
+
+  .boundary-section,
+  .status-section {
+    border-top-color: color-mix(in srgb, var(--plum) 34%, var(--color-border));
+    background: color-mix(in srgb, var(--plum) 7%, var(--color-surface-raised));
+  }
+
+  ul {
+    display: grid;
+    gap: var(--space-2);
+    padding-left: 1.25rem;
+  }
+
+  .architecture-flow {
+    display: grid;
+    gap: var(--space-3);
+    margin: var(--space-5) 0;
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: clamp(1rem, 3vw, 1.75rem);
+    background: color-mix(in srgb, var(--plum) 7%, var(--paper));
+  }
+
+  .flow-track {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    align-items: center;
+  }
+
+  .flow-track span,
+  .flow-branches span,
+  .flow-output span {
+    border: var(--border-width) solid
+      color-mix(in srgb, var(--plum) 38%, var(--color-border));
+    border-radius: var(--radius-sm);
+    padding: 0.6rem 0.72rem;
+    background: var(--color-surface-raised);
+    color: var(--color-text);
+    font-family: var(--font-mono);
+    font-size: var(--font-size-small);
+    font-weight: 650;
+  }
+
+  .flow-track i {
+    color: var(--plum);
+    font-style: normal;
+  }
+
+  .flow-branches {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-3);
+    padding-left: 25%;
+  }
+
+  .flow-output {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .flow-output span {
+    background: color-mix(in srgb, var(--plum) 14%, var(--paper));
+  }
+
+  figcaption {
+    border-top: var(--border-width) solid var(--color-border);
+    padding-top: var(--space-3);
+    font-size: 0.86rem;
+  }
+
+  blockquote {
+    max-width: var(--reading-measure);
+    margin: var(--space-5) 0 0;
+    border-left: 0.25rem solid var(--plum);
+    padding: var(--space-3) var(--space-4);
+    background: color-mix(in srgb, var(--plum) 8%, var(--paper));
+    color: var(--color-text-secondary);
+    font-family: var(--font-hand);
+    font-size: clamp(1.15rem, 2vw, 1.4rem);
+    line-height: 1.35;
+  }
+
+  .artifact-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .artifact-grid a {
+    display: grid;
+    min-height: 100%;
+    gap: var(--space-2);
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-4);
+    background: var(--color-surface-raised);
+    color: var(--color-text);
+    text-decoration: none;
+  }
+
+  .artifact-grid a:hover,
+  .artifact-grid a:focus-visible {
+    border-color: var(--color-border-strong);
+    transform: translateY(-2px);
+  }
+
+  .artifact-grid span,
+  .artifact-grid em {
+    color: var(--color-text-muted);
+    font-family: var(--font-mono);
+    font-size: var(--font-size-micro);
+    font-style: normal;
+    font-weight: 650;
+    text-transform: uppercase;
+  }
+
+  .artifact-grid p {
+    margin: 0;
+    font-size: 0.9rem;
+  }
+
+  .artifact-grid em {
+    align-self: end;
+    margin-top: var(--space-3);
+    color: var(--plum);
+  }
+
+  @media (max-width: 700px) {
+    .responsibility-grid,
+    .artifact-grid,
+    .flow-branches {
+      grid-template-columns: 1fr;
+    }
+
+    .flow-track {
+      display: grid;
+      grid-template-columns: 1fr auto;
+    }
+
+    .flow-track span:last-child {
+      grid-column: 1;
+    }
+
+    .flow-branches {
+      padding-left: 0;
+    }
+  }
+</style>
