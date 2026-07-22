@@ -393,6 +393,16 @@ export const destinations: Destination[] = [
     project: "qa-agents",
   },
   {
+    id: "project-qa-agents-live",
+    href: "/projects/qa-agents/live/",
+    label: "QA Agents live system review",
+    type: "demo",
+    summary:
+      "The latest public-safe deterministic evidence exported after QA Agents reviewed this website.",
+    topics: ["Agent Systems", "Software Quality"],
+    project: "qa-agents",
+  },
+  {
     id: "project-qa-agents-case-studies",
     href: "/projects/qa-agents/case-studies/",
     label: "QA Agents case studies",

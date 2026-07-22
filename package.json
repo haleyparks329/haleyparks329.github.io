@@ -11,7 +11,8 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "validate:links": "node scripts/validate-links.mjs",
-    "validate": "npm run format:check && npm run check && npm run build && npm run validate:links"
+    "validate:qa-live": "node --experimental-strip-types scripts/validate-qa-live.ts",
+    "validate": "npm run format:check && npm run validate:qa-live && npm run check && npm run build && npm run validate:links"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.6.0",

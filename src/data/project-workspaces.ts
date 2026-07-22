@@ -218,6 +218,7 @@ export const projectWorkspaces: Record<string, ProjectWorkspaceConfig> = {
       {
         label: "Evidence",
         links: [
+          { label: "Live System Review", href: "/projects/qa-agents/live/" },
           { label: "Case Studies", href: "/projects/qa-agents/case-studies/" },
           { label: "Investigation Replay", href: "/projects/qa-agents/demo/" },
           {

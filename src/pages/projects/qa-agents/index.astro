@@ -18,6 +18,7 @@ const workspace = workspaceForSlug(project.data.slug);
 const document = projectDocumentForSlug(project.data.slug);
 const continueLinks = relatedLinksForHrefs(
   [
+    "/projects/qa-agents/live/",
     "/projects/qa-agents/system/",
     "/projects/qa-agents/demo/",
     "/projects/qa-agents/meticulous/",
@@ -52,5 +53,37 @@ const continueLinks = relatedLinksForHrefs(
       nextHref="/projects/qa-agents/system/"
       nextLabel="Open the system file"
     />
+    <aside class="live-review-callout">
+      <p class="eyebrow">Real website evidence</p>
+      <h2>See QA Agents reviewing this website.</h2>
+      <p>
+        The live system review shows the latest exported deterministic evidence.
+        It is separate from the recorded product demo, and it keeps known
+        coverage gaps visible.
+      </p>
+      <a class="button secondary" href="/projects/qa-agents/live/"
+        >View the latest live system review</a
+      >
+    </aside>
   </ProjectWorkspaceLayout>
 </BaseLayout>
+
+<style>
+  .live-review-callout {
+    margin-top: 2rem;
+    border: 1px solid var(--accent-tertiary-border);
+    border-radius: 10px;
+    padding: clamp(1rem, 4vw, 1.5rem);
+    background: linear-gradient(
+      135deg,
+      var(--project-paper-blue),
+      rgba(255, 249, 241, 0.8)
+    );
+  }
+  .live-review-callout h2 {
+    margin: 0.25rem 0 0.5rem;
+  }
+  .live-review-callout p:not(.eyebrow) {
+    max-width: 42rem;
+  }
+</style>

@@ -1,0 +1,269 @@
+---
+import type { QaPublicArtifact } from "@/data/qa-agents/artifact";
+
+type Props = { artifact: QaPublicArtifact };
+const { artifact } = Astro.props;
+const command = artifact.commands.find(
+  (item) => item.name === "website_validation",
+);
+const browserGap = artifact.coverage_gaps.find(
+  (gap) => gap.type === "missing_browser_evidence",
+);
+const human = (value: string) => value.replaceAll("_", " ");
+const duration = command
+  ? command.duration_ms === 0
+    ? "recorded as 0 ms"
+    : command.duration_ms < 1000
+      ? `${command.duration_ms} ms`
+      : `${(command.duration_ms / 1000).toFixed(1)} s`
+  : "not recorded";
+---
+
+<section class="live-terminal" aria-labelledby="terminal-title">
+  <header class="live-terminal__chrome">
+    <span class="terminal-lights" aria-hidden="true"><i></i><i></i><i></i></span
+    >
+    <span>latest-export.json</span>
+    <span class="evidence-stamp">REAL EVIDENCE</span>
+  </header>
+  <div class="live-terminal__body">
+    <h2 id="terminal-title">QA AGENTS // LIVE SYSTEM REVIEW</h2>
+    <div class="terminal-preamble">
+      <span>Target: {artifact.target.repository}</span>
+      <span>Commit: {artifact.run.commit.slice(0, 7)}</span>
+      <span>Source: latest exported evidence</span>
+    </div>
+
+    <div class="terminal-step">
+      <h3><span aria-hidden="true">›</span> loading application profile</h3>
+      <dl><div><dt>profile</dt><dd>{artifact.target.profile}</dd></div></dl>
+    </div>
+    <div class="terminal-step">
+      <h3>
+        <span aria-hidden="true">›</span> collecting deterministic evidence
+      </h3>
+      <dl>
+        {
+          command ? (
+            <>
+              <div>
+                <>
+                  <dt>{human(command.name)}</dt>
+                  <dd>{human(command.status)}</dd>
+                </>
+              </div>
+              <div>
+                <>
+                  <dt>exit code</dt>
+                  <dd>{command.exit_code}</dd>
+                </>
+              </div>
+              <div>
+                <>
+                  <dt>duration</dt>
+                  <dd>{duration}</dd>
+                </>
+              </div>
+            </>
+          ) : (
+            <div>
+              <>
+                <dt>command evidence</dt>
+                <dd>not available</dd>
+              </>
+            </div>
+          )
+        }
+      </dl>
+    </div>
+    <div class="terminal-step terminal-step--gap">
+      <h3><span aria-hidden="true">›</span> reviewing evidence boundaries</h3>
+      <dl>
+        <div><dt>browser interactions</dt><dd>not collected</dd></div>
+        <div><dt>accessibility</dt><dd>not collected</dd></div>
+        <div><dt>screenshots</dt><dd>not collected</dd></div>
+        <div><dt>responsive layouts</dt><dd>not collected</dd></div>
+      </dl>
+      {browserGap && <p class="terminal-note">{browserGap.summary}</p>}
+    </div>
+    <div class="terminal-step">
+      <h3><span aria-hidden="true">›</span> policy decision</h3>
+      <dl>
+        <div>
+          <dt>publish evidence</dt><dd>{human(artifact.policy.outcome)}</dd>
+        </div>
+        <div>
+          <dt>autonomous changes</dt><dd>
+            {artifact.policy.autonomous_code_changes ? "enabled" : "disabled"}
+          </dd>
+        </div>
+      </dl>
+    </div>
+    <p class="terminal-status">
+      <span aria-hidden="true">●</span> SYSTEM STATUS: HEALTHY, WITH KNOWN GAPS <span
+        class="cursor"
+        aria-hidden="true"></span>
+    </p>
+  </div>
+</section>
+
+<style>
+  .live-terminal {
+    overflow: hidden;
+    border: 1px solid var(--color-border-strong);
+    border-radius: 14px;
+    background: var(--paper);
+    box-shadow: var(--shadow-raised);
+  }
+  .live-terminal__chrome {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.7rem 1rem;
+    border-bottom: 1px solid var(--color-border-strong);
+    background: linear-gradient(
+      90deg,
+      var(--project-paper-lavender),
+      var(--project-paper-blue)
+    );
+    font: 600 0.75rem var(--font-mono);
+    letter-spacing: 0.04em;
+  }
+  .terminal-lights {
+    display: flex;
+    gap: 0.35rem;
+  }
+  .terminal-lights i {
+    width: 0.65rem;
+    height: 0.65rem;
+    border-radius: 50%;
+    background: var(--rust);
+  }
+  .terminal-lights i:nth-child(2) {
+    background: var(--khaki);
+  }
+  .terminal-lights i:nth-child(3) {
+    background: var(--houseplant);
+  }
+  .evidence-stamp {
+    justify-self: end;
+    border: 1px solid var(--houseplant);
+    border-radius: 999px;
+    padding: 0.2rem 0.45rem;
+    color: #436149;
+    transform: rotate(1deg);
+  }
+  .live-terminal__body {
+    padding: clamp(1.1rem, 4vw, 2.25rem);
+    font-family: var(--font-mono);
+  }
+  h2 {
+    margin: 0 0 1rem;
+    font-size: clamp(1.05rem, 3vw, 1.45rem);
+    letter-spacing: 0.03em;
+  }
+  .terminal-preamble {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem 1.5rem;
+    margin-bottom: 2rem;
+    color: var(--color-text-secondary);
+    font-size: 0.85rem;
+  }
+  .terminal-step {
+    margin-top: 1.5rem;
+  }
+  .terminal-step h3 {
+    margin: 0 0 0.6rem;
+    color: var(--plum);
+    font-size: clamp(0.9rem, 2vw, 1rem);
+  }
+  .terminal-step h3 span {
+    color: var(--blue);
+  }
+  dl {
+    margin: 0 0 0 clamp(0.25rem, 3vw, 1.25rem);
+  }
+  dl div {
+    display: grid;
+    grid-template-columns: minmax(11rem, 0.55fr) minmax(0, 1fr);
+    gap: 0.75rem;
+    padding: 0.17rem 0;
+    font-size: clamp(0.82rem, 2vw, 0.93rem);
+  }
+  dt {
+    display: flex;
+    align-items: baseline;
+    color: var(--color-text-secondary);
+  }
+  dt::after {
+    content: "";
+    flex: 1;
+    margin-left: 0.65rem;
+    border-bottom: 1px dotted rgba(55, 40, 38, 0.32);
+  }
+  dd {
+    margin: 0;
+    overflow-wrap: anywhere;
+    font-weight: 600;
+  }
+  .terminal-step--gap dd {
+    color: var(--rust);
+  }
+  .terminal-note {
+    margin: 0.8rem 0 0 clamp(0.25rem, 3vw, 1.25rem);
+    border-left: 3px solid var(--khaki);
+    padding: 0.45rem 0.7rem;
+    background: rgba(244, 228, 163, 0.3);
+    font: 0.82rem/1.5 var(--font-sans);
+  }
+  .terminal-status {
+    margin: 2rem 0 0;
+    border: 1px solid rgba(111, 152, 117, 0.45);
+    border-radius: 8px;
+    padding: 0.8rem;
+    background: rgba(111, 152, 117, 0.1);
+    color: #3e5b43;
+    font-size: clamp(0.82rem, 2vw, 1rem);
+    font-weight: 800;
+  }
+  .cursor {
+    display: inline-block;
+    width: 0.55em;
+    height: 1em;
+    margin-left: 0.3rem;
+    vertical-align: -0.15em;
+    background: var(--rust);
+    animation: blink 1s steps(2, start) 3;
+  }
+  @keyframes blink {
+    50% {
+      opacity: 0;
+    }
+  }
+  @media (max-width: 560px) {
+    .live-terminal__chrome {
+      grid-template-columns: auto 1fr;
+    }
+    .live-terminal__chrome > :nth-child(2) {
+      display: none;
+    }
+    dl div {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 0;
+      padding: 0.35rem 0;
+    }
+    dt::after {
+      display: none;
+    }
+    .terminal-preamble {
+      display: grid;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .cursor {
+      animation: none;
+    }
+  }
+</style>
