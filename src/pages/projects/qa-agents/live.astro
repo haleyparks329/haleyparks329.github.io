@@ -1,0 +1,424 @@
+---
+import { getCollection } from "astro:content";
+import rawArtifact from "@/data/qa-agents/latest.json";
+import { parseQaPublicArtifact } from "@/data/qa-agents/artifact";
+import LiveReviewTerminal from "@/components/qa-agents/LiveReviewTerminal.astro";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+
+const project = (await getCollection("projects")).find(
+  (entry) => entry.data.slug === "qa-agents",
+);
+if (!project) throw new Error("Missing QA Agents project entry");
+
+// Invalid public evidence is a build error. Never turn malformed data into success UI.
+const artifact = parseQaPublicArtifact(rawArtifact);
+const human = (value: string) => value.replaceAll("_", " ");
+const timestamp = artifact.run.completed_at ?? artifact.run.started_at;
+const generated = timestamp
+  ? new Intl.DateTimeFormat("en", {
+      dateStyle: "medium",
+      timeStyle: "short",
+      timeZone: "UTC",
+    }).format(new Date(timestamp)) + " UTC"
+  : "Not recorded in this artifact";
+const passedCommands = artifact.commands.filter(
+  (command) => command.status === "passed" && command.exit_code === 0,
+).length;
+const statusLabel =
+  artifact.run.status === "passed_with_gaps"
+    ? "Healthy, with known gaps"
+    : human(artifact.run.status);
+---
+
+<BaseLayout
+  title="QA Agents Live System Review"
+  description="The latest public-safe QA Agents evidence exported after deterministic validation of this website."
+  canonicalPath="/projects/qa-agents/live/"
+  breadcrumbs={[
+    { label: "Home", href: "/" },
+    { label: "Projects", href: "/projects/" },
+    { label: project.data.title, href: "/projects/qa-agents/" },
+    { label: "Live System Review" },
+  ]}
+>
+  <article class="page-section wide-case live-review-page">
+    <header class="live-review-hero">
+      <p class="eyebrow">Latest exported review · real run evidence</p>
+      <h1>QA Agents <span>// Live System Review</span></h1>
+      <p class="lede">
+        This page renders the latest public-safe artifact exported by QA Agents
+        after running deterministic validation against this website.
+      </p>
+      <p class="truth-note">
+        This is a persisted review, not a live-streamed terminal session. No LLM
+        interpreted raw command output, and no code was autonomously modified.
+      </p>
+      <div class="button-row">
+        <a class="button secondary" href="/projects/qa-agents/"
+          >Back to QA Agents</a
+        >
+        <a class="button secondary" href="/projects/qa-agents/demo/"
+          >Open the recorded product demo</a
+        >
+      </div>
+    </header>
+
+    <section class="status-card" aria-labelledby="status-heading">
+      <div>
+        <p class="status-kicker">Latest run status</p>
+        <h2 id="status-heading">
+          <span aria-hidden="true">●</span>
+          {statusLabel}
+        </h2>
+        <p>
+          Available deterministic checks passed; the exported review also
+          records meaningful evidence gaps.
+        </p>
+      </div>
+      <dl class="status-grid">
+        <div><dt>Target</dt><dd>{artifact.target.repository}</dd></div>
+        <div>
+          <dt>Commit</dt><dd><code>{artifact.run.commit.slice(0, 7)}</code></dd>
+        </div>
+        <div><dt>Evidence generated</dt><dd>{generated}</dd></div>
+        <div>
+          <dt>Checks passed</dt><dd>
+            {passedCommands} of {artifact.commands.length}
+          </dd>
+        </div>
+        <div><dt>Findings</dt><dd>{artifact.findings.length}</dd></div>
+        <div><dt>Known gaps</dt><dd>{artifact.coverage_gaps.length}</dd></div>
+        <div class="status-grid__wide">
+          <dt>Autonomous code changes</dt><dd>Disabled</dd>
+        </div>
+      </dl>
+    </section>
+
+    <LiveReviewTerminal artifact={artifact} />
+
+    <section class="evidence-section" aria-labelledby="evidence-heading">
+      <p class="eyebrow">Inspectable evidence</p>
+      <h2 id="evidence-heading">
+        The terminal is the invitation. This is the proof.
+      </h2>
+      <p>
+        Technical values below come from the exported artifact. Private raw logs
+        and local paths are not included.
+      </p>
+
+      <div class="evidence-disclosures">
+        <details open>
+          <summary>Run metadata</summary>
+          <dl>
+            <div><dt>Schema version</dt><dd>{artifact.schema_version}</dd></div>
+            <div><dt>Repository</dt><dd>{artifact.target.repository}</dd></div>
+            <div>
+              <dt>Application profile</dt><dd>
+                <code>{artifact.target.profile}</code>
+              </dd>
+            </div>
+            <div><dt>Base</dt><dd><code>{artifact.run.base}</code></dd></div>
+            <div><dt>Head</dt><dd><code>{artifact.run.head}</code></dd></div>
+            <div>
+              <dt>Full commit</dt><dd><code>{artifact.run.commit}</code></dd>
+            </div>
+            <div>
+              <dt>Raw status</dt><dd><code>{artifact.run.status}</code></dd>
+            </div>
+            <div>
+              <dt>Started</dt><dd>
+                {artifact.run.started_at ?? "Not recorded"}
+              </dd>
+            </div>
+            <div>
+              <dt>Completed</dt><dd>
+                {artifact.run.completed_at ?? "Not recorded"}
+              </dd>
+            </div>
+          </dl>
+        </details>
+
+        <details open>
+          <summary>Command evidence ({artifact.commands.length})</summary>
+          {
+            artifact.commands.map((command) => (
+              <article class="command-record">
+                <h3>{human(command.name)}</h3>
+                <dl>
+                  <div>
+                    <>
+                      <dt>Status</dt>
+                      <dd>{human(command.status)}</dd>
+                    </>
+                  </div>
+                  <div>
+                    <>
+                      <dt>Exit code</dt>
+                      <dd>{command.exit_code}</dd>
+                    </>
+                  </div>
+                  <div>
+                    <>
+                      <dt>Duration</dt>
+                      <dd>{command.duration_ms} ms</dd>
+                    </>
+                  </div>
+                </dl>
+              </article>
+            ))
+          }
+          <p class="boundary-copy">
+            The artifact exposes one combined validation command. This interface
+            does not invent separate records for source integrity, Astro checks,
+            production build, or internal links.
+          </p>
+        </details>
+
+        <details open>
+          <summary>Findings ({artifact.findings.length})</summary>
+          {
+            artifact.findings.length === 0 ? (
+              <p>No findings were recorded in this exported review.</p>
+            ) : (
+              <pre>{JSON.stringify(artifact.findings, null, 2)}</pre>
+            )
+          }
+        </details>
+
+        <details open>
+          <summary
+            >Known coverage gaps ({artifact.coverage_gaps.length})</summary
+          >
+          {
+            artifact.coverage_gaps.map((gap) => (
+              <article class="gap-record">
+                <h3>{human(gap.type)}</h3>
+                <p>{gap.summary}</p>
+                {gap.type === "missing_browser_evidence" && (
+                  <ul>
+                    <li>Rendered browser interactions were not collected.</li>
+                    <li>Automated accessibility evidence was not collected.</li>
+                    <li>
+                      Screenshots and responsive-layout evidence were not
+                      collected.
+                    </li>
+                  </ul>
+                )}
+              </article>
+            ))
+          }
+        </details>
+
+        <details open>
+          <summary>Policy result</summary>
+          <dl>
+            <div><dt>Outcome</dt><dd>{human(artifact.policy.outcome)}</dd></div>
+            <div><dt>Action</dt><dd>{human(artifact.policy.action)}</dd></div>
+            <div>
+              <dt>Autonomous code changes</dt><dd>
+                {
+                  artifact.policy.autonomous_code_changes
+                    ? "Enabled"
+                    : "Disabled"
+                }
+              </dd>
+            </div>
+          </dl>
+        </details>
+      </div>
+    </section>
+
+    <aside class="proof-boundary" aria-labelledby="boundary-heading">
+      <p class="eyebrow">What this review proves</p>
+      <h2 id="boundary-heading">A useful pass, with a visible boundary.</h2>
+      <div>
+        <section>
+          <h3>It does show</h3><p>
+            QA Agents ran the exported deterministic command against this
+            website, received a passing result with exit code zero, persisted
+            the result, and allowed public-safe evidence to be published.
+          </p>
+        </section>
+        <section>
+          <h3>It does not show</h3><p>
+            It does not prove rendered interaction behavior, automated
+            accessibility, screenshots, or responsive layouts. It is not an
+            autonomous repair session, an LLM interpretation, or continuous
+            monitoring.
+          </p>
+        </section>
+      </div>
+    </aside>
+  </article>
+</BaseLayout>
+
+<style>
+  .live-review-page {
+    display: grid;
+    gap: clamp(2.5rem, 7vw, 5rem);
+  }
+  .live-review-hero {
+    max-width: 52rem;
+  }
+  .live-review-hero h1 {
+    margin-bottom: 1rem;
+    font-size: var(--text-page-title);
+  }
+  .live-review-hero h1 span {
+    color: var(--rust);
+  }
+  .truth-note {
+    border-left: 4px solid var(--blue);
+    padding: 0.55rem 0.85rem;
+    background: rgba(207, 231, 246, 0.3);
+    color: var(--color-text-secondary);
+  }
+  .status-card {
+    display: grid;
+    grid-template-columns: minmax(16rem, 0.65fr) minmax(0, 1fr);
+    gap: clamp(1.5rem, 5vw, 3rem);
+    border: 1px solid rgba(111, 152, 117, 0.45);
+    border-radius: 12px;
+    padding: clamp(1.25rem, 4vw, 2rem);
+    background: linear-gradient(
+      135deg,
+      rgba(111, 152, 117, 0.13),
+      rgba(244, 228, 163, 0.24)
+    );
+  }
+  .status-card h2 {
+    margin: 0.2rem 0 0.5rem;
+    color: #3e5b43;
+    font-size: clamp(1.3rem, 3vw, 2rem);
+  }
+  .status-card p {
+    margin: 0;
+  }
+  .status-kicker {
+    font: 700 0.75rem var(--font-mono);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .status-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+    margin: 0;
+  }
+  .status-grid div {
+    border-bottom: 1px solid var(--color-border);
+    padding-bottom: 0.5rem;
+  }
+  .status-grid__wide {
+    grid-column: 1/-1;
+  }
+  dt {
+    color: var(--color-text-muted);
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  dd {
+    margin: 0.15rem 0 0;
+    overflow-wrap: anywhere;
+    font-weight: 600;
+  }
+  .evidence-section > p:not(.eyebrow) {
+    max-width: 46rem;
+  }
+  .evidence-disclosures {
+    display: grid;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+  }
+  details {
+    border: 1px solid var(--color-border-strong);
+    border-radius: 9px;
+    padding: 0 1rem;
+    background: var(--color-surface-raised);
+  }
+  summary {
+    cursor: pointer;
+    padding: 1rem 0;
+    color: var(--plum);
+    font-weight: 700;
+  }
+  summary:focus-visible {
+    outline: 3px solid var(--color-focus);
+    outline-offset: 3px;
+  }
+  details > :not(summary) {
+    margin-inline: 0.25rem;
+  }
+  details dl {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.8rem 1.5rem;
+    padding-bottom: 1rem;
+  }
+  details dl div {
+    min-width: 0;
+  }
+  details code,
+  details pre {
+    overflow-wrap: anywhere;
+    white-space: pre-wrap;
+  }
+  .command-record,
+  .gap-record {
+    margin-bottom: 1rem;
+    border-left: 4px solid var(--houseplant);
+    padding: 0.25rem 1rem;
+  }
+  .gap-record {
+    border-left-color: var(--khaki);
+  }
+  .command-record h3,
+  .gap-record h3 {
+    margin-top: 0;
+    font-family: var(--font-mono);
+    font-size: 1rem;
+  }
+  .boundary-copy {
+    margin-bottom: 1rem;
+    border-radius: 6px;
+    padding: 0.7rem;
+    background: var(--color-code-surface);
+    font-size: 0.9rem;
+  }
+  .proof-boundary {
+    border: 1px solid var(--accent-primary-border);
+    border-radius: 12px;
+    padding: clamp(1.25rem, 4vw, 2rem);
+    background: var(--project-paper-raspberry);
+  }
+  .proof-boundary > div {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.5rem;
+  }
+  .proof-boundary h3 {
+    margin-bottom: 0.35rem;
+  }
+  .proof-boundary p {
+    margin-top: 0;
+  }
+  @media (max-width: 720px) {
+    .status-card,
+    .proof-boundary > div {
+      grid-template-columns: 1fr;
+    }
+    details dl {
+      grid-template-columns: 1fr;
+    }
+  }
+  @media (max-width: 480px) {
+    .status-grid {
+      grid-template-columns: 1fr;
+    }
+    .status-grid__wide {
+      grid-column: auto;
+    }
+  }
+</style>
