@@ -7,9 +7,19 @@ import TagList from "./TagList.astro";
 type Props = {
   project: CollectionEntry<"projects">;
   variant?: "featured" | "standard" | "compact" | "desk";
+  primaryLabel?: string;
+  supportingAction?: {
+    href: string;
+    label: string;
+  };
 };
 
-const { project, variant = "standard" } = Astro.props;
+const {
+  project,
+  variant = "standard",
+  primaryLabel,
+  supportingAction,
+} = Astro.props;
 const data = project.data;
 const visibleTags =
   variant === "compact" || variant === "desk"
@@ -24,7 +34,8 @@ const projectNotes: Record<string, string> = {
   "career-intelligence": "source-backed reasoning",
   "qa-agents": "recorded evidence loop",
 };
-const primaryActionLabel = data.slug === "bridget" ? "Project" : "Case Study";
+const primaryActionLabel =
+  primaryLabel ?? (data.slug === "bridget" ? "Project" : "Case Study");
 ---
 
 <article
@@ -55,6 +66,17 @@ const primaryActionLabel = data.slug === "bridget" ? "Project" : "Case Study";
       demoHref && (
         <a class="secondary-action is-demo" href={demoHref}>
           Demo
+        </a>
+      )
+    }
+    {
+      supportingAction && (
+        <a
+          class="supporting-action"
+          href={supportingAction.href}
+          aria-label={`${supportingAction.label} for ${data.title}`}
+        >
+          <span aria-hidden="true">●</span> {supportingAction.label}
         </a>
       )
     }
@@ -242,6 +264,23 @@ const primaryActionLabel = data.slug === "bridget" ? "Project" : "Case Study";
       var(--color-border)
     );
     background: color-mix(in srgb, var(--file-accent) 12%, var(--paper));
+  }
+
+  .project-file-links :global(.supporting-action) {
+    color: var(--color-text-muted);
+    font-size: var(--text-xs);
+    font-weight: 600;
+    text-decoration-thickness: 0.06em;
+  }
+
+  .supporting-action span {
+    color: var(--houseplant);
+    font-size: 0.72em;
+  }
+
+  .project-file-links :global(.supporting-action:hover),
+  .project-file-links :global(.supporting-action:focus-visible) {
+    color: var(--rust);
   }
 
   .secondary-action,

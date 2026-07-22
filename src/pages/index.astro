@@ -140,6 +140,19 @@ const latestFieldLog = fieldLogEntries[0];
           <ProjectFile
             project={project}
             variant={index === 0 ? "featured" : "desk"}
+            primaryLabel={
+              project.data.slug === "qa-agents"
+                ? "Learn about QA Agents"
+                : undefined
+            }
+            supportingAction={
+              project.data.slug === "qa-agents"
+                ? {
+                    href: "/projects/qa-agents/live/",
+                    label: "Latest Live Review",
+                  }
+                : undefined
+            }
           />
         </div>
       ))
