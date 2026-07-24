@@ -28,6 +28,29 @@ const data = project.data;
       <div class="project-meta" aria-label={`${data.title} metadata`}>
         <StatusBadge status={data.status} accent={data.accent} />
       </div>
+      {
+        workspace.primaryLinks && workspace.primaryLinks.length > 0 && (
+          <nav
+            class="project-primary-links"
+            aria-label={`${data.title} primary resources`}
+          >
+            {workspace.primaryLinks.map((link, index) => (
+              <a
+                class={index === 0 ? "is-primary" : undefined}
+                href={link.href}
+                target={link.external ? "_blank" : undefined}
+                rel={link.external ? "noreferrer" : undefined}
+              >
+                {link.label}
+                {link.external && <span aria-hidden="true"> ↗</span>}
+                {link.external && (
+                  <span class="sr-only"> Opens externally</span>
+                )}
+              </a>
+            ))}
+          </nav>
+        )
+      }
     </div>
     <aside class="current-state" aria-label={`${data.title} current work`}>
       <p>Currently on the desk</p>
@@ -122,6 +145,45 @@ const data = project.data;
     flex-wrap: wrap;
     gap: var(--space-2);
     align-items: center;
+  }
+
+  .project-primary-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2) var(--space-3);
+    align-items: center;
+    margin-top: var(--space-1);
+  }
+
+  .project-primary-links a {
+    display: inline-flex;
+    min-height: 38px;
+    align-items: center;
+    border-bottom: var(--border-width) solid
+      color-mix(in srgb, var(--workspace-accent) 45%, var(--color-border));
+    padding: 0.35rem 0.1rem;
+    color: var(--color-text);
+    font-size: var(--text-sm);
+    font-weight: 650;
+    text-decoration: none;
+  }
+
+  .project-primary-links a:hover,
+  .project-primary-links a:focus-visible {
+    border-bottom-color: var(--workspace-accent);
+    color: var(--workspace-accent);
+  }
+
+  .project-primary-links a.is-primary {
+    border: var(--border-width) solid
+      color-mix(in srgb, var(--workspace-accent) 45%, var(--color-border));
+    border-radius: var(--radius-md);
+    padding-inline: 0.7rem;
+    background: color-mix(
+      in srgb,
+      var(--workspace-accent) 9%,
+      var(--color-surface)
+    );
   }
 
   .current-state {

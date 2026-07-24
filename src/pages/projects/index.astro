@@ -24,6 +24,7 @@ const projects = (await getCollection("projects")).sort(
       note="Each project includes current work, documentation, and related links."
       accent="olive"
       width="wide"
+      density="compact"
     />
     <div class="project-directory-grid" aria-label="Project catalogue">
       {projects.map((project) => <ProjectDirectoryCard project={project} />)}

@@ -8,6 +8,7 @@ type Props = {
   note?: string;
   accent?: "raspberry" | "olive" | "sky" | "lavender" | "ochre" | "plant";
   width?: "reading" | "standard" | "wide";
+  density?: "standard" | "compact";
 };
 
 const {
@@ -19,6 +20,7 @@ const {
   note,
   accent = "raspberry",
   width = "standard",
+  density = "standard",
 } = Astro.props;
 
 const mastheadDescription = description ?? text;
@@ -26,7 +28,7 @@ const supportingText = description ? text : undefined;
 ---
 
 <header
-  class={`page-intro page-intro-${accent} page-intro-${width} ${
+  class={`page-intro page-intro-${accent} page-intro-${width} page-intro-${density} ${
     note ? "has-note" : ""
   }`}
 >
@@ -68,6 +70,11 @@ const supportingText = description ? text : undefined;
 
   .page-intro-reading {
     width: min(var(--content-reading), 100%);
+  }
+
+  .page-intro-compact {
+    min-height: 18rem;
+    padding-block: 3.25rem;
   }
 
   .page-intro-olive {

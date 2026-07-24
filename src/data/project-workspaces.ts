@@ -22,6 +22,7 @@ export type ProjectWorkspaceConfig = {
   headerSummary: string;
   currentNote: string;
   annotation: string;
+  primaryLinks?: ProjectWorkspaceLink[];
   groups: ProjectWorkspaceGroup[];
 };
 
@@ -36,6 +37,21 @@ export const projectWorkspaces: Record<string, ProjectWorkspaceConfig> = {
     currentNote:
       "Using the private V1 system while documenting its architecture and design boundaries in public.",
     annotation: "threads in; coherent context out; uncertainty stays visible",
+    primaryLinks: [
+      {
+        label: "Architecture",
+        href: "/writing/what-i-built-instead-of-an-agent/",
+      },
+      {
+        label: "Origin story",
+        href: "/writing/i-did-not-want-another-app/",
+      },
+      {
+        label: "Architecture repository",
+        href: "https://github.com/haleyparks329/bridget-architecture",
+        external: true,
+      },
+    ],
     groups: [
       {
         label: "Project",
@@ -85,6 +101,21 @@ export const projectWorkspaces: Record<string, ProjectWorkspaceConfig> = {
       "Cleaning up the path from workout records and recovery context to a reviewable next-session prediction.",
     annotation:
       "growing system; still deciding where all the data wants to live",
+    primaryLinks: [
+      {
+        label: "Current work",
+        href: "/projects/the-human-model/current/",
+      },
+      {
+        label: "System overview",
+        href: "/projects/the-human-model/system/",
+      },
+      {
+        label: "Repository",
+        href: "https://github.com/haleyparks329/the-human-model",
+        external: true,
+      },
+    ],
     groups: [
       {
         label: "Project",
@@ -153,6 +184,22 @@ export const projectWorkspaces: Record<string, ProjectWorkspaceConfig> = {
     currentNote:
       "Keeping the reasoning layer source-backed while making synthetic public examples easier to inspect.",
     annotation: "following the evidence; careers are not lists, unfortunately",
+    primaryLinks: [
+      {
+        label: "Public knowledge graph",
+        href: "https://publish.obsidian.md/career-knowledge-graph/Career+Knowledge+Graph",
+        external: true,
+      },
+      {
+        label: "System",
+        href: "/projects/career-intelligence/system/",
+      },
+      {
+        label: "Repository",
+        href: "https://github.com/haleyparks329/career-intelligence",
+        external: true,
+      },
+    ],
     groups: [
       {
         label: "Project",
@@ -207,6 +254,21 @@ export const projectWorkspaces: Record<string, ProjectWorkspaceConfig> = {
       "Making QA handoff evidence clearer without hiding the human decision boundary.",
     annotation:
       "investigating the investigation; no autonomous crimes committed",
+    primaryLinks: [
+      {
+        label: "Replay investigation",
+        href: "/projects/qa-agents/meticulous/replay/",
+      },
+      {
+        label: "Live review",
+        href: "/projects/qa-agents/live/",
+      },
+      {
+        label: "Repository",
+        href: "https://github.com/haleyparks329/qa-agents",
+        external: true,
+      },
+    ],
     groups: [
       {
         label: "Project",
@@ -255,6 +317,21 @@ export const projectWorkspaces: Record<string, ProjectWorkspaceConfig> = {
     currentNote:
       "Turning the site from a collection of pages into a navigable public knowledge environment.",
     annotation: "room in progress; paths kept visible",
+    primaryLinks: [
+      {
+        label: "Design",
+        href: "/projects/this-website/design/",
+      },
+      {
+        label: "Evolution",
+        href: "/projects/this-website/evolution/",
+      },
+      {
+        label: "Repository",
+        href: "https://github.com/haleyparks329/haleyparks329.github.io",
+        external: true,
+      },
+    ],
     groups: [
       {
         label: "Project",
