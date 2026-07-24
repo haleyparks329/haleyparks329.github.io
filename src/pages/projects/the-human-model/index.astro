@@ -2,7 +2,7 @@
 import { getCollection } from "astro:content";
 import ProjectDocumentContent from "@/components/ProjectDocumentContent.astro";
 import { projectDocumentForSlug } from "@/data/project-documents";
-import { relatedLinksForHrefs } from "@/data/navigation";
+import { connectedDestinations } from "@/data/navigation";
 import { workspaceForSlug } from "@/data/project-workspaces";
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import ProjectWorkspaceLayout from "@/layouts/ProjectWorkspaceLayout.astro";
@@ -16,16 +16,7 @@ if (!project) {
 
 const workspace = workspaceForSlug(project.data.slug);
 const document = projectDocumentForSlug(project.data.slug);
-const continueLinks = relatedLinksForHrefs(
-  [
-    "/projects/the-human-model/current/",
-    "/projects/bridget/",
-    "/field-log/attention-is-the-scarce-resource/",
-    "/projects/career-intelligence/",
-    "/explore/",
-  ],
-  "project-the-human-model",
-);
+const continueLinks = connectedDestinations("project-the-human-model");
 ---
 
 <BaseLayout

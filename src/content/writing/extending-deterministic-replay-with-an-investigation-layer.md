@@ -12,9 +12,6 @@ tags:
 topics:
   - "Agent Systems"
   - "Software Quality"
-related:
-  - "/projects/qa-agents/"
-  - "/projects/qa-agents/meticulous/replay/"
 relatedProject: "qa-agents"
 featured: false
 draft: false

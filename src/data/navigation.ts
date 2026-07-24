@@ -13,14 +13,7 @@ export type Destination = {
 };
 
 export type RelationshipType =
-  | "nearby"
-  | "inspired"
-  | "became"
-  | "continued-in"
-  | "evidence-for"
-  | "built-from"
-  | "related"
-  | "related-investigation";
+  "related" | "part-of" | "evidence-for" | "evolved-from" | "continued-in";
 
 export type Relationship = {
   from: string;
@@ -544,74 +537,42 @@ export const destinations: Destination[] = [
 
 export const relationships: Relationship[] = [
   {
-    from: "project-bridget",
-    to: "writing-i-did-not-want-another-app",
-    type: "built-from",
-    label: "Origin Story",
+    from: "writing-i-did-not-want-another-app",
+    to: "project-bridget",
+    type: "continued-in",
+    label: "Continued in",
     reason:
-      "The essay explains the product constraint and personal problem that Bridget grew from.",
+      "The origin story continues in Bridget's project workspace and public architecture.",
   },
   {
-    from: "project-bridget",
+    from: "writing-i-did-not-want-another-app",
     to: "writing-what-i-built-instead-of-an-agent",
     type: "continued-in",
-    label: "Architecture Case Study",
+    label: "Continued in",
     reason:
-      "The case study explains Bridget's deterministic domains and boundary before autonomy.",
+      "The engineering account continues the origin story with Bridget's deterministic architecture.",
+  },
+  {
+    from: "writing-what-i-built-instead-of-an-agent",
+    to: "project-bridget",
+    type: "part-of",
+    label: "Part of",
+    reason:
+      "This case study documents Bridget's public architecture and autonomy boundary.",
   },
   {
     from: "project-bridget",
     to: "project-the-human-model",
-    type: "nearby",
-    label: "Related System",
-    reason:
-      "The Human Model understands performance patterns; Bridget coordinates context that domain systems can use.",
-  },
-  {
-    from: "writing-i-did-not-want-another-app",
-    to: "writing-what-i-built-instead-of-an-agent",
-    type: "continued-in",
-    label: "Companion Case Study",
-    reason:
-      "The origin story leads into the engineering account of what Bridget became.",
-  },
-  {
-    from: "writing-i-did-not-want-another-app",
-    to: "project-bridget",
-    type: "continued-in",
-    label: "Project Hub",
-    reason:
-      "The project hub keeps the origin, architecture, and public reference together.",
-  },
-  {
-    from: "writing-what-i-built-instead-of-an-agent",
-    to: "writing-i-did-not-want-another-app",
-    type: "built-from",
-    label: "Origin Story",
-    reason:
-      "The essay explains the personal problem and interface constraint behind the architecture.",
-  },
-  {
-    from: "writing-what-i-built-instead-of-an-agent",
-    to: "project-bridget",
-    type: "continued-in",
-    label: "Project Hub",
-    reason:
-      "The project hub connects the technical account to the broader Bridget story.",
-  },
-  {
-    from: "project-the-human-model",
-    to: "project-bridget",
-    type: "nearby",
-    label: "Related System",
+    type: "related",
+    label: "Related system",
     reason:
       "Bridget coordinates continuity; The Human Model interprets performance evidence.",
   },
   {
     from: "project-qa-agents",
     to: "demo-qa-agents-meticulous",
-    type: "related-investigation",
-    label: "Related Investigation",
+    type: "related",
+    label: "Related investigation",
     reason:
       "This case study explains how replay evidence can hand off into the QA Agents layer.",
   },
@@ -619,63 +580,165 @@ export const relationships: Relationship[] = [
     from: "project-qa-agents",
     to: "demo-qa-agents-little-bytes",
     type: "evidence-for",
-    label: "Evidence For",
+    label: "Evidence",
     reason:
       "The replay is the public evidence loop behind the QA Agents case study.",
   },
   {
     from: "project-qa-agents",
+    to: "project-qa-agents-live",
+    type: "evidence-for",
+    label: "Current evidence",
+    reason:
+      "The live review exposes the latest validated public-safe evidence from the system.",
+  },
+  {
+    from: "project-qa-agents",
     to: "field-log-evidence-before-claims",
-    type: "built-from",
-    label: "Built From",
+    type: "evolved-from",
+    label: "Evolved from",
     reason:
       "The note states the boundary rule that keeps the project honest in public.",
   },
   {
+    from: "demo-qa-agents-meticulous-replay",
+    to: "demo-qa-agents-meticulous",
+    type: "evidence-for",
+    label: "Evidence for",
+    reason:
+      "The replay workstation makes the investigation's evidence and decision boundary inspectable.",
+  },
+  {
+    from: "project-qa-agents-system",
+    to: "project-qa-agents",
+    type: "part-of",
+    label: "Part of",
+    reason: "The system document explains the structure of QA Agents.",
+  },
+  {
+    from: "project-qa-agents-system",
+    to: "project-qa-agents-case-studies",
+    type: "continued-in",
+    label: "Continued in",
+    reason:
+      "The case-study shelf shows how the system boundaries behave in recorded investigations.",
+  },
+  {
+    from: "project-qa-agents-case-studies",
+    to: "project-qa-agents",
+    type: "part-of",
+    label: "Part of",
+    reason:
+      "The case-study shelf collects QA Agents investigations and their limits.",
+  },
+  {
     from: "project-the-human-model",
     to: "field-log-attention-is-the-scarce-resource",
-    type: "continued-in",
-    label: "Continues In",
+    type: "related",
+    label: "Related principle",
     reason:
       "The build note keeps the attention principle close to active Human Model review work.",
   },
   {
     from: "project-the-human-model",
     to: "project-career-intelligence",
-    type: "nearby",
-    label: "Nearby Project",
+    type: "related",
+    label: "Related system",
     reason:
       "Both systems preserve evidence around a person instead of flattening them into a score.",
   },
   {
-    from: "project-career-intelligence",
-    to: "writing-why-fika-jobs-felt-familiar",
-    type: "related",
-    label: "Related Writing",
+    from: "writing-why-fika-jobs-felt-familiar",
+    to: "project-career-intelligence",
+    type: "part-of",
+    label: "Part of",
     reason:
-      "The writing compares Career Intelligence with Fika Jobs at the product-philosophy level.",
+      "The investigation connects Career Intelligence to a broader product philosophy.",
   },
   {
     from: "project-career-intelligence",
     to: "field-log-evidence-before-claims",
-    type: "built-from",
-    label: "Built From",
+    type: "related",
+    label: "Related principle",
     reason:
       "The public claim boundary matters especially for source-backed career materials.",
+  },
+  {
+    from: "project-the-human-model-current",
+    to: "project-the-human-model-system",
+    type: "continued-in",
+    label: "Continued in",
+    reason:
+      "The system document explains the structure behind the current work.",
+  },
+  {
+    from: "project-the-human-model-system",
+    to: "project-the-human-model-research",
+    type: "continued-in",
+    label: "Continued in",
+    reason:
+      "The research document shows what the system has taught and where its limits remain.",
+  },
+  {
+    from: "project-the-human-model-research",
+    to: "field-log-attention-is-the-scarce-resource",
+    type: "related",
+    label: "Related principle",
+    reason: "The note connects the research to attention, memory, and context.",
+  },
+  {
+    from: "project-career-intelligence-system",
+    to: "project-career-intelligence-research",
+    type: "continued-in",
+    label: "Continued in",
+    reason:
+      "The deep dives show how the source-backed system behaves in concrete cases.",
+  },
+  {
+    from: "project-career-intelligence-research",
+    to: "writing-why-fika-jobs-felt-familiar",
+    type: "related",
+    label: "Related investigation",
+    reason:
+      "The writing examines the product philosophy behind the career reasoning work.",
+  },
+  {
+    from: "project-this-website-design",
+    to: "project-this-website",
+    type: "part-of",
+    label: "Part of",
+    reason:
+      "The design file records the principles behind the website project.",
+  },
+  {
+    from: "project-this-website-evolution",
+    to: "project-this-website",
+    type: "part-of",
+    label: "Part of",
+    reason:
+      "The evolution file records how the website project changed over time.",
+  },
+  {
+    from: "project-this-website",
+    to: "field-log-the-desk-as-workbench",
+    type: "evolved-from",
+    label: "Evolved from",
+    reason:
+      "The note captures the workbench idea that shaped the site's navigation language.",
   },
   {
     from: "field-log-the-desk-as-workbench",
     to: "explore",
     type: "continued-in",
-    label: "Continues In",
+    label: "Continued in",
     reason:
       "Explore is the site guide that grew from the desk navigation idea.",
   },
   {
     from: "compost-heap",
     to: "field-log-the-desk-as-workbench",
-    type: "nearby",
-    label: "Nearby Idea",
+    type: "related",
+    label: "Related idea",
     reason:
       "Both pages keep unfinished or exploratory work visible without turning it into polish.",
   },
@@ -821,7 +884,7 @@ export function trailsForHref(href: string) {
 }
 
 export function connectedDestinations(destinationId: string) {
-  return relationships
+  const outgoing = relationships
     .filter((relationship) => relationship.from === destinationId)
     .map((relationship) => {
       const destination = destinationById(relationship.to);
@@ -830,23 +893,28 @@ export function connectedDestinations(destinationId: string) {
         : undefined;
     })
     .filter((link): link is ContentLink => Boolean(link));
-}
-
-export function relatedLinksForHrefs(hrefs: string[], fromId?: string) {
-  return hrefs
-    .map((href) => {
-      const destination = destinationByHref(href);
-      if (!destination) return undefined;
-
-      const relationship = fromId
-        ? relationships.find(
-            (item) => item.from === fromId && item.to === destination.id,
-          )
-        : undefined;
-
-      return destinationToContentLink(destination, relationship);
+  const outgoingHrefs = new Set(outgoing.map((link) => link.href));
+  const inverseLabels: Record<RelationshipType, string> = {
+    related: "Related",
+    "part-of": "Contains",
+    "evidence-for": "Evidence for",
+    "evolved-from": "Became",
+    "continued-in": "Continues from",
+  };
+  const incoming = relationships
+    .filter((relationship) => relationship.to === destinationId)
+    .map((relationship) => {
+      const destination = destinationById(relationship.from);
+      if (!destination || outgoingHrefs.has(destination.href)) return undefined;
+      return destinationToContentLink(destination, {
+        ...relationship,
+        label: inverseLabels[relationship.type],
+      });
     })
-    .filter((link): link is ContentLink => Boolean(link));
+    .filter((link): link is ContentLink => Boolean(link))
+    .sort((a, b) => a.label.localeCompare(b.label));
+
+  return [...outgoing, ...incoming];
 }
 
 export function destinationsByType(type: DestinationType) {
@@ -904,6 +972,7 @@ export function validateNavigationGraph() {
     }
   }
 
+  const relationshipPairs = new Set<string>();
   for (const relationship of relationships) {
     if (!ids.has(relationship.from)) {
       throw new Error(
@@ -915,6 +984,23 @@ export function validateNavigationGraph() {
         `Relationship references missing destination ${relationship.to}`,
       );
     }
+    if (relationship.from === relationship.to) {
+      throw new Error(
+        `Relationship cannot reference itself: ${relationship.from}`,
+      );
+    }
+    if (!relationship.reason.trim()) {
+      throw new Error(
+        `Relationship ${relationship.from} -> ${relationship.to} needs a reason`,
+      );
+    }
+    const pairKey = [relationship.from, relationship.to].sort().join("::");
+    if (relationshipPairs.has(pairKey)) {
+      throw new Error(
+        `Relationship pair is authored more than once: ${pairKey}`,
+      );
+    }
+    relationshipPairs.add(pairKey);
   }
 }
 

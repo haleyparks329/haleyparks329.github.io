@@ -15,10 +15,6 @@ topics:
   - "Career Intelligence"
   - "Knowledge Graphs"
   - "Human-Centered Technology"
-related:
-  - "/projects/career-intelligence/"
-  - "/projects/the-human-model/"
-  - "/field-log/evidence-before-claims/"
 relatedProject: "career-intelligence"
 featured: true
 draft: false

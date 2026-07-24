@@ -5,10 +5,10 @@ import ExternalLink from "@/components/ExternalLink.astro";
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import WritingDocumentHeader from "@/components/WritingDocumentHeader.astro";
 import {
+  connectedDestinations,
   destinationByHref,
   destinationsForProject,
   destinationToContentLink,
-  relatedLinksForHrefs,
   trailsForHref,
 } from "@/data/navigation";
 
@@ -61,10 +61,9 @@ const relatedLinks = [
 
 const pageHref = `/writing/${entry.data.slug}/`;
 const pageDestination = destinationByHref(pageHref);
-const continueLinks = relatedLinksForHrefs(
-  entry.data.related,
-  pageDestination?.id,
-);
+const continueLinks = pageDestination
+  ? connectedDestinations(pageDestination.id)
+  : [];
 const associatedProject = entry.data.relatedProject
   ? destinationsForProject(entry.data.relatedProject).find(
       (destination) => destination.type === "project",

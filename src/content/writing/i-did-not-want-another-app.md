@@ -13,10 +13,6 @@ topics:
   - "Human-Centered Technology"
   - "Human Model"
   - "Agent Systems"
-related:
-  - "/writing/what-i-built-instead-of-an-agent/"
-  - "/projects/bridget/"
-  - "/projects/the-human-model/"
 relatedProject: "bridget"
 repositoryUrl: "https://github.com/haleyparks329/bridget-architecture"
 featured: true

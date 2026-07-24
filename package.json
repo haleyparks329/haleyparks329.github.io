@@ -15,7 +15,8 @@
     "validate:links": "node scripts/validate-links.mjs",
     "qa:validate-live": "node --experimental-strip-types scripts/validate-qa-live.ts",
     "validate:qa-live": "npm run qa:validate-live",
-    "validate": "npm run format:check && npm run qa:validate-live && npm run check && npm run build:site && npm run validate:links"
+    "validate:relationships": "node --experimental-strip-types scripts/validate-relationships.ts",
+    "validate": "npm run format:check && npm run qa:validate-live && npm run validate:relationships && npm run check && npm run build:site && npm run validate:links"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.6.0",

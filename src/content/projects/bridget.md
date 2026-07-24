@@ -16,10 +16,6 @@ topics:
   - "Agent Systems"
   - "Human-Centered Technology"
   - "Information Architecture"
-related:
-  - "/writing/i-did-not-want-another-app/"
-  - "/writing/what-i-built-instead-of-an-agent/"
-  - "/projects/the-human-model/"
 repositoryUrl: "https://github.com/haleyparks329/bridget-architecture"
 order: 2
 ---

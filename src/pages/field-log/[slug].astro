@@ -4,8 +4,8 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
 import ContinueExploring from "@/components/ContinueExploring.astro";
 import FieldLogDocumentHeader from "@/components/FieldLogDocumentHeader.astro";
 import {
+  connectedDestinations,
   destinationByHref,
-  relatedLinksForHrefs,
   trailsForHref,
 } from "@/data/navigation";
 
@@ -28,10 +28,9 @@ const { entry, previous, next } = Astro.props;
 const { Content } = await render(entry);
 const pageHref = `/field-log/${entry.data.slug}/`;
 const pageDestination = destinationByHref(pageHref);
-const continueLinks = relatedLinksForHrefs(
-  entry.data.related,
-  pageDestination?.id,
-);
+const continueLinks = pageDestination
+  ? connectedDestinations(pageDestination.id)
+  : [];
 const trailMembership = trailsForHref(pageHref);
 ---
 

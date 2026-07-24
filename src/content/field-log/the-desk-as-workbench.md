@@ -15,9 +15,6 @@ tags:
 topics:
   - "Adaptive UI"
   - "Human-Centered Technology"
-related:
-  - "/explore/"
-  - "/compost-heap/"
 order: 2
 ---
 

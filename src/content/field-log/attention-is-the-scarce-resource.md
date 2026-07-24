@@ -16,10 +16,6 @@ topics:
   - "Human-Centered Technology"
   - "Human Model"
   - "Agent Systems"
-related:
-  - "/writing/why-fika-jobs-felt-familiar/"
-  - "/projects/the-human-model/"
-  - "/projects/qa-agents/"
 order: 1
 ---
 

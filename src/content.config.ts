@@ -17,7 +17,6 @@ const projects = defineCollection({
     accent: projectAccent,
     tags: z.array(z.string()),
     topics: z.array(z.string()).default([]),
-    related: z.array(z.string()).default([]),
     repositoryUrl: z.url().optional(),
     demoUrl: z.url().optional(),
     order: z.number(),
@@ -36,7 +35,6 @@ const writing = defineCollection({
     status: z.enum(["published", "evolving", "archived"]).default("published"),
     tags: z.array(z.string()).default([]),
     topics: z.array(z.string()).default([]),
-    related: z.array(z.string()).default([]),
     relatedProject: z.string().optional(),
     featured: z.boolean().default(false),
     draft: z.boolean().default(false),
@@ -74,7 +72,6 @@ const fieldLog = defineCollection({
     featured: z.boolean().default(false),
     tags: z.array(z.string()).default([]),
     topics: z.array(z.string()).default([]),
-    related: z.array(z.string()).default([]),
     order: z.number().optional(),
   }),
 });

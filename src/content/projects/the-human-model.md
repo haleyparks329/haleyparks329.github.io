@@ -16,11 +16,6 @@ topics:
   - "Human Model"
   - "Human Performance"
   - "Human-Centered Technology"
-related:
-  - "/projects/bridget/"
-  - "/field-log/attention-is-the-scarce-resource/"
-  - "/writing/why-fika-jobs-felt-familiar/"
-  - "/projects/career-intelligence/"
 repositoryUrl: "https://github.com/haleyparks329/the-human-model"
 order: 1
 ---

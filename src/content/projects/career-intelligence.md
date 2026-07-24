@@ -16,10 +16,6 @@ topics:
   - "Career Intelligence"
   - "Human-Centered Technology"
   - "Adaptive UI"
-related:
-  - "/projects/the-human-model/"
-  - "/writing/why-fika-jobs-felt-familiar/"
-  - "/field-log/evidence-before-claims/"
 repositoryUrl: "https://github.com/haleyparks329/career-intelligence"
 order: 4
 ---

@@ -15,10 +15,6 @@ topics:
   - "Agent Systems"
   - "Software Quality"
   - "Human-Centered Technology"
-related:
-  - "/projects/qa-agents/demo/"
-  - "/projects/qa-agents/meticulous/"
-  - "/field-log/evidence-before-claims/"
 repositoryUrl: "https://github.com/haleyparks329/qa-agents"
 order: 3
 ---

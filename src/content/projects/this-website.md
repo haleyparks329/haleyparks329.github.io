@@ -17,10 +17,6 @@ topics:
   - "Adaptive UI"
   - "Information Architecture"
   - "Human-Centered Technology"
-related:
-  - "/projects/"
-  - "/explore/"
-  - "/field-log/the-desk-as-workbench/"
 repositoryUrl: "https://github.com/haleyparks329/haleyparks329.github.io"
 order: 5
 ---

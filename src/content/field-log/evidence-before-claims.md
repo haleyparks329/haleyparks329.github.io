@@ -16,10 +16,6 @@ topics:
   - "Software Quality"
   - "Agent Systems"
   - "Human-Centered Technology"
-related:
-  - "/projects/qa-agents/"
-  - "/projects/qa-agents/meticulous/"
-  - "/projects/qa-agents/demo/"
 order: 3
 ---
 

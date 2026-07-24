@@ -12,9 +12,6 @@ tags:
 topics:
   - "Agent Systems"
   - "Human-Centered Technology"
-related:
-  - "/writing/i-did-not-want-another-app/"
-  - "/projects/bridget/"
 relatedProject: "bridget"
 repositoryUrl: "https://github.com/haleyparks329/bridget-architecture"
 featured: true

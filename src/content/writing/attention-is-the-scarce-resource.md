@@ -13,10 +13,6 @@ topics:
   - "Human-Centered Technology"
   - "Human Model"
   - "Agent Systems"
-related:
-  - "/projects/the-human-model/"
-  - "/projects/qa-agents/"
-  - "/projects/career-intelligence/"
 relatedProject: "qa-agents"
 featured: false
 draft: true
