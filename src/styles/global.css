@@ -641,35 +641,6 @@ pre {
   transform: rotate(var(--object-tilt)) translateY(-2px);
 }
 
-.workspace-object::after {
-  position: absolute;
-  top: -0.62rem;
-  left: var(--tape-left, auto);
-  right: var(--tape-right, 14%);
-  width: 4.2rem;
-  height: 0.92rem;
-  background: color-mix(in srgb, var(--khaki) 48%, transparent);
-  content: "";
-  transform: rotate(var(--tape-tilt, -2deg));
-  pointer-events: none;
-}
-
-.workspace-object.tape-left {
-  --tape-left: 14%;
-  --tape-right: auto;
-  --tape-tilt: 3deg;
-}
-
-.workspace-object.tape-center {
-  --tape-left: calc(50% - 2.1rem);
-  --tape-right: auto;
-  --tape-tilt: -1deg;
-}
-
-.workspace-object.no-tape::after {
-  content: none;
-}
-
 .workspace-note {
   color: var(--color-text-muted);
   font-family: var(--font-mono);
@@ -813,17 +784,6 @@ pre {
   position: relative;
   border-left: 0.38rem solid var(--khaki);
   padding: var(--space-5);
-}
-
-.interior-note::before {
-  position: absolute;
-  top: -0.6rem;
-  right: 12%;
-  width: 3.8rem;
-  height: 0.85rem;
-  background: color-mix(in srgb, var(--lavender) 58%, transparent);
-  content: "";
-  transform: rotate(3deg);
 }
 
 .artifact-card {

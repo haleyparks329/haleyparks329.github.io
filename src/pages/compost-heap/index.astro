@@ -58,7 +58,7 @@ const firstArtifactByThread = Object.fromEntries(
         compostArtifacts.map((artifact) => (
           <details
             id={artifact.id}
-            class={`artifact-preview workspace-object no-tape size-${artifact.size} tilt-${artifact.tilt} offset-${artifact.offset} thumb-${artifact.thumbnail}`}
+            class={`artifact-preview workspace-object size-${artifact.size} tilt-${artifact.tilt} offset-${artifact.offset} thumb-${artifact.thumbnail}`}
             data-thread={artifact.thread}
           >
             <summary>
