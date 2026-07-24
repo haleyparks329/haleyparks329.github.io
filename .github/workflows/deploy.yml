@@ -47,7 +47,7 @@ jobs:
         run: npm ci
 
       - name: Install QA Agents
-        run: python -m pip install --no-deps ./qa-agents
+        run: python -m pip install --no-deps --editable ./qa-agents
 
       - name: Generate review artifact for this website commit
         env:
