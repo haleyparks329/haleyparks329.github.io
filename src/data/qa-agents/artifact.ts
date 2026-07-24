@@ -10,6 +10,7 @@ export type QaFinding = Record<string, unknown>;
 
 export type QaPublicArtifact = {
   schema_version: string;
+  producer: { name: string; version: string };
   target: { profile: string; repository: string };
   run: {
     base: string;
@@ -37,12 +38,20 @@ export function parseQaPublicArtifact(value: unknown): QaPublicArtifact {
   if (!isRecord(value)) throw new Error("QA artifact must be an object");
 
   const target = value.target;
+  const producer = value.producer;
   const run = value.run;
   const policy = value.policy;
   const commands = value.commands;
   const gaps = value.coverage_gaps;
 
-  if (typeof value.schema_version !== "string") errors.push("schema_version");
+  if (value.schema_version !== "1.1") errors.push("schema_version");
+  if (
+    !isRecord(producer) ||
+    producer.name !== "qa-agents" ||
+    typeof producer.version !== "string" ||
+    !producer.version
+  )
+    errors.push("producer");
   if (
     !isRecord(target) ||
     typeof target.profile !== "string" ||
@@ -61,6 +70,7 @@ export function parseQaPublicArtifact(value: unknown): QaPublicArtifact {
     errors.push("run");
   if (
     !Array.isArray(commands) ||
+    commands.length === 0 ||
     commands.some(
       (command) =>
         !isRecord(command) ||

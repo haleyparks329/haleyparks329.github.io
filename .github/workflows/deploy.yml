@@ -18,13 +18,63 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout website
         uses: actions/checkout@v7
+        with:
+          path: website
 
-      - name: Install, build, and upload site
-        uses: withastro/action@v6
+      - name: Checkout pinned QA Agents
+        uses: actions/checkout@v7
+        with:
+          repository: haleyparks329/qa-agents
+          ref: 3d68dda540849fb37ce076b11bc7879764e9e2f9
+          path: qa-agents
+
+      - name: Set up Node
+        uses: actions/setup-node@v6
         with:
           node-version: 24
+          cache: npm
+          cache-dependency-path: website/package-lock.json
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Install website
+        working-directory: website
+        run: npm ci
+
+      - name: Install QA Agents
+        run: python -m pip install --no-deps ./qa-agents
+
+      - name: Generate review artifact for this website commit
+        env:
+          QA_KB_PATH: ${{ runner.temp }}/qa-agents.db
+          QA_AGENTS_REF: 3d68dda540849fb37ce076b11bc7879764e9e2f9
+        run: |
+          qa-agents review \
+            --profile personal_website \
+            --target-path "$GITHUB_WORKSPACE/website" \
+            --repository "$GITHUB_REPOSITORY" \
+            --commit "$GITHUB_SHA" \
+            --base "$GITHUB_SHA" \
+            --head "$GITHUB_SHA" \
+            --command website_validation \
+            --producer-version "$QA_AGENTS_REF" \
+            --output "$GITHUB_WORKSPACE/website/src/data/qa-agents/latest.json"
+
+      - name: Validate provenance and build
+        working-directory: website
+        env:
+          QA_LIVE_PRODUCTION: "1"
+        run: npm run build:production
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: website/dist
 
   deploy:
     environment:

@@ -28,6 +28,7 @@ const statusLabel =
   artifact.run.status === "passed_with_gaps"
     ? "Healthy, with known gaps"
     : human(artifact.run.status);
+const commitUrl = `https://github.com/${artifact.target.repository}/commit/${artifact.run.commit}`;
 ---
 
 <BaseLayout
@@ -46,8 +47,8 @@ const statusLabel =
       <p class="eyebrow">Latest exported review · real run evidence</p>
       <h1>QA Agents <span>// Live System Review</span></h1>
       <p class="lede">
-        This page renders the latest public-safe artifact exported by QA Agents
-        after running deterministic validation against this website.
+        This page is generated from the latest public-safe QA Agents artifact
+        produced during the website's deployment workflow.
       </p>
       <p class="truth-note">
         This is a persisted review, not a live-streamed terminal session. No LLM
@@ -78,7 +79,11 @@ const statusLabel =
       <dl class="status-grid">
         <div><dt>Target</dt><dd>{artifact.target.repository}</dd></div>
         <div>
-          <dt>Commit</dt><dd><code>{artifact.run.commit.slice(0, 7)}</code></dd>
+          <dt>Commit</dt><dd>
+            <a href={commitUrl}
+              ><code>{artifact.run.commit.slice(0, 7)}</code></a
+            >
+          </dd>
         </div>
         <div><dt>Evidence generated</dt><dd>{generated}</dd></div>
         <div>
@@ -111,6 +116,11 @@ const statusLabel =
           <summary>Run metadata</summary>
           <dl>
             <div><dt>Schema version</dt><dd>{artifact.schema_version}</dd></div>
+            <div>
+              <dt>QA Agents version/ref</dt><dd>
+                <code>{artifact.producer.version}</code>
+              </dd>
+            </div>
             <div><dt>Repository</dt><dd>{artifact.target.repository}</dd></div>
             <div>
               <dt>Application profile</dt><dd>
@@ -120,7 +130,9 @@ const statusLabel =
             <div><dt>Base</dt><dd><code>{artifact.run.base}</code></dd></div>
             <div><dt>Head</dt><dd><code>{artifact.run.head}</code></dd></div>
             <div>
-              <dt>Full commit</dt><dd><code>{artifact.run.commit}</code></dd>
+              <dt>Full commit</dt><dd>
+                <a href={commitUrl}><code>{artifact.run.commit}</code></a>
+              </dd>
             </div>
             <div>
               <dt>Raw status</dt><dd><code>{artifact.run.status}</code></dd>

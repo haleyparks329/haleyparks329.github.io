@@ -5,14 +5,17 @@
   "type": "module",
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build",
+    "build": "npm run build:production",
+    "build:site": "astro build",
+    "build:production": "npm run qa:validate-live && npm run build:site",
     "preview": "astro preview",
     "check": "astro check",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "validate:links": "node scripts/validate-links.mjs",
-    "validate:qa-live": "node --experimental-strip-types scripts/validate-qa-live.ts",
-    "validate": "npm run format:check && npm run validate:qa-live && npm run check && npm run build && npm run validate:links"
+    "qa:validate-live": "node --experimental-strip-types scripts/validate-qa-live.ts",
+    "validate:qa-live": "npm run qa:validate-live",
+    "validate": "npm run format:check && npm run qa:validate-live && npm run check && npm run build:site && npm run validate:links"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.6.0",

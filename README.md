@@ -8,6 +8,38 @@ This repository contains the public personal website and project portfolio for
 Haley Parks. It owns site design, navigation, project summaries, public
 storytelling, writing surfaces, and publishing.
 
+## Deployment-time QA review
+
+The website owns the complete live-review publication lifecycle:
+
+```text
+website merge
+    ↓
+website GitHub Actions
+    ↓
+pinned QA Agents invocation
+    ↓
+public-safe artifact in build workspace
+    ↓
+provenance validation
+    ↓
+Astro build
+    ↓
+GitHub Pages deployment
+```
+
+The Pages workflow checks out a pinned QA Agents commit, reviews the exact
+website `GITHUB_SHA`, and generates
+`src/data/qa-agents/latest.json` inside the ephemeral Actions workspace. The
+artifact is not committed to `main`. Production validation requires schema
+`1.1`, the expected repository and commit, valid timestamps, passing command
+evidence, public-safety policy fields, and QA Agents producer provenance.
+
+The checked-in `latest.json` is a development fixture for local rendering only.
+Production CI always overwrites it and fails before upload if generation or
+provenance validation fails. A failed deployment leaves the previously
+successful GitHub Pages deployment online.
+
 ## Technology
 
 - Astro
