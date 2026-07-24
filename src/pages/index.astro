@@ -1,25 +1,31 @@
 ---
 import { getCollection } from "astro:content";
 import ProjectFile from "@/components/ProjectFile.astro";
+import StatusBadge from "@/components/StatusBadge.astro";
+import { homepageState } from "@/data/homepage";
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import { siteConfig } from "@/site.config";
 
-const projects = (await getCollection("projects")).sort(
-  (a, b) => a.data.order - b.data.order,
+const projects = await getCollection("projects");
+const projectBySlug = new Map(
+  projects.map((project) => [project.data.slug, project]),
 );
-const homepageProjectOrder: Record<string, number> = {
-  "the-human-model": 1,
-  bridget: 2,
-  "career-intelligence": 3,
-  "qa-agents": 4,
-};
-const featuredProjects = projects
-  .filter((project) => project.data.featured)
-  .sort(
-    (a, b) =>
-      (homepageProjectOrder[a.data.slug] ?? a.data.order) -
-      (homepageProjectOrder[b.data.slug] ?? b.data.order),
+const featuredWorkProject = projectBySlug.get(
+  homepageState.featuredWork.projectSlug,
+);
+
+if (!featuredWorkProject) {
+  throw new Error(
+    `Missing featured work project: ${homepageState.featuredWork.projectSlug}`,
   );
+}
+
+const flagshipProjects = homepageState.projectOrder.map((slug) => {
+  const project = projectBySlug.get(slug);
+  if (!project) throw new Error(`Missing homepage project: ${slug}`);
+  return project;
+});
+
 const fieldLogEntries = (await getCollection("fieldLog")).sort(
   (a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime(),
 );
@@ -27,373 +33,535 @@ const latestFieldLog = fieldLogEntries[0];
 ---
 
 <BaseLayout title={siteConfig.name} description={siteConfig.description}>
-  <section class="desk-page container" aria-labelledby="desk-title">
-    <div class="desk-intro desk-object">
-      <p class="eyebrow">The desk</p>
+  <section class="desk-page" aria-labelledby="desk-title">
+    <header class="desk-intro">
+      <p class="eyebrow">AI Product Engineer</p>
       <h1 id="desk-title">{siteConfig.name}</h1>
       <p class="tagline">{siteConfig.tagline}</p>
       <p class="lede">
-        A warm public workbench for personal AI systems, performance modeling,
-        career reasoning, and software that pays attention to context.
+        I build human-centered systems that connect data, behavior, context, and
+        goals without hiding the reasoning behind them.
       </p>
-      <div class="button-row">
+      <nav class="hero-actions" aria-label="Homepage introduction">
         <a class="button" href="/projects/">View Projects</a>
-      </div>
-      <a class="whats-here-link" href="/explore/" aria-label="Explore the site">
-        <span aria-hidden="true"></span>
-        <strong>Explore</strong>
-      </a>
-    </div>
+        <a class="button secondary" href="/explore/">Explore</a>
+      </nav>
+    </header>
 
-    <aside
-      class="mini-me-note desk-object sticky-object surface surface-pad"
-      aria-labelledby="mini-me-title"
-      data-note="Mini Me left this where you would find it."
-    >
-      <p class="eyebrow">Mini Me</p>
-      <h2 id="mini-me-title">Static note from the desk</h2>
-      <p>
-        Mini Me is the small imagined companion for this site: part index card,
-        part research assistant, part reminder that the useful version of AI
-        should feel like it knows where the good notes are.
-      </p>
-      <p class="status-line">
-        Desk status: notes open, systems humming, iced matcha nearby.
-      </p>
-      <span class="mini-me-mark" aria-hidden="true"></span>
-    </aside>
-
-    <div class="current-desk desk-object diagram-object surface surface-pad">
-      <p class="eyebrow">Current desk</p>
-      <h2 id="current-desk">What is open right now</h2>
-      <div class="current-note-list" aria-labelledby="current-desk">
-        <article>
-          <a
-            href="/projects/qa-agents/meticulous/"
-            title="Open the Meticulous-inspired investigation layer case study"
-          >
-            <h3>Extending deterministic replay with an investigation layer</h3>
-          </a>
-          <p>
-            Showing how deterministic replay evidence can enter QA Agents
-            without turning the investigation layer into a replay engine.
-          </p>
-        </article>
-        <article>
-          <a
-            href="/field-log/the-desk-as-workbench/"
-            title="Open the desk-as-workbench note"
-          >
-            <h3>Designing adaptive navigation</h3>
-          </a>
-          <p>
-            Letting visitors search directly or wander through connected
-            projects, notes, topics, and demos.
-          </p>
-        </article>
-        <article>
-          <a href="/projects/the-human-model/" title="Open The Human Model">
-            <h3>Working on Human Model review layers</h3>
-          </a>
-          <p>
-            Keeping Bridget, dashboards, and model outputs connected to the
-            evidence they are meant to preserve.
-          </p>
-        </article>
-      </div>
-      <div class="desk-flow" aria-hidden="true">
-        <span>input</span>
-        <i></i>
-        <span>model</span>
-        <i></i>
-        <span>insight</span>
-      </div>
-    </div>
-
-    <div class="project-heading desk-object">
-      <p class="eyebrow">Flagship projects</p>
-      <h2 id="flagship-projects">Things worth picking up</h2>
-      <p>
-        Each object on the desk points to a larger system: what it explores,
-        what is implemented publicly, and where the repo tells the deeper truth.
-      </p>
-    </div>
-
-    {
-      featuredProjects.map((project, index) => (
-        <div
-          class={`project-object desk-object ${project.data.accent} ${
-            index === 0 ? "is-focal" : ""
-          }`}
-          data-note={
-            index === 0
-              ? undefined
-              : project.data.accent === "olive"
-                ? "Ruled pages are for keeping the evidence honest."
-                : "Blueprint mode: useful systems leave review traces."
-          }
-        >
-          <ProjectFile
-            project={project}
-            variant={index === 0 ? "featured" : "desk"}
-            primaryLabel={
-              project.data.slug === "qa-agents" ? "Project overview" : undefined
-            }
-            supportingAction={
-              project.data.slug === "qa-agents"
-                ? {
-                    href: "/projects/qa-agents/live/",
-                    label: "Latest Live Review",
-                  }
-                : undefined
-            }
-          />
+    <article class="featured-work collection-artifact">
+      <div class="featured-work-heading">
+        <div>
+          <p class="eyebrow">{homepageState.featuredWork.label}</p>
+          <h2>{featuredWorkProject.data.title}</h2>
         </div>
-      ))
-    }
-
-    <article
-      class="field-log-preview desk-object field-log-object surface surface-pad"
-      data-note="A little margin note from the edge of the work."
-    >
-      <div class="field-log-heading">
-        <p class="eyebrow">Field log</p>
-        <a href="/field-log/">View full log</a>
+        <StatusBadge
+          status={featuredWorkProject.data.status}
+          accent={featuredWorkProject.data.accent}
+        />
       </div>
-      <h2 id="field-log">Notes from the edge of the work</h2>
+      <p class="artifact-title">{homepageState.featuredWork.artifactTitle}</p>
+      <p class="featured-summary">{homepageState.featuredWork.summary}</p>
+      <nav
+        class="featured-actions"
+        aria-label={`${featuredWorkProject.data.title} featured work links`}
+      >
+        <a
+          class="button featured-primary"
+          href={homepageState.featuredWork.primaryAction.href}
+        >
+          {homepageState.featuredWork.primaryAction.label}
+        </a>
+        <a
+          class="featured-secondary"
+          href={homepageState.featuredWork.secondaryAction.href}
+        >
+          {homepageState.featuredWork.secondaryAction.label}
+        </a>
+      </nav>
+      <div class="evidence-path" aria-hidden="true">
+        <span>reasoning</span><i></i><span>evidence</span><i></i><span
+          >handoff</span
+        >
+      </div>
+    </article>
+
+    <section
+      class="current-desk collection-artifact"
+      aria-labelledby="current-desk-title"
+    >
+      <div class="section-heading">
+        <p class="eyebrow">Current Desk</p>
+        <h2 id="current-desk-title">Additional work in view</h2>
+      </div>
+      <div class="current-note-list">
+        {
+          homepageState.currentDesk.map((entry) => (
+            <article>
+              <h3>
+                <a href={entry.href}>{entry.title}</a>
+              </h3>
+              <p>{entry.summary}</p>
+            </article>
+          ))
+        }
+      </div>
+    </section>
+
+    <section class="flagship-projects" aria-labelledby="flagship-projects">
+      <div class="project-heading">
+        <p class="eyebrow">Flagship Projects</p>
+        <h2 id="flagship-projects">Long-running systems</h2>
+        <p>
+          Project overviews, implementation evidence, and repositories for the
+          systems at the center of my work.
+        </p>
+      </div>
+      <div class="project-collection">
+        {
+          flagshipProjects.map((project) => (
+            <div class={`project-object ${project.data.accent}`}>
+              <ProjectFile project={project} variant="desk" />
+            </div>
+          ))
+        }
+      </div>
+    </section>
+
+    <article class="field-log-preview collection-artifact">
+      <div class="field-log-heading">
+        <div>
+          <p class="eyebrow">Latest Field Log</p>
+          <p class="artifact-annotation">
+            {homepageState.annotations.fieldLog}
+          </p>
+        </div>
+        <a href="/field-log/">View all</a>
+      </div>
       {
         latestFieldLog ? (
           <>
-            <h3>{latestFieldLog.data.title}</h3>
-            <blockquote>{latestFieldLog.data.excerpt}</blockquote>
+            <h2>{latestFieldLog.data.title}</h2>
+            {latestFieldLog.data.excerpt && (
+              <blockquote>{latestFieldLog.data.excerpt}</blockquote>
+            )}
             <p>{latestFieldLog.data.summary}</p>
-            <a href={`/field-log/${latestFieldLog.data.slug}/`}>
+            <a
+              class="field-log-action"
+              href={`/field-log/${latestFieldLog.data.slug}/`}
+            >
               Read the field log
             </a>
           </>
         ) : (
           <>
-            <h3>Field Log is being organized</h3>
+            <h2>Field Log is being organized</h2>
             <p>
-              Notes will collect the edges of the work: build observations,
-              system questions, and practical decisions worth remembering.
+              Notes will collect build observations, system questions, and
+              practical decisions worth remembering.
             </p>
-            <a href="/field-log/">Visit Field Log</a>
+            <a class="field-log-action" href="/field-log/">
+              Visit Field Log
+            </a>
           </>
         )
       }
     </article>
 
     <a
-      class="about-note desk-object sticky-object surface surface-pad"
-      href="/about/"
-      aria-label="About Haley Parks"
-      data-note="Small note, actual person."
+      class="writing-note portal-artifact"
+      href="/writing/"
+      aria-label="Read Haley Parks writing"
     >
-      <span class="eyebrow">About</span>
-      <span>Researcher, builder, lifelong learner.</span>
+      <span class="eyebrow">Writing</span>
+      <strong>Investigations, case studies, and ideas from active work.</strong>
+      <span class="portal-cue">Read writing →</span>
     </a>
 
     <a
-      class="writing-note desk-object sticky-object surface surface-pad"
-      href="/writing/"
-      aria-label="Read Haley Parks writing"
-      data-note="The longer trail of thinking lives here."
+      class="about-note portal-artifact"
+      href="/about/"
+      aria-label="About Haley Parks"
     >
-      <span class="eyebrow">Writing</span>
-      <span>Read the longer notes.</span>
+      <span class="eyebrow">About</span>
+      <strong>Researcher, builder, lifelong learner.</strong>
+      <span class="portal-cue">About Haley →</span>
     </a>
+
+    <aside
+      class="mini-me-note display-artifact"
+      aria-labelledby="mini-me-title"
+    >
+      <p class="eyebrow">{homepageState.miniMe.label}</p>
+      <h2 id="mini-me-title">{homepageState.miniMe.title}</h2>
+      <p>{homepageState.miniMe.body}</p>
+      <p class="status-line">{homepageState.miniMe.status}</p>
+      <span class="mini-me-mark" aria-hidden="true"></span>
+    </aside>
   </section>
 </BaseLayout>
 
 <style>
   .desk-page {
     display: grid;
-    width: min(1560px, calc(100% - clamp(2rem, 4vw, 5rem)));
-    grid-template-columns: repeat(16, minmax(0, 1fr));
-    grid-auto-rows: auto;
-    gap: clamp(0.85rem, 1.35vw, 1.25rem);
+    width: min(1420px, calc(100% - clamp(2rem, 5vw, 5rem)));
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: clamp(1rem, 1.6vw, 1.5rem);
     align-items: start;
-    padding-block: clamp(1.65rem, 3vw, 2.75rem) clamp(2.75rem, 5vw, 4.5rem);
-  }
-
-  .desk-object {
-    --desk-lift: 0;
-    --desk-tilt: 0deg;
-    position: relative;
-    min-width: 0;
-    transform: translateY(var(--desk-lift)) rotate(var(--desk-tilt));
-    transform-origin: center;
-    transition:
-      border-color var(--motion-fast),
-      box-shadow var(--motion-fast),
-      transform 220ms ease;
-  }
-
-  .desk-object.surface {
-    box-shadow: 0 12px 26px rgba(55, 40, 38, 0.055);
-  }
-
-  .desk-page .surface-pad {
-    padding: clamp(0.95rem, 1.35vw, 1.15rem);
-  }
-
-  .desk-object.surface:hover,
-  .desk-object.surface:focus-within {
-    --desk-lift: -0.28rem;
-    z-index: 10;
-    border-color: var(--color-border-strong);
-    box-shadow: 0 16px 36px rgba(55, 40, 38, 0.085);
-  }
-
-  .project-object,
-  .current-desk,
-  .field-log-preview,
-  .desk-intro,
-  .project-heading {
-    --desk-tilt: 0deg;
-  }
-
-  .desk-object[data-note]::after {
-    position: absolute;
-    z-index: 20;
-    right: var(--space-4);
-    bottom: calc(100% + 0.35rem);
-    max-width: min(15rem, 90%);
-    border: var(--border-width) solid rgba(55, 40, 38, 0.12);
-    border-radius: var(--radius-sm);
-    padding: 0.35rem 0.5rem;
-    background: color-mix(in srgb, var(--paper) 88%, white);
-    color: var(--color-text-muted);
-    content: attr(data-note);
-    font-family: var(--font-mono);
-    font-size: 0.68rem;
-    line-height: 1.35;
-    opacity: 0;
-    pointer-events: none;
-    transform: translateY(0.35rem);
-    transition:
-      opacity var(--motion-fast),
-      transform var(--motion-fast);
-  }
-
-  .desk-object[data-note]:hover::after,
-  .desk-object[data-note]:focus-within::after {
-    opacity: 1;
-    transform: translateY(0);
+    margin-inline: auto;
+    padding-block: clamp(2rem, 4vw, 3.75rem) clamp(3rem, 6vw, 5rem);
   }
 
   .desk-intro {
     grid-column: 1 / span 5;
-    grid-row: 1;
-    align-self: start;
-    max-width: 28rem;
-    padding-top: clamp(1.25rem, 3vw, 3.5rem);
-    padding-right: var(--space-4);
+    align-self: center;
+    max-width: 34rem;
+    padding: clamp(1rem, 2vw, 2rem) clamp(1rem, 2vw, 2rem)
+      clamp(1rem, 2vw, 2rem) 0;
   }
 
   .desk-intro h1 {
-    font-size: var(--text-display);
+    margin-top: var(--space-2);
+    font-size: clamp(3.5rem, 7vw, 6.8rem);
     font-weight: 600;
-    letter-spacing: 0;
+    letter-spacing: -0.035em;
+    line-height: 0.9;
   }
 
   .tagline {
-    max-width: var(--measure);
-    margin-top: var(--space-3);
+    max-width: 24ch;
+    margin: var(--space-5) 0 0;
     color: var(--accent-primary);
-    font-size: clamp(1.05rem, 1.25vw, 1.35rem);
-    font-weight: 550;
-    line-height: 1.2;
+    font-size: clamp(1.25rem, 2vw, 1.85rem);
+    font-weight: 600;
+    line-height: 1.15;
   }
 
   .lede {
-    font-family: var(--font-sans);
-    font-size: 0.9rem;
-    line-height: 1.42;
+    max-width: 35rem;
+    margin: var(--space-4) 0 0;
+    color: var(--color-text-secondary);
+    font-size: clamp(0.98rem, 1.2vw, 1.08rem);
+    line-height: 1.55;
   }
 
-  .button-row {
-    gap: 0.6rem;
+  .hero-actions,
+  .featured-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    align-items: center;
     margin-top: var(--space-5);
   }
 
-  .button {
-    min-height: 40px;
-    padding: 0.62rem 0.78rem;
-    font-size: 0.86rem;
+  .hero-actions .button,
+  .featured-actions .button {
+    min-height: 44px;
   }
 
-  .whats-here-link {
-    display: inline-flex;
-    width: fit-content;
-    align-items: center;
-    gap: 0.45rem;
-    margin-top: var(--space-3);
-    color: var(--color-text-muted);
+  .collection-artifact,
+  .portal-artifact,
+  .display-artifact {
+    min-width: 0;
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-paper);
+  }
+
+  .collection-artifact {
+    transition:
+      border-color var(--motion-fast),
+      box-shadow var(--motion-fast);
+  }
+
+  .collection-artifact:focus-within {
+    border-color: var(--color-border-strong);
+    box-shadow: var(--shadow-raised);
+  }
+
+  .featured-work {
+    grid-column: 6 / -1;
+    position: relative;
+    overflow: hidden;
+    padding: clamp(1.4rem, 2.8vw, 2.4rem);
+    border-color: rgba(79, 134, 168, 0.28);
+    background:
+      linear-gradient(rgba(79, 134, 168, 0.13) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(79, 134, 168, 0.09) 1px, transparent 1px),
+      color-mix(in srgb, var(--blue-soft) 58%, var(--paper));
+    background-size:
+      3.5rem 3.5rem,
+      3.5rem 3.5rem,
+      auto;
+  }
+
+  .featured-work::before {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 0.38rem;
+    background: var(--blue);
+    content: "";
+  }
+
+  .featured-work-heading {
+    display: flex;
+    gap: var(--space-4);
+    align-items: start;
+    justify-content: space-between;
+  }
+
+  .featured-work h2 {
+    margin-top: var(--space-2);
+    font-size: clamp(2rem, 3.8vw, 3.6rem);
+    line-height: 0.98;
+  }
+
+  .artifact-title {
+    margin: clamp(1.25rem, 2vw, 1.75rem) 0 0;
+    color: #355f7c;
     font-family: var(--font-mono);
-    font-size: var(--font-size-micro);
-    font-weight: 600;
-    text-decoration: none;
+    font-size: var(--text-sm);
+    font-weight: 700;
     text-transform: uppercase;
   }
 
-  .whats-here-link span {
-    position: relative;
-    display: inline-grid;
-    width: 1.45rem;
-    height: 1.45rem;
-    place-items: center;
-    border: var(--border-width) solid var(--color-border);
-    border-radius: 50%;
-    background: var(--color-surface-raised);
+  .featured-summary {
+    max-width: 42rem;
+    margin: var(--space-3) 0 0;
+    color: var(--color-text);
+    font-size: clamp(1.05rem, 1.5vw, 1.28rem);
+    line-height: 1.48;
   }
 
-  .whats-here-link span::before {
-    width: 0.52rem;
-    height: 0.52rem;
-    border-top: 2px solid var(--plum);
-    border-right: 2px solid var(--plum);
-    content: "";
-    transform: rotate(45deg);
+  .featured-primary {
+    background: #355f7c;
   }
 
-  .whats-here-link:hover,
-  .whats-here-link:focus-visible {
+  .featured-primary:hover,
+  .featured-primary:focus-visible {
+    background: var(--plum);
+  }
+
+  .featured-secondary {
+    color: var(--color-text);
+    font-weight: 650;
+    text-underline-offset: 0.2em;
+  }
+
+  .evidence-path {
+    display: grid;
+    grid-template-columns: auto 1fr auto 1fr auto;
+    gap: var(--space-2);
+    align-items: center;
+    margin-top: clamp(1.5rem, 3vw, 2.5rem);
+    color: #355f7c;
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+  }
+
+  .evidence-path i {
+    height: 1px;
+    background: currentColor;
+  }
+
+  .current-desk {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: minmax(13rem, 0.28fr) minmax(0, 0.72fr);
+    gap: clamp(1.25rem, 4vw, 4rem);
+    margin-top: clamp(0.5rem, 2vw, 1.5rem);
+    padding: clamp(1.25rem, 2.5vw, 2rem);
+    background: color-mix(in srgb, var(--paper) 85%, white);
+  }
+
+  .section-heading h2,
+  .project-heading h2 {
+    margin-top: var(--space-2);
+    font-size: var(--text-h2);
+  }
+
+  .current-note-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: clamp(1rem, 2.5vw, 2rem);
+  }
+
+  .current-note-list article {
+    border-left: 0.25rem solid var(--blue);
+    padding-left: var(--space-4);
+  }
+
+  .current-note-list h3 {
+    font-size: var(--text-body);
+    line-height: 1.25;
+  }
+
+  .current-note-list h3 a {
     color: var(--color-text);
   }
 
-  .mini-me-note {
-    --desk-tilt: 0deg;
-    grid-column: 12 / span 3;
-    grid-row: 3;
-    align-self: start;
-    min-height: 11.5rem;
-    border-color: rgba(122, 91, 139, 0.2);
+  .current-note-list p {
+    margin: var(--space-2) 0 0;
+    color: var(--color-text-secondary);
+    font-size: var(--text-sm);
+    line-height: 1.48;
+  }
+
+  .flagship-projects {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: minmax(13rem, 0.24fr) minmax(0, 0.76fr);
+    gap: clamp(1.25rem, 4vw, 4rem);
+    margin-top: clamp(1rem, 3vw, 2.5rem);
+  }
+
+  .project-heading {
+    padding-top: var(--space-4);
+  }
+
+  .project-heading p:not(.eyebrow) {
+    margin: var(--space-4) 0 0;
+    color: var(--color-text-secondary);
+    font-size: var(--text-sm);
+    line-height: 1.5;
+  }
+
+  .project-collection {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: clamp(1rem, 1.7vw, 1.4rem);
+    align-items: stretch;
+  }
+
+  .project-object,
+  .project-object :global(.project-file) {
+    height: 100%;
+  }
+
+  .field-log-preview {
+    grid-column: 1 / span 7;
+    padding: clamp(1.25rem, 2.5vw, 2rem);
+    background:
+      linear-gradient(
+        90deg,
+        rgba(145, 80, 91, 0.13) 0 0.34rem,
+        transparent 0.34rem
+      ),
+      var(--color-surface);
+  }
+
+  .field-log-heading {
+    display: flex;
+    gap: var(--space-4);
+    align-items: start;
+    justify-content: space-between;
+  }
+
+  .artifact-annotation {
+    margin: var(--space-1) 0 0;
+    color: var(--color-text-muted);
+    font-size: var(--text-xs);
+  }
+
+  .field-log-preview h2 {
+    margin-top: var(--space-5);
+    font-size: var(--text-h3);
+  }
+
+  .field-log-preview blockquote {
+    margin: var(--space-3) 0;
+    border-left: 0.25rem solid var(--rust);
+    padding-left: var(--space-3);
+    color: var(--color-text);
+    font-size: clamp(1rem, 1.4vw, 1.22rem);
+    font-weight: 600;
+    line-height: 1.25;
+  }
+
+  .field-log-preview blockquote + p,
+  .field-log-preview h2 + p {
+    margin: 0;
+    color: var(--color-text-secondary);
+    font-size: var(--text-sm);
+    line-height: 1.48;
+  }
+
+  .field-log-action {
+    display: inline-block;
+    margin-top: var(--space-4);
+  }
+
+  .portal-artifact {
+    display: grid;
+    align-content: space-between;
+    min-height: 13rem;
+    gap: var(--space-4);
+    padding: clamp(1.2rem, 2vw, 1.6rem);
+    color: inherit;
+    text-decoration: none;
+    transition:
+      border-color var(--motion-fast),
+      box-shadow var(--motion-fast),
+      transform var(--motion-fast);
+  }
+
+  .portal-artifact:hover,
+  .portal-artifact:focus-visible {
+    border-color: var(--color-border-strong);
+    box-shadow: var(--shadow-raised);
+    transform: translateY(-0.2rem);
+  }
+
+  .portal-artifact strong {
+    font-size: clamp(1.05rem, 1.6vw, 1.35rem);
+    line-height: 1.3;
+  }
+
+  .portal-cue {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    font-weight: 700;
+  }
+
+  .writing-note {
+    grid-column: 8 / span 3;
+    background: var(--sunny-note);
+    color: #4d3710;
+  }
+
+  .about-note {
+    grid-column: 11 / span 2;
     background: var(--lavender);
     color: #4b3158;
   }
 
-  .mini-me-note h2 {
-    margin-bottom: var(--space-3);
-    font-size: clamp(1.15rem, 1.4vw, 1.55rem);
+  .mini-me-note {
+    grid-column: 9 / -1;
+    position: relative;
+    min-height: 13rem;
+    padding: clamp(1.2rem, 2vw, 1.6rem);
+    border-color: rgba(122, 91, 139, 0.2);
+    background: color-mix(in srgb, var(--lavender) 88%, var(--paper));
+    color: #4b3158;
   }
 
   .mini-me-note h2 {
-    font-family: var(--font-sans);
-    letter-spacing: 0;
+    margin-top: var(--space-3);
+    font-size: var(--text-h3);
   }
 
   .mini-me-note p:not(.eyebrow) {
+    max-width: 37rem;
     font-family: var(--font-hand);
-    font-size: 0.86rem;
-    line-height: 1.34;
+    font-size: 0.94rem;
+    line-height: 1.45;
   }
 
   .status-line {
+    margin-top: var(--space-4);
     border-top: var(--border-width) solid rgba(122, 91, 139, 0.2);
     padding-top: var(--space-4);
-    color: #4b3158;
     font-weight: 600;
   }
 
@@ -405,7 +573,7 @@ const latestFieldLog = fieldLogEntries[0];
     height: 1.65rem;
     border: 2px solid currentColor;
     border-radius: 50%;
-    opacity: 0.48;
+    opacity: 0.42;
   }
 
   .mini-me-mark::before,
@@ -433,325 +601,6 @@ const latestFieldLog = fieldLogEntries[0];
     border-radius: 0 0 999px 999px;
   }
 
-  .current-desk {
-    grid-column: 10 / span 5;
-    grid-row: 1;
-    border-color: rgba(79, 134, 168, 0.2);
-    background:
-      linear-gradient(rgba(79, 134, 168, 0.16) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(79, 134, 168, 0.1) 1px, transparent 1px),
-      color-mix(in srgb, var(--blue-soft) 34%, var(--paper));
-    background-size:
-      100% 3.5rem,
-      3.5rem 100%,
-      auto;
-  }
-
-  .current-desk h2,
-  .project-heading h2,
-  .field-log-preview h2 {
-    font-weight: 600;
-  }
-
-  .current-desk h2 {
-    max-width: 12ch;
-    font-size: var(--text-h2);
-    line-height: 0.98;
-  }
-
-  .current-note-list {
-    display: grid;
-    gap: 0.62rem;
-    margin-top: var(--space-4);
-  }
-
-  .current-note-list article {
-    display: grid;
-    grid-template-columns: minmax(6.5rem, 0.56fr) minmax(0, 1.44fr);
-    gap: var(--space-3);
-    border-top: var(--border-width) solid var(--color-border);
-    padding-top: var(--space-2);
-  }
-
-  .current-note-list h3,
-  .current-note-list p {
-    margin: 0;
-  }
-
-  .current-note-list h3 {
-    color: var(--rust);
-    font-family: var(--font-mono);
-    font-size: 0.74rem;
-    overflow-wrap: anywhere;
-  }
-
-  .current-note-list p {
-    color: var(--color-text-secondary);
-    font-size: 0.78rem;
-    line-height: 1.3;
-  }
-
-  .desk-flow {
-    display: grid;
-    grid-template-columns: auto 1fr auto 1fr auto;
-    gap: 0.45rem;
-    align-items: center;
-    margin-top: var(--space-3);
-    color: var(--blue);
-    font-family: var(--font-mono);
-    font-size: 0.72rem;
-    overflow: hidden;
-  }
-
-  .desk-flow i {
-    position: relative;
-    min-width: 0;
-    overflow: hidden;
-    height: 1px;
-    background: currentColor;
-  }
-
-  .desk-flow i::after {
-    content: none;
-  }
-
-  .project-heading {
-    grid-column: 1 / span 3;
-    grid-row: 2;
-    align-self: start;
-    padding-top: clamp(1.75rem, 4vw, 4.25rem);
-    padding-right: var(--space-4);
-  }
-
-  .project-heading h2 {
-    font-size: var(--text-h2);
-    overflow-wrap: anywhere;
-  }
-
-  .project-heading p:not(.eyebrow) {
-    margin-top: var(--space-4);
-    color: var(--color-text-secondary);
-    font-size: 0.92rem;
-    line-height: 1.45;
-  }
-
-  .project-object {
-    display: grid;
-    align-content: start;
-    gap: 0.68rem;
-    overflow: visible;
-    color: var(--color-text);
-  }
-
-  .project-object h3 {
-    font-size: clamp(1.08rem, 1.3vw, 1.38rem);
-  }
-
-  .project-object p {
-    font-size: 0.86rem;
-    line-height: 1.38;
-  }
-
-  .project-object.rust {
-    grid-column: 6 / span 4;
-    grid-row: 1;
-    border-color: rgba(145, 80, 91, 0.18);
-    background:
-      radial-gradient(
-        circle at 72% 82%,
-        rgba(145, 80, 91, 0.09) 0 18%,
-        transparent 18.5%
-      ),
-      linear-gradient(
-        90deg,
-        rgba(145, 80, 91, 0.16) 0 0.42rem,
-        transparent 0.42rem
-      ),
-      color-mix(in srgb, var(--paper) 86%, white);
-    box-shadow: var(--shadow-raised);
-  }
-
-  .project-object.olive {
-    grid-column: 8 / span 4;
-    grid-row: 2;
-    border-color: rgba(111, 126, 29, 0.2);
-    background:
-      linear-gradient(rgba(86, 97, 19, 0.1) 1px, transparent 1px),
-      color-mix(in srgb, var(--olive) 82%, var(--paper));
-    background-size: 100% 2.1rem;
-  }
-
-  .project-object.blue {
-    grid-column: 3 / span 5;
-    grid-row: 3;
-    border-color: rgba(79, 134, 168, 0.18);
-    background:
-      linear-gradient(rgba(79, 134, 168, 0.14) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(79, 134, 168, 0.12) 1px, transparent 1px),
-      var(--blue-soft);
-    background-size:
-      1.8rem 1.8rem,
-      1.8rem 1.8rem,
-      auto;
-  }
-
-  .project-object.plum {
-    grid-column: 4 / span 4;
-    grid-row: 2;
-    border-color: rgba(122, 91, 139, 0.2);
-    background: color-mix(in srgb, var(--plum-soft) 72%, var(--paper));
-  }
-
-  .project-object.is-focal::after {
-    position: absolute;
-    right: var(--space-5);
-    bottom: var(--space-5);
-    width: 8.5rem;
-    height: 5rem;
-    border-bottom: var(--border-width) solid rgba(145, 80, 91, 0.3);
-    border-left: var(--border-width) solid rgba(145, 80, 91, 0.3);
-    content: "";
-    opacity: 0.75;
-    pointer-events: none;
-  }
-
-  .project-object p {
-    color: var(--color-text-secondary);
-  }
-
-  .project-object :global(.status) {
-    border-color: rgba(55, 40, 38, 0.12);
-    background: rgba(255, 248, 239, 0.66);
-    color: var(--color-text);
-  }
-
-  .project-object.rust :global(.status) {
-    color: var(--rust);
-  }
-
-  .project-object.olive :global(.status) {
-    color: #566113;
-  }
-
-  .project-object.blue :global(.status) {
-    color: #355f7c;
-  }
-
-  .project-object :global(.tags li) {
-    background: rgba(255, 248, 239, 0.5);
-    color: var(--color-text);
-  }
-
-  .project-object a {
-    align-self: end;
-    color: var(--rust);
-    font-family: var(--font-mono);
-    font-size: 0.78rem;
-  }
-
-  .field-log-preview {
-    grid-column: 12 / span 5;
-    grid-row: 2;
-    border-color: rgba(55, 40, 38, 0.12);
-    padding: clamp(1.1rem, 1.5vw, 1.35rem);
-    background:
-      linear-gradient(
-        90deg,
-        rgba(145, 80, 91, 0.13) 0 0.32rem,
-        transparent 0.32rem
-      ),
-      color-mix(in srgb, var(--paper) 90%, white);
-  }
-
-  .field-log-heading {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: var(--space-3);
-    margin-bottom: var(--space-3);
-  }
-
-  .field-log-heading > a {
-    font-family: var(--font-mono);
-    font-size: var(--text-xs);
-    white-space: nowrap;
-  }
-
-  .field-log-preview h2 {
-    margin: 0;
-    font-size: var(--text-h3);
-    line-height: 1.2;
-  }
-
-  .field-log-preview > h3 {
-    margin: var(--space-2) 0 0;
-    color: var(--color-text);
-    font-size: var(--text-body);
-    font-weight: var(--weight-semibold);
-    line-height: 1.3;
-  }
-
-  .field-log-preview blockquote {
-    margin: var(--space-3) 0;
-    border-left: 0.25rem solid var(--rust);
-    padding-left: var(--space-3);
-    color: var(--color-text);
-    font-size: clamp(1rem, 1.35vw, 1.2rem);
-    font-weight: var(--weight-semibold);
-    line-height: 1.18;
-  }
-
-  .field-log-preview blockquote + p {
-    margin: 0;
-    color: var(--color-text-secondary);
-    font-size: var(--text-sm);
-    line-height: 1.45;
-  }
-
-  .field-log-preview > a:last-child {
-    display: inline-block;
-    margin-top: var(--space-4);
-  }
-
-  .about-note,
-  .writing-note {
-    display: grid;
-    align-content: space-between;
-    min-height: 7rem;
-    color: inherit;
-    font-family: var(--font-hand);
-    font-size: 0.95rem;
-    line-height: 1.55;
-    text-decoration: none;
-  }
-
-  .mini-me-note .eyebrow,
-  .about-note .eyebrow {
-    color: #6b4a7a;
-  }
-
-  .about-note {
-    --desk-tilt: -0.35deg;
-    grid-column: 14 / span 2;
-    grid-row: 3;
-    border-color: rgba(122, 91, 139, 0.2);
-    background: var(--lavender);
-    color: #4b3158;
-  }
-
-  .writing-note {
-    --desk-tilt: 0.35deg;
-    grid-column: 8 / span 2;
-    grid-row: 3;
-    border-color: color-mix(in srgb, var(--khaki) 55%, var(--color-border));
-    background: var(--sunny-note);
-    color: #4d3710;
-  }
-
-  .writing-note .eyebrow {
-    color: #665114;
-  }
-
   @media (max-width: 1040px) {
     .desk-page {
       grid-template-columns: repeat(8, minmax(0, 1fr));
@@ -759,111 +608,98 @@ const latestFieldLog = fieldLogEntries[0];
 
     .desk-intro {
       grid-column: 1 / span 4;
-      grid-row: 1;
     }
 
-    .project-object.rust {
-      grid-column: 5 / span 4;
-      grid-row: 1;
+    .featured-work {
+      grid-column: 5 / -1;
     }
 
-    .current-desk {
-      grid-column: 1 / span 4;
-      grid-row: 2;
+    .current-desk,
+    .flagship-projects {
+      grid-column: 1 / -1;
     }
 
-    .project-heading {
-      grid-column: 1 / span 3;
-      grid-row: 3;
+    .flagship-projects {
+      grid-template-columns: 1fr;
     }
 
-    .project-object.olive {
-      grid-column: 4 / span 3;
-      grid-row: 3;
-    }
-
-    .project-object.blue {
-      grid-column: 1 / span 3;
-      grid-row: 4;
-    }
-
-    .project-object.plum {
-      grid-column: 4 / span 4;
-      grid-row: 6;
+    .project-collection {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
     .field-log-preview {
-      grid-column: 4 / span 3;
-      grid-row: 4;
-    }
-
-    .mini-me-note {
-      grid-column: 1 / span 3;
-      grid-row: 5;
-    }
-
-    .about-note {
-      grid-column: 7 / span 2;
-      grid-row: 3;
+      grid-column: 1 / span 5;
     }
 
     .writing-note {
-      grid-column: 5 / span 2;
-      grid-row: 5;
+      grid-column: 6 / span 3;
     }
 
-    .desk-flow i::after {
-      content: none;
+    .about-note {
+      grid-column: 6 / span 3;
+    }
+
+    .mini-me-note {
+      grid-column: 4 / -1;
     }
   }
 
   @media (max-width: 720px) {
     .desk-page {
       grid-template-columns: 1fr;
+      width: min(100% - 2rem, 42rem);
+      padding-top: var(--space-6);
     }
 
     .desk-intro,
-    .mini-me-note,
+    .featured-work,
     .current-desk,
-    .project-heading,
-    .project-object.rust,
-    .project-object.olive,
-    .project-object.blue,
-    .project-object.plum,
+    .flagship-projects,
     .field-log-preview,
+    .writing-note,
     .about-note,
-    .writing-note {
+    .mini-me-note {
       grid-column: auto;
-      grid-row: auto;
-      transform: none;
     }
 
     .desk-intro {
-      padding-right: 0;
+      padding: 0 0 var(--space-3);
     }
 
-    .current-note-list article {
+    .desk-intro h1 {
+      font-size: clamp(3.25rem, 17vw, 5rem);
+    }
+
+    .featured-work-heading {
+      align-items: flex-start;
+      flex-direction: column;
+    }
+
+    .current-desk,
+    .flagship-projects {
       grid-template-columns: 1fr;
-      gap: 0.35rem;
     }
 
-    .desk-object[data-note]::after {
-      content: none;
+    .current-note-list,
+    .project-collection {
+      grid-template-columns: 1fr;
+    }
+
+    .portal-artifact,
+    .mini-me-note {
+      min-height: 10rem;
     }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .desk-object {
+    .collection-artifact,
+    .portal-artifact {
       transition: none;
     }
 
-    .desk-object.surface:hover,
-    .desk-object.surface:focus-within {
-      --desk-lift: 0;
-    }
-
-    .desk-object[data-note]::after {
-      transition: none;
+    .portal-artifact:hover,
+    .portal-artifact:focus-visible {
+      transform: none;
     }
   }
 </style>
