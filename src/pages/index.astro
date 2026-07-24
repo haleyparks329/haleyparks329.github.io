@@ -209,14 +209,6 @@ const latestFieldLog = fieldLogEntries[0];
       <span class="eyebrow">Writing</span>
       <span>Read the longer notes.</span>
     </a>
-
-    <div
-      class="desk-photo desk-object photo-object surface decorative-object"
-      aria-hidden="true"
-      data-note="Caffeine status: plausibly structural."
-    >
-      <span>matcha + deep work</span>
-    </div>
   </section>
 </BaseLayout>
 
@@ -268,14 +260,6 @@ const latestFieldLog = fieldLogEntries[0];
     --desk-tilt: 0deg;
   }
 
-  .decorative-object.surface:hover,
-  .decorative-object.surface:focus-within {
-    --desk-lift: 0;
-    z-index: auto;
-    border-color: var(--color-border);
-    box-shadow: 0 12px 26px rgba(55, 40, 38, 0.055);
-  }
-
   .desk-object[data-note]::after {
     position: absolute;
     z-index: 20;
@@ -305,19 +289,6 @@ const latestFieldLog = fieldLogEntries[0];
     transform: translateY(0);
   }
 
-  .desk-object::before {
-    position: absolute;
-    z-index: 1;
-    top: -0.85rem;
-    left: 14%;
-    width: 4.5rem;
-    height: 1.2rem;
-    background: color-mix(in srgb, var(--khaki) 46%, transparent);
-    content: "";
-    opacity: 0.58;
-    transform: rotate(-4deg);
-  }
-
   .desk-intro {
     grid-column: 1 / span 5;
     grid-row: 1;
@@ -325,11 +296,6 @@ const latestFieldLog = fieldLogEntries[0];
     max-width: 28rem;
     padding-top: clamp(1.25rem, 3vw, 3.5rem);
     padding-right: var(--space-4);
-  }
-
-  .desk-intro::before,
-  .project-heading::before {
-    content: none;
   }
 
   .desk-intro h1 {
@@ -792,50 +758,6 @@ const latestFieldLog = fieldLogEntries[0];
     color: #665114;
   }
 
-  .desk-photo {
-    --desk-tilt: 0.45deg;
-    grid-column: 14 / span 3;
-    grid-row: 1;
-    display: grid;
-    align-content: end;
-    min-height: clamp(13rem, 17vw, 18rem);
-    overflow: hidden;
-    padding: var(--space-5);
-    background:
-      linear-gradient(145deg, rgba(55, 40, 38, 0.05), rgba(55, 40, 38, 0) 42%),
-      radial-gradient(
-        circle at 26% 30%,
-        var(--houseplant) 0 12%,
-        transparent 12.5%
-      ),
-      radial-gradient(circle at 45% 40%, var(--olive) 0 10%, transparent 10.5%),
-      linear-gradient(
-        90deg,
-        color-mix(in srgb, var(--khaki) 32%, var(--paper)) 0 48%,
-        #2f2b25 48% 100%
-      );
-    background-color: color-mix(in srgb, var(--khaki) 24%, var(--paper));
-    color: var(--color-text);
-  }
-
-  .desk-photo::after {
-    position: absolute;
-    inset: 1rem;
-    border: var(--border-width) solid rgba(55, 40, 38, 0.1);
-    content: "";
-  }
-
-  .desk-photo span {
-    position: relative;
-    z-index: 2;
-    width: fit-content;
-    border-radius: var(--radius-sm);
-    padding: 0.2rem 0.45rem;
-    background: rgba(255, 248, 239, 0.78);
-    font-family: var(--font-hand);
-    font-size: 1rem;
-  }
-
   @media (max-width: 1040px) {
     .desk-page {
       grid-template-columns: repeat(8, minmax(0, 1fr));
@@ -853,11 +775,6 @@ const latestFieldLog = fieldLogEntries[0];
 
     .current-desk {
       grid-column: 1 / span 4;
-      grid-row: 2;
-    }
-
-    .desk-photo {
-      grid-column: 5 / span 4;
       grid-row: 2;
     }
 
@@ -921,8 +838,7 @@ const latestFieldLog = fieldLogEntries[0];
     .project-object.plum,
     .field-log-preview,
     .about-note,
-    .writing-note,
-    .desk-photo {
+    .writing-note {
       grid-column: auto;
       grid-row: auto;
       transform: none;
@@ -935,10 +851,6 @@ const latestFieldLog = fieldLogEntries[0];
     .current-note-list article {
       grid-template-columns: 1fr;
       gap: 0.35rem;
-    }
-
-    .desk-photo {
-      min-height: 12rem;
     }
 
     .desk-object[data-note]::after {
