@@ -14,7 +14,7 @@ import {
 
 export async function getStaticPaths() {
   const entries = (await getCollection("writing")).filter(
-    (entry) => !entry.data.draft,
+    (entry) => !entry.data.draft && !entry.data.routeBacked,
   );
 
   return entries.map((entry) => ({
