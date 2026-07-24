@@ -121,16 +121,16 @@ const indexPayload = {
 ---
 
 <BaseLayout
-  title="What’s Here?"
+  title="Explore"
   description="A compact guide to Haley Parks' projects, writing, experiments, ideas, trails, and public work."
   canonicalPath="/explore/"
-  breadcrumbs={[{ label: "Home", href: "/" }, { label: "What’s Here?" }]}
+  breadcrumbs={[{ label: "Home", href: "/" }, { label: "Explore" }]}
 >
   <section class="explore-page">
     <PageIntro
-      title="What’s Here?"
-      description="A compact guide to everything collected here."
-      text="Choose a route, start somewhere familiar, or browse the full index."
+      title="Explore"
+      description="Browse projects, writing, field notes, demos, and related work."
+      text="Follow a suggested route, browse by topic, or use the complete index."
       meta={[
         `${indexDestinations.length} entries`,
         "Trails",
@@ -166,8 +166,8 @@ const indexPayload = {
 
       <section class="orientation-panel" aria-labelledby="start-heading">
         <div class="compact-heading">
-          <p class="eyebrow">Start Somewhere</p>
-          <h2 id="start-heading">Familiar shelves</h2>
+          <p class="eyebrow">Browse by area</p>
+          <h2 id="start-heading">Main sections</h2>
         </div>
         <nav class="quick-links" aria-label="Major site areas">
           {quickLinks.map((link) => <a href={link.href}>{link.label}</a>)}

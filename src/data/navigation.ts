@@ -223,7 +223,7 @@ export const destinations: Destination[] = [
   {
     id: "explore",
     href: "/explore/",
-    label: "What’s Here?",
+    label: "Explore",
     type: "page",
     summary:
       "A guide to the projects, writing, demos, trails, and ideas collected on the site.",
@@ -669,7 +669,7 @@ export const relationships: Relationship[] = [
     type: "continued-in",
     label: "Continues In",
     reason:
-      "What’s Here? is the conventional guide that grew from the desk navigation idea.",
+      "Explore is the site guide that grew from the desk navigation idea.",
   },
   {
     from: "compost-heap",

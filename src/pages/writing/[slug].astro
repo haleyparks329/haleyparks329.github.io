@@ -37,14 +37,14 @@ const relatedLinks = [
   entry.data.repositoryUrl
     ? {
         href: entry.data.repositoryUrl,
-        label: "View repository",
+        label: "Repository",
         external: true,
       }
     : undefined,
   entry.data.demoUrl
     ? {
         href: entry.data.demoUrl,
-        label: "Open related demo",
+        label: "Demo",
         external: entry.data.demoUrl.startsWith("http"),
       }
     : undefined,

@@ -39,13 +39,9 @@ const latestFieldLog = fieldLogEntries[0];
       <div class="button-row">
         <a class="button" href="/projects/">View Projects</a>
       </div>
-      <a
-        class="whats-here-link"
-        href="/explore/"
-        aria-label="Open What’s Here?"
-      >
+      <a class="whats-here-link" href="/explore/" aria-label="Explore the site">
         <span aria-hidden="true"></span>
-        <strong>What’s Here?</strong>
+        <strong>Explore</strong>
       </a>
     </div>
 
@@ -141,9 +137,7 @@ const latestFieldLog = fieldLogEntries[0];
             project={project}
             variant={index === 0 ? "featured" : "desk"}
             primaryLabel={
-              project.data.slug === "qa-agents"
-                ? "Learn about QA Agents"
-                : undefined
+              project.data.slug === "qa-agents" ? "Project overview" : undefined
             }
             supportingAction={
               project.data.slug === "qa-agents"

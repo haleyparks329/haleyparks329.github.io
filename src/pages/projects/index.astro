@@ -19,9 +19,9 @@ const projects = (await getCollection("projects")).sort(
     <PageIntro
       title="Projects"
       description="Active systems, experiments, and long-running bodies of work."
-      text="Open a project workspace to inspect its overview, demos, related writing, and repository trail."
+      text="Select a project to view its overview, demos, related writing, and repository."
       meta={["5 active systems", "Public workspaces", "Repo-backed"]}
-      note="Choose a file, then wander."
+      note="Each project includes current work, documentation, and related links."
       accent="olive"
       width="wide"
     />
@@ -30,7 +30,7 @@ const projects = (await getCollection("projects")).sort(
     </div>
 
     <nav class="project-page-links" aria-label="Project page next paths">
-      <a href="/explore/">Browse all work in What’s Here?</a>
+      <a href="/explore/">Explore all work</a>
       <a href="/explore/trails/how-i-build/">Follow the How I Build trail</a>
       <a href="/explore/trails/ai-systems/">Follow the AI Systems trail</a>
     </nav>

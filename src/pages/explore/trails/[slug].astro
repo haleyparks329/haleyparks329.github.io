@@ -29,7 +29,7 @@ const stops = resolvedTrail.stops.map((stop, index) => ({
   canonicalPath={`/explore/trails/${resolvedTrail.slug}/`}
   breadcrumbs={[
     { label: "Home", href: "/" },
-    { label: "What’s Here?", href: "/explore/" },
+    { label: "Explore", href: "/explore/" },
     { label: `${resolvedTrail.label} Trail` },
   ]}
 >
@@ -38,7 +38,7 @@ const stops = resolvedTrail.stops.map((stop, index) => ({
       <p class="eyebrow">Trail</p>
       <h1>{resolvedTrail.label}</h1>
       <p>{resolvedTrail.summary}</p>
-      <a href="/explore/">Back to What’s Here?</a>
+      <a href="/explore/">Back to Explore</a>
     </header>
 
     <ol class="trail-stops" aria-label={`${resolvedTrail.label} stops`}>

@@ -17,7 +17,7 @@ const workspace = workspaceForSlug(data.slug);
 <article
   class={`project-directory-card project-${data.slug} accent-${data.accent}`}
 >
-  <a href={projectHref} aria-label={`Open ${data.title} project workspace`}>
+  <a href={projectHref} aria-label={`View ${data.title} project`}>
     <span class="project-category">{workspace.cardLabel}</span>
     <span class="project-title">{data.title}</span>
     <span class="project-summary">{data.summary}</span>
@@ -29,7 +29,7 @@ const workspace = workspaceForSlug(data.slug);
     </span>
     <span class="project-card-footer">
       <StatusBadge status={data.status} accent={data.accent} />
-      <span class="open-cue">Open workspace →</span>
+      <span class="open-cue">View project →</span>
     </span>
   </a>
 </article>

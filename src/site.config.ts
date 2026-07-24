@@ -18,7 +18,7 @@ export const siteConfig: SiteConfig = {
   role: "AI Product Engineer",
   tagline: "AI Product Engineer building systems that understand people.",
   description:
-    "Personal website and public project portfolio for Haley Parks, an AI Product Engineer building human-centered systems across data, behavior, context, and goals.",
+    "Projects, writing, and public work by Haley Parks, an AI Product Engineer building human-centered systems across data, behavior, context, and goals.",
   siteUrl: "https://haleyparks329.github.io",
   githubUsername: "haleyparks329",
   githubUrl: "https://github.com/haleyparks329",

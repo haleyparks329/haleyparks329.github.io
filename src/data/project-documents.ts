@@ -69,7 +69,7 @@ export type ProjectDocumentData = {
 
 const humanModelRepository = {
   href: "https://github.com/haleyparks329/the-human-model",
-  label: "View repository",
+  label: "Repository",
   external: true,
 };
 
@@ -81,7 +81,7 @@ const humanModelExamples = {
 
 const careerRepository = {
   href: "https://github.com/haleyparks329/career-intelligence",
-  label: "View repository",
+  label: "Repository",
   external: true,
 };
 
@@ -99,7 +99,7 @@ const careerKnowledgeGraph = {
 
 const qaRepository = {
   href: "https://github.com/haleyparks329/qa-agents",
-  label: "View repository",
+  label: "Repository",
   external: true,
 };
 
