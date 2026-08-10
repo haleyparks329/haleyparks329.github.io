@@ -236,8 +236,8 @@ export const projectWorkspaces: Record<string, ProjectWorkspaceConfig> = {
             external: true,
           },
           {
-            label: "Synthetic Outputs",
-            href: "https://github.com/haleyparks329/career-intelligence/tree/main/examples/andy-barks/generated",
+            label: "Andy Barks Case Study",
+            href: "https://github.com/haleyparks329/career-intelligence/blob/main/examples/andy-barks/case-study.md",
             external: true,
           },
         ],
@@ -249,18 +249,18 @@ export const projectWorkspaces: Record<string, ProjectWorkspaceConfig> = {
     cardLabel: "Software investigation",
     projectType: "Software investigation",
     headerSummary:
-      "A recorded evidence loop for understanding what changed, what passed, what remains uncertain, and what should happen next.",
+      "A static case study showing deterministic evidence, missing coverage, bounded roles, and a human-reviewed next step.",
     currentNote:
-      "Making QA handoff evidence clearer without hiding the human decision boundary.",
+      "Preserving the evidence and decision boundary without publishing the operating substrate.",
     annotation:
       "investigating the investigation; no autonomous crimes committed",
     primaryLinks: [
       {
-        label: "Replay investigation",
-        href: "/projects/qa-agents/meticulous/replay/",
+        label: "Little Bytes case study",
+        href: "/projects/qa-agents/demo/",
       },
       {
-        label: "Live review",
+        label: "Public boundary",
         href: "/projects/qa-agents/live/",
       },
       {
@@ -280,9 +280,15 @@ export const projectWorkspaces: Record<string, ProjectWorkspaceConfig> = {
       {
         label: "Evidence",
         links: [
-          { label: "Live System Review", href: "/projects/qa-agents/live/" },
+          {
+            label: "Static Evidence Boundary",
+            href: "/projects/qa-agents/live/",
+          },
           { label: "Case Studies", href: "/projects/qa-agents/case-studies/" },
-          { label: "Investigation Replay", href: "/projects/qa-agents/demo/" },
+          {
+            label: "Little Bytes Case Study",
+            href: "/projects/qa-agents/demo/",
+          },
           {
             label: "Extending Deterministic Replay with an Investigation Layer",
             href: "/projects/qa-agents/meticulous/",

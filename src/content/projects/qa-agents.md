@@ -1,8 +1,8 @@
 ---
 title: "QA Agents"
 slug: "qa-agents"
-summary: "An experimental project exploring AI-assisted software-quality workflows."
-longDescription: "QA Agents explores where profile-aware agents can support software-quality workflows while keeping uncertainty, handoffs, and human review visible."
+summary: "A case study in deterministic evidence before bounded agent investigation."
+longDescription: "QA Agents demonstrates evidence-first investigation, acted/blocked/abstained outcomes, five responsibility-bound roles, and a human-reviewed Little Bytes case study."
 coreQuestion: "Which parts of software-quality work benefit from agents, and which still require direct human reasoning?"
 status: "Experimental"
 featured: true
@@ -19,4 +19,4 @@ repositoryUrl: "https://github.com/haleyparks329/qa-agents"
 order: 3
 ---
 
-QA Agents is intentionally described conservatively until the implementation, outcomes, and boundaries are clearer from the public repository itself.
+QA Agents is presented as a public case study rather than an installable operating substrate. Static artifacts show what happened while profiles, policies, prompts, routing, memory, and runtime orchestration remain withheld.

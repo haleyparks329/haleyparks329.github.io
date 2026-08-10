@@ -370,7 +370,7 @@ export const destinations: Destination[] = [
     label: "QA Agents",
     type: "project",
     summary:
-      "An experimental software-quality system focused on evidence, routing, and human review.",
+      "A static software-quality case study focused on evidence, bounded roles, and human review.",
     topics: ["Agent Systems", "Software Quality", "Human-Centered Technology"],
     project: "qa-agents",
     trails: ["ai-systems", "how-i-build"],
@@ -381,17 +381,17 @@ export const destinations: Destination[] = [
     label: "QA Agents system",
     type: "project",
     summary:
-      "Agent responsibilities, evidence routing, status, and human-review boundaries.",
+      "Role responsibilities, evidence states, and human-review boundaries.",
     topics: ["Agent Systems", "Software Quality"],
     project: "qa-agents",
   },
   {
     id: "project-qa-agents-live",
     href: "/projects/qa-agents/live/",
-    label: "QA Agents live system review",
+    label: "QA Agents public boundary",
     type: "demo",
     summary:
-      "The latest public-safe deterministic evidence exported after QA Agents reviewed this website.",
+      "Why the site now uses local validation and static case-study evidence rather than a live agent integration.",
     topics: ["Agent Systems", "Software Quality"],
     project: "qa-agents",
   },
@@ -442,9 +442,10 @@ export const destinations: Destination[] = [
   {
     id: "demo-qa-agents-little-bytes",
     href: "/projects/qa-agents/demo/",
-    label: "Little Bytes evidence replay",
+    label: "Little Bytes evidence case study",
     type: "demo",
-    summary: "A recorded pricing investigation replayed from source evidence.",
+    summary:
+      "A recorded pricing investigation explained through curated static evidence.",
     topics: ["Software Quality", "Agent Systems"],
     project: "qa-agents",
     trails: ["ai-systems"],
@@ -455,7 +456,7 @@ export const destinations: Destination[] = [
     label: "Extending Deterministic Replay with an Investigation Layer",
     type: "writing",
     summary:
-      "How deterministic replay evidence can enter QA Agents through a configurable investigation layer.",
+      "A bounded research note about reasoning downstream of deterministic replay evidence.",
     topics: ["Software Quality", "Agent Systems"],
     project: "qa-agents",
     trails: ["how-i-build"],
@@ -463,10 +464,10 @@ export const destinations: Destination[] = [
   {
     id: "demo-qa-agents-meticulous-replay",
     href: "/projects/qa-agents/meticulous/replay/",
-    label: "Meticulous replay workstation",
+    label: "Replay publication boundary",
     type: "demo",
     summary:
-      "The focused replay route for the Meticulous-inspired QA investigation.",
+      "Why detailed strategy configuration and replay policy are intentionally withheld.",
     topics: ["Software Quality", "Agent Systems"],
     project: "qa-agents",
   },

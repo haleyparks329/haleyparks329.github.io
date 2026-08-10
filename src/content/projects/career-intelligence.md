@@ -1,8 +1,8 @@
 ---
 title: "Career Intelligence"
 slug: "career-intelligence"
-summary: "A system for reasoning about careers as connected evidence, capabilities, preferences, and opportunities rather than reducing a person to a static resume."
-longDescription: "Career Intelligence is a public-safe framework for source-backed career reasoning across evidence, role matching, person-model reasoning, and generated career materials."
+summary: "A synthetic case study in source-backed career claims, transferable capabilities, uncertainty, and honest gaps."
+longDescription: "Career Intelligence follows fictional educator Andy Barks from evidence to a transparent supported/partial/unsupported role comparison without publishing a reusable career engine."
 coreQuestion: "Can AI understand the person behind a career history instead of only matching keywords in a resume?"
 status: "Active project"
 featured: true
@@ -20,4 +20,4 @@ repositoryUrl: "https://github.com/haleyparks329/career-intelligence"
 order: 4
 ---
 
-Career Intelligence treats career work as a connected system of evidence, capabilities, preferences, and opportunities.
+Career Intelligence demonstrates how evidence and provenance can support truthful career reasoning while keeping reflection separate from credentials and capability separate from environment fit.
