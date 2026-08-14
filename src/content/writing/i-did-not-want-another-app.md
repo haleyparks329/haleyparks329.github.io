@@ -1,5 +1,6 @@
 ---
 title: "I Did Not Want Another App"
+writingId: "writing-bridget-context"
 slug: "i-did-not-want-another-app"
 description: "How a simple way to route scattered gym data through Telegram evolved into a personal orchestration system."
 type: "case-study"
@@ -13,11 +14,26 @@ topics:
   - "Human-Centered Technology"
   - "Human Model"
   - "Agent Systems"
+collections:
+  - "keeping-context"
+  - "tools-for-whole-people"
+primaryCollection: "keeping-context"
+relatedProjects:
+  - slug: "bridget"
+    relationship: "origin-of"
+relatedWriting:
+  - slug: "what-i-built-instead-of-an-agent"
+    relationship: "continues"
+  - slug: "why-fika-jobs-felt-familiar"
+    relationship: "related-to"
 relatedProject: "bridget"
 repositoryUrl: "https://github.com/haleyparks329/bridget-architecture"
 featured: true
 draft: false
 readingTime: "8 min"
+canonicalUrl: "/writing/i-did-not-want-another-app/"
+editorialWeight: 100
+archived: false
 ---
 
 My gym data was everywhere.

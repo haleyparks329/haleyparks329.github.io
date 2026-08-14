@@ -1,29 +1,93 @@
 ---
+import { getCollection } from "astro:content";
+import WritingConnections from "@/components/WritingConnections.astro";
+import WritingDocumentHeader from "@/components/WritingDocumentHeader.astro";
+import { validateWritingLibrary, writingHref } from "@/data/writing-library";
 import BaseLayout from "@/layouts/BaseLayout.astro";
+
+const writings = await getCollection("writing");
+const projects = await getCollection("projects");
+validateWritingLibrary(writings, projects);
+
+const entry = writings.find(
+  (candidate) => candidate.data.writingId === "writing-replay-investigation",
+);
+
+if (!entry) {
+  throw new Error("The Meticulous writing entry is missing.");
+}
 ---
 
 <BaseLayout
-  title="QA Agents | Replay research note"
-  description="A bounded research note about replay evidence."
-  canonicalPath="/projects/qa-agents/meticulous/"
+  title={entry.data.title}
+  description={entry.data.description}
+  canonicalPath={writingHref(entry)}
+  breadcrumbs={[
+    { label: "Home", href: "/" },
+    { label: "Writing", href: "/writing/" },
+    { label: entry.data.title },
+  ]}
 >
-  <main class="document-page">
-    <p class="eyebrow">Research note</p>
-    <h1>Deterministic replay as evidence</h1>
-    <p>
-      This secondary exploration asked how a bounded investigator might reason
-      downstream of replay evidence while preserving human merge authority.
-    </p>
-    <p>
-      The public version retains the architectural lesson only. Strategy
-      configuration, evidence schemas, prompts, thresholds, clustering, and
-      decision policies are intentionally withheld. This is not an official
-      integration or representation of another company's internal systems.
-    </p>
-    <p>
-      <a href="/projects/qa-agents/demo/"
-        >View the primary Little Bytes case study</a
-      >
-    </p>
-  </main>
+  <article
+    class="writing-document"
+    data-writing-type={entry.data.type}
+    data-writing-id={entry.data.writingId}
+    data-writing-collections={entry.data.collections.join(" ")}
+  >
+    <WritingDocumentHeader entry={entry} />
+    <div class="document-body">
+      <p>
+        This secondary exploration asked how a bounded investigator might reason
+        downstream of replay evidence while preserving human merge authority.
+      </p>
+      <p>
+        The public version retains the architectural lesson only. Strategy
+        configuration, evidence schemas, prompts, thresholds, clustering, and
+        decision policies are intentionally withheld. This is not an official
+        integration or representation of another company's internal systems.
+      </p>
+      <p>
+        <a href="/projects/qa-agents/demo/">
+          View the primary Little Bytes case study
+        </a>
+      </p>
+    </div>
+    <WritingConnections entry={entry} writings={writings} projects={projects} />
+    <p class="back-link"><a href="/writing/">Return to Writing</a></p>
+  </article>
 </BaseLayout>
+
+<style>
+  .writing-document {
+    width: min(var(--site-max-width), calc(100% - (var(--site-gutter) * 2)));
+    margin-inline: auto;
+  }
+
+  .document-body {
+    max-width: var(--reading-measure);
+    padding-top: clamp(1.5rem, 4vw, 2.5rem);
+  }
+
+  .document-body p {
+    margin: 0 0 var(--space-4);
+    color: var(--color-text-muted);
+    font-size: clamp(0.98rem, 1vw, 1.05rem);
+    line-height: 1.65;
+  }
+
+  .document-body a,
+  .back-link a {
+    color: var(--plum);
+    font-weight: 600;
+    text-decoration-thickness: 0.08em;
+    text-underline-offset: 0.18em;
+  }
+
+  .back-link {
+    max-width: var(--reading-measure);
+    border-top: var(--border-width) solid var(--color-border);
+    margin-top: clamp(2rem, 5vw, 3.5rem);
+    padding-top: var(--space-5);
+    padding-bottom: clamp(3rem, 7vw, 6rem);
+  }
+</style>

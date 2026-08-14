@@ -1,0 +1,106 @@
+---
+import type { CollectionEntry } from "astro:content";
+import { collectionById, writingHref } from "@/data/writing-library";
+
+type Props = {
+  entry: CollectionEntry<"writing">;
+  headingLevel?: "h2" | "h3";
+  showCollection?: boolean;
+};
+
+const { entry, headingLevel = "h3", showCollection = false } = Astro.props;
+const Heading = headingLevel;
+const primaryCollection = entry.data.primaryCollection
+  ? collectionById(entry.data.primaryCollection)
+  : undefined;
+const dateFormatter = new Intl.DateTimeFormat("en", {
+  month: "short",
+  day: "numeric",
+  year: "numeric",
+});
+---
+
+<article class="library-entry">
+  <div class="entry-meta">
+    <time datetime={entry.data.pubDate.toISOString().slice(0, 10)}>
+      {dateFormatter.format(entry.data.pubDate)}
+    </time>
+    {entry.data.readingTime && <span>{entry.data.readingTime}</span>}
+    {
+      showCollection && primaryCollection && (
+        <span>{primaryCollection.title}</span>
+      )
+    }
+  </div>
+  <div class="entry-copy">
+    <Heading><a href={writingHref(entry)}>{entry.data.title}</a></Heading>
+    <p>{entry.data.description}</p>
+  </div>
+</article>
+
+<style>
+  .library-entry {
+    display: grid;
+    grid-template-columns: minmax(8.5rem, 0.32fr) minmax(0, 1fr);
+    gap: var(--space-4);
+    border-top: var(--border-width) solid var(--color-border);
+    padding-block: var(--space-5);
+  }
+
+  .entry-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    color: var(--color-text-muted);
+    font-family: var(--font-mono);
+    font-size: var(--font-size-micro);
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .entry-copy {
+    min-width: 0;
+  }
+
+  .entry-copy :global(h2),
+  .entry-copy :global(h3) {
+    max-width: 30ch;
+    margin: 0;
+    font-size: clamp(1.2rem, 2vw, 1.65rem);
+    line-height: 1.15;
+  }
+
+  .entry-copy a {
+    color: var(--color-text);
+    text-decoration: none;
+  }
+
+  .entry-copy a:hover,
+  .entry-copy a:focus-visible {
+    color: var(--plum);
+    text-decoration: underline;
+    text-decoration-thickness: 0.07em;
+    text-underline-offset: 0.16em;
+  }
+
+  .entry-copy p {
+    max-width: 46rem;
+    margin: var(--space-2) 0 0;
+    color: var(--color-text-muted);
+    line-height: 1.6;
+  }
+
+  @media (max-width: 640px) {
+    .library-entry {
+      grid-template-columns: 1fr;
+      gap: var(--space-2);
+    }
+
+    .entry-meta {
+      flex-direction: row;
+      flex-wrap: wrap;
+      gap: 0.35rem 0.75rem;
+    }
+  }
+</style>

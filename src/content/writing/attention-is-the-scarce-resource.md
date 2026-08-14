@@ -1,5 +1,6 @@
 ---
 title: "Attention Is the Scarce Resource"
+writingId: "writing-attention-scarcity"
 slug: "attention-is-the-scarce-resource"
 description: "An evolving essay on why useful personal AI should give people attention back instead of creating another system to manage."
 type: "essay"
@@ -13,10 +14,16 @@ topics:
   - "Human-Centered Technology"
   - "Human Model"
   - "Agent Systems"
+collections:
+  - "tools-for-whole-people"
+  - "keeping-context"
+primaryCollection: "tools-for-whole-people"
 relatedProject: "qa-agents"
 featured: false
 draft: true
 readingTime: "4 min"
+editorialWeight: 0
+archived: false
 ---
 
 ## The claim

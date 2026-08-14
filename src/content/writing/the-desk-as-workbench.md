@@ -1,5 +1,6 @@
 ---
 title: "The Desk as Workbench"
+writingId: "writing-desk-workbench"
 slug: "the-desk-as-workbench"
 description: "A quick note on why this site treats projects, notes, and open questions as objects in progress."
 type: "quick-note"
@@ -12,10 +13,15 @@ tags:
 topics:
   - "Adaptive UI"
   - "Human-Centered Technology"
-relatedProject: "website"
+collections:
+  - "keeping-context"
+primaryCollection: "keeping-context"
+relatedProject: "this-website"
 featured: false
 draft: true
 readingTime: "2 min"
+editorialWeight: 0
+archived: false
 ---
 
 The homepage is organized as a desk because the work is easier to understand as objects in progress than as a polished marketing funnel.
