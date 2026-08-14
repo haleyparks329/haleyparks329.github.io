@@ -13,12 +13,12 @@ export const homepageState = {
   featuredWork: {
     projectSlug: "qa-agents",
     label: "Featured Work",
-    artifactTitle: "Deterministic replay investigation",
+    artifactTitle: "Little Bytes evidence case study",
     summary:
-      "An interactive reconstruction of an AI-assisted software investigation, showing the reasoning, evidence, and handoff step by step.",
+      "A static reconstruction showing what changed, what evidence existed, what remained missing, and which decision stayed human.",
     primaryAction: {
-      href: "/projects/qa-agents/meticulous/replay/",
-      label: "View the investigation",
+      href: "/projects/qa-agents/demo/",
+      label: "View the case study",
     },
     secondaryAction: {
       href: "/projects/qa-agents/",
@@ -35,7 +35,7 @@ export const homepageState = {
     {
       title: "Working on Human Model review layers",
       summary:
-        "Keeping Bridget, dashboards, and model outputs connected to the evidence they are meant to preserve.",
+        "Keeping longitudinal evidence, model outputs, uncertainty, and human review connected without collapsing domain ownership.",
       href: "/projects/the-human-model/",
     },
   ] satisfies HomepageCurrentWork[],

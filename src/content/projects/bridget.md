@@ -1,8 +1,8 @@
 ---
 title: "Bridget"
 slug: "bridget"
-summary: "A deterministic system that organizes scattered information, preserves continuity, and gives context back when it is needed."
-longDescription: "Bridget is a private, deterministic personal orchestration system that remembers where information belongs, maintains continuity across time, and returns coherent context without replacing human judgment."
+summary: "A persistent software resident for continuity and reconciliation within bounded domains."
+longDescription: "Bridget preserves source references, continuity, visible ambiguity, and reviewed corrections without becoming the database, universal gateway, or canonical owner of domain evidence."
 coreQuestion: "Can software carry context between systems without taking over the thinking that context is meant to support?"
 status: "Active · Private V1"
 featured: true
@@ -20,4 +20,4 @@ repositoryUrl: "https://github.com/haleyparks329/bridget-architecture"
 order: 2
 ---
 
-Bridget is a personal orchestration system that replaces remembering, not thinking.
+Bridget is a bounded continuity interface that replaces reconstruction work, not thinking or domain ownership.

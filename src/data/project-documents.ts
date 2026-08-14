@@ -1,655 +1,387 @@
-export type ReportLink = {
-  href: string;
-  label: string;
-  external?: boolean;
-};
-
-export type ReportStep = {
-  title: string;
-  text: string;
-};
-
-export type TechnicalGroup = {
-  title: string;
-  items: string[];
-};
-
+export type ReportLink = { href: string; label: string; external?: boolean };
+export type ReportStep = { title: string; text: string };
+export type TechnicalGroup = { title: string; items: string[] };
 export type StatusRow = {
   part: string;
-  status:
-    | "Working"
-    | "Partial"
-    | "Prototype"
-    | "Experimental"
-    | "Planned"
-    | "Archived"
-    | "Not built";
+  status: "Working" | "Prototype" | "Experimental" | "Planned" | "Withheld";
   does: string;
   inspect: ReportLink;
 };
-
-export type Learning = {
-  title: string;
-  text: string;
-};
-
-export type AppendixDetail = {
-  summary: string;
-  items: string[];
-};
-
+export type Learning = { title: string; text: string };
+export type AppendixDetail = { summary: string; items: string[] };
 export type ProjectDocumentData = {
   reportType: string;
   summary: string;
   links: ReportLink[];
   abstract: string[];
   why: string[];
-  actuallyDoes: {
-    intro: string;
-    steps: string[];
-  };
-  howItWorks: {
-    groups: TechnicalGroup[];
-    note: string;
-  };
+  actuallyDoes: { intro: string; steps: string[] };
+  howItWorks: { groups: TechnicalGroup[]; note: string };
   statusRows: StatusRow[];
-  example: {
-    title: string;
-    steps: ReportStep[];
-  };
+  example: { title: string; steps: ReportStep[] };
   learnings: Learning[];
   notSolved: string[];
-  appendix: {
-    intro: string;
-    details: AppendixDetail[];
-    links: ReportLink[];
-  };
+  appendix: { intro: string; details: AppendixDetail[]; links: ReportLink[] };
   currentDirection: string[];
 };
 
-const humanModelRepository = {
-  href: "https://github.com/haleyparks329/the-human-model",
-  label: "Repository",
-  external: true,
-};
-
-const humanModelExamples = {
-  href: "https://github.com/haleyparks329/the-human-model/tree/main/examples",
-  label: "View public examples",
-  external: true,
-};
-
-const careerRepository = {
-  href: "https://github.com/haleyparks329/career-intelligence",
-  label: "Repository",
-  external: true,
-};
-
-const careerDemo = {
-  href: "https://github.com/haleyparks329/career-intelligence/tree/main/examples/andy-barks/generated",
-  label: "View synthetic demo outputs",
-  external: true,
-};
-
-const careerKnowledgeGraph = {
-  href: "https://publish.obsidian.md/career-knowledge-graph/Career+Knowledge+Graph",
-  label: "Explore public knowledge graph",
-  external: true,
-};
-
-const qaRepository = {
-  href: "https://github.com/haleyparks329/qa-agents",
-  label: "Repository",
-  external: true,
-};
-
-const qaReplay = {
-  href: "/projects/qa-agents/demo/",
-  label: "Open evidence replay",
-};
-
-const qaStrategyReplay = {
-  href: "/projects/qa-agents/meticulous/",
-  label: "Read investigation layer case study",
+const repositories = {
+  human: {
+    href: "https://github.com/haleyparks329/the-human-model",
+    label: "Repository",
+    external: true,
+  },
+  career: {
+    href: "https://github.com/haleyparks329/career-intelligence",
+    label: "Repository",
+    external: true,
+  },
+  qa: {
+    href: "https://github.com/haleyparks329/qa-agents",
+    label: "Repository",
+    external: true,
+  },
 };
 
 export const projectDocuments: Record<string, ProjectDocumentData> = {
   "the-human-model": {
     reportType: "Personal research project",
     summary:
-      "A system that combines training, health, movement, and conversational data so I can reason about how I change over time.",
-    links: [humanModelRepository, humanModelExamples],
+      "A longitudinal evidence and domain-model project connecting provenance, uncertainty, hypotheses, and outcomes.",
+    links: [repositories.human],
     abstract: [
-      "The Human Model is an ongoing personal research project exploring whether wearable data, training history, conversational context, and movement analysis can be combined into a continuously updated record of human performance.",
-      "The current implementation includes health-data ingestion, workout logging, predictive performance models, dashboard experiments, and exploratory movement analysis from video. Bridget is a separate orchestration system that can preserve and coordinate context used by this work; it is not a Human Model feature or its memory model.",
-      "The longer-term direction is better personal decision support through accumulated evidence. It is an n=1 research system, not a finished coaching product or a generalized model of human performance.",
+      "The Human Model asks how software can represent one changing person without flattening observations into isolated scores.",
+      "It owns its domain evidence and evaluation. Interfaces may help capture or present context, but they do not own the model.",
+      "The public work is an evidence layer: architecture, approved screenshots, research notes, and a deliberately simplified provenance example.",
     ],
     why: [
-      "My training history, health data, workout notes, and observations were spread across several apps and files. Each tool could show one part of the story, but none of them preserved enough context to explain why something changed.",
-      "I started this project because I wanted those records to become useful together. A weaker workout, a recovery change, or a movement problem should be reviewed alongside the surrounding week instead of being trapped in separate dashboards.",
-      "I also wanted a system that could remember the messy human parts: intent, stress, soreness, experiments, and the notes that usually disappear after a workout is logged.",
+      "Human context is fragmented across records and moments.",
+      "A useful model must preserve where evidence came from, what remains uncertain, and whether a hypothesis survived contact with later outcomes.",
     ],
     actuallyDoes: {
       intro:
-        "The system collects information from several sources, converts it into structured records, compares current performance with previous patterns, and keeps the result available for future decisions.",
+        "The public project demonstrates an inspectable model loop without publishing the private machinery.",
       steps: [
-        "A workout, check-in, measurement, or observation is recorded.",
-        "Relevant health and recovery data is imported or connected to the same period.",
-        "The new session is compared with previous sessions and known context.",
-        "Models, rules, or review screens identify useful differences.",
-        "The context is preserved so the next session starts with more memory than the last one.",
+        "Preserve observations and provenance.",
+        "Keep uncertainty visible.",
+        "Form reviewable hypotheses.",
+        "Compare later outcomes.",
+        "Let a human correct the model.",
       ],
     },
     howItWorks: {
       groups: [
         {
-          title: "Inputs",
+          title: "Public evidence",
           items: [
-            "Apple Health and wearable exports",
-            "workout logs and performance history",
-            "context coordinated through Bridget",
-            "body measurements and recovery notes",
-            "movement video for technique review",
+            "architecture",
+            "approved screenshots",
+            "movement prototype",
+            "toy provenance example",
           ],
         },
         {
-          title: "Processing",
+          title: "Withheld",
           items: [
-            "ingestion and normalization scripts",
-            "structured records for training and health signals",
-            "feature generation for prediction experiments",
-            "movement-analysis prototypes",
-            "dashboard review flows and Bridget handoff points",
-          ],
-        },
-        {
-          title: "Outputs",
-          items: [
-            "session predictions and model diagnostics",
-            "review notes and next-session context",
-            "dashboard views for human inspection",
-            "movement-analysis summaries",
-            "public examples that explain the workflow safely",
+            "production contracts",
+            "schemas",
+            "thresholds",
+            "calibration",
+            "runtime composition",
           ],
         },
       ],
-      note: "The technical structure matters because the system is only useful if the data, model output, and human interpretation stay connected. Bridget remains a separate orchestration layer that can coordinate relevant context; dashboards and reports are Human Model review layers; model output is treated as a hypothesis to inspect.",
+      note: "Bridget is a separate bounded continuity interface, not the Human Model's database or orchestrator.",
     },
     statusRows: [
       {
-        part: "Health-data ingestion",
-        status: "Partial",
-        does: "Connects health and recovery signals to the wider personal-data record.",
-        inspect: humanModelRepository,
-      },
-      {
-        part: "Workout logging",
+        part: "Evidence and provenance",
         status: "Working",
-        does: "Preserves training sessions so performance can be compared across time.",
-        inspect: humanModelRepository,
+        does: "Keeps the path from observation to interpretation reviewable.",
+        inspect: repositories.human,
       },
       {
-        part: "Bridget orchestration handoff",
-        status: "Working",
-        does: "Coordinates relevant context through a separate system without becoming part of the Human Model domain.",
-        inspect: {
-          href: "/projects/bridget/",
-          label: "Open Bridget project",
-        },
-      },
-      {
-        part: "Performance prediction model",
+        part: "Movement-analysis prototype",
         status: "Experimental",
-        does: "Uses prior training and readiness context to create next-session hypotheses.",
-        inspect: humanModelExamples,
+        does: "Shows one narrow review surface without claiming automated judgment.",
+        inspect: repositories.human,
       },
       {
-        part: "Movement-video analysis",
-        status: "Prototype",
-        does: "Extracts movement signals from video so technique questions can be reviewed more concretely.",
-        inspect: humanModelExamples,
-      },
-      {
-        part: "Generalized coaching product",
-        status: "Not built",
-        does: "The project does not claim to coach other people or replace expert judgment.",
-        inspect: humanModelRepository,
+        part: "Production model machinery",
+        status: "Withheld",
+        does: "Private schemas, calibration, adapters, and runtime behavior are not public.",
+        inspect: repositories.human,
       },
     ],
     example: {
-      title: "Why was one workout worse than expected?",
+      title: "A toy claim remains attached to its sources.",
       steps: [
         {
-          title: "Starting situation",
-          text: "A workout underperforms compared with the planned load, reps, or effort level.",
+          title: "Observation",
+          text: "Fictional evidence arrives with a source label.",
         },
         {
-          title: "Input",
-          text: "The session is reviewed beside recent training history, recovery signals, soreness notes, and any Bridget check-ins from the same period.",
+          title: "Review",
+          text: "Support and missing evidence remain visible.",
         },
         {
-          title: "Processing",
-          text: "The system compares the session with prior patterns and looks for surrounding changes that may explain the result.",
-        },
-        {
-          title: "Result",
-          text: "The output is a clearer reason to adjust, repeat, rest, or collect more evidence before changing the plan.",
-        },
-        {
-          title: "Human interpretation",
-          text: "I still decide what the result means. The system helps me ask a better question instead of pretending the answer is automatic.",
+          title: "Boundary",
+          text: "The example produces no health or training recommendation.",
         },
       ],
     },
     learnings: [
       {
-        title: "More data did not automatically create more understanding.",
-        text: "The project became clearer when raw metrics were treated as evidence that needed context, not as answers by themselves.",
+        title: "A model is more than a timeline.",
+        text: "It should connect predictions, corrections, and outcomes.",
       },
       {
-        title: "The notes mattered.",
-        text: "A short note about soreness, stress, or intent could explain a session better than another isolated metric.",
-      },
-      {
-        title: "The review loop was the useful part.",
-        text: "The valuable pattern is collecting evidence, reviewing it, acting, and learning from the next session.",
+        title: "Interfaces should not absorb domain ownership.",
+        text: "Presentation and continuity remain separate from evidence and evaluation.",
       },
     ],
     notSolved: [
-      "The system is built around one person, so it should not be treated as a generalized coaching model.",
-      "Some data still requires manual cleanup or interpretation.",
-      "Movement analysis is useful for review, not a final judgment about technique.",
-      "Private health and training data limits what can be shown publicly.",
-      "Storage boundaries are still evolving; Airtable, local files, and Postgres each appear in different stages of the work.",
+      "This is not medical advice or a generalized model of people.",
+      "Calibration and stronger evaluation remain ongoing research.",
     ],
     appendix: {
-      intro:
-        "The sections above explain the project as a system. The repository contains the implementation details, scripts, and public-safe examples.",
+      intro: "The repository contains the public evidence map.",
       details: [
         {
-          summary: "Technology and storage",
+          summary: "Boundary",
           items: [
-            "R and Python scripts support analysis and modeling work.",
-            "Training logs, health exports, and model outputs are handled as structured local records.",
-            "Airtable has been useful for lightweight review and organization; Postgres work is part of the more durable local data direction.",
-          ],
-        },
-        {
-          summary: "Models and outputs",
-          items: [
-            "Training-load models are treated as hypotheses for review.",
-            "Movement-analysis work uses video-derived signals for inspection.",
-            "Dashboard and Bridget-facing outputs are review aids, not automated decisions.",
+            "No private data, prompts, schemas, thresholds, or repository maps.",
           ],
         },
       ],
-      links: [humanModelRepository, humanModelExamples],
+      links: [repositories.human],
     },
     currentDirection: [
-      "The current work is to make the data pipeline and review layers more coherent without overstating what the models know. The next useful milestone is a cleaner path from recorded training and recovery context to a reviewable next-session hypothesis.",
-      "The open question is how much personal evidence is enough to support better decisions while still keeping the system honest about uncertainty.",
+      "Improve public evaluation stories while keeping the implementation boundary defensible.",
     ],
   },
   "career-intelligence": {
-    reportType: "Career reasoning project",
+    reportType: "Synthetic case study",
     summary:
-      "A source-backed career reasoning system that compares roles against evidence, preferences, capabilities, and boundaries instead of keywords alone.",
-    links: [careerRepository, careerKnowledgeGraph, careerDemo],
+      "An Andy Barks case study in source-backed claims, transferable capabilities, uncertainty, and honest gaps.",
+    links: [repositories.career],
     abstract: [
-      "Career Intelligence is a project about making career reasoning more evidence-based. It explores how a person's work history, skills, preferences, and goals can be represented as structured source material instead of flattened into resume keywords.",
-      "The current public implementation includes validated synthetic career data, evidence ranking, role matching, positioning outputs, interview-prep outputs, and generated demo artifacts. The public example uses synthetic data so the workflow can be inspected without exposing private career history.",
-      "The longer-term direction is a system that supports career judgment without pretending to decide a person's future automatically. It should help compare opportunities, explain fit, and preserve the evidence behind each claim.",
+      "Career Intelligence starts with what the evidence can support rather than rewriting a person to match a job description.",
+      "The public repository follows a fictional librarian and educator through one transparent role comparison.",
+      "It is a case study, not a reusable career engine.",
     ],
     why: [
-      "Resumes and job boards often reduce a person to the words that fit neatly into a posting. That misses transferable work, preferences, constraints, and the difference between being qualified for something and actually wanting the shape of the job.",
-      "I built this because I wanted career materials to start from evidence instead of from whatever phrasing sounded strongest. A system should be able to explain why a role fits, where the match is weak, and which claims are safe to use.",
-      "I also wanted the private reflection layer to stay separate from public claims. Preferences and boundaries can guide reasoning, but they should not become unsupported resume language.",
+      "A resume is a view over a career, not the source of truth.",
+      "Reflection can guide questions but should not become an accomplishment or credential.",
     ],
     actuallyDoes: {
-      intro:
-        "The system turns career history and job information into structured records, compares them, and produces conservative outputs that stay attached to the evidence behind them.",
+      intro: "The case study makes evidence and gaps inspectable.",
       steps: [
-        "A person record describes work history, skills, preferences, goals, and boundaries.",
-        "A job description is parsed into requirements, responsibilities, and signals.",
-        "The system compares the role against source-backed evidence.",
-        "Fit, gaps, positioning, and preparation notes are generated from the supported evidence.",
-        "The human reader reviews the output before using it in any real career decision.",
+        "Read fictional evidence cards.",
+        "Compare three opportunity needs.",
+        "Label support as supported, partial, or unsupported.",
+        "Keep environment considerations separate.",
+        "Require human review.",
       ],
     },
     howItWorks: {
       groups: [
         {
-          title: "Inputs",
+          title: "Public",
           items: [
-            "structured career records",
-            "skills and work-history evidence",
-            "preferences, goals, and boundaries",
-            "job descriptions",
-            "synthetic public demo data",
+            "fictional evidence",
+            "transparent comparison",
+            "safety principles",
           ],
         },
         {
-          title: "Processing",
+          title: "Withheld",
           items: [
-            "/match compares a role with the evidence record",
-            "/position turns supported evidence into positioning notes",
-            "/prep creates interview-prep material from the match",
-            "evidence ranking keeps claims tied to source records",
-            "graph or atlas views represent relationships across roles, skills, and evidence",
-          ],
-        },
-        {
-          title: "Outputs",
-          items: [
-            "role match reports",
-            "positioning notes",
-            "interview-prep notes",
-            "public synthetic demo artifacts",
-            "inspectable source-backed examples",
+            "complete person model",
+            "ranking and scoring",
+            "generation pipeline",
+            "private career data",
           ],
         },
       ],
-      note: "The system separates fit, preferences, capabilities, and boundaries because they are different kinds of information. A role can be technically possible and still be a poor fit; a preference can shape judgment without becoming a public claim.",
+      note: "The labels describe one toy fixture and are not a decision policy.",
     },
     statusRows: [
       {
-        part: "Synthetic career dataset",
+        part: "Andy Barks case study",
         status: "Working",
-        does: "Provides public-safe source records for inspecting the workflow without private career data.",
-        inspect: careerDemo,
+        does: "Shows one source-backed comparison with visible gaps.",
+        inspect: repositories.career,
       },
       {
-        part: "/match workflow",
-        status: "Prototype",
-        does: "Compares job requirements against structured career evidence and returns fit signals.",
-        inspect: careerRepository,
-      },
-      {
-        part: "/position workflow",
-        status: "Prototype",
-        does: "Turns supported evidence into role-specific positioning notes.",
-        inspect: careerDemo,
-      },
-      {
-        part: "/prep workflow",
-        status: "Prototype",
-        does: "Generates interview-prep notes from the role match and source evidence.",
-        inspect: careerDemo,
-      },
-      {
-        part: "Evidence graph or atlas",
-        status: "Experimental",
-        does: "Represents relationships among roles, skills, claims, and source evidence.",
-        inspect: careerKnowledgeGraph,
-      },
-      {
-        part: "Automated career decisions",
-        status: "Not built",
-        does: "The system does not decide where someone should work or submit applications for them.",
-        inspect: careerRepository,
+        part: "Reusable engine",
+        status: "Withheld",
+        does: "Schemas, configuration, selection, scoring, and generation remain private.",
+        inspect: repositories.career,
       },
     ],
     example: {
-      title: "Why did one job appear to fit better than another?",
+      title: "One opportunity, three evidence states.",
       steps: [
         {
-          title: "Starting situation",
-          text: "Two job descriptions look similar because they share many keywords.",
+          title: "Supported",
+          text: "Two fictional sources support curriculum material design.",
         },
         {
-          title: "Input",
-          text: "The system receives the structured career record and each job description.",
+          title: "Partial",
+          text: "One narrow note supports adaptation from feedback.",
         },
         {
-          title: "Processing",
-          text: "It compares responsibilities, required skills, preferred experience, constraints, and evidence from past work.",
-        },
-        {
-          title: "Result",
-          text: "One role may have stronger source-backed fit, while the other may rely on unsupported claims or conflict with stated boundaries.",
-        },
-        {
-          title: "Human interpretation",
-          text: "The output gives the person a clearer basis for judgment. It does not make the career decision for them.",
+          title: "Unsupported",
+          text: "No source supports enterprise platform administration.",
         },
       ],
     },
     learnings: [
       {
-        title: "Fit is not the same as eligibility.",
-        text: "A person can meet baseline requirements while still being mismatched on work style, goals, or constraints.",
+        title: "Capability and environment fit differ.",
+        text: "A person may be able to do a role without thriving in every environment.",
       },
       {
-        title: "Claims are safer when they stay attached to evidence.",
-        text: "The system is most useful when every generated point can be traced back to a source record.",
-      },
-      {
-        title: "Generated writing should come after reasoning.",
-        text: "Positioning and prep outputs are less likely to overclaim when analysis happens first.",
+        title: "Gaps are useful output.",
+        text: "An unsupported need should remain visible rather than becoming polished fiction.",
       },
     ],
     notSolved: [
-      "The public example is synthetic and does not prove performance on a broad real-world dataset.",
-      "No production users or outcome metrics are claimed.",
-      "Manual judgment is still required to decide whether a role is worth pursuing.",
-      "Reflection-only signals cannot become resume claims unless they are supported by source evidence.",
-      "Vague job descriptions can still produce uncertain or incomplete match results.",
+      "The case study does not score people or generate resumes.",
+      "A human remains responsible for public career claims.",
     ],
     appendix: {
-      intro:
-        "The sections above explain the project as a system. The repository contains the implementation details and public synthetic examples.",
+      intro: "The public repository contains the full fictional case study.",
       details: [
         {
-          summary: "Core routes",
+          summary: "Boundary",
           items: [
-            "/match compares structured career evidence with a job description.",
-            "/position creates role-specific positioning material from supported claims.",
-            "/prep creates interview-prep material from the same evidence trail.",
-          ],
-        },
-        {
-          summary: "Data and artifacts",
-          items: [
-            "Structured Markdown and schema-validated records describe the public synthetic person.",
-            "Generated demo outputs show the workflow without exposing private data.",
-            "Graph or atlas work explores how evidence, skills, roles, and claims relate.",
+            "No production schema, ranking, prompts, or accumulated person knowledge.",
           ],
         },
       ],
-      links: [careerRepository, careerDemo],
+      links: [repositories.career],
     },
     currentDirection: [
-      "The current work is to keep the reasoning layer source-backed while making the public example easier to inspect. The next meaningful milestone is clearer comparison output that shows fit, gaps, and boundaries without collapsing them into one score.",
-      "The open question is how much structure is needed before career reasoning becomes helpful rather than just another polished generator.",
+      "Keep the synthetic comparison clear enough to inspect without expanding it back into an engine.",
     ],
   },
   "qa-agents": {
-    reportType: "Software-quality research project",
+    reportType: "Software-quality case study",
     summary:
-      "A recorded evidence loop that reconstructs a QA investigation so a human can see what changed, what passed, what remains uncertain, and what should happen next.",
-    links: [qaReplay, qaRepository],
+      "A static Little Bytes investigation showing deterministic evidence before bounded agent action.",
+    links: [
+      { href: "/projects/qa-agents/demo/", label: "Little Bytes case study" },
+      repositories.qa,
+    ],
     abstract: [
-      "QA Agents explores which parts of software-quality work can be supported by agents and which parts still need direct human review. The project focuses on preserving evidence: what changed, what tests ran, what gaps remained, and why a next action was recommended.",
-      "The current public implementation includes a recorded Little Bytes pricing replay, local knowledge-base foundations, agent role definitions, deterministic planning prototypes, and a secondary strategy replay. The demo is a reconstruction of a completed investigation, not a hidden live browser run.",
-      "The longer-term direction is better QA handoff: detection should lead to routing, routing may lead to repair, and repair still needs review. No autonomous changes are hidden from human judgment.",
+      "QA Agents asks what evidence should exist before an agent investigates or acts.",
+      "The public repository retains five bounded role concepts, acted/blocked/abstained outcomes, and a static Little Bytes artifact.",
+      "It is not an installable operating substrate.",
     ],
     why: [
-      "A software change can pass tests and still leave an important question unanswered. That is the gap this project explores.",
-      "I built QA Agents because test output often loses the surrounding story. A human reviewer needs to know what changed, what evidence exists, what is missing, and which decision is still theirs to make.",
-      "The project is also a boundary exercise. It is tempting to describe agents as if they completed the whole workflow. This page keeps the distinction between detection, routing, repair, and review visible.",
+      "Passing tests may still leave changed behavior unexamined.",
+      "A recommendation is more trustworthy when a reviewer can inspect the evidence and authority boundary.",
     ],
     actuallyDoes: {
       intro:
-        "The system records a QA investigation as a sequence of evidence, then uses that evidence to route attention to the next useful step.",
+        "The case study separates evidence, investigation, proposed work, and human authority.",
       steps: [
-        "A software change is identified.",
-        "The available tests and coverage evidence are reviewed.",
-        "Any missing coverage or risky behavior is recorded as a gap.",
-        "The gap is routed to the workflow or agent role most suited to address it.",
-        "A human reviews the recommendation before any real change is accepted.",
+        "Record the change at a high level.",
+        "Inspect deterministic test evidence.",
+        "Keep the missing regression evidence visible.",
+        "Suggest a bounded next step.",
+        "Leave approval and merge authority with a human.",
       ],
     },
     howItWorks: {
       groups: [
         {
-          title: "Inputs",
+          title: "Public",
           items: [
-            "software changes or feature requests",
-            "test output and coverage evidence",
-            "application profiles",
-            "known gaps and fingerprints",
-            "recorded replay artifacts",
+            "Little Bytes case study",
+            "five responsibility labels",
+            "acted / blocked / abstained",
           ],
         },
         {
-          title: "Processing",
+          title: "Withheld",
           items: [
-            "Lookout represents exploration and detection work",
-            "Beacon scopes QA plans and test strategy",
-            "Inspector reviews coverage gaps and system behavior",
-            "Scribe represents test-authoring handoff",
-            "Patch is planned for repair workflows, not claimed as complete",
-          ],
-        },
-        {
-          title: "Outputs",
-          items: [
-            "recorded evidence replay",
-            "persisted gap records",
-            "agent or workflow recommendations",
-            "strategy replay summaries",
-            "human-review prompts",
+            "profiles and memory",
+            "prompts and policies",
+            "routing and fingerprints",
+            "runtime and permissions",
           ],
         },
       ],
-      note: "Detection means finding or suspecting a problem. Routing means choosing the next responsible workflow. Repair means changing code or tests. Review means a human checks the evidence and decides what to accept. QA Agents is strongest when those steps are not blurred together.",
+      note: "No agent, patch, test, pull request, or merge is automatically produced by the public demo.",
     },
     statusRows: [
       {
-        part: "Little Bytes evidence replay",
+        part: "Little Bytes case study",
         status: "Working",
-        does: "Reconstructs one pricing-change investigation from vendored evidence.",
-        inspect: qaReplay,
+        does: "Shows a passing test run and a visible evidence gap.",
+        inspect: { href: "/projects/qa-agents/demo/", label: "Case study" },
       },
       {
-        part: "Replay evidence artifact",
-        status: "Working",
-        does: "Stores the recorded change, test result, coverage gap, and recommendation used by the replay.",
-        inspect: qaReplay,
-      },
-      {
-        part: "Agent role definitions",
+        part: "Five bounded roles",
         status: "Prototype",
-        does: "Separates exploration, planning, inspection, writing, and repair responsibilities.",
-        inspect: qaRepository,
+        does: "Responsibility labels explain possible follow-up without publishing agent specifications.",
+        inspect: repositories.qa,
       },
       {
-        part: "SQLite knowledge base",
-        status: "Prototype",
-        does: "Persists fingerprints, gaps, and handoff debt locally for inspection.",
-        inspect: qaRepository,
-      },
-      {
-        part: "Investigation layer case study",
-        status: "Prototype",
-        does: "Shows how deterministic replay evidence can become workflow clusters, findings, and a policy-constrained recommendation.",
-        inspect: qaStrategyReplay,
-      },
-      {
-        part: "Autonomous browser repair and PR creation",
-        status: "Not built",
-        does: "The public project does not claim hidden autonomous patching, live browser repair, or automatic pull requests.",
-        inspect: qaRepository,
+        part: "Operating substrate",
+        status: "Withheld",
+        does: "Profiles, schemas, prompts, policies, routing, memory, and runtime composition are not public.",
+        inspect: repositories.qa,
       },
     ],
     example: {
-      title: "A software change passed tests but still left an evidence gap.",
+      title: "A pricing change passed tests but lacked direct evidence.",
       steps: [
+        { title: "Evidence", text: "Configured tests passed." },
         {
-          title: "Starting situation",
-          text: "A pricing path in the Little Bytes example changed.",
+          title: "Gap",
+          text: "The changed combination had no focused regression example.",
         },
-        {
-          title: "Input",
-          text: "The replay records the change, the passing test run, and the available coverage evidence.",
-        },
-        {
-          title: "Processing",
-          text: "The investigation checks whether the changed path was directly covered or whether a gap remained.",
-        },
-        {
-          title: "Result",
-          text: "The artifact records a coverage gap and recommends Scribe as the next workflow because test-writing is the missing step.",
-        },
-        {
-          title: "Human interpretation",
-          text: "The recommendation routes attention. It does not claim that an agent wrote the test, changed the code, or approved the merge.",
-        },
+        { title: "Decision", text: "A human may approve the suggested test." },
       ],
     },
     learnings: [
       {
-        title: "Passing tests are not the whole story.",
-        text: "The useful question is whether the changed behavior was actually examined.",
+        title: "Evidence outranks agent confidence.",
+        text: "The review should show what supports the conclusion.",
       },
       {
-        title: "Evidence is more trustworthy than agent confidence.",
-        text: "A recommendation matters only when the reader can inspect why it was made.",
-      },
-      {
-        title: "Human review is part of the design.",
-        text: "The project is clearer when it treats human judgment as a required step rather than a fallback.",
-      },
-      {
-        title: "Agent names work best as responsibility labels.",
-        text: "They help separate kinds of QA work without implying every role is fully autonomous today.",
+        title: "Abstention is a valid result.",
+        text: "Missing evidence or authority should remain explicit.",
       },
     ],
     notSolved: [
-      "The demo is a recorded reconstruction, not a live autonomous browser run.",
-      "Selector healing, browser repair, live dashboards, and PR creation remain planned unless the repository shows otherwise.",
-      "Patch is not presented as a completed autonomous repair system.",
-      "Recommendations route attention; they do not complete the handoff.",
-      "The system is advisory and local-first, and human review remains required.",
+      "The public demo does not expose agent runtime machinery.",
+      "It does not claim autonomous browser repair or pull-request creation.",
     ],
     appendix: {
-      intro:
-        "The sections above explain the project as a QA system. The repository and demos contain the implementation details and evidence artifacts.",
+      intro: "The repository contains architecture and one sanitized artifact.",
       details: [
         {
-          summary: "Agent and workflow roles",
+          summary: "Boundary",
           items: [
-            "Lookout: exploration and detection.",
-            "Beacon: QA planning and scope.",
-            "Inspector: coverage and behavior review.",
-            "Scribe: test-authoring handoff.",
-            "Patch: planned repair workflow, not a completed autonomous claim.",
-          ],
-        },
-        {
-          summary: "Evidence and demos",
-          items: [
-            "The Little Bytes replay is static and GitHub Pages-friendly.",
-            "Vendored JSON evidence keeps the replay inspectable without runtime GitHub fetches.",
-            "The strategy replay is secondary and shows a planning-style investigation.",
+            "No consumer contract, stable schema, policy, profile, prompt, or execution runner.",
           ],
         },
       ],
-      links: [qaReplay, qaStrategyReplay, qaRepository],
+      links: [repositories.qa],
     },
     currentDirection: [
-      "The current work is to make QA handoff evidence clearer: what changed, what was tested, what was not covered, and who should review the next step. The next meaningful milestone is a stronger connection between recorded gaps and the workflow that handles them.",
-      "The open question is how much assistance can be added before the system starts hiding the human decision boundary it was built to preserve.",
+      "Improve evidence storytelling without rebuilding the public operating substrate.",
     ],
   },
 };
 
 export function projectDocumentForSlug(slug: string) {
   const document = projectDocuments[slug];
-
-  if (!document) {
-    throw new Error(`Missing project document data for ${slug}`);
-  }
-
+  if (!document) throw new Error(`Missing project document data for ${slug}`);
   return document;
 }
