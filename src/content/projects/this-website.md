@@ -18,7 +18,7 @@ topics:
   - "Information Architecture"
   - "Human-Centered Technology"
 repositoryUrl: "https://github.com/haleyparks329/haleyparks329.github.io"
-order: 5
+order: 6
 ---
 
 This Website is the public system that connects Haley's projects, writing, experiments, and navigation ideas into one evolving knowledge environment.

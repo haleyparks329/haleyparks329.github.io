@@ -2,10 +2,7 @@
 import { getCollection } from "astro:content";
 import EditorialLayout from "../../layouts/EditorialLayout.astro";
 import { projectDocumentForSlug } from "../../data/project-documents";
-import {
-  flagshipRelationship,
-  wonderfulDigitalWorld,
-} from "../../data/wp2-content";
+import { flagshipRelationship } from "../../data/wonderful-digital-world";
 
 const projects = (await getCollection("projects")).sort(
   (a, b) => a.data.order - b.data.order,
@@ -13,8 +10,12 @@ const projects = (await getCollection("projects")).sort(
 const humanModel = projects.find(
   (project) => project.data.slug === "the-human-model",
 );
+const wonderfulDigitalWorld = projects.find(
+  (project) => project.data.slug === "wonderful-digital-world",
+);
 const supportingProjects = projects.filter(
-  (project) => project.data.slug !== "the-human-model",
+  (project) =>
+    !["the-human-model", "wonderful-digital-world"].includes(project.data.slug),
 );
 const humanModelDocument = projectDocumentForSlug("the-human-model");
 ---
@@ -52,16 +53,17 @@ const humanModelDocument = projectDocumentForSlug("the-human-model");
       >
     </article>
     <article class="project-feature">
-      <p class="eyebrow">{wonderfulDigitalWorld.eyebrow}</p>
-      <h2>{wonderfulDigitalWorld.title}</h2>
-      <p>{wonderfulDigitalWorld.summary}</p>
-      <p class="flagship__question">{wonderfulDigitalWorld.coreQuestion}</p>
+      <p class="eyebrow">Flagship · persistent environments</p>
+      <h2>{wonderfulDigitalWorld?.data.title ?? "Wonderful Digital World"}</h2>
+      <p>{wonderfulDigitalWorld?.data.summary}</p>
+      <p class="flagship__question">
+        {wonderfulDigitalWorld?.data.coreQuestion}
+      </p>
       <a
         class="project-feature__link text-link"
-        href={wonderfulDigitalWorld.repositoryUrl}
-        rel="noreferrer"
+        href="/projects/wonderful-digital-world/"
       >
-        Explore the public repository ↗
+        Read the project report
       </a>
     </article>
   </section>

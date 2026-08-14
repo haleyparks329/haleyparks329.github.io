@@ -104,6 +104,11 @@ export const trails: Trail[] = [
           "Bridget shows how personal context can be maintained before any autonomous layer is added.",
       },
       {
+        destinationId: "project-wonderful-digital-world",
+        reason:
+          "Wonderful Digital World widens the frame to durable state, bounded work, and explicit authority.",
+      },
+      {
         destinationId: "project-the-human-model",
         reason:
           "The Human Model applies similar context-preserving ideas to personal performance data.",
@@ -290,6 +295,21 @@ export const destinations: Destination[] = [
       "Information Architecture",
     ],
     project: "bridget",
+    trails: ["ai-systems"],
+  },
+  {
+    id: "project-wonderful-digital-world",
+    href: "/projects/wonderful-digital-world/",
+    label: "Wonderful Digital World",
+    type: "project",
+    summary:
+      "A public architecture for persistent context, bounded computational work, and explicit human authority.",
+    topics: [
+      "Agent Systems",
+      "Human-Centered Technology",
+      "Information Architecture",
+    ],
+    project: "wonderful-digital-world",
     trails: ["ai-systems"],
   },
   {
@@ -563,11 +583,19 @@ export const relationships: Relationship[] = [
   },
   {
     from: "project-bridget",
+    to: "project-wonderful-digital-world",
+    type: "related",
+    label: "Related system",
+    reason:
+      "Bridget is an independent continuity system; Wonderful Digital World explores an optional, bounded environment around systems like it.",
+  },
+  {
+    from: "project-wonderful-digital-world",
     to: "project-the-human-model",
     type: "related",
     label: "Related system",
     reason:
-      "Bridget coordinates continuity; The Human Model interprets performance evidence.",
+      "Wonderful Digital World coordinates bounded work; The Human Model retains ownership of its domain evidence and interpretation.",
   },
   {
     from: "project-qa-agents",

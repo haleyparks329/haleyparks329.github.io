@@ -837,6 +837,76 @@ pre {
   border-left: 3px solid var(--khaki);
 }
 
+.operational-loop {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin: var(--space-6) 0 0;
+  padding: 0;
+  counter-reset: world-step;
+  list-style: none;
+}
+
+.operational-loop li {
+  min-height: 7rem;
+  border-top: var(--border-width) solid var(--color-border-strong);
+  padding: var(--space-4) var(--space-4) var(--space-4) 0;
+  counter-increment: world-step;
+  font-weight: 600;
+}
+
+.operational-loop li::before {
+  display: block;
+  margin-bottom: var(--space-3);
+  color: var(--color-text-muted);
+  content: "0" counter(world-step);
+  font-family: var(--font-mono);
+  font-size: var(--font-size-micro);
+}
+
+.object-ledger {
+  margin: var(--space-6) 0 0;
+}
+
+.object-ledger > div {
+  display: grid;
+  grid-template-columns: minmax(9rem, 0.35fr) minmax(0, 1fr);
+  gap: clamp(1rem, 3vw, 2.5rem);
+  border-top: var(--border-width) solid var(--color-border);
+  padding-block: var(--space-4);
+}
+
+.object-ledger > div:last-child {
+  border-bottom: var(--border-width) solid var(--color-border);
+}
+
+.object-ledger dt {
+  font-weight: 700;
+}
+
+.object-ledger dd {
+  margin: 0;
+  color: var(--color-text-muted);
+}
+
+.resident-ledger {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-top: var(--space-6);
+}
+
+.resident-ledger section {
+  border-top: var(--border-width) solid var(--color-border-strong);
+  padding: var(--space-4) var(--space-5) var(--space-4) 0;
+}
+
+.resident-ledger h3 {
+  margin-block: var(--space-2);
+}
+
+.resident-ledger p:last-child {
+  color: var(--color-text-muted);
+}
+
 .split-list {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -939,8 +1009,17 @@ pre {
   .object-grid,
   .split-list,
   .diagram-row,
-  .editorial-row {
+  .editorial-row,
+  .operational-loop,
+  .object-ledger > div,
+  .resident-ledger {
     grid-template-columns: 1fr;
+  }
+
+  .operational-loop li,
+  .resident-ledger section {
+    min-height: auto;
+    padding-right: 0;
   }
 
   .page-section {
