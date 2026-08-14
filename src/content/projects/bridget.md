@@ -17,7 +17,7 @@ topics:
   - "Human-Centered Technology"
   - "Information Architecture"
 repositoryUrl: "https://github.com/haleyparks329/bridget-architecture"
-order: 2
+order: 3
 ---
 
 Bridget is a bounded continuity interface that replaces reconstruction work, not thinking or domain ownership.

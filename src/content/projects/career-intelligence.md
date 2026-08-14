@@ -17,7 +17,7 @@ topics:
   - "Human-Centered Technology"
   - "Adaptive UI"
 repositoryUrl: "https://github.com/haleyparks329/career-intelligence"
-order: 4
+order: 5
 ---
 
 Career Intelligence demonstrates how evidence and provenance can support truthful career reasoning while keeping reflection separate from credentials and capability separate from environment fit.

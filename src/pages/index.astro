@@ -2,17 +2,17 @@
 import { getCollection } from "astro:content";
 import EditorialLayout from "../layouts/EditorialLayout.astro";
 import { projectDocumentForSlug } from "../data/project-documents";
-import {
-  flagshipRelationship,
-  surpriseRoute,
-  wonderfulDigitalWorld,
-} from "../data/wp2-content";
+import { surpriseRoute } from "../data/wp2-content";
+import { flagshipRelationship } from "../data/wonderful-digital-world";
 
 const projects = (await getCollection("projects")).sort(
   (a, b) => a.data.order - b.data.order,
 );
 const humanModel = projects.find(
   (project) => project.data.slug === "the-human-model",
+);
+const wonderfulDigitalWorld = projects.find(
+  (project) => project.data.slug === "wonderful-digital-world",
 );
 const humanModelDocument = projectDocumentForSlug("the-human-model");
 const currentWork = projects.filter((project) =>
@@ -58,20 +58,20 @@ const latestMemory = (await getCollection("fieldLog")).sort(
 
     <article class="flagship">
       <div>
-        <p class="eyebrow">{wonderfulDigitalWorld.eyebrow}</p>
-        <h2>{wonderfulDigitalWorld.title}</h2>
-        <p>{wonderfulDigitalWorld.summary}</p>
-        <p class="flagship__question">{wonderfulDigitalWorld.coreQuestion}</p>
+        <p class="eyebrow">Flagship · persistent environments</p>
+        <h2>
+          {wonderfulDigitalWorld?.data.title ?? "Wonderful Digital World"}
+        </h2>
+        <p>{wonderfulDigitalWorld?.data.summary}</p>
+        <p class="flagship__question">
+          {wonderfulDigitalWorld?.data.coreQuestion}
+        </p>
       </div>
       <div class="flagship__footer">
-        <a
-          class="text-link"
-          href={wonderfulDigitalWorld.repositoryUrl}
-          rel="noreferrer"
-        >
-          Explore the public repository ↗
+        <a class="text-link" href="/projects/wonderful-digital-world/">
+          Read the project report
         </a>
-        <span class="meta-line">{wonderfulDigitalWorld.status}</span>
+        <span class="meta-line">{wonderfulDigitalWorld?.data.status}</span>
       </div>
     </article>
   </section>

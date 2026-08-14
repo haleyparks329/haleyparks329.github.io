@@ -16,7 +16,7 @@ topics:
   - "Software Quality"
   - "Human-Centered Technology"
 repositoryUrl: "https://github.com/haleyparks329/qa-agents"
-order: 3
+order: 4
 ---
 
 QA Agents is presented as a public case study rather than an installable operating substrate. Static artifacts show what happened while profiles, policies, prompts, routing, memory, and runtime orchestration remain withheld.
