@@ -1,83 +1,94 @@
 ---
 import { getCollection } from "astro:content";
-import PageIntro from "@/components/PageIntro.astro";
-import ProjectDirectoryCard from "@/components/ProjectDirectoryCard.astro";
-import BaseLayout from "@/layouts/BaseLayout.astro";
+import EditorialLayout from "../../layouts/EditorialLayout.astro";
+import { projectDocumentForSlug } from "../../data/project-documents";
+import {
+  flagshipRelationship,
+  wonderfulDigitalWorld,
+} from "../../data/wp2-content";
 
 const projects = (await getCollection("projects")).sort(
   (a, b) => a.data.order - b.data.order,
 );
+const humanModel = projects.find(
+  (project) => project.data.slug === "the-human-model",
+);
+const supportingProjects = projects.filter(
+  (project) => project.data.slug !== "the-human-model",
+);
+const humanModelDocument = projectDocumentForSlug("the-human-model");
 ---
 
-<BaseLayout
+<EditorialLayout
   title="Projects"
-  description="Public project workspaces for Haley Parks' active systems, experiments, and publishing environment."
-  canonicalPath="/projects/"
-  breadcrumbs={[{ label: "Home", href: "/" }, { label: "Projects" }]}
+  description="Flagship and supporting systems built and investigated by Haley Parks."
+  eyebrow="Project index"
 >
-  <section class="site-shell projects-page">
-    <PageIntro
-      title="Projects"
-      description="Active systems, experiments, and long-running bodies of work."
-      text="Select a project to view its overview, demos, related writing, and repository."
-      meta={["5 active systems", "Public workspaces", "Repo-backed"]}
-      note="Each project includes current work, documentation, and related links."
-      accent="olive"
-      width="wide"
-      density="compact"
-    />
-    <div class="project-directory-grid" aria-label="Project catalogue">
-      {projects.map((project) => <ProjectDirectoryCard project={project} />)}
+  <section class="projects-intro" aria-labelledby="projects-title">
+    <div>
+      <h1 id="projects-title">Research projects at two scales.</h1>
+      <p class="editorial-lede">
+        The flagships explore a person and a persistent computational
+        environment. Supporting systems investigate the memory, evidence,
+        coordination, and quality work needed between them.
+      </p>
     </div>
-
-    <nav class="project-page-links" aria-label="Project page next paths">
-      <a href="/explore/">Explore all work</a>
-      <a href="/explore/trails/how-i-build/">Follow the How I Build trail</a>
-      <a href="/explore/trails/ai-systems/">Follow the AI Systems trail</a>
-    </nav>
+    <aside>
+      Status language is literal: active, experimental, partial, and not built
+      mean different things. Project pages show the evidence and boundaries
+      behind each claim.
+    </aside>
   </section>
-</BaseLayout>
 
-<style>
-  .projects-page {
-    margin-top: 0;
-    padding-bottom: var(--space-8);
-  }
+  <section class="projects-flagships" aria-label="Flagship projects">
+    <article class="project-feature">
+      <p class="eyebrow">Flagship · human systems</p>
+      <h2>{humanModel?.data.title ?? "The Human Model"}</h2>
+      <p>{humanModelDocument.summary}</p>
+      <p class="flagship__question">{humanModel?.data.coreQuestion}</p>
+      <a
+        class="project-feature__link text-link"
+        href="/projects/the-human-model/">Read the project report</a
+      >
+    </article>
+    <article class="project-feature">
+      <p class="eyebrow">{wonderfulDigitalWorld.eyebrow}</p>
+      <h2>{wonderfulDigitalWorld.title}</h2>
+      <p>{wonderfulDigitalWorld.summary}</p>
+      <p class="flagship__question">{wonderfulDigitalWorld.coreQuestion}</p>
+      <a
+        class="project-feature__link text-link"
+        href={wonderfulDigitalWorld.repositoryUrl}
+        rel="noreferrer"
+      >
+        Explore the public repository ↗
+      </a>
+    </article>
+  </section>
 
-  .project-directory-grid {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: clamp(1rem, 2vw, 1.5rem);
-    align-items: stretch;
-    margin-top: var(--page-section-start);
-    margin-bottom: var(--space-8);
-  }
+  <section class="relationship" aria-labelledby="projects-relationship-title">
+    <p class="section-label" id="projects-relationship-title">
+      The connective tissue
+    </p>
+    <p>{flagshipRelationship}</p>
+  </section>
 
-  .project-page-links {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.55rem;
-    border-block: var(--border-width) solid var(--color-border);
-    padding-block: var(--space-4);
-  }
-
-  .project-page-links a {
-    color: var(--plum);
-    font-size: var(--font-size-small);
-    font-weight: 600;
-    text-decoration-thickness: 0.08em;
-    text-underline-offset: 0.18em;
-  }
-
-  @media (max-width: 960px) {
-    .project-directory-grid {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-  }
-
-  @media (max-width: 640px) {
-    .project-directory-grid {
-      grid-template-columns: 1fr;
-    }
-  }
-</style>
+  <section class="supporting-projects" aria-labelledby="supporting-title">
+    <p class="section-label" id="supporting-title">Supporting systems</p>
+    <div class="project-list">
+      {
+        supportingProjects.map((project) => (
+          <article class="project-row">
+            <h3>
+              <a href={`/projects/${project.data.slug}/`}>
+                {project.data.title}
+              </a>
+            </h3>
+            <p>{project.data.summary}</p>
+            <span class="meta-line">{project.data.status}</span>
+          </article>
+        ))
+      }
+    </div>
+  </section>
+</EditorialLayout>
