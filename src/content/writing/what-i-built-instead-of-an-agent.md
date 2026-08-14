@@ -1,5 +1,6 @@
 ---
 title: "What I Built Instead of an Agent"
+writingId: "writing-bridget-architecture"
 slug: "what-i-built-instead-of-an-agent"
 description: "An engineering case study about building deterministic orchestration, explicit state, and human reconciliation before adding autonomous behavior."
 type: "case-study"
@@ -12,11 +13,26 @@ tags:
 topics:
   - "Agent Systems"
   - "Human-Centered Technology"
+collections:
+  - "evidence-before-autonomy"
+  - "keeping-context"
+primaryCollection: "evidence-before-autonomy"
+relatedProjects:
+  - slug: "bridget"
+    relationship: "explains"
+relatedWriting:
+  - slug: "i-did-not-want-another-app"
+    relationship: "informed-by"
+  - slug: "extending-deterministic-replay-with-an-investigation-layer"
+    relationship: "related-to"
 relatedProject: "bridget"
 repositoryUrl: "https://github.com/haleyparks329/bridget-architecture"
 featured: true
 draft: false
 readingTime: "12 min"
+canonicalUrl: "/writing/what-i-built-instead-of-an-agent/"
+editorialWeight: 90
+archived: false
 ---
 
 The most expensive part of ongoing work is often not the work itself. It is reconstructing enough context to continue.

@@ -1,63 +1,301 @@
 ---
 import { getCollection } from "astro:content";
-import WritingEditorialRow from "@/components/WritingEditorialRow.astro";
-import BaseLayout from "@/layouts/BaseLayout.astro";
 import PageIntro from "@/components/PageIntro.astro";
+import WritingLibraryEntry from "@/components/WritingLibraryEntry.astro";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import {
+  collectionById,
+  publishedWriting,
+  validateWritingLibrary,
+  writingCollections,
+  writingHref,
+} from "@/data/writing-library";
 
-const entries = (await getCollection("writing"))
-  .filter((entry) => !entry.data.draft)
-  .map((entry) => ({
-    data: entry.data,
-    href: entry.data.routePath ?? `/writing/${entry.data.slug}/`,
-  }))
-  .sort(
-    (a, b) =>
-      b.data.pubDate.getTime() - a.data.pubDate.getTime() ||
-      a.data.title.localeCompare(b.data.title),
-  );
+const allWriting = await getCollection("writing");
+const projects = await getCollection("projects");
+validateWritingLibrary(allWriting, projects);
+
+const entries = publishedWriting(allWriting);
+const chronology = [...entries].sort(
+  (a, b) =>
+    b.data.pubDate.getTime() - a.data.pubDate.getTime() ||
+    a.data.title.localeCompare(b.data.title),
+);
+const current = [...entries].sort(
+  (a, b) =>
+    b.data.editorialWeight - a.data.editorialWeight ||
+    b.data.pubDate.getTime() - a.data.pubDate.getTime(),
+);
+const [lead, ...supporting] = current;
+const dateFormatter = new Intl.DateTimeFormat("en", {
+  month: "short",
+  day: "numeric",
+  year: "numeric",
+});
 ---
 
 <BaseLayout
   title="Writing"
-  description="Notes, investigations, essays, and accumulated thinking from active work."
+  description="A library of essays and research notes organized around recurring bodies of thought."
   canonicalPath="/writing/"
   breadcrumbs={[{ label: "Home", href: "/" }, { label: "Writing" }]}
 >
-  <section class="writing-editorial">
+  <section class="writing-library">
     <PageIntro
       title="Writing"
-      description="An editorial archive of accumulated thinking."
-      text="Notes, investigations, essays, and technical ideas connected to the systems I am building."
-      meta={[`${entries.length} published pieces`, "Newest first"]}
+      description="A library of ideas in motion."
+      text="Essays and research notes organized around the questions they share—not the order they were published."
+      meta={[
+        `${entries.length} published pieces`,
+        `${writingCollections.length} collections`,
+      ]}
       accent="lavender"
       width="wide"
       density="compact"
     />
 
-    <div class="editorial-index" aria-label="Writing, newest first">
-      {entries.map((entry) => <WritingEditorialRow entry={entry} />)}
-    </div>
+    {
+      lead && (
+        <section class="current" aria-labelledby="current-title">
+          <div class="section-heading">
+            <p>Featured and current</p>
+            <h2 id="current-title">Where the thinking is now</h2>
+          </div>
+          <div class="current-layout">
+            <article class="lead-entry">
+              <p class="lead-meta">
+                {collectionById(lead.data.primaryCollection ?? "")?.title}
+                <span aria-hidden="true"> / </span>
+                {lead.data.readingTime}
+              </p>
+              <h3>
+                <a href={writingHref(lead)}>{lead.data.title}</a>
+              </h3>
+              <p>{lead.data.description}</p>
+            </article>
+            <div class="supporting-entries">
+              {supporting.slice(0, 2).map((entry) => (
+                <WritingLibraryEntry entry={entry} showCollection />
+              ))}
+            </div>
+          </div>
+        </section>
+      )
+    }
+
+    <section class="collections" aria-labelledby="collections-title">
+      <div class="section-heading collections-heading">
+        <p>Collections</p>
+        <h2 id="collections-title">Recurring bodies of thought</h2>
+      </div>
+      <div class="collection-list">
+        {
+          writingCollections.map((collection, index) => {
+            const collectionEntries = current.filter((entry) =>
+              entry.data.collections.includes(collection.id),
+            );
+            return (
+              <section
+                class="collection"
+                id={collection.id}
+                aria-labelledby={`${collection.id}-title`}
+              >
+                <div class="collection-intro">
+                  <p>{String(index + 1).padStart(2, "0")}</p>
+                  <h3 id={`${collection.id}-title`}>{collection.title}</h3>
+                  <p>{collection.description}</p>
+                </div>
+                <div class="collection-entries">
+                  {collectionEntries.map((entry) => (
+                    <WritingLibraryEntry entry={entry} />
+                  ))}
+                </div>
+              </section>
+            );
+          })
+        }
+      </div>
+    </section>
+
+    <section class="chronology" aria-labelledby="chronology-title">
+      <div class="section-heading">
+        <p>Chronology</p>
+        <h2 id="chronology-title">All writing</h2>
+      </div>
+      <ol>
+        {
+          chronology.map((entry) => (
+            <li>
+              <time datetime={entry.data.pubDate.toISOString().slice(0, 10)}>
+                {dateFormatter.format(entry.data.pubDate)}
+              </time>
+              <a href={writingHref(entry)}>{entry.data.title}</a>
+            </li>
+          ))
+        }
+      </ol>
+    </section>
   </section>
 </BaseLayout>
 
 <style>
-  .writing-editorial {
+  .writing-library {
     width: min(var(--site-max-width), calc(100% - (var(--site-gutter) * 2)));
     margin: 0 auto var(--space-12);
   }
 
-  .editorial-index {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    align-items: start;
-    gap: clamp(1rem, 2.4vw, 1.75rem);
-    margin-top: clamp(1.75rem, 4vw, 3rem);
+  .current,
+  .collections,
+  .chronology {
+    margin-top: clamp(3.5rem, 8vw, 7rem);
   }
 
-  @media (max-width: 760px) {
-    .editorial-index {
+  .section-heading > p,
+  .collection-intro > p:first-child,
+  .lead-meta {
+    margin: 0 0 var(--space-2);
+    color: var(--plum);
+    font-family: var(--font-mono);
+    font-size: var(--font-size-micro);
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .section-heading h2 {
+    max-width: 17ch;
+    margin: 0;
+    font-size: var(--text-h2);
+    line-height: 1.05;
+  }
+
+  .current-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(20rem, 0.8fr);
+    gap: clamp(2rem, 7vw, 7rem);
+    margin-top: clamp(1.75rem, 4vw, 3rem);
+    border-top: var(--border-width) solid var(--color-border-strong);
+    padding-top: clamp(1.5rem, 4vw, 3rem);
+  }
+
+  .lead-entry h3 {
+    max-width: 11ch;
+    margin: 0;
+    font-size: clamp(2.3rem, 5vw, 5rem);
+    line-height: 0.96;
+  }
+
+  .lead-entry h3 a {
+    color: var(--color-text);
+    text-decoration: none;
+  }
+
+  .lead-entry h3 a:hover,
+  .lead-entry h3 a:focus-visible,
+  .chronology a:hover,
+  .chronology a:focus-visible {
+    color: var(--plum);
+    text-decoration: underline;
+    text-decoration-thickness: 0.07em;
+    text-underline-offset: 0.16em;
+  }
+
+  .lead-entry > p:last-child {
+    max-width: 42rem;
+    margin: var(--space-4) 0 0;
+    color: var(--color-text-muted);
+    font-size: clamp(1.05rem, 1.4vw, 1.2rem);
+    line-height: 1.6;
+  }
+
+  .collections-heading {
+    margin-bottom: var(--space-7);
+  }
+
+  .collection {
+    display: grid;
+    grid-template-columns: minmax(14rem, 0.55fr) minmax(0, 1.45fr);
+    gap: clamp(2rem, 7vw, 7rem);
+    border-top: var(--border-width) solid var(--color-border-strong);
+    padding-block: clamp(2rem, 5vw, 4rem);
+    scroll-margin-top: 2rem;
+  }
+
+  .collection-intro h3 {
+    max-width: 12ch;
+    margin: 0;
+    font-size: clamp(1.6rem, 3vw, 2.6rem);
+    line-height: 1.02;
+  }
+
+  .collection-intro > p:last-child {
+    max-width: 30rem;
+    margin: var(--space-3) 0 0;
+    color: var(--color-text-muted);
+    line-height: 1.55;
+  }
+
+  .collection-entries > :global(.library-entry:first-child) {
+    border-top: 0;
+    padding-top: 0;
+  }
+
+  .chronology {
+    display: grid;
+    grid-template-columns: minmax(14rem, 0.55fr) minmax(0, 1.45fr);
+    gap: clamp(2rem, 7vw, 7rem);
+    border-top: var(--border-width) solid var(--color-border-strong);
+    padding-top: clamp(2rem, 5vw, 4rem);
+  }
+
+  .chronology ol {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .chronology li {
+    display: grid;
+    grid-template-columns: 9rem minmax(0, 1fr);
+    gap: var(--space-4);
+    border-top: var(--border-width) solid var(--color-border);
+    padding-block: var(--space-3);
+  }
+
+  .chronology li:first-child {
+    border-top: 0;
+    padding-top: 0;
+  }
+
+  .chronology time {
+    color: var(--color-text-muted);
+    font-family: var(--font-mono);
+    font-size: var(--font-size-micro);
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .chronology a {
+    color: var(--color-text);
+    font-weight: 650;
+    line-height: 1.35;
+    text-decoration: none;
+  }
+
+  @media (max-width: 800px) {
+    .current-layout,
+    .collection,
+    .chronology {
       grid-template-columns: 1fr;
-      gap: var(--space-4);
+      gap: var(--space-6);
+    }
+  }
+
+  @media (max-width: 520px) {
+    .chronology li {
+      grid-template-columns: 1fr;
+      gap: 0.3rem;
     }
   }
 </style>

@@ -1,5 +1,6 @@
 ---
 title: "Why Fika Jobs Felt Familiar"
+writingId: "writing-fika-familiar"
 slug: "why-fika-jobs-felt-familiar"
 description: "A product investigation into the shared philosophy behind Fika Jobs and a private Career Intelligence knowledge graph built to understand experience, decisions, and career direction beyond the CV."
 type: "case-study"
@@ -15,10 +16,28 @@ topics:
   - "Career Intelligence"
   - "Knowledge Graphs"
   - "Human-Centered Technology"
+collections:
+  - "tools-for-whole-people"
+  - "evidence-before-autonomy"
+primaryCollection: "tools-for-whole-people"
+relatedProjects:
+  - slug: "career-intelligence"
+    relationship: "reflection-on"
+relatedWriting:
+  - slug: "i-did-not-want-another-app"
+    relationship: "related-to"
+  - slug: "what-i-built-instead-of-an-agent"
+    relationship: "related-to"
 relatedProject: "career-intelligence"
 featured: true
 draft: false
 readingTime: "7 min"
+canonicalUrl: "/writing/why-fika-jobs-felt-familiar/"
+externalSource:
+  name: "Fika Jobs"
+  url: "https://fikajobs.ai/"
+editorialWeight: 80
+archived: false
 subjectName: "Fika Jobs"
 subjectUrl: "https://fikajobs.ai/"
 disclaimer: "This is an independent product and technical exploration inspired by publicly available information about Fika Jobs. It is not affiliated with, endorsed by, or based on access to Fika's private systems."
