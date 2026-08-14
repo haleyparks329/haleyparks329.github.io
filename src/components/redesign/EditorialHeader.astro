@@ -1,0 +1,49 @@
+---
+import { siteConfig } from "../../site.config";
+
+const pathname = Astro.url.pathname;
+const navItems = [
+  { href: "/projects/", label: "Projects" },
+  { href: "/writing/", label: "Writing" },
+  { href: "/field-log/", label: "Memories" },
+  { href: "/about/", label: "About" },
+];
+
+const isActive = (href: string) =>
+  href === "/" ? pathname === href : pathname.startsWith(href);
+---
+
+<a class="editorial-skip" href="#main-content">Skip to content</a>
+<header class="editorial-header">
+  <div class="editorial-header__inner">
+    <a
+      class="editorial-identity"
+      href="/"
+      aria-label={`${siteConfig.name}, home`}
+    >
+      <span>{siteConfig.name}</span>
+      <small>Systems and investigations</small>
+    </a>
+
+    <nav class="editorial-nav" aria-label="Primary navigation">
+      {
+        navItems.map((item) => (
+          <a
+            href={item.href}
+            aria-current={isActive(item.href) ? "page" : undefined}
+          >
+            {item.label}
+          </a>
+        ))
+      }
+    </nav>
+
+    <div class="editorial-utility" aria-label="Site utilities">
+      <a href="/search/">Search</a>
+      <span
+        title="Editorial view explains. World View shows. A separate interface in development."
+        >World View · separate interface</span
+      >
+    </div>
+  </div>
+</header>
