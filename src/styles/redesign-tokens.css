@@ -1,0 +1,88 @@
+/*
+ * WP1 opt-in foundation. This file is deliberately not imported globally.
+ * Apply data-redesign-foundation to a prototype root during WP2.
+ */
+@layer redesign-foundation {
+  [data-redesign-foundation] {
+    --rf-font-interface: "Instrument Sans", "Helvetica Neue", Arial, sans-serif;
+    --rf-font-editorial: "Newsreader", Georgia, serif;
+    --rf-font-mono:
+      ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+
+    --rf-color-canvas: #f5f0e7;
+    --rf-color-paper: #fcfaf5;
+    --rf-color-ink: #2d2926;
+    --rf-color-stone: #716a62;
+    --rf-color-rule: #c9c0b4;
+    --rf-color-olive: #747d31;
+    --rf-color-burgundy: #7d3f4b;
+    --rf-color-blue: #3c708e;
+    --rf-color-lavender: #76688d;
+    --rf-color-ochre: #91651f;
+    --rf-color-forest: #315f4a;
+    --rf-color-sage: #6e8975;
+    --rf-color-coral: #ad594d;
+
+    --rf-text-page-title: clamp(2rem, 3vw, 2.75rem);
+    --rf-text-section-title: clamp(1.5rem, 2vw, 2rem);
+    --rf-text-body: clamp(1rem, 0.97rem + 0.12vw, 1.125rem);
+    --rf-text-small: 0.875rem;
+    --rf-leading-tight: 1.08;
+    --rf-leading-body: 1.65;
+
+    --rf-space-1: 0.25rem;
+    --rf-space-2: 0.5rem;
+    --rf-space-3: 0.75rem;
+    --rf-space-4: 1rem;
+    --rf-space-6: 1.5rem;
+    --rf-space-8: 2rem;
+    --rf-space-12: 3rem;
+    --rf-space-16: 4rem;
+    --rf-space-24: 6rem;
+    --rf-space-32: 8rem;
+
+    --rf-layout-max: 76rem;
+    --rf-reading-measure: 68ch;
+    --rf-evidence-measure: 84ch;
+    --rf-gutter: clamp(1rem, 3vw, 2rem);
+    --rf-grid-columns: 12;
+    --rf-grid-gap: clamp(0.75rem, 2vw, 1.5rem);
+
+    --rf-border: 1px solid var(--rf-color-rule);
+    --rf-radius-flat: 0;
+    --rf-radius-soft: 2px;
+    --rf-radius-control: 6px;
+
+    --rf-duration-fast: 120ms;
+    --rf-duration-standard: 180ms;
+    --rf-duration-deliberate: 260ms;
+    --rf-ease: cubic-bezier(0.2, 0, 0, 1);
+
+    background: var(--rf-color-canvas);
+    color: var(--rf-color-ink);
+    font-family: var(--rf-font-interface);
+    font-size: var(--rf-text-body);
+    line-height: var(--rf-leading-body);
+  }
+
+  [data-redesign-foundation] :where(h1, h2) {
+    font-family: var(--rf-font-editorial);
+    line-height: var(--rf-leading-tight);
+  }
+
+  [data-redesign-foundation] h1 {
+    font-size: var(--rf-text-page-title);
+  }
+
+  [data-redesign-foundation] h2 {
+    font-size: var(--rf-text-section-title);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    [data-redesign-foundation] {
+      --rf-duration-fast: 0ms;
+      --rf-duration-standard: 0ms;
+      --rf-duration-deliberate: 0ms;
+    }
+  }
+}

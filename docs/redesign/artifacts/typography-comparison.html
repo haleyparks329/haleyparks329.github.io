@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>WP1 typography comparison</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=IBM+Plex+Sans:wght@400;600&family=IBM+Plex+Serif:wght@400;600&family=Instrument+Sans:wght@400;600&family=Literata:opsz,wght@7..72,400;7..72,600&family=Newsreader:opsz,wght@6..72,400;6..72,600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        color-scheme: light;
+        --canvas: #f5f0e7;
+        --ink: #2d2926;
+        --muted: #716a62;
+        --rule: #c9c0b4;
+        --accent: #747d31;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: var(--canvas);
+        color: var(--ink);
+      }
+      main {
+        width: min(100% - 2rem, 76rem);
+        margin: 0 auto;
+        padding: 3rem 0 5rem;
+      }
+      header {
+        max-width: 68ch;
+        margin-bottom: 3rem;
+        font-family: system-ui, sans-serif;
+      }
+      header h1 {
+        margin: 0 0 0.75rem;
+        font-size: clamp(2rem, 3vw, 2.75rem);
+      }
+      header p {
+        margin: 0;
+        color: var(--muted);
+        line-height: 1.6;
+      }
+      .systems {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        border-top: 1px solid var(--rule);
+      }
+      article {
+        min-width: 0;
+        padding: 2rem clamp(1rem, 2vw, 2rem) 0;
+        border-left: 1px solid var(--rule);
+      }
+      article:last-child {
+        border-right: 1px solid var(--rule);
+      }
+      .a {
+        --sans: "Instrument Sans", sans-serif;
+        --serif: "Newsreader", serif;
+      }
+      .b {
+        --sans: "IBM Plex Sans", sans-serif;
+        --serif: "IBM Plex Serif", serif;
+      }
+      .c {
+        --sans: "Atkinson Hyperlegible", sans-serif;
+        --serif: "Literata", serif;
+      }
+      .label,
+      .meta,
+      p {
+        font-family: var(--sans);
+      }
+      h2,
+      blockquote {
+        font-family: var(--serif);
+      }
+      .label {
+        margin: 0 0 2.5rem;
+        color: var(--accent);
+        font-size: 0.8125rem;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+      h2 {
+        margin: 0 0 1rem;
+        font-size: clamp(2rem, 3vw, 2.75rem);
+        font-weight: 600;
+        line-height: 1.04;
+      }
+      .dek {
+        margin: 0 0 2rem;
+        font-size: 1.125rem;
+        line-height: 1.45;
+      }
+      .meta {
+        padding: 0.75rem 0;
+        border-block: 1px solid var(--rule);
+        color: var(--muted);
+        font:
+          0.75rem/1.5 ui-monospace,
+          monospace;
+      }
+      blockquote {
+        margin: 2rem 0 1rem;
+        font-size: 1.5rem;
+        line-height: 1.25;
+      }
+      .body {
+        font-size: 1rem;
+        line-height: 1.65;
+      }
+      .caption {
+        color: var(--muted);
+        font-size: 0.8125rem;
+        line-height: 1.5;
+      }
+      @media (max-width: 800px) {
+        .systems {
+          display: block;
+        }
+        article {
+          border-right: 1px solid var(--rule);
+          padding-bottom: 2rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <header>
+        <h1>Typography comparison</h1>
+        <p>
+          Three two-family systems tested with real flagship language. This
+          artifact is for internal review and is not linked from the public
+          site.
+        </p>
+      </header>
+      <section class="systems" aria-label="Typography candidates">
+        <article class="a">
+          <p class="label">A · Recommended</p>
+          <h2>Wonderful Digital World</h2>
+          <p class="dek">
+            A persistent computational environment for a human life.
+          </p>
+          <p class="meta">STATUS: ACTIVE · DEPTH: D1 · REPOSITORY: PUBLIC</p>
+          <blockquote>
+            The system continues: observe, understand, reconcile, act, learn.
+          </blockquote>
+          <p class="body">
+            Durable evidence and domain state produce viewer projections.
+            Specialist residents can propose actions, while authority remains an
+            explicit boundary.
+          </p>
+          <p class="caption">
+            Instrument Sans + Newsreader. Contemporary interface language with
+            an editorial reading voice.
+          </p>
+        </article>
+        <article class="b">
+          <p class="label">B · Technical</p>
+          <h2>Wonderful Digital World</h2>
+          <p class="dek">
+            A persistent computational environment for a human life.
+          </p>
+          <p class="meta">STATUS: ACTIVE · DEPTH: D1 · REPOSITORY: PUBLIC</p>
+          <blockquote>
+            The system continues: observe, understand, reconcile, act, learn.
+          </blockquote>
+          <p class="body">
+            Durable evidence and domain state produce viewer projections.
+            Specialist residents can propose actions, while authority remains an
+            explicit boundary.
+          </p>
+          <p class="caption">
+            IBM Plex Sans + Serif. Coherent and credible, with a more
+            institutional tone.
+          </p>
+        </article>
+        <article class="c">
+          <p class="label">C · Literary</p>
+          <h2>Wonderful Digital World</h2>
+          <p class="dek">
+            A persistent computational environment for a human life.
+          </p>
+          <p class="meta">STATUS: ACTIVE · DEPTH: D1 · REPOSITORY: PUBLIC</p>
+          <blockquote>
+            The system continues: observe, understand, reconcile, act, learn.
+          </blockquote>
+          <p class="body">
+            Durable evidence and domain state produce viewer projections.
+            Specialist residents can propose actions, while authority remains an
+            explicit boundary.
+          </p>
+          <p class="caption">
+            Atkinson Hyperlegible + Literata. Highly readable, but more bookish
+            than the intended identity.
+          </p>
+        </article>
+      </section>
+    </main>
+  </body>
+</html>
