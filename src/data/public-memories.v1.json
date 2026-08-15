@@ -1,0 +1,115 @@
+{
+  "schemaVersion": "1.0",
+  "generatedAt": "2026-08-14T09:00:00Z",
+  "memories": [
+    {
+      "id": "mem_9df8b47c12aa4101",
+      "slug": "public-memory-boundary",
+      "title": "A public memory boundary takes shape",
+      "excerpt": "The memory system now separates private candidates from a deliberately small public projection.",
+      "significance": "The website can preserve meaningful progress without becoming a window into private working context.",
+      "occurredAt": "2026-08-12T15:30:00Z",
+      "publishedAt": "2026-08-14T09:00:00Z",
+      "kind": "milestone",
+      "weight": "feature",
+      "sourceLabel": "WP5 editorial review",
+      "sourceType": "editorial",
+      "publicationMode": "manual",
+      "publicEvidence": [
+        {
+          "label": "Wonderful Digital World",
+          "href": "/projects/wonderful-digital-world/"
+        }
+      ],
+      "relatedProjects": [{ "label": "Bridget", "href": "/projects/bridget/" }]
+    },
+    {
+      "id": "mem_24f3641cc7b35e22",
+      "slug": "evidence-before-claims-rule",
+      "title": "Evidence before claims becomes a publication rule",
+      "excerpt": "A working principle from the Field Log is now enforced at the public-memory boundary.",
+      "significance": "Every published memory must retain a public, inspectable trail without exposing its private source material.",
+      "occurredAt": "2026-08-09T11:15:00Z",
+      "publishedAt": "2026-08-14T09:00:00Z",
+      "kind": "decision",
+      "weight": "standard",
+      "sourceLabel": "WP5 editorial review",
+      "sourceType": "field-log",
+      "publicationMode": "manual",
+      "publicEvidence": [
+        {
+          "label": "Evidence before claims",
+          "href": "/field-log/evidence-before-claims/"
+        }
+      ],
+      "relatedProjects": []
+    },
+    {
+      "id": "mem_b612c6d9fe420b30",
+      "slug": "relationships-enter-the-interface",
+      "title": "The website learns to show relationships",
+      "excerpt": "Projects, writing, and field notes can now be explored as connected evidence rather than isolated pages.",
+      "significance": "The archive begins to reflect how the work actually develops: through linked questions, artifacts, and decisions.",
+      "occurredAt": "2026-08-03T08:45:00Z",
+      "publishedAt": "2026-08-14T09:00:00Z",
+      "kind": "release",
+      "weight": "standard",
+      "sourceLabel": "WP5 editorial review",
+      "sourceType": "project",
+      "publicationMode": "manual",
+      "publicEvidence": [
+        { "label": "Explore the archive", "href": "/explore/" }
+      ],
+      "relatedProjects": [
+        {
+          "label": "Wonderful Digital World",
+          "href": "/projects/wonderful-digital-world/"
+        }
+      ]
+    },
+    {
+      "id": "mem_04e9943a21c67ad4",
+      "slug": "desk-becomes-workbench",
+      "title": "The desk becomes a public workbench",
+      "excerpt": "The site shifts from a portfolio display toward an editorial surface for active investigation.",
+      "significance": "Finished work and work in progress can share one durable archive while remaining clearly labeled.",
+      "occurredAt": "2026-07-21T13:00:00Z",
+      "publishedAt": "2026-08-14T09:00:00Z",
+      "kind": "observation",
+      "weight": "note",
+      "sourceLabel": "WP5 editorial review",
+      "sourceType": "field-log",
+      "publicationMode": "manual",
+      "publicEvidence": [
+        {
+          "label": "The desk as workbench",
+          "href": "/field-log/the-desk-as-workbench/"
+        }
+      ],
+      "relatedProjects": []
+    },
+    {
+      "id": "mem_713a0a927bf4ce87",
+      "slug": "bridget-role-clarified",
+      "title": "Bridget's role is narrowed to reconciliation",
+      "excerpt": "Bridget coordinates significance, review, and publication while source systems remain responsible for their facts.",
+      "significance": "Clear ownership keeps the memory pipeline portable and prevents one coordinator from becoming an untraceable source of truth.",
+      "occurredAt": "2025-12-18T10:00:00Z",
+      "publishedAt": "2026-08-14T09:00:00Z",
+      "kind": "decision",
+      "weight": "standard",
+      "sourceLabel": "WP5 editorial review",
+      "sourceType": "project",
+      "publicationMode": "manual",
+      "publicEvidence": [
+        { "label": "Bridget project", "href": "/projects/bridget/" }
+      ],
+      "relatedProjects": [
+        {
+          "label": "Wonderful Digital World",
+          "href": "/projects/wonderful-digital-world/"
+        }
+      ]
+    }
+  ]
+}

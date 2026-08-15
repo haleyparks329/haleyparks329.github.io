@@ -6,16 +6,47 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
   title="Page not found"
   description="The requested page could not be found."
   canonicalPath="/404/"
+  breadcrumbs={[{ label: "Home", href: "/" }, { label: "Page not found" }]}
 >
-  <section class="page-section container text-page">
+  <section class="not-found site-shell reading-column">
     <p class="eyebrow">404</p>
     <h1>Page not found</h1>
     <p class="lede">
       This page is not part of the public site yet, or the link has drifted.
     </p>
-    <div class="button-row">
-      <a class="button" href="/">Go home</a>
-      <a class="button secondary" href="/projects/">View projects</a>
-    </div>
+    <nav aria-label="Useful destinations">
+      <a href="/">Go home</a>
+      <a href="/projects/">View projects</a>
+      <a href="/search/">Search the site</a>
+    </nav>
   </section>
 </BaseLayout>
+
+<style>
+  .not-found {
+    padding-block: clamp(4rem, 12vw, 9rem);
+  }
+
+  .not-found h1 {
+    max-width: 12ch;
+    margin-block: var(--space-2) var(--space-3);
+  }
+
+  .not-found .lede {
+    max-width: 42ch;
+  }
+
+  .not-found nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3) var(--space-5);
+    margin-top: var(--space-5);
+    border-top: var(--border-width) solid var(--color-border);
+    padding-top: var(--space-4);
+  }
+
+  .not-found a {
+    font-weight: 700;
+    text-underline-offset: 0.2em;
+  }
+</style>

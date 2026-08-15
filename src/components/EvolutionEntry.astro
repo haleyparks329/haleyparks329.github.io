@@ -95,11 +95,8 @@ const {
   .entry-body {
     display: grid;
     gap: var(--space-4);
-    border: var(--border-width) solid var(--color-border);
-    border-radius: var(--radius-md);
-    padding: clamp(1rem, 2vw, 1.35rem);
-    background: color-mix(in srgb, var(--paper) 78%, white);
-    box-shadow: var(--shadow-paper);
+    border-top: var(--border-width) solid var(--color-border);
+    padding: var(--space-4) 0 0;
   }
 
   .entry-phase {
@@ -142,7 +139,7 @@ const {
     border-top: var(--border-width) solid var(--color-border);
     padding-top: var(--space-3);
     color: var(--color-text-muted);
-    font-family: var(--font-hand);
+    font-family: var(--font-mono);
     font-size: 1.04rem;
   }
 
