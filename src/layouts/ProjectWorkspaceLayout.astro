@@ -1,8 +1,6 @@
 ---
 import type { CollectionEntry } from "astro:content";
-import ProjectEmblem from "@/components/ProjectEmblem.astro";
 import ProjectSidebar from "@/components/ProjectSidebar.astro";
-import StatusBadge from "@/components/StatusBadge.astro";
 import type { ProjectWorkspaceConfig } from "@/data/project-workspaces";
 
 type Props = {
@@ -20,13 +18,12 @@ const data = project.data;
   class={`project-workspace site-shell project-workspace-${data.accent}`}
 >
   <header class="project-workspace-header">
-    <ProjectEmblem slug={data.slug} size="large" />
     <div class="project-heading">
       <p class="project-file-label">{workspace.projectType}</p>
       <h1>{data.title}</h1>
       <p class="project-summary">{workspace.headerSummary}</p>
       <div class="project-meta" aria-label={`${data.title} metadata`}>
-        <StatusBadge status={data.status} accent={data.accent} />
+        <span>{data.status}</span>
       </div>
       {
         workspace.primaryLinks && workspace.primaryLinks.length > 0 && (
@@ -52,10 +49,6 @@ const data = project.data;
         )
       }
     </div>
-    <aside class="current-state" aria-label={`${data.title} current work`}>
-      <p>Currently on the desk</p>
-      <span>{workspace.currentNote}</span>
-    </aside>
   </header>
 
   <div class="project-mobile-nav">
@@ -69,7 +62,7 @@ const data = project.data;
       aria-labelledby="project-document-title"
     >
       <header class="project-document-header">
-        <p>{workspace.annotation}</p>
+        <p>Project document</p>
         <h2 id="project-document-title">{documentTitle}</h2>
         <span>{documentSummary}</span>
       </header>
@@ -102,7 +95,7 @@ const data = project.data;
 
   .project-workspace-header {
     display: grid;
-    grid-template-columns: auto minmax(0, 1fr) minmax(15rem, 0.34fr);
+    grid-template-columns: minmax(0, 1fr);
     gap: clamp(1rem, 3vw, 2rem);
     align-items: center;
     border-bottom: var(--border-width) solid var(--color-border);
@@ -116,7 +109,6 @@ const data = project.data;
   }
 
   .project-file-label,
-  .current-state p,
   .project-document-header p {
     margin: 0;
     color: var(--color-text-muted);
@@ -147,6 +139,14 @@ const data = project.data;
     align-items: center;
   }
 
+  .project-meta span {
+    color: var(--color-text-muted);
+    font-family: var(--font-mono);
+    font-size: var(--font-size-micro);
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+
   .project-primary-links {
     display: flex;
     flex-wrap: wrap;
@@ -175,32 +175,8 @@ const data = project.data;
   }
 
   .project-primary-links a.is-primary {
-    border: var(--border-width) solid
-      color-mix(in srgb, var(--workspace-accent) 45%, var(--color-border));
-    border-radius: var(--radius-md);
-    padding-inline: 0.7rem;
-    background: color-mix(
-      in srgb,
-      var(--workspace-accent) 9%,
-      var(--color-surface)
-    );
-  }
-
-  .current-state {
-    display: grid;
-    gap: var(--space-2);
-    border: var(--border-width) solid
-      color-mix(in srgb, var(--workspace-accent) 28%, var(--color-border));
-    border-radius: var(--radius-md);
-    padding: var(--space-4);
-    background: color-mix(in srgb, var(--workspace-accent) 10%, var(--paper));
-    box-shadow: var(--shadow-paper);
-  }
-
-  .current-state span {
-    color: var(--color-text-secondary);
-    font-size: 0.94rem;
-    line-height: 1.5;
+    border-bottom-color: var(--workspace-accent);
+    color: var(--workspace-accent);
   }
 
   .project-mobile-nav {
@@ -241,28 +217,12 @@ const data = project.data;
     line-height: 1.55;
   }
 
-  @media (max-width: 900px) {
-    .project-workspace-header {
-      grid-template-columns: auto minmax(0, 1fr);
-    }
-
-    .current-state {
-      grid-column: 1 / -1;
-    }
-  }
-
   @media (max-width: 800px) {
     .project-mobile-nav {
       display: block;
     }
 
     .project-workspace__layout {
-      grid-template-columns: 1fr;
-    }
-  }
-
-  @media (max-width: 560px) {
-    .project-workspace-header {
       grid-template-columns: 1fr;
     }
   }

@@ -1,11 +1,13 @@
 ---
-import Header from "@/components/Header.astro";
-import Footer from "@/components/Footer.astro";
+import EditorialHeader from "@/components/redesign/EditorialHeader.astro";
+import EditorialFooter from "@/components/redesign/EditorialFooter.astro";
 import Breadcrumbs, {
   type BreadcrumbItem,
 } from "@/components/Breadcrumbs.astro";
 import { siteConfig } from "@/site.config";
 import "@/styles/global.css";
+import "@/styles/redesign-tokens.css";
+import "@/styles/wp2.css";
 
 type Props = {
   title?: string;
@@ -72,13 +74,12 @@ const imageUrl = new URL(imagePath, siteConfig.siteUrl).toString();
     <meta name="twitter:image" content={imageUrl} />
     <title>{pageTitle}</title>
   </head>
-  <body>
-    <a class="skip-link" href="#main-content">Skip to content</a>
-    <Header />
+  <body data-redesign-foundation>
+    <EditorialHeader />
     {breadcrumbs && <Breadcrumbs items={breadcrumbs} />}
-    <main id="main-content" tabindex="-1">
+    <main id="main-content" class="compatibility-main" tabindex="-1">
       <slot />
     </main>
-    <Footer />
+    <EditorialFooter />
   </body>
 </html>

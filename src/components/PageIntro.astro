@@ -60,12 +60,11 @@ const supportingText = description ? text : undefined;
   .page-intro {
     --intro-accent: var(--accent-primary);
     display: grid;
-    min-height: 26.5rem;
-    grid-template-columns: minmax(16rem, 0.42fr) minmax(0, 0.58fr);
-    gap: clamp(2rem, 7vw, 7rem);
+    grid-template-columns: minmax(14rem, 0.38fr) minmax(0, 0.62fr);
+    gap: clamp(2rem, 6vw, 5rem);
     align-items: start;
     border-bottom: var(--border-width) solid var(--color-border);
-    padding-block: 5rem;
+    padding-block: clamp(2.75rem, 6vw, 5rem);
   }
 
   .page-intro-reading {
@@ -73,7 +72,6 @@ const supportingText = description ? text : undefined;
   }
 
   .page-intro-compact {
-    min-height: 18rem;
     padding-block: 3.25rem;
   }
 
@@ -104,12 +102,11 @@ const supportingText = description ? text : undefined;
 
   h1 {
     max-width: 12ch;
-    font-size: 5rem;
+    font-size: clamp(2.5rem, 5vw, 4.5rem);
     font-weight: var(--weight-semibold);
     line-height: 0.95;
     letter-spacing: 0;
-    text-wrap: nowrap;
-    white-space: nowrap;
+    text-wrap: balance;
   }
 
   .page-intro-copy {
@@ -122,8 +119,9 @@ const supportingText = description ? text : undefined;
     max-width: 34rem;
     margin: 0;
     color: var(--color-text);
-    font-size: 1.75rem;
-    line-height: 1.2;
+    font-family: var(--rf-font-editorial);
+    font-size: clamp(1.3rem, 2vw, 1.7rem);
+    line-height: 1.3;
   }
 
   .page-intro-text {
@@ -147,22 +145,13 @@ const supportingText = description ? text : undefined;
   }
 
   .page-intro-note {
-    position: relative;
-    max-width: 15rem;
+    max-width: 32rem;
     margin: var(--space-5) 0 0;
-    border: var(--border-width) solid var(--color-border);
-    border-radius: var(--radius-sm);
-    padding: var(--space-3) var(--space-4);
-    background: color-mix(
-      in srgb,
-      var(--intro-accent) 10%,
-      var(--color-paper-clean)
-    );
-    box-shadow: var(--shadow-paper);
-    color: var(--color-text);
-    font-family: var(--font-hand);
-    font-size: 1.05rem;
-    line-height: 1.25;
+    border-left: 0.2rem solid var(--intro-accent);
+    padding-left: var(--space-4);
+    color: var(--color-text-muted);
+    font-size: 0.95rem;
+    line-height: 1.5;
   }
 
   @media (max-width: 760px) {

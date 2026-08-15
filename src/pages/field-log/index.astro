@@ -11,20 +11,22 @@ const entries = (await getCollection("fieldLog")).sort(
 
 <BaseLayout
   title="Field Log"
-  description="Short public notes from Haley Parks' active AI systems, build work, and research questions."
+  description="A historical archive of short public notes from Haley Parks' AI systems, build work, and research questions."
   canonicalPath="/field-log/"
   breadcrumbs={[{ label: "Home", href: "/" }, { label: "Field Log" }]}
 >
   <section class="field-log-index reading-column">
+    <aside class="memory-compatibility">
+      <strong>Memories are now a curated public record.</strong>
+      <span>This Field Log remains the historical stream of working notes.</span
+      >
+      <a href="/memories/">Visit Memories →</a>
+    </aside>
     <PageIntro
       eyebrow="Field Log"
-      title="Notes from the edge of the work"
-      text="Active build observations, system questions, and decisions worth keeping visible while the larger work is still moving."
-      meta={[
-        `${entries.length} entries`,
-        "Newest first",
-        "Active work updates",
-      ]}
+      title="A historical stream of working notes"
+      text="Archived build observations, system questions, and decisions captured while the work was moving. Memories is the current curated record."
+      meta={[`${entries.length} entries`, "Newest first", "Historical archive"]}
       accent="ochre"
       width="reading"
     />
@@ -49,6 +51,21 @@ const entries = (await getCollection("fieldLog")).sort(
   .entry-list {
     margin-top: var(--space-8);
     border-top: var(--border-width) solid var(--color-border);
+  }
+
+  .memory-compatibility {
+    display: grid;
+    gap: 0.35rem;
+    margin-bottom: var(--space-6);
+    padding-block: var(--space-4);
+    border-block: var(--border-width) solid var(--color-border);
+    background: transparent;
+  }
+
+  .memory-compatibility a {
+    width: fit-content;
+    color: var(--plum);
+    font-weight: 600;
   }
 
   .field-log-page-links {

@@ -1,5 +1,4 @@
 ---
-import ProjectEmblem from "@/components/ProjectEmblem.astro";
 import type { ProjectWorkspaceConfig } from "@/data/project-workspaces";
 
 type Props = {
@@ -39,7 +38,6 @@ const navLabel = mobile
       <summary>Project files</summary>
       <nav aria-label={navLabel}>
         <div class="project-sidebar-heading">
-          <ProjectEmblem slug={workspace.slug} size="small" />
           <span>
             <strong>{projectTitle}</strong>
             <em>{workspace.projectType}</em>
@@ -73,7 +71,6 @@ const navLabel = mobile
   ) : (
     <nav class="project-sidebar" aria-label={navLabel}>
       <div class="project-sidebar-heading">
-        <ProjectEmblem slug={workspace.slug} size="small" />
         <span>
           <strong>{projectTitle}</strong>
           <em>{workspace.projectType}</em>
@@ -102,7 +99,6 @@ const navLabel = mobile
           </ul>
         </details>
       ))}
-      <p class="project-sidebar-note">{workspace.annotation}</p>
     </nav>
   )
 }
@@ -115,11 +111,8 @@ const navLabel = mobile
     max-height: calc(100vh - var(--site-header-height) - 2rem);
     gap: var(--space-4);
     overflow-y: auto;
-    border: var(--border-width) solid var(--color-border);
-    border-radius: var(--radius-md);
-    padding: var(--space-4);
-    background: color-mix(in srgb, var(--paper) 76%, white);
-    box-shadow: var(--shadow-paper);
+    border-top: var(--border-width) solid var(--color-border);
+    padding-block: var(--space-4);
   }
 
   .project-sidebar-heading {
@@ -142,8 +135,7 @@ const navLabel = mobile
     line-height: 1.15;
   }
 
-  .project-sidebar-heading em,
-  .project-sidebar-note {
+  .project-sidebar-heading em {
     color: var(--color-text-muted);
     font-style: normal;
   }
@@ -163,7 +155,6 @@ const navLabel = mobile
   .project-sidebar-group summary {
     min-height: 36px;
     cursor: pointer;
-    border-radius: var(--radius-sm);
     padding: 0.42rem 0.5rem;
     color: var(--color-text-muted);
     font-family: var(--font-mono);
@@ -193,7 +184,6 @@ const navLabel = mobile
     justify-content: space-between;
     gap: var(--space-2);
     border-left: 0.18rem solid transparent;
-    border-radius: var(--radius-sm);
     padding: 0.48rem 0.65rem;
     color: var(--color-text-muted);
     font-size: 0.92rem;
@@ -212,20 +202,9 @@ const navLabel = mobile
     border-left-color: var(--rust);
   }
 
-  .project-sidebar-note {
-    margin: 0;
-    border-top: var(--border-width) solid var(--color-border);
-    padding-top: var(--space-3);
-    font-family: var(--font-hand);
-    font-size: 1rem;
-    line-height: 1.25;
-  }
-
   .mobile-project-navigation {
     display: none;
     border: var(--border-width) solid var(--color-border);
-    border-radius: var(--radius-md);
-    background: var(--color-surface-raised);
   }
 
   .mobile-project-navigation > summary {

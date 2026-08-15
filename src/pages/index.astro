@@ -4,6 +4,7 @@ import EditorialLayout from "../layouts/EditorialLayout.astro";
 import { projectDocumentForSlug } from "../data/project-documents";
 import { surpriseRoute } from "../data/wp2-content";
 import { flagshipRelationship } from "../data/wonderful-digital-world";
+import { latestMemory } from "../data/memories";
 
 const projects = (await getCollection("projects")).sort(
   (a, b) => a.data.order - b.data.order,
@@ -18,9 +19,6 @@ const humanModelDocument = projectDocumentForSlug("the-human-model");
 const currentWork = projects.filter((project) =>
   ["bridget", "qa-agents", "career-intelligence"].includes(project.data.slug),
 );
-const latestMemory = (await getCollection("fieldLog")).sort(
-  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
-)[0];
 ---
 
 <EditorialLayout
@@ -106,14 +104,13 @@ const latestMemory = (await getCollection("fieldLog")).sort(
         <aside class="memory-note" aria-labelledby="memory-title">
           <p class="section-label">Latest memory</p>
           <h2 id="memory-title">
-            <a href={`/field-log/${latestMemory.data.slug}/`}>
-              {latestMemory.data.title}
-            </a>
+            <a href={`/memories/#${latestMemory.slug}`}>{latestMemory.title}</a>
           </h2>
-          <p>{latestMemory.data.summary}</p>
+          <p>{latestMemory.excerpt}</p>
           <p class="meta-line">
-            {latestMemory.data.pubDate.toLocaleDateString("en", {
+            {new Date(latestMemory.occurredAt).toLocaleDateString("en", {
               dateStyle: "medium",
+              timeZone: "UTC",
             })}
           </p>
         </aside>
