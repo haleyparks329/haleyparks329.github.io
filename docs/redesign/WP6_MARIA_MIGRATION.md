@@ -1,5 +1,7 @@
 # WP6 Maria migration
 
+> **Historical snapshot — superseded by WP6.2.** Field Log references below describe prior state and are not current information architecture or routes.
+
 ## Purpose
 
 WP6 replaces the former portfolio presentation with the Maria Astro theme while preserving the site's public content, URLs, data contracts, validation, and GitHub Pages deployment. Maria remains the visual and structural baseline; the custom work is limited to Haley's palette, local typography, content, and existing Astro integrations.

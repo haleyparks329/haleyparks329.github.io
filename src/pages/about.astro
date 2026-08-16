@@ -1,106 +1,228 @@
 ---
-import BaseLayout from "../layouts/BaseLayout.astro";
+import { getCollection } from "astro:content";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { siteConfig } from "@/site.config";
+
+const projects = (await getCollection("projects"))
+  .filter((project) => project.data.featured)
+  .sort((a, b) => a.data.order - b.data.order)
+  .slice(0, 3);
 ---
 
 <BaseLayout
-  title="About — Haley Parks"
-  description="How Haley Parks approaches product strategy, research, systems, and the work of making complex things useful."
+  title={`About — ${siteConfig.name}`}
+  description={siteConfig.description}
   canonicalPath="/about/"
   breadcrumbs={[{ label: "Home", href: "/" }, { label: "About" }]}
 >
-  <article class="maria-page maria-prose">
-    <header class="maria-collection-head">
+  <article class="maria-page about-page">
+    <header class="maria-collection-head about-hero">
       <p class="maria-eyebrow">About</p>
-      <h1>I make complex systems easier to understand and use.</h1>
-      <p>
-        My work sits between product strategy, research, operations, and the
-        careful translation required to turn ambiguity into something people can
-        act on.
-      </p>
+      <h1>{siteConfig.tagline}</h1>
+      <p>{siteConfig.description}</p>
     </header>
 
-    <section class="maria-split">
-      <h2>How I think</h2>
+    <dl class="about-facts" aria-label="Profile">
       <div>
+        <dt>Role</dt>
+        <dd>{siteConfig.role}</dd>
+      </div>
+      <div>
+        <dt>Based in</dt>
+        <dd>{siteConfig.location}</dd>
+      </div>
+      <div>
+        <dt>Focus</dt>
+        <dd>Data, behavior, context, and goals</dd>
+      </div>
+    </dl>
+
+    <section class="about-section" aria-labelledby="work-heading">
+      <div>
+        <p class="maria-eyebrow">Public work</p>
+        <h2 id="work-heading">
+          Systems that keep evidence and human context visible.
+        </h2>
+      </div>
+      <div class="about-copy">
         <p>
-          I am drawn to problems that are difficult for more than one reason:
-          the information is incomplete, the system has many owners, and the
-          people inside it do not share the same mental model.
+          The projects on this site explore source-backed human models,
+          persistent computational environments, bounded AI investigation, and
+          the interfaces that make those systems understandable.
         </p>
         <p>
-          My contribution is usually a combination of listening, structuring,
-          and making. I look for the decisions hidden inside the noise, create a
-          useful model of the situation, and build the smallest credible thing
-          that helps a team move.
+          The writing develops the same questions in another form: how to
+          preserve context, build evidence before autonomy, and design tools for
+          whole people.
         </p>
       </div>
     </section>
 
-    <blockquote class="maria-statement">
-      <p>
-        Good systems should make people feel more capable, not more managed.
-      </p>
-      <footer>A working belief</footer>
-    </blockquote>
-
-    <section class="maria-split">
-      <h2>What shapes the work</h2>
-      <div>
-        <p>
-          I have worked across complex service environments where strategy,
-          delivery, policy, data, and frontline experience all meet. That work
-          taught me to treat operating reality as part of the product.
-        </p>
-        <p>
-          Writing is how I test ideas, preserve useful context, and notice
-          connections between domains. The site keeps polished essays, project
-          evidence, and smaller observations distinct without pretending they
-          are unrelated.
-        </p>
-      </div>
+    <section class="about-projects" aria-labelledby="projects-heading">
+      <header>
+        <p class="maria-eyebrow">Selected projects</p>
+        <h2 id="projects-heading">Current public work</h2>
+      </header>
+      <ol>
+        {
+          projects.map((project) => (
+            <li>
+              <article>
+                <p>{project.data.status}</p>
+                <h3>
+                  <a href={`/projects/${project.data.slug}/`}>
+                    {project.data.title}
+                  </a>
+                </h3>
+                <p>{project.data.summary}</p>
+              </article>
+            </li>
+          ))
+        }
+      </ol>
     </section>
 
-    <section class="maria-split maria-principles">
-      <h2>What I try to bring to the room</h2>
-      <ul>
-        <li>
-          <strong>Clarity without false certainty.</strong> Name what is known, assumed,
-          and still to learn.
-        </li>
-        <li>
-          <strong>Respect for lived expertise.</strong> The people closest to a system
-          often understand its real constraints best.
-        </li>
-        <li>
-          <strong>Evidence that travels.</strong> Research matters when it can survive
-          the meeting where the researcher is absent.
-        </li>
-        <li>
-          <strong>Care in the details.</strong> Small choices accumulate into trust,
-          friction, and experience quality.
-        </li>
-      </ul>
+    <section class="about-section" aria-labelledby="availability-heading">
+      <div>
+        <p class="maria-eyebrow">Availability</p>
+        <h2 id="availability-heading">Open to relevant opportunities.</h2>
+      </div>
+      <div class="about-copy">
+        <p>{siteConfig.availability}</p>
+      </div>
     </section>
 
     <section class="maria-contact" aria-labelledby="contact-heading">
       <div>
         <p class="maria-eyebrow">Contact</p>
-        <h2 id="contact-heading">
-          A useful conversation is a good place to start.
-        </h2>
+        <h2 id="contact-heading">Get in touch.</h2>
       </div>
       <div>
         <p>
-          If you are working through a complicated product or organizational
-          question, I am always interested in comparing notes.
-        </p>
-        <p>
-          <a href="mailto:hello@haleyparks.com">Email</a> · <a
-            href="https://www.linkedin.com/in/haleyparks/"
+          <a href={`mailto:${siteConfig.email}`}>Email</a> · <a
+            href={siteConfig.linkedinUrl}
             rel="me">LinkedIn</a
-          >
+          > · <a href={siteConfig.githubUrl} rel="me">GitHub</a>
         </p>
       </div>
     </section>
   </article>
 </BaseLayout>
+
+<style>
+  .about-hero {
+    max-width: 68rem;
+  }
+
+  .about-facts {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    margin: 0 0 clamp(5rem, 9vw, 8rem);
+    border-block: 1px solid var(--maria-line);
+  }
+
+  .about-facts div {
+    padding: 1.25rem 1.5rem 1.25rem 0;
+  }
+
+  .about-facts div + div {
+    padding-left: 1.5rem;
+    border-left: 1px solid var(--maria-line);
+  }
+
+  .about-facts dt,
+  .about-projects article > p:first-child {
+    color: var(--maria-muted);
+    font-family: ui-monospace, "SFMono-Regular", Consolas, monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .about-facts dd {
+    margin: 0.25rem 0 0;
+  }
+
+  .about-section {
+    display: grid;
+    grid-template-columns: minmax(14rem, 0.7fr) minmax(0, 1.3fr);
+    gap: clamp(2.5rem, 8vw, 8rem);
+    padding-bottom: clamp(5rem, 9vw, 8rem);
+  }
+
+  .about-section h2,
+  .about-projects h2,
+  .about-projects h3 {
+    margin: 0;
+    font-family: var(--maria-display);
+    font-weight: 500;
+    letter-spacing: -0.025em;
+  }
+
+  .about-section h2,
+  .about-projects h2 {
+    font-size: clamp(2rem, 4vw, 3.3rem);
+    line-height: 1.05;
+  }
+
+  .about-copy {
+    max-width: 42rem;
+    font-size: 1.08rem;
+  }
+
+  .about-copy p:first-child {
+    margin-top: 0;
+  }
+
+  .about-projects {
+    display: grid;
+    grid-template-columns: minmax(14rem, 0.7fr) minmax(0, 1.3fr);
+    gap: clamp(2.5rem, 8vw, 8rem);
+    margin-bottom: clamp(5rem, 9vw, 8rem);
+    padding-block: clamp(4rem, 7vw, 6rem);
+    border-block: 1px solid var(--maria-line);
+  }
+
+  .about-projects ol {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .about-projects li + li {
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--maria-line);
+  }
+
+  .about-projects article > p:first-child {
+    margin: 0 0 0.5rem;
+  }
+
+  .about-projects h3 {
+    font-size: clamp(1.5rem, 3vw, 2rem);
+  }
+
+  .about-projects h3 a {
+    text-underline-offset: 0.15em;
+  }
+
+  .about-projects h3 + p {
+    margin-bottom: 0;
+    color: var(--maria-muted);
+  }
+
+  @media (max-width: 48rem) {
+    .about-facts,
+    .about-section,
+    .about-projects {
+      grid-template-columns: 1fr;
+    }
+
+    .about-facts div + div {
+      padding-left: 0;
+      border-top: 1px solid var(--maria-line);
+      border-left: 0;
+    }
+  }
+</style>

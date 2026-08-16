@@ -29,7 +29,7 @@ const searchItems = allDestinations.map((destination) => {
 
 <BaseLayout
   title="Search"
-  description="Fast static search across projects, writing, demos, field log entries, summaries, and topics."
+  description="Fast static search across projects, writing, demos, summaries, and topics."
   canonicalPath="/search/"
   breadcrumbs={[{ label: "Home", href: "/" }, { label: "Search" }]}
 >
@@ -37,7 +37,7 @@ const searchItems = allDestinations.map((destination) => {
     <PageIntro
       title="Search"
       description="Find the shelf directly."
-      text="Search public destinations from the site graph: projects, writing, Field Log entries, demos, trails, summaries, and topics."
+      text="Search public destinations from the site graph: projects, writing, demos, trails, summaries, and topics."
       accent="ochre"
       width="wide"
     />
@@ -90,7 +90,7 @@ const searchItems = allDestinations.map((destination) => {
       const prompt = document.createElement("p");
       prompt.className = "search-empty search-prompt";
       prompt.textContent =
-        "Start typing to search projects, writing, demos, field notes, trails, and topics.";
+        "Start typing to search projects, writing, demos, research notes, trails, and topics.";
       results.replaceChildren(prompt);
     }
 

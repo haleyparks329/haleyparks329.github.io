@@ -114,7 +114,6 @@ Expand it to include:
 - Explore
 - Projects
 - Writing
-- Field Log
 - About
 - Search
 
@@ -164,7 +163,7 @@ Examples:
 
 - About note
 - Writing note
-- Latest Field Log
+- Latest writing
 
 Should have:
 
@@ -231,7 +230,7 @@ Examples:
 - Designing adaptive website navigation
 - Working on Airtable integration
 
-Each entry links to the relevant project or Field Log.
+Each entry links to the relevant project or writing page.
 
 ### Featured Projects
 
@@ -293,7 +292,6 @@ Examples:
 - Projects
 - Case Studies
 - Writing
-- Field Log
 - Demos
 - Characters, future
 - Archive, future
@@ -315,7 +313,7 @@ Examples:
 ### Recently Updated
 
 - Latest writing
-- Latest Field Log
+- Latest writing
 - Latest project changes
 
 ### Surprise Me
@@ -374,7 +372,6 @@ Search should include:
 
 - Projects
 - Writing
-- Field Log
 - Page summaries
 - Topics
 

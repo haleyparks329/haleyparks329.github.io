@@ -1,5 +1,7 @@
 # WP5.5 migration system
 
+> **Historical snapshot — superseded by WP6.2.** Field Log references below describe prior state and are not current information architecture or routes.
+
 WP5.5 consolidates the remaining public site into the editorial system established in WP2–WP5. It is a migration pass, not a new visual generation.
 
 ## Shared shell

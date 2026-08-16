@@ -1,5 +1,7 @@
 # WP6.1 implementation record
 
+> **Historical snapshot — superseded by WP6.2.** Field Log references below describe prior state and are not current information architecture or routes.
+
 Date: 2026-08-16
 
 WP6.1 calibrates the Maria visual system without changing its information architecture.

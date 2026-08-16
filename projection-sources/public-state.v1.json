@@ -6,7 +6,7 @@
   "site": {
     "siteId": "haley-parks-public-site",
     "name": "Haley Parks",
-    "description": "A public record of projects, research, field notes, and working systems.",
+    "description": "A public record of projects, research, working notes, and systems.",
     "canonicalUrl": "https://haleyparks329.github.io",
     "featuredProjectIds": [
       "project-the-human-model",

@@ -1,5 +1,5 @@
 export type DestinationType =
-  "page" | "project" | "writing" | "field-log" | "demo" | "place" | "trail";
+  "page" | "project" | "writing" | "demo" | "place" | "trail";
 
 export type Destination = {
   id: string;
@@ -84,9 +84,9 @@ export const trails: Trail[] = [
       "A route through attention, evidence, QA handoff, and personal context systems.",
     stops: [
       {
-        destinationId: "field-log-attention-is-the-scarce-resource",
+        destinationId: "writing-what-i-built-instead-of-an-agent",
         reason:
-          "Begin with the shared working principle behind the AI work: attention is the scarce resource.",
+          "Begin with the case for visible state, bounded automation, and human judgment.",
       },
       {
         destinationId: "project-qa-agents",
@@ -127,14 +127,14 @@ export const trails: Trail[] = [
         reason: "The homepage shows the strongest current work.",
       },
       {
-        destinationId: "field-log",
+        destinationId: "project-this-website",
         reason:
-          "The Field Log keeps active build decisions visible while the work moves.",
+          "The website project keeps active build decisions visible while the work moves.",
       },
       {
-        destinationId: "field-log-evidence-before-claims",
+        destinationId: "project-this-website-design",
         reason:
-          "This note states the public rule that claims should stay attached to artifacts.",
+          "The design workspace attaches public claims to visible implementation decisions.",
       },
       {
         destinationId: "project-qa-agents",
@@ -161,9 +161,9 @@ export const trails: Trail[] = [
           "Start with the project that treats the site as a navigable public work surface.",
       },
       {
-        destinationId: "field-log-the-desk-as-workbench",
+        destinationId: "project-this-website-design",
         reason:
-          "The Field Log records an earlier navigation experiment and what it taught.",
+          "The design workspace records the navigation system and what shaped it.",
       },
       {
         destinationId: "project-career-intelligence",
@@ -190,9 +190,9 @@ export const trails: Trail[] = [
           "Start with the main public case study for training, recovery, and movement context.",
       },
       {
-        destinationId: "field-log-attention-is-the-scarce-resource",
+        destinationId: "project-the-human-model-research",
         reason:
-          "This build note connects performance work to memory, coordination, and context.",
+          "The research workspace connects performance work to memory, coordination, and context.",
       },
       {
         destinationId: "project-career-intelligence",
@@ -232,8 +232,7 @@ export const destinations: Destination[] = [
     href: "/search/",
     label: "Search",
     type: "page",
-    summary:
-      "Fast static search across public projects, writing, demos, and Field Log entries.",
+    summary: "Fast static search across public projects, writing, and demos.",
     topics: ["Navigation"],
   },
   {
@@ -263,16 +262,6 @@ export const destinations: Destination[] = [
     summary: "Case studies, essays, and quick notes from active work.",
     topics: ["Navigation", "Human-Centered Technology"],
     trails: ["meet-haley"],
-  },
-  {
-    id: "field-log",
-    href: "/field-log/",
-    label: "Field Log",
-    type: "page",
-    summary:
-      "Build notes and working observations from the edge of the projects.",
-    topics: ["Navigation"],
-    trails: ["how-i-build"],
   },
   {
     id: "compost-heap",
@@ -524,36 +513,6 @@ export const destinations: Destination[] = [
     project: "career-intelligence",
     trails: ["human-performance"],
   },
-  {
-    id: "field-log-attention-is-the-scarce-resource",
-    href: "/field-log/attention-is-the-scarce-resource/",
-    label: "Attention Is the Scarce Resource",
-    type: "field-log",
-    summary: "The working principle behind memory, coordination, and context.",
-    topics: ["Human-Centered Technology"],
-    project: "qa-agents",
-    trails: ["human-performance"],
-  },
-  {
-    id: "field-log-evidence-before-claims",
-    href: "/field-log/evidence-before-claims/",
-    label: "Evidence Before Claims",
-    type: "field-log",
-    summary: "A public writing rule for AI work that needs visible boundaries.",
-    topics: ["Human-Centered Technology", "Software Quality"],
-    project: "qa-agents",
-    trails: ["how-i-build"],
-  },
-  {
-    id: "field-log-the-desk-as-workbench",
-    href: "/field-log/the-desk-as-workbench/",
-    label: "The Desk as Workbench",
-    type: "field-log",
-    summary: "How the homepage desk became a discovery layer for public work.",
-    topics: ["Adaptive UI", "Human-Centered Technology"],
-    project: "website",
-    trails: ["adaptive-interfaces"],
-  },
 ];
 
 export const relationships: Relationship[] = [
@@ -622,14 +581,6 @@ export const relationships: Relationship[] = [
       "The live review exposes the latest validated public-safe evidence from the system.",
   },
   {
-    from: "project-qa-agents",
-    to: "field-log-evidence-before-claims",
-    type: "evolved-from",
-    label: "Evolved from",
-    reason:
-      "The note states the boundary rule that keeps the project honest in public.",
-  },
-  {
     from: "demo-qa-agents-meticulous-replay",
     to: "demo-qa-agents-meticulous",
     type: "evidence-for",
@@ -662,14 +613,6 @@ export const relationships: Relationship[] = [
   },
   {
     from: "project-the-human-model",
-    to: "field-log-attention-is-the-scarce-resource",
-    type: "related",
-    label: "Related principle",
-    reason:
-      "The build note keeps the attention principle close to active Human Model review work.",
-  },
-  {
-    from: "project-the-human-model",
     to: "project-career-intelligence",
     type: "related",
     label: "Related system",
@@ -683,14 +626,6 @@ export const relationships: Relationship[] = [
     label: "Part of",
     reason:
       "The investigation connects Career Intelligence to a broader product philosophy.",
-  },
-  {
-    from: "project-career-intelligence",
-    to: "field-log-evidence-before-claims",
-    type: "related",
-    label: "Related principle",
-    reason:
-      "The public claim boundary matters especially for source-backed career materials.",
   },
   {
     from: "project-the-human-model-current",
@@ -707,13 +642,6 @@ export const relationships: Relationship[] = [
     label: "Continued in",
     reason:
       "The research document shows what the system has taught and where its limits remain.",
-  },
-  {
-    from: "project-the-human-model-research",
-    to: "field-log-attention-is-the-scarce-resource",
-    type: "related",
-    label: "Related principle",
-    reason: "The note connects the research to attention, memory, and context.",
   },
   {
     from: "project-career-intelligence-system",
@@ -747,30 +675,6 @@ export const relationships: Relationship[] = [
     reason:
       "The evolution file records how the website project changed over time.",
   },
-  {
-    from: "project-this-website",
-    to: "field-log-the-desk-as-workbench",
-    type: "evolved-from",
-    label: "Evolved from",
-    reason:
-      "The note captures the workbench idea that shaped the site's navigation language.",
-  },
-  {
-    from: "field-log-the-desk-as-workbench",
-    to: "explore",
-    type: "continued-in",
-    label: "Continued in",
-    reason:
-      "Explore is the site guide that grew from the desk navigation idea.",
-  },
-  {
-    from: "compost-heap",
-    to: "field-log-the-desk-as-workbench",
-    type: "related",
-    label: "Related idea",
-    reason:
-      "Both pages keep unfinished or exploratory work visible without turning it into polish.",
-  },
 ];
 
 const typeLabels: Record<string, string> = {
@@ -781,7 +685,6 @@ const typeLabels: Record<string, string> = {
   writing: "Writing",
   essay: "Essay",
   "quick-note": "Quick Note",
-  "field-log": "Build Log",
   demo: "Demo",
   trail: "Trail",
 };
@@ -796,11 +699,6 @@ export const contentTypes = [
     href: "/writing/",
     label: "Writing",
     description: "Investigations and case studies from active work.",
-  },
-  {
-    href: "/field-log/",
-    label: "Field Log",
-    description: "Build updates and working notes.",
   },
   {
     href: "/projects/qa-agents/demo/",
@@ -827,7 +725,7 @@ export const topicPaths = [
   },
   {
     label: "Adaptive UI",
-    href: "/field-log/the-desk-as-workbench/",
+    href: "/projects/this-website/design/",
     description:
       "Interfaces that change around context without becoming opaque.",
   },
@@ -848,7 +746,7 @@ export const topicPaths = [
   },
   {
     label: "Human-Centered Technology",
-    href: "/field-log/attention-is-the-scarce-resource/",
+    href: "/projects/bridget/",
     description:
       "Systems that give attention back instead of creating more overhead.",
   },

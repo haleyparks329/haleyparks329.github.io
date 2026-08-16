@@ -1,5 +1,7 @@
 # Content architecture
 
+> **Historical snapshot — superseded by WP6.2.** Field Log references below describe prior state and are not current information architecture or routes.
+
 ## Purpose
 
 The content model should let a reader move among projects, writing, memories, evidence, and the systems they describe without pretending that every connection is an automatically generated knowledge graph.

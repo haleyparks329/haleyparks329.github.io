@@ -49,7 +49,6 @@ export function generateArtifacts(source) {
         { id: "nav-home", label: "Home", href: "/" },
         { id: "nav-projects", label: "Projects", href: "/projects/" },
         { id: "nav-writing", label: "Writing", href: "/writing/" },
-        { id: "nav-field-log", label: "Field log", href: "/field-log/" },
       ],
       featuredProjectIds: [...source.site.featuredProjectIds],
     },
