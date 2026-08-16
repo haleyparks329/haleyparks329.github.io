@@ -13,7 +13,7 @@ if (shell) {
     ...shell.querySelectorAll<HTMLButtonElement>("[data-room]"),
   ];
 
-  let activeRoom: WorldRoomKey = "outside";
+  let activeRoom: WorldRoomKey = "workshop";
   let world: import("../vendor/world-view/iso").GameWorld | null = null;
   let destroyed = false;
 
@@ -60,8 +60,15 @@ if (shell) {
     try {
       world?.destroy();
       stage.replaceChildren();
-      const { GameWorld } = await import("../vendor/world-view/iso");
-      const nextWorld = new GameWorld({ fillMode: "contain" });
+      const [{ GameWorld }, { WDW_ROOM_REGISTRY }] = await Promise.all([
+        import("../vendor/world-view/iso"),
+        import("../vendor/world-view/world/rooms"),
+      ]);
+      const nextWorld = new GameWorld({
+        fillMode: "contain",
+        initialRoomKey: activeRoom,
+        roomRegistry: WDW_ROOM_REGISTRY,
+      });
       await nextWorld.init(stage);
       if (destroyed) {
         nextWorld.destroy();

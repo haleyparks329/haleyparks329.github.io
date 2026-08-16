@@ -1,0 +1,60 @@
+{
+  "schemaVersion": "1.0.0",
+  "generatedAt": "2026-08-16T00:00:00.000Z",
+  "freshness": {
+    "status": "partial",
+    "sourceUpdatedAt": "2026-08-16T00:00:00.000Z"
+  },
+  "projects": [
+    {
+      "projectId": "project-the-human-model",
+      "slug": "the-human-model",
+      "title": "The Human Model",
+      "summary": "A research project about longitudinal, source-backed evidence, uncertainty, predictions, and outcomes for one changing human system.",
+      "status": "active",
+      "statusLabel": "Active · Building in public",
+      "canonicalUrl": "/projects/the-human-model/",
+      "updatedAt": "2026-08-16T00:00:00.000Z"
+    },
+    {
+      "projectId": "project-wonderful-digital-world",
+      "slug": "wonderful-digital-world",
+      "title": "Wonderful Digital World",
+      "summary": "A public architecture for a persistent computational environment that can preserve context, coordinate bounded work, and keep human authority explicit.",
+      "status": "active",
+      "statusLabel": "Active · Public architecture and tested reference seam",
+      "canonicalUrl": "/projects/wonderful-digital-world/",
+      "updatedAt": "2026-08-16T00:00:00.000Z"
+    },
+    {
+      "projectId": "project-bridget",
+      "slug": "bridget",
+      "title": "Bridget",
+      "summary": "A persistent software resident for continuity and reconciliation within bounded domains.",
+      "status": "active",
+      "statusLabel": "Active · Private V1",
+      "canonicalUrl": "/projects/bridget/",
+      "updatedAt": "2026-08-16T00:00:00.000Z"
+    },
+    {
+      "projectId": "project-qa-agents",
+      "slug": "qa-agents",
+      "title": "QA Agents",
+      "summary": "A case study in deterministic evidence before bounded agent investigation.",
+      "status": "experimental",
+      "statusLabel": "Experimental",
+      "canonicalUrl": "/projects/qa-agents/",
+      "updatedAt": "2026-08-16T00:00:00.000Z"
+    },
+    {
+      "projectId": "project-career-intelligence",
+      "slug": "career-intelligence",
+      "title": "Career Intelligence",
+      "summary": "A synthetic case study in source-backed career claims, transferable capabilities, uncertainty, and honest gaps.",
+      "status": "active",
+      "statusLabel": "Active project",
+      "canonicalUrl": "/projects/career-intelligence/",
+      "updatedAt": "2026-08-16T00:00:00.000Z"
+    }
+  ]
+}

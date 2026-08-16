@@ -1,16 +1,17 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { loadWorldView } from "../../data/world-view";
-import {
-  WORLD_ROOMS,
-  countResidentsByRoom,
-} from "../../data/world-renderer-adapter";
+import { countResidentsByRoom } from "../../data/world-renderer-adapter";
 import { withBasePath } from "../../utils/site-path";
+import { WDW_ROOM_REGISTRY } from "../../vendor/world-view/world/rooms";
 
 const worldView = await loadWorldView();
 const projection =
   worldView.state === "unavailable" ? null : worldView.projection;
 const roomCounts = countResidentsByRoom(projection);
+const roomCount = (roomKey: string) =>
+  roomCounts[roomKey as keyof typeof roomCounts] ?? 0;
+const initialRoom = WDW_ROOM_REGISTRY[0]!;
 const basePath = import.meta.env.BASE_URL;
 const projectHref = withBasePath(
   "/projects/wonderful-digital-world/",
@@ -71,21 +72,21 @@ const formatDate = (value: string) =>
       <div class="world-console__bar">
         <div>
           <p class="world-kicker">Room</p>
-          <h2 id="renderer-heading" data-room-status>Outside room selected</h2>
+          <h2 id="renderer-heading" data-room-status>
+            {initialRoom.name} room selected
+          </h2>
         </div>
         <nav class="world-rooms" aria-label="World rooms">
           {
-            WORLD_ROOMS.map((room) => (
+            WDW_ROOM_REGISTRY.map((room) => (
               <button
                 type="button"
                 data-room={room.key}
-                data-room-label={room.label}
-                aria-pressed={room.key === "outside" ? "true" : "false"}
+                data-room-label={room.name}
+                aria-pressed={room.key === initialRoom.key ? "true" : "false"}
               >
-                {room.label}
-                {roomCounts[room.key] > 0 && (
-                  <span>{roomCounts[room.key]}</span>
-                )}
+                {room.name}
+                {roomCount(room.key) > 0 && <span>{roomCount(room.key)}</span>}
               </button>
             ))
           }
@@ -109,8 +110,8 @@ const formatDate = (value: string) =>
         </div>
       </div>
       <p class="world-console__note" data-room-note>
-        The renderer opens in its canonical Outside room. Choose Office to see
-        the currently published resident.
+        Rooms, layouts, and resident placement come directly from World View.
+        The reviewed public projection supplies the residents shown in them.
       </p>
     </section>
 
@@ -129,9 +130,8 @@ const formatDate = (value: string) =>
           here.
         </p>
         <p>
-          The world uses the existing open-source renderer; this site only
-          translates published places and residents into its room and agent
-          controls.
+          World View defines the rooms, layouts, and resident placement. This
+          site supplies only the reviewed public projection.
         </p>
         <div class="world-links">
           <a href={manifestHref}>Public manifest</a>

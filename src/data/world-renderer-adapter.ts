@@ -1,33 +1,21 @@
 import type { AgentState } from "../vendor/world-view/iso/types";
+import {
+  resolveRendererPlacement,
+  type RendererRoomKey,
+} from "../vendor/world-view/world/placement";
+import { WDW_ROOM_REGISTRY } from "../vendor/world-view/world/rooms";
 import type { WorldProjection, WorldResident } from "./world-view";
 
-export const WORLD_ROOMS = [
-  { key: "outside", label: "Outside" },
-  { key: "poker", label: "Poker" },
-  { key: "court", label: "Court" },
-  { key: "office", label: "Office" },
-  { key: "home", label: "Home" },
-] as const;
-
-export type WorldRoomKey = (typeof WORLD_ROOMS)[number]["key"];
+export type WorldRoomKey = RendererRoomKey;
 
 export type RendererCommand = {
   agentId: string;
   state: AgentState;
 };
 
-const PLACE_ROOMS: Readonly<Record<string, WorldRoomKey>> = {
-  "place-workbench": "office",
-  "place-archive": "home",
-};
-
-const ROOM_PLACEMENTS: Readonly<Record<WorldRoomKey, AgentState>> = {
-  outside: { x: 30, y: 24 },
-  poker: { x: 6, y: 9 },
-  court: { x: 6, y: 8 },
-  office: { x: 2, y: 10 },
-  home: { x: 6, y: 9 },
-};
+const WORLD_ROOM_KEYS = new Set<WorldRoomKey>(
+  WDW_ROOM_REGISTRY.map(({ key }) => key as WorldRoomKey),
+);
 
 const KNOWN_TINTS: Readonly<Record<string, number>> = {
   bridget: 0xe88ec2,
@@ -38,8 +26,8 @@ const KNOWN_TINTS: Readonly<Record<string, number>> = {
 
 const FALLBACK_TINTS = [0x7fc8a9, 0x60a5fa, 0xf59e0b, 0xa78bfa, 0xf472b6];
 
-function roomForResident(resident: WorldResident): WorldRoomKey {
-  return PLACE_ROOMS[resident.placeId] ?? "outside";
+function isWorldRoomKey(placeId: string): placeId is WorldRoomKey {
+  return WORLD_ROOM_KEYS.has(placeId as WorldRoomKey);
 }
 
 function tintForResident(resident: WorldResident): number {
@@ -57,11 +45,13 @@ export function countResidentsByRoom(
   projection: WorldProjection | null,
 ): Record<WorldRoomKey, number> {
   const counts = Object.fromEntries(
-    WORLD_ROOMS.map(({ key }) => [key, 0]),
+    WDW_ROOM_REGISTRY.map(({ key }) => [key, 0]),
   ) as Record<WorldRoomKey, number>;
 
   for (const resident of projection?.residents ?? []) {
-    counts[roomForResident(resident)] += 1;
+    if (isWorldRoomKey(resident.placeId)) {
+      counts[resident.placeId] += 1;
+    }
   }
 
   return counts;
@@ -74,16 +64,17 @@ export function createRendererCommands(
   if (!projection) return [];
 
   return projection.residents
-    .filter((resident) => roomForResident(resident) === room)
+    .filter((resident) => resident.placeId === room)
     .map((resident, index) => {
-      const placement = ROOM_PLACEMENTS[room];
+      const placement = resolveRendererPlacement(
+        room,
+        resident.status === "active" ? "working" : "idle",
+        index,
+      );
       return {
         agentId: `public:${resident.residentId}`,
         state: {
           ...placement,
-          x: placement.x + (index % 3),
-          y: placement.y + Math.floor(index / 3),
-          action: resident.status === "active" ? "inspecting" : "idle",
           label: `${resident.name} · public`,
           tint: tintForResident(resident),
         },

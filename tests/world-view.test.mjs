@@ -17,7 +17,7 @@ test("world consumer returns the validated projection without inventing entities
 
   assert.deepEqual(
     state.projection.places.map(({ placeId }) => placeId),
-    ["place-workbench", "place-archive"],
+    ["workshop", "lab", "outside"],
   );
   assert.deepEqual(
     state.projection.residents.map(({ residentId }) => residentId),
@@ -31,6 +31,18 @@ test("world consumer returns the validated projection without inventing entities
     state.projection.attention.map(({ attentionId }) => attentionId),
     ["attention-live-world-source"],
   );
+});
+
+test("website delegates room identity to World View", async () => {
+  const [adapter, page] = await Promise.all([
+    readFile(path.join(root, "src/data/world-renderer-adapter.ts"), "utf8"),
+    readFile(path.join(root, "src/pages/world/index.astro"), "utf8"),
+  ]);
+
+  assert.doesNotMatch(adapter, /\b(?:WORLD_ROOMS|PLACE_ROOMS)\b/);
+  assert.doesNotMatch(adapter, /place-(?:workbench|archive)/);
+  assert.match(adapter, /resolveRendererPlacement/);
+  assert.match(page, /WDW_ROOM_REGISTRY/);
 });
 
 test("world consumer maps every published availability state", () => {
