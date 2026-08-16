@@ -264,6 +264,15 @@ export const destinations: Destination[] = [
     trails: ["meet-haley"],
   },
   {
+    id: "memories",
+    href: "/memories/",
+    label: "Memories",
+    type: "page",
+    summary:
+      "A public memory layer with explicit provenance and privacy boundaries.",
+    topics: ["Memory", "Human-Centered Technology"],
+  },
+  {
     id: "compost-heap",
     href: "/compost-heap/",
     label: "The Compost Heap",
