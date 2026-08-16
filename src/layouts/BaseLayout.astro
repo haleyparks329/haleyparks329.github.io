@@ -8,6 +8,7 @@ import { siteConfig } from "@/site.config";
 import "@/styles/global.css";
 import "@/styles/redesign-tokens.css";
 import "@/styles/wp2.css";
+import "@/styles/maria.css";
 
 type Props = {
   title?: string;
@@ -21,7 +22,7 @@ const {
   title = siteConfig.name,
   description = siteConfig.description,
   canonicalPath = Astro.url.pathname,
-  imagePath = "/og-image.svg",
+  imagePath = "/images/haley-parks-social-card.png",
   breadcrumbs,
 } = Astro.props;
 
@@ -41,17 +42,6 @@ const imageUrl = new URL(imagePath, siteConfig.siteUrl).toString();
     <meta name="description" content={description} />
     <meta name="author" content={siteConfig.name} />
     <meta name="theme-color" content="#F7F6F2" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="preconnect" href="https://api.fontshare.com" />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;750;800;850&family=Geist+Mono:wght@400;500;600;700;800&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      href="https://api.fontshare.com/v2/css?f[]=gambarino@400&display=swap"
-      rel="stylesheet"
-    />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="canonical" href={canonicalUrl} />
     <meta property="og:title" content={pageTitle} />
@@ -59,12 +49,12 @@ const imageUrl = new URL(imagePath, siteConfig.siteUrl).toString();
     <meta property="og:type" content="website" />
     <meta property="og:url" content={canonicalUrl} />
     <meta property="og:image" content={imageUrl} />
-    <meta property="og:image:type" content="image/svg+xml" />
+    <meta property="og:image:type" content="image/png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta
       property="og:image:alt"
-      content="A warm desk-like portfolio surface for Haley Parks' public projects."
+      content="Abstract editorial shapes in Haley Parks' warm portfolio palette."
     />
     <meta property="og:site_name" content={siteConfig.name} />
     <meta property="og:locale" content="en_US" />
@@ -74,10 +64,10 @@ const imageUrl = new URL(imagePath, siteConfig.siteUrl).toString();
     <meta name="twitter:image" content={imageUrl} />
     <title>{pageTitle}</title>
   </head>
-  <body data-redesign-foundation>
+  <body class="maria-site" data-redesign-foundation>
     <EditorialHeader />
     {breadcrumbs && <Breadcrumbs items={breadcrumbs} />}
-    <main id="main-content" class="compatibility-main" tabindex="-1">
+    <main id="main-content" class="maria-main compatibility-main" tabindex="-1">
       <slot />
     </main>
     <EditorialFooter />

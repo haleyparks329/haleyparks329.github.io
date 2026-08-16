@@ -6,6 +6,8 @@ This repository owns the public presentation of Haley's projects: site design, n
 
 It does not own project implementation, private repository topology, production contracts, schemas, prompts, policies, or runtime orchestration.
 
+The presentation is adapted from the MIT-licensed [Maria Astro theme](https://github.com/xocothemes/maria). See [THIRD_PARTY_NOTICES.md](./THIRD_PARTY_NOTICES.md) for attribution and [docs/redesign/WP6_MARIA_MIGRATION.md](./docs/redesign/WP6_MARIA_MIGRATION.md) for the migration boundary and route inventory.
+
 ## Technology
 
 - Astro and TypeScript

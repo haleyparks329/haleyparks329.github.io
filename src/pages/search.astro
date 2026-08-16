@@ -103,7 +103,7 @@ const searchItems = allDestinations.map((destination) => {
         const empty = document.createElement("p");
         empty.className = "search-empty";
         empty.textContent =
-          "Nothing on the desk matches that search yet. Try a project, topic, or system name.";
+          "Nothing matches that search yet. Try a project, topic, or system name.";
         results.replaceChildren(empty);
         return;
       }

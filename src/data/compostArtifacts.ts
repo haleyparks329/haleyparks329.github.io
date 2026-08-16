@@ -30,7 +30,7 @@ export const compostArtifacts: CompostArtifact[] = [
     whatILearned:
       "The metaphor worked best when it stayed useful. Visitors needed orientation first, charm second.",
     eventuallyBecame:
-      "The current desk-shaped homepage and the rule that public project pages should feel like things you can pick up.",
+      "A clearer homepage hierarchy and the rule that public project pages should make their evidence tangible.",
     thread: "site",
     state: "feeding-current-work",
     size: "wide",
@@ -94,7 +94,7 @@ export const compostArtifacts: CompostArtifact[] = [
     whatILearned:
       "The most useful records are often small enough to keep using when energy is low.",
     eventuallyBecame:
-      "Field Log notes about attention, evidence, and the desk as a workbench.",
+      "Field Log notes about attention, evidence, and the conditions around useful work.",
     thread: "attention",
     state: "still-decomposing",
     size: "small",

@@ -8,7 +8,6 @@ if (!project) throw new Error("Missing Wonderful Digital World project entry");
 
 const repository =
   "https://github.com/Wonderful-Digital-World/wonderful-digital-world";
-const worldView = "https://github.com/Wonderful-Digital-World/world-view";
 ---
 
 <EditorialLayout
@@ -126,21 +125,6 @@ const worldView = "https://github.com/Wonderful-Digital-World/world-view";
     </div>
   </section>
 
-  <section class="project-section" aria-labelledby="wdw-view">
-    <p class="section-label">D2 · World View</p>
-    <h2 id="wdw-view">A projection into the world, not the world itself.</h2>
-    <p>
-      <a href={worldView} rel="noreferrer">World View ↗</a> is a separate isometric
-      viewer. Its public fixture proof renders semantic places, residents, activities,
-      and attention states, but it is not connected to a live Wonderful Digital World
-      backend.
-    </p>
-    <p>
-      A production boundary would need a versioned, sanitized, viewer-authorized
-      projection with visible freshness, delay, and failure states.
-    </p>
-  </section>
-
   <section class="project-section" aria-labelledby="wdw-relations">
     <p class="section-label">D2 · Related systems</p>
     <h2 id="wdw-relations">Coordination without ownership.</h2>
@@ -185,12 +169,6 @@ const worldView = "https://github.com/Wonderful-Digital-World/world-view";
       <a href={`${repository}/tree/main/tests`} rel="noreferrer"
         >Public tests ↗</a
       >
-      <a
-        href={`${worldView}/blob/main/docs/wp3-world-projection.md`}
-        rel="noreferrer"
-      >
-        World View projection proof ↗
-      </a>
     </div>
   </section>
 </EditorialLayout>

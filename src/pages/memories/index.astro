@@ -1,204 +1,101 @@
 ---
-import EditorialLayout from "../../layouts/EditorialLayout.astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
 import { groupMemories, memoryGeneratedAt } from "../../data/memories";
 
 const groups = groupMemories();
-const date = (value: string) =>
+const date = (value: string | Date) =>
   new Date(value).toLocaleDateString("en", {
     day: "numeric",
     month: "short",
     year: "numeric",
     timeZone: "UTC",
   });
+const accents = ["olive", "rust", "plum", "blue"];
 ---
 
-<EditorialLayout
+<BaseLayout
   title="Memories"
   description="A human-reviewed public record of meaningful decisions, releases, and observations across Haley Parks' work."
+  canonicalPath="/memories/"
+  breadcrumbs={[{ label: "Home", href: "/" }, { label: "Memories" }]}
 >
-  <header class="memories-intro">
-    <p class="eyebrow">Memories · public record</p>
-    <h1>What became worth remembering.</h1>
-    <p class="editorial-lede">
-      A selective, human-reviewed record of decisions, releases, and
-      observations across the work. Each entry is a public projection—not a
-      transcript of the private systems behind it.
-    </p>
-    <p class="memory-policy">
-      Manual publication · Evidence required · Last compiled {
-        date(memoryGeneratedAt.toISOString())
+  <div class="maria-page">
+    <header class="maria-collection-head">
+      <p class="maria-eyebrow">Public record</p>
+      <h1>Memories</h1>
+      <p>
+        A selective, human-reviewed record of decisions, releases, and
+        observations. Each entry is a public projection, not a transcript of the
+        private systems behind it.
+      </p>
+      <p class="maria-note">
+        Manual publication · Evidence required · Last compiled {
+          date(memoryGeneratedAt)
+        }
+      </p>
+    </header>
+
+    <div class="maria-groups">
+      {
+        groups.map((group, groupIndex) => {
+          const id = `group-${group.label.replaceAll(" ", "-").toLowerCase()}`;
+          return (
+            <section class="maria-group" aria-labelledby={id}>
+              <div class="maria-section-heading">
+                <p>{String(groupIndex + 1).padStart(2, "0")}</p>
+                <h2 id={id}>{group.label}</h2>
+              </div>
+              <div class="maria-card-grid">
+                {group.memories.map((memory, index) => (
+                  <article
+                    id={memory.slug}
+                    class="maria-card maria-card--content"
+                  >
+                    <span
+                      class:list={[
+                        "maria-card__mark",
+                        `maria-card__mark--${accents[(groupIndex + index) % accents.length]}`,
+                      ]}
+                      aria-hidden="true"
+                    />
+                    <p class="maria-card__eyebrow">
+                      <time datetime={memory.occurredAt}>
+                        {date(memory.occurredAt)}
+                      </time>
+                      <span aria-hidden="true"> · </span>
+                      {memory.kind}
+                    </p>
+                    <h3>
+                      <a href={`#${memory.slug}`}>{memory.title}</a>
+                    </h3>
+                    <p>{memory.excerpt}</p>
+                    <p class="maria-card__significance">
+                      <strong>Why it matters.</strong> {memory.significance}
+                    </p>
+                    <div class="maria-card__trail">
+                      <span>{memory.sourceLabel}</span>
+                      {memory.publicEvidence.map((item) => (
+                        <a href={item.href}>{item.label}</a>
+                      ))}
+                      {memory.relatedProjects.map((item) => (
+                        <a href={item.href}>Related: {item.label}</a>
+                      ))}
+                    </div>
+                  </article>
+                ))}
+              </div>
+            </section>
+          );
+        })
       }
-    </p>
-  </header>
+    </div>
 
-  <div class="memory-groups">
-    {
-      groups.map((group) => (
-        <section
-          class="memory-group"
-          aria-labelledby={`group-${group.label.replaceAll(" ", "-").toLowerCase()}`}
-        >
-          <h2 id={`group-${group.label.replaceAll(" ", "-").toLowerCase()}`}>
-            {group.label}
-          </h2>
-          <div class="memory-list">
-            {group.memories.map((memory) => (
-              <article
-                id={memory.slug}
-                class:list={["memory-card", `memory-card--${memory.weight}`]}
-              >
-                <div class="memory-card__meta">
-                  <time datetime={memory.occurredAt}>
-                    {date(memory.occurredAt)}
-                  </time>
-                  <span>{memory.kind}</span>
-                </div>
-                <div class="memory-card__body">
-                  <h3>
-                    <a href={`#${memory.slug}`}>{memory.title}</a>
-                  </h3>
-                  <p class="memory-card__excerpt">{memory.excerpt}</p>
-                  <p class="memory-card__significance">
-                    <strong>Why it matters.</strong> {memory.significance}
-                  </p>
-                  <div class="memory-card__trail">
-                    <span>{memory.sourceLabel}</span>
-                    {memory.publicEvidence.map((item) => (
-                      <a href={item.href}>{item.label}</a>
-                    ))}
-                    {memory.relatedProjects.map((item) => (
-                      <a href={item.href}>Related: {item.label}</a>
-                    ))}
-                  </div>
-                </div>
-              </article>
-            ))}
-          </div>
-        </section>
-      ))
-    }
+    <aside class="maria-boundary">
+      <p class="maria-eyebrow">Field Log</p>
+      <p>
+        The historical <a href="/field-log/">Field Log</a> remains available as the
+        less selective record from the edge of the work.
+      </p>
+    </aside>
   </div>
-
-  <aside class="field-log-link">
-    <p>
-      <strong>Looking for the running notes?</strong> The historical <a
-        href="/field-log/">Field Log</a
-      > remains available as the less selective record from the edge of the work.
-    </p>
-  </aside>
-</EditorialLayout>
-
-<style>
-  .memories-intro {
-    max-width: 58rem;
-    margin: clamp(4rem, 9vw, 8rem) 0 clamp(4rem, 8vw, 7rem);
-  }
-  .memories-intro h1 {
-    max-width: 11ch;
-    font-size: clamp(3.5rem, 9vw, 8rem);
-    line-height: 0.88;
-    letter-spacing: -0.065em;
-  }
-  .memory-policy {
-    margin-top: 2rem;
-    color: var(--color-text-muted);
-    font-size: var(--font-size-small);
-  }
-  .memory-groups {
-    border-top: 1px solid var(--color-border);
-  }
-  .memory-group {
-    display: grid;
-    grid-template-columns: minmax(9rem, 1fr) minmax(0, 3fr);
-    gap: 2rem;
-    padding: 3rem 0 5rem;
-    border-bottom: 1px solid var(--color-border);
-  }
-  .memory-group > h2 {
-    margin: 0;
-    font: 600 0.75rem/1.2 var(--font-sans);
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-  }
-  .memory-card {
-    display: grid;
-    grid-template-columns: minmax(7rem, 0.7fr) minmax(0, 3fr);
-    gap: 1.5rem;
-    padding: 0 0 3rem;
-  }
-  .memory-card + .memory-card {
-    padding-top: 3rem;
-    border-top: 1px solid var(--color-border);
-  }
-  .memory-card__meta {
-    display: flex;
-    flex-direction: column;
-    gap: 0.35rem;
-    color: var(--color-text-muted);
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-  }
-  .memory-card h3 {
-    max-width: 18ch;
-    margin: 0;
-    font-size: clamp(1.55rem, 3vw, 2.8rem);
-    line-height: 1;
-    letter-spacing: -0.035em;
-  }
-  .memory-card h3 a {
-    color: inherit;
-    text-decoration: none;
-  }
-  .memory-card h3 a:hover {
-    text-decoration: underline;
-    text-underline-offset: 0.15em;
-  }
-  .memory-card__excerpt {
-    max-width: 43rem;
-    font-size: 1.1rem;
-  }
-  .memory-card__significance {
-    max-width: 43rem;
-    color: var(--color-text-muted);
-  }
-  .memory-card--feature {
-    padding-block: 1rem 4rem;
-  }
-  .memory-card--feature h3 {
-    font-size: clamp(2.25rem, 5vw, 4.5rem);
-  }
-  .memory-card--note h3 {
-    font-size: clamp(1.35rem, 2.3vw, 2rem);
-  }
-  .memory-card__trail {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem 1rem;
-    margin-top: 1.5rem;
-    color: var(--color-text-muted);
-    font-size: 0.78rem;
-  }
-  .memory-card__trail a {
-    color: var(--plum);
-    text-underline-offset: 0.2em;
-  }
-  .field-log-link {
-    max-width: 50rem;
-    margin: 4rem 0 7rem;
-    padding-left: 1.25rem;
-    border-left: 3px solid var(--khaki);
-  }
-  @media (max-width: 700px) {
-    .memory-group,
-    .memory-card {
-      grid-template-columns: 1fr;
-    }
-    .memory-card__meta {
-      flex-direction: row;
-    }
-    .memories-intro h1 {
-      font-size: clamp(3rem, 16vw, 5rem);
-    }
-  }
-</style>
+</BaseLayout>

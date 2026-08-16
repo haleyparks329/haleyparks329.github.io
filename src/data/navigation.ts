@@ -124,7 +124,7 @@ export const trails: Trail[] = [
     stops: [
       {
         destinationId: "home",
-        reason: "The Current Desk section shows what is open right now.",
+        reason: "The homepage shows the strongest current work.",
       },
       {
         destinationId: "field-log",
@@ -153,7 +153,7 @@ export const trails: Trail[] = [
     slug: "adaptive-interfaces",
     label: "Adaptive Interfaces",
     summary:
-      "A route through the desk metaphor, evidence-based reasoning, and context-aware personal systems.",
+      "A route through evidence-based reasoning and context-aware personal systems.",
     stops: [
       {
         destinationId: "project-this-website",
@@ -163,7 +163,7 @@ export const trails: Trail[] = [
       {
         destinationId: "field-log-the-desk-as-workbench",
         reason:
-          "The Field Log shows how the desk metaphor became a navigation surface.",
+          "The Field Log records an earlier navigation experiment and what it taught.",
       },
       {
         destinationId: "project-career-intelligence",
