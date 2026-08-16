@@ -13,7 +13,7 @@ if (shell) {
     ...shell.querySelectorAll<HTMLButtonElement>("[data-room]"),
   ];
 
-  let activeRoom: WorldRoomKey = "workshop";
+  let activeRoom = (shell.dataset.initialRoom ?? "outside") as WorldRoomKey;
   let world: import("../vendor/world-view/iso").GameWorld | null = null;
   let destroyed = false;
 

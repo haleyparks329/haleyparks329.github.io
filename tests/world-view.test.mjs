@@ -34,15 +34,18 @@ test("world consumer returns the validated projection without inventing entities
 });
 
 test("website delegates room identity to World View", async () => {
-  const [adapter, page] = await Promise.all([
+  const [adapter, page, renderer] = await Promise.all([
     readFile(path.join(root, "src/data/world-renderer-adapter.ts"), "utf8"),
     readFile(path.join(root, "src/pages/world/index.astro"), "utf8"),
+    readFile(path.join(root, "src/scripts/world-renderer.ts"), "utf8"),
   ]);
 
   assert.doesNotMatch(adapter, /\b(?:WORLD_ROOMS|PLACE_ROOMS)\b/);
   assert.doesNotMatch(adapter, /place-(?:workbench|archive)/);
   assert.match(adapter, /resolveRendererPlacement/);
   assert.match(page, /WDW_ROOM_REGISTRY/);
+  assert.match(page, /room\.key === "outside"/);
+  assert.match(renderer, /shell\.dataset\.initialRoom/);
 });
 
 test("world consumer maps every published availability state", () => {

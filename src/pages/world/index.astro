@@ -11,7 +11,9 @@ const projection =
 const roomCounts = countResidentsByRoom(projection);
 const roomCount = (roomKey: string) =>
   roomCounts[roomKey as keyof typeof roomCounts] ?? 0;
-const initialRoom = WDW_ROOM_REGISTRY[0]!;
+const initialRoom =
+  WDW_ROOM_REGISTRY.find((room) => room.key === "outside") ??
+  WDW_ROOM_REGISTRY[0]!;
 const basePath = import.meta.env.BASE_URL;
 const projectHref = withBasePath(
   "/projects/wonderful-digital-world/",
@@ -40,6 +42,7 @@ const formatDate = (value: string) =>
   <article
     class="world-page"
     data-world-shell
+    data-initial-room={initialRoom.key}
     data-projection={projection ? JSON.stringify(projection) : ""}
   >
     <header class="world-intro">
