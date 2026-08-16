@@ -1,13 +1,17 @@
 ---
-import type { ProjectWorkspaceConfig } from "@/data/project-workspaces";
+import type {
+  ProjectWorkspaceConfig,
+  ProjectWorkspaceLink,
+} from "@/data/project-workspaces";
 
 type Props = {
   workspace: ProjectWorkspaceConfig;
   projectTitle: string;
+  localToc?: ProjectWorkspaceLink[];
   mobile?: boolean;
 };
 
-const { workspace, projectTitle, mobile = false } = Astro.props;
+const { workspace, projectTitle, localToc = [], mobile = false } = Astro.props;
 const currentPath = Astro.url.pathname;
 
 function normalizePath(href: string) {
@@ -66,6 +70,18 @@ const navLabel = mobile
             </ul>
           </details>
         ))}
+        {localToc.length > 0 && (
+          <div class="project-sidebar-toc">
+            <p>On this page</p>
+            <ul>
+              {localToc.map((link) => (
+                <li>
+                  <a href={link.href}>{link.label}</a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
       </nav>
     </details>
   ) : (
@@ -99,6 +115,18 @@ const navLabel = mobile
           </ul>
         </details>
       ))}
+      {localToc.length > 0 && (
+        <div class="project-sidebar-toc">
+          <p>On this page</p>
+          <ul>
+            {localToc.map((link) => (
+              <li>
+                <a href={link.href}>{link.label}</a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
     </nav>
   )
 }
@@ -167,6 +195,23 @@ const navLabel = mobile
   .project-sidebar-group summary:focus-visible {
     background: color-mix(in srgb, var(--khaki) 12%, transparent);
     color: var(--color-text);
+  }
+
+  .project-sidebar-toc {
+    display: grid;
+    gap: 0.25rem;
+    border-top: var(--border-width) solid var(--color-border);
+    padding-top: var(--space-3);
+  }
+
+  .project-sidebar-toc p {
+    margin: 0;
+    padding: 0.42rem 0.5rem;
+    color: var(--color-text-muted);
+    font-family: var(--font-mono);
+    font-size: var(--font-size-micro);
+    font-weight: 700;
+    text-transform: uppercase;
   }
 
   ul {

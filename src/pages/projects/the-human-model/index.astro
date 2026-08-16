@@ -1,27 +1,50 @@
 ---
 import { getEntry } from "astro:content";
-import EditorialLayout from "../../../layouts/EditorialLayout.astro";
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import ProjectWorkspaceLayout from "../../../layouts/ProjectWorkspaceLayout.astro";
 import { projectDocumentForSlug } from "../../../data/project-documents";
+import { workspaceForSlug } from "../../../data/project-workspaces";
 
 const project = await getEntry("projects", "the-human-model");
 if (!project) throw new Error("Missing The Human Model project entry");
 const document = projectDocumentForSlug("the-human-model");
+const workspace = workspaceForSlug("the-human-model");
 const deepLinks = [
   { href: "/projects/the-human-model/current/", label: "Current work" },
   { href: "/projects/the-human-model/system/", label: "System architecture" },
   { href: "/projects/the-human-model/research/", label: "Research notes" },
 ];
+const localToc = [
+  { href: "#abstract-title", label: "Abstract" },
+  { href: "#origin-title", label: "Origin" },
+  { href: "#system-title", label: "System" },
+  { href: "#evidence-title", label: "Evidence" },
+  { href: "#learning-title", label: "Findings" },
+  { href: "#limits-title", label: "Boundaries" },
+  { href: "#direction-title", label: "Current direction" },
+];
 ---
 
-<EditorialLayout
+<BaseLayout
   title={project.data.title}
   description={project.data.summary}
-  eyebrow={document.reportType}
+  canonicalPath="/projects/the-human-model/"
+  breadcrumbs={[
+    { label: "Home", href: "/" },
+    { label: "Projects", href: "/projects/" },
+    { label: project.data.title },
+  ]}
 >
-  <header class="project-hero">
-    <div>
-      <h1>{project.data.title}</h1>
-      <p class="editorial-lede">{document.summary}</p>
+  <ProjectWorkspaceLayout
+    project={project}
+    workspace={workspace}
+    documentTitle="Overview"
+    documentSummary={document.summary}
+    localToc={localToc}
+  >
+    <section class="project-section" aria-labelledby="question-title">
+      <p class="section-label">D0 · Research question</p>
+      <h2 id="question-title">The question behind the system.</h2>
       <p>{project.data.coreQuestion}</p>
       <div class="deep-links">
         {
@@ -37,176 +60,176 @@ const deepLinks = [
           ))
         }
       </div>
-    </div>
-    <aside class="project-hero__meta" aria-label="Project status">
-      <dl>
-        <div><dt>Status</dt><dd>{project.data.status}</dd></div>
-        <div><dt>Scope</dt><dd>Personal, n=1 research system</dd></div>
-        <div>
-          <dt>Evidence</dt><dd>
-            Repository, public examples, and explicit maturity labels
-          </dd>
-        </div>
-      </dl>
-    </aside>
-  </header>
+      <aside class="project-hero__meta" aria-label="Project status">
+        <dl>
+          <div><dt>Status</dt><dd>{project.data.status}</dd></div>
+          <div><dt>Scope</dt><dd>Personal, n=1 research system</dd></div>
+          <div>
+            <dt>Evidence</dt><dd>
+              Repository, public examples, and explicit maturity labels
+            </dd>
+          </div>
+        </dl>
+      </aside>
+    </section>
 
-  <section class="project-section" aria-labelledby="abstract-title">
-    <p class="section-label">D0 · Abstract</p>
-    <h2 id="abstract-title">
-      A personal system for reasoning across health context.
-    </h2>
-    {document.abstract.map((paragraph) => <p>{paragraph}</p>)}
-  </section>
+    <section class="project-section" aria-labelledby="abstract-title">
+      <p class="section-label">D0 · Abstract</p>
+      <h2 id="abstract-title">
+        A personal system for reasoning across health context.
+      </h2>
+      {document.abstract.map((paragraph) => <p>{paragraph}</p>)}
+    </section>
 
-  <section class="project-section" aria-labelledby="origin-title">
-    <p class="section-label">D1 · Origin</p>
-    <h2 id="origin-title">Bodybuilding made the context problem visible.</h2>
-    <blockquote>
-      Training created a long record of workouts, recovery signals,
-      measurements, and observations that were useful separately but difficult
-      to reason about together.
-    </blockquote>
-    {document.why.map((paragraph) => <p>{paragraph}</p>)}
-  </section>
+    <section class="project-section" aria-labelledby="origin-title">
+      <p class="section-label">D1 · Origin</p>
+      <h2 id="origin-title">Bodybuilding made the context problem visible.</h2>
+      <blockquote>
+        Training created a long record of workouts, recovery signals,
+        measurements, and observations that were useful separately but difficult
+        to reason about together.
+      </blockquote>
+      {document.why.map((paragraph) => <p>{paragraph}</p>)}
+    </section>
 
-  <section class="project-section" aria-labelledby="does-title">
-    <p class="section-label">D1 · What it does</p>
-    <h2 id="does-title">A review loop, not an automatic answer.</h2>
-    <p>{document.actuallyDoes.intro}</p>
-    <ol>{document.actuallyDoes.steps.map((step) => <li>{step}</li>)}</ol>
-  </section>
+    <section class="project-section" aria-labelledby="does-title">
+      <p class="section-label">D1 · What it does</p>
+      <h2 id="does-title">A review loop, not an automatic answer.</h2>
+      <p>{document.actuallyDoes.intro}</p>
+      <ol>{document.actuallyDoes.steps.map((step) => <li>{step}</li>)}</ol>
+    </section>
 
-  <section class="project-section" aria-labelledby="system-title">
-    <p class="section-label">D2 · System</p>
-    <h2 id="system-title">Inputs, processing, outputs.</h2>
-    <div class="system-flow">
+    <section class="project-section" aria-labelledby="system-title">
+      <p class="section-label">D2 · System</p>
+      <h2 id="system-title">Inputs, processing, outputs.</h2>
+      <div class="system-flow">
+        {
+          document.howItWorks.groups.map((group) => (
+            <section>
+              <h3>{group.title}</h3>
+              <ul>
+                {group.items.map((item) => (
+                  <li>{item}</li>
+                ))}
+              </ul>
+            </section>
+          ))
+        }
+      </div>
+      <p>{document.howItWorks.note}</p>
+    </section>
+
+    <section class="project-section" aria-labelledby="evidence-title">
+      <p class="section-label">D2 · Evidence</p>
+      <h2 id="evidence-title">What exists now.</h2>
+      <div class="table-scroll">
+        <table class="evidence-table">
+          <thead
+            ><tr
+              ><th>Part</th><th>Status</th><th>What it does</th><th>Inspect</th
+              ></tr
+            ></thead
+          >
+          <tbody>
+            {
+              document.statusRows.map((row) => (
+                <tr>
+                  <td>{row.part}</td>
+                  <td>{row.status}</td>
+                  <td>{row.does}</td>
+                  <td>
+                    <a
+                      href={row.inspect.href}
+                      rel={row.inspect.external ? "noreferrer" : undefined}
+                    >
+                      {row.inspect.label}
+                      {row.inspect.external ? " ↗" : ""}
+                    </a>
+                  </td>
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="project-section" aria-labelledby="example-title">
+      <p class="section-label">D3 · Example</p>
+      <h2 id="example-title">{document.example.title}</h2>
       {
-        document.howItWorks.groups.map((group) => (
-          <section>
-            <h3>{group.title}</h3>
+        document.example.steps.map((step) => (
+          <div>
+            <h3>{step.title}</h3>
+            <p>{step.text}</p>
+          </div>
+        ))
+      }
+    </section>
+
+    <section class="project-section" aria-labelledby="learning-title">
+      <p class="section-label">D3 · Findings</p>
+      <h2 id="learning-title">What the work has taught me.</h2>
+      {
+        document.learnings.map((learning) => (
+          <div>
+            <h3>{learning.title}</h3>
+            <p>{learning.text}</p>
+          </div>
+        ))
+      }
+    </section>
+
+    <section class="project-section" aria-labelledby="limits-title">
+      <p class="section-label">D3 · Boundaries</p>
+      <h2 id="limits-title">What it has not solved.</h2>
+      <ul>{document.notSolved.map((item) => <li>{item}</li>)}</ul>
+      <p>
+        The Human Model owns its domain evidence and evaluation. <a
+          href="/projects/bridget/">Bridget</a
+        > is a separate, bounded continuity interface; it does not own the model or
+        its evidence. <a href="/projects/wonderful-digital-world/"
+          >Wonderful Digital World</a
+        > explores the wider environment that could coordinate bounded work while
+        leaving that ownership intact.
+      </p>
+    </section>
+
+    <section class="project-section" aria-labelledby="technical-title">
+      <p class="section-label">D3 · Technical depth</p>
+      <h2 id="technical-title">Implementation notes.</h2>
+      <p>{document.appendix.intro}</p>
+      {
+        document.appendix.details.map((detail) => (
+          <details>
+            <summary>{detail.summary}</summary>
             <ul>
-              {group.items.map((item) => (
+              {detail.items.map((item) => (
                 <li>{item}</li>
               ))}
             </ul>
-          </section>
+          </details>
         ))
       }
-    </div>
-    <p>{document.howItWorks.note}</p>
-  </section>
+      <div class="deep-links">
+        {
+          document.appendix.links.map((link) => (
+            <a href={link.href} rel={link.external ? "noreferrer" : undefined}>
+              {link.label}
+              {link.external ? " ↗" : ""}
+            </a>
+          ))
+        }
+      </div>
+    </section>
 
-  <section class="project-section" aria-labelledby="evidence-title">
-    <p class="section-label">D2 · Evidence</p>
-    <h2 id="evidence-title">What exists now.</h2>
-    <div class="table-scroll">
-      <table class="evidence-table">
-        <thead
-          ><tr
-            ><th>Part</th><th>Status</th><th>What it does</th><th>Inspect</th
-            ></tr
-          ></thead
-        >
-        <tbody>
-          {
-            document.statusRows.map((row) => (
-              <tr>
-                <td>{row.part}</td>
-                <td>{row.status}</td>
-                <td>{row.does}</td>
-                <td>
-                  <a
-                    href={row.inspect.href}
-                    rel={row.inspect.external ? "noreferrer" : undefined}
-                  >
-                    {row.inspect.label}
-                    {row.inspect.external ? " ↗" : ""}
-                  </a>
-                </td>
-              </tr>
-            ))
-          }
-        </tbody>
-      </table>
-    </div>
-  </section>
-
-  <section class="project-section" aria-labelledby="example-title">
-    <p class="section-label">D3 · Example</p>
-    <h2 id="example-title">{document.example.title}</h2>
-    {
-      document.example.steps.map((step) => (
-        <div>
-          <h3>{step.title}</h3>
-          <p>{step.text}</p>
-        </div>
-      ))
-    }
-  </section>
-
-  <section class="project-section" aria-labelledby="learning-title">
-    <p class="section-label">D3 · Findings</p>
-    <h2 id="learning-title">What the work has taught me.</h2>
-    {
-      document.learnings.map((learning) => (
-        <div>
-          <h3>{learning.title}</h3>
-          <p>{learning.text}</p>
-        </div>
-      ))
-    }
-  </section>
-
-  <section class="project-section" aria-labelledby="limits-title">
-    <p class="section-label">D3 · Boundaries</p>
-    <h2 id="limits-title">What it has not solved.</h2>
-    <ul>{document.notSolved.map((item) => <li>{item}</li>)}</ul>
-    <p>
-      The Human Model owns its domain evidence and evaluation. <a
-        href="/projects/bridget/">Bridget</a
-      > is a separate, bounded continuity interface; it does not own the model or
-      its evidence. <a href="/projects/wonderful-digital-world/"
-        >Wonderful Digital World</a
-      > explores the wider environment that could coordinate bounded work while leaving
-      that ownership intact.
-    </p>
-  </section>
-
-  <section class="project-section" aria-labelledby="technical-title">
-    <p class="section-label">D3 · Technical depth</p>
-    <h2 id="technical-title">Implementation notes.</h2>
-    <p>{document.appendix.intro}</p>
-    {
-      document.appendix.details.map((detail) => (
-        <details>
-          <summary>{detail.summary}</summary>
-          <ul>
-            {detail.items.map((item) => (
-              <li>{item}</li>
-            ))}
-          </ul>
-        </details>
-      ))
-    }
-    <div class="deep-links">
-      {
-        document.appendix.links.map((link) => (
-          <a href={link.href} rel={link.external ? "noreferrer" : undefined}>
-            {link.label}
-            {link.external ? " ↗" : ""}
-          </a>
-        ))
-      }
-    </div>
-  </section>
-
-  <section class="project-section" aria-labelledby="direction-title">
-    <p class="section-label">Current direction</p>
-    <h2 id="direction-title">Where it goes next.</h2>
-    {document.currentDirection.map((paragraph) => <p>{paragraph}</p>)}
-    <nav class="deep-links" aria-label="The Human Model details">
-      {deepLinks.map((link) => <a href={link.href}>{link.label}</a>)}
-    </nav>
-  </section>
-</EditorialLayout>
+    <section class="project-section" aria-labelledby="direction-title">
+      <p class="section-label">Current direction</p>
+      <h2 id="direction-title">Where it goes next.</h2>
+      {document.currentDirection.map((paragraph) => <p>{paragraph}</p>)}
+      <nav class="deep-links" aria-label="The Human Model details">
+        {deepLinks.map((link) => <a href={link.href}>{link.label}</a>)}
+      </nav>
+    </section>
+  </ProjectWorkspaceLayout>
+</BaseLayout>

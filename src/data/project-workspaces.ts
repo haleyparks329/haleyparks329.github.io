@@ -143,19 +143,6 @@ export const projectWorkspaces: Record<string, ProjectWorkspaceConfig> = {
             label: "Research Overview",
             href: "/projects/the-human-model/research/",
           },
-          {
-            label: "Related Writing",
-            href: "/field-log/attention-is-the-scarce-resource/",
-          },
-        ],
-      },
-      {
-        label: "History",
-        links: [
-          {
-            label: "Build Log",
-            href: "/field-log/attention-is-the-scarce-resource/",
-          },
         ],
       },
       {
@@ -219,12 +206,6 @@ export const projectWorkspaces: Record<string, ProjectWorkspaceConfig> = {
             label: "Related Writing",
             href: "/writing/why-fika-jobs-felt-familiar/",
           },
-        ],
-      },
-      {
-        label: "History",
-        links: [
-          { label: "Build Log", href: "/field-log/evidence-before-claims/" },
         ],
       },
       {
@@ -293,12 +274,6 @@ export const projectWorkspaces: Record<string, ProjectWorkspaceConfig> = {
             label: "Extending Deterministic Replay with an Investigation Layer",
             href: "/projects/qa-agents/meticulous/",
           },
-        ],
-      },
-      {
-        label: "History",
-        links: [
-          { label: "Build Log", href: "/field-log/evidence-before-claims/" },
         ],
       },
       {

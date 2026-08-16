@@ -43,7 +43,7 @@ their implementation and license boundaries intact.
 | Home       | Identity, current thesis, two flagships, recent work        | Yes        | Restrained overview, not a giant hero or card wall                            |
 | Projects   | Flagships plus supporting work                              | Yes        | Editorial index with explicit kinds and statuses                              |
 | Writing    | Essays and explanations                                     | Yes        | The explanatory layer                                                         |
-| Memories   | Observations, decisions, experiments, fragments, milestones | Yes        | May initially retain `/field-log/` URLs                                       |
+| Memories   | Observations, decisions, experiments, fragments, milestones | Yes        | Independent archive; no legacy compatibility route                            |
 | About      | Haley, practice, principles, contact                        | Yes        | Human context, not a separate manifesto theme park                            |
 | World View | Linked application/repository context                       | Contextual | Belongs under WDW context; not global chrome until a stable deployment exists |
 | Explore    | Trails, topics, archive, everything                         | Secondary  | Discovery mechanism rather than equal primary destination                     |

@@ -1,5 +1,7 @@
 # WP5.5 special-route decisions
 
+> **Historical snapshot — superseded by WP6.2.** Field Log references below describe prior state and are not current information architecture or routes.
+
 ## About
 
 The About page is now a linear editorial narrative. The tilted manifesto, identity dashboard, faux-handwritten notes, sticky-note composition, and “currently on the desk” panel were removed. No portrait was introduced.

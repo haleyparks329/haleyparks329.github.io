@@ -1,5 +1,7 @@
 # WP5.5 visual QA
 
+> **Historical snapshot — superseded by WP6.2.** Field Log references below describe prior state and are not current information architecture or routes.
+
 QA was completed on 14 August 2026 against the local Astro development server.
 
 ## Desktop sweep

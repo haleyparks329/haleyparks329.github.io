@@ -1,16 +1,26 @@
 ---
 import type { CollectionEntry } from "astro:content";
 import ProjectSidebar from "@/components/ProjectSidebar.astro";
-import type { ProjectWorkspaceConfig } from "@/data/project-workspaces";
+import type {
+  ProjectWorkspaceConfig,
+  ProjectWorkspaceLink,
+} from "@/data/project-workspaces";
 
 type Props = {
   project: CollectionEntry<"projects">;
   workspace: ProjectWorkspaceConfig;
   documentTitle: string;
   documentSummary: string;
+  localToc?: ProjectWorkspaceLink[];
 };
 
-const { project, workspace, documentTitle, documentSummary } = Astro.props;
+const {
+  project,
+  workspace,
+  documentTitle,
+  documentSummary,
+  localToc = [],
+} = Astro.props;
 const data = project.data;
 ---
 
@@ -52,11 +62,20 @@ const data = project.data;
   </header>
 
   <div class="project-mobile-nav">
-    <ProjectSidebar workspace={workspace} projectTitle={data.title} mobile />
+    <ProjectSidebar
+      workspace={workspace}
+      projectTitle={data.title}
+      localToc={localToc}
+      mobile
+    />
   </div>
 
   <div class="project-workspace__layout">
-    <ProjectSidebar workspace={workspace} projectTitle={data.title} />
+    <ProjectSidebar
+      workspace={workspace}
+      projectTitle={data.title}
+      localToc={localToc}
+    />
     <section
       class="project-workspace__main"
       aria-labelledby="project-document-title"

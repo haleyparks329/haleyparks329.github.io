@@ -1,5 +1,7 @@
 # Website redesign — WP1 handoff
 
+> **Historical snapshot — superseded by WP6.2.** Field Log references below describe prior state and are not current information architecture or routes.
+
 Date: 2026-08-14
 
 ## Changes

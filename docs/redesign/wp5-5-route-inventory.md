@@ -1,5 +1,7 @@
 # WP5.5 route inventory
 
+> **Historical snapshot — superseded by WP6.2.** Field Log references below describe prior state and are not current information architecture or routes.
+
 This inventory is the migration gate for WP5.5. It records the public route surface before broad presentation changes. “Editorial” means the approved WP2–WP5 shell; “compatibility” means the legacy `BaseLayout` path that still needs to compose that shell.
 
 | Public route                              | Current layout                          | Visual generation           | Content / IA role             | Class | Migration note                                                                                  |

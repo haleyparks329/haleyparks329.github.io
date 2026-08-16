@@ -1,5 +1,7 @@
 # WP5.5 handoff
 
+> **Historical snapshot — superseded by WP6.2.** Field Log references below describe prior state and are not current information architecture or routes.
+
 WP5.5 is implemented locally. The remaining legacy and specialized routes now share the editorial shell established in WP2–WP5, while their URLs, content, anchors, and interactions remain intact.
 
 ## Delivered

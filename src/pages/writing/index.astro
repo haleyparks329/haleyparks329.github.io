@@ -2,9 +2,9 @@
 import { getCollection } from "astro:content";
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import {
-  collectionById,
   publishedWriting,
   validateWritingLibrary,
+  writingCollections,
   writingHref,
 } from "@/data/writing-library";
 
@@ -14,15 +14,20 @@ validateWritingLibrary(allWriting, projects);
 
 const entries = publishedWriting(allWriting).sort(
   (a, b) =>
-    b.data.editorialWeight - a.data.editorialWeight ||
-    b.data.pubDate.getTime() - a.data.pubDate.getTime(),
+    b.data.pubDate.getTime() - a.data.pubDate.getTime() ||
+    b.data.editorialWeight - a.data.editorialWeight,
 );
+const collections = writingCollections.map((collection) => ({
+  ...collection,
+  entries: entries.filter(
+    (entry) => entry.data.primaryCollection === collection.id,
+  ),
+}));
 const date = new Intl.DateTimeFormat("en", {
   month: "short",
   day: "numeric",
   year: "numeric",
 });
-const accents = ["olive", "rust", "plum", "blue"];
 ---
 
 <BaseLayout
@@ -31,7 +36,7 @@ const accents = ["olive", "rust", "plum", "blue"];
   canonicalPath="/writing/"
   breadcrumbs={[{ label: "Home", href: "/" }, { label: "Writing" }]}
 >
-  <div class="maria-page">
+  <div class="maria-page writing-index">
     <header class="maria-collection-head">
       <p class="maria-eyebrow">Ideas in motion</p>
       <h1>Writing</h1>
@@ -42,34 +47,170 @@ const accents = ["olive", "rust", "plum", "blue"];
       <p class="maria-note">{entries.length} published pieces</p>
     </header>
 
-    <section class="maria-card-grid" aria-label="Published writing">
+    <nav class="writing-index__nav" aria-label="Writing collections">
       {
-        entries.map((entry, index) => (
-          <article class="maria-card">
-            <a href={writingHref(entry)}>
-              <span
-                class:list={[
-                  "maria-card__mark",
-                  `maria-card__mark--${accents[index % accents.length]}`,
-                ]}
-                aria-hidden="true"
-              />
-              <p class="maria-card__eyebrow">
-                {collectionById(entry.data.primaryCollection ?? "")?.title ??
-                  "Essay"}
-                <span aria-hidden="true"> · </span>
-                {entry.data.readingTime}
-              </p>
-              <h2>{entry.data.title}</h2>
-              <p>{entry.data.description}</p>
-              <span class="maria-card__meta">
-                {date.format(entry.data.pubDate)}
-                <span aria-hidden="true"> ↗</span>
-              </span>
-            </a>
-          </article>
+        collections.map((collection) => (
+          <a href={`#${collection.id}`}>{collection.title}</a>
         ))
       }
-    </section>
+    </nav>
+
+    {
+      collections.map((collection) => (
+        <section
+          class="writing-collection"
+          id={collection.id}
+          aria-labelledby={`${collection.id}-heading`}
+        >
+          <header class="writing-collection__head">
+            <p class="maria-eyebrow">Collection</p>
+            <h2 id={`${collection.id}-heading`}>{collection.title}</h2>
+            <p>{collection.description}</p>
+          </header>
+          <ol class="writing-list">
+            {collection.entries.map((entry) => (
+              <li>
+                <article>
+                  <div class="writing-list__meta">
+                    <time datetime={entry.data.pubDate.toISOString()}>
+                      {date.format(entry.data.pubDate)}
+                    </time>
+                    <span>{entry.data.readingTime}</span>
+                  </div>
+                  <div>
+                    <h3>
+                      <a href={writingHref(entry)}>{entry.data.title}</a>
+                    </h3>
+                    <p>{entry.data.description}</p>
+                  </div>
+                  <a
+                    class="writing-list__read"
+                    href={writingHref(entry)}
+                    aria-label={`Read ${entry.data.title}`}
+                  >
+                    Read <span aria-hidden="true">↗</span>
+                  </a>
+                </article>
+              </li>
+            ))}
+          </ol>
+        </section>
+      ))
+    }
   </div>
 </BaseLayout>
+
+<style>
+  .writing-index__nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem 1.25rem;
+    margin: 0 0 clamp(4rem, 8vw, 7rem);
+    padding-block: 1rem;
+    border-block: 1px solid var(--maria-line);
+    font-size: 0.9rem;
+  }
+
+  .writing-index__nav a {
+    text-underline-offset: 0.22em;
+  }
+
+  .writing-collection {
+    display: grid;
+    grid-template-columns: minmax(12rem, 0.6fr) minmax(0, 1.4fr);
+    gap: clamp(2rem, 7vw, 7rem);
+    padding-block: 0 4.5rem;
+    scroll-margin-top: 2rem;
+  }
+
+  .writing-collection + .writing-collection {
+    padding-top: 4.5rem;
+    border-top: 1px solid var(--maria-line);
+  }
+
+  .writing-collection__head h2 {
+    margin: 0 0 0.85rem;
+    font-family: var(--maria-display);
+    font-size: clamp(2rem, 4vw, 3.25rem);
+    font-weight: 500;
+    letter-spacing: -0.025em;
+    line-height: 1;
+  }
+
+  .writing-collection__head > p:last-child {
+    max-width: 34ch;
+    color: var(--maria-muted);
+  }
+
+  .writing-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .writing-list li {
+    padding-block: 1.5rem;
+    border-top: 1px solid var(--maria-line);
+  }
+
+  .writing-list li:first-child {
+    padding-top: 0;
+    border-top: 0;
+  }
+
+  .writing-list article {
+    display: grid;
+    grid-template-columns: 7.25rem minmax(0, 1fr) auto;
+    gap: 1.5rem;
+    align-items: start;
+  }
+
+  .writing-list__meta {
+    display: grid;
+    gap: 0.25rem;
+    color: var(--maria-muted);
+    font-size: 0.76rem;
+  }
+
+  .writing-list h3 {
+    margin: 0 0 0.45rem;
+    font-family: var(--maria-display);
+    font-size: clamp(1.35rem, 2.5vw, 1.75rem);
+    font-weight: 500;
+    line-height: 1.15;
+  }
+
+  .writing-list h3 a {
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.15em;
+  }
+
+  .writing-list p {
+    max-width: 58ch;
+    margin: 0;
+    color: var(--maria-muted);
+  }
+
+  .writing-list__read {
+    font-size: 0.82rem;
+    white-space: nowrap;
+    text-underline-offset: 0.2em;
+  }
+
+  @media (max-width: 48rem) {
+    .writing-collection {
+      grid-template-columns: 1fr;
+      gap: 2.5rem;
+    }
+
+    .writing-list article {
+      grid-template-columns: 1fr auto;
+    }
+
+    .writing-list__meta {
+      grid-column: 1 / -1;
+      grid-template-columns: auto 1fr;
+      gap: 0.65rem;
+    }
+  }
+</style>

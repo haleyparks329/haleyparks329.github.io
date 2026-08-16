@@ -94,7 +94,7 @@ export const compostArtifacts: CompostArtifact[] = [
     whatILearned:
       "The most useful records are often small enough to keep using when energy is low.",
     eventuallyBecame:
-      "Field Log notes about attention, evidence, and the conditions around useful work.",
+      "Earlier notes about attention, evidence, and the conditions around useful work.",
     thread: "attention",
     state: "still-decomposing",
     size: "small",
@@ -132,7 +132,7 @@ export const compostArtifacts: CompostArtifact[] = [
     preview:
       "A placeholder for the longer trail of thinking that has not settled yet.",
     whatItWas:
-      "A simple holding place for essays, notes, and fragments that were too long for the Field Log but not ready to become formal projects.",
+      "A simple holding place for essays, notes, and fragments that were too long for a short update but not ready to become formal projects.",
     whyItMattered:
       "It made unfinished thinking visible without forcing it into a finished shape.",
     whatILearned:
