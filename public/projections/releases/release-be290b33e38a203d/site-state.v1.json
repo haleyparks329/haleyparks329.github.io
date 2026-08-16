@@ -1,0 +1,43 @@
+{
+  "schemaVersion": "1.0.0",
+  "siteId": "haley-parks-public-site",
+  "generatedAt": "2026-08-16T00:00:00.000Z",
+  "freshness": {
+    "status": "partial",
+    "sourceUpdatedAt": "2026-08-16T00:00:00.000Z"
+  },
+  "identity": {
+    "name": "Haley Parks",
+    "canonicalUrl": "https://haleyparks329.github.io",
+    "description": "A public record of projects, research, field notes, and working systems."
+  },
+  "navigation": [
+    {
+      "id": "nav-home",
+      "label": "Home",
+      "href": "/"
+    },
+    {
+      "id": "nav-projects",
+      "label": "Projects",
+      "href": "/projects/"
+    },
+    {
+      "id": "nav-writing",
+      "label": "Writing",
+      "href": "/writing/"
+    },
+    {
+      "id": "nav-field-log",
+      "label": "Field log",
+      "href": "/field-log/"
+    }
+  ],
+  "featuredProjectIds": [
+    "project-the-human-model",
+    "project-wonderful-digital-world",
+    "project-bridget",
+    "project-qa-agents",
+    "project-career-intelligence"
+  ]
+}

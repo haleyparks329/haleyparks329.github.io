@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://haleyparks329.github.io/schemas/public-site-state.v1.schema.json",
+  "title": "PublicSiteState v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "siteId",
+    "generatedAt",
+    "freshness",
+    "identity",
+    "navigation",
+    "featuredProjectIds"
+  ],
+  "properties": {
+    "schemaVersion": { "const": "1.0.0" },
+    "siteId": { "type": "string" },
+    "generatedAt": { "type": "string", "format": "date-time" },
+    "freshness": { "type": "object" },
+    "identity": { "type": "object" },
+    "navigation": { "type": "array" },
+    "featuredProjectIds": { "type": "array", "items": { "type": "string" } }
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://haleyparks329.github.io/schemas/operation-receipt.v1.schema.json",
+  "title": "Projection operation receipt v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "receiptId",
+    "operation",
+    "status",
+    "releaseId",
+    "recordedAt",
+    "details"
+  ],
+  "properties": {
+    "schemaVersion": { "const": "1.0.0" },
+    "receiptId": { "type": "string" },
+    "operation": { "enum": ["publish", "rollback"] },
+    "status": { "enum": ["succeeded", "blocked", "noop"] },
+    "releaseId": { "type": ["string", "null"] },
+    "recordedAt": { "type": "string", "format": "date-time" },
+    "details": { "type": "object" }
+  }
+}

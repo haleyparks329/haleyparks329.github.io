@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "astro dev",
     "build": "npm run build:site",
-    "build:site": "npm run validate:memories && astro build",
+    "build:site": "npm run validate:memories && npm run validate:projections && astro build",
     "preview": "astro preview",
     "check": "astro check",
     "format": "prettier --write .",
@@ -14,7 +14,15 @@
     "validate:links": "node scripts/validate-links.mjs",
     "validate:relationships": "node --experimental-strip-types scripts/validate-relationships.ts",
     "validate:memories": "node scripts/validate-memories.mjs",
-    "validate": "npm run format:check && npm run validate:relationships && npm run check && npm run build:site && npm run validate:links"
+    "validate:assets": "node scripts/validate-assets.mjs",
+    "projections:generate": "node scripts/generate-projections.mjs",
+    "projections:publish": "node scripts/publish-projections.mjs",
+    "projections:rollback": "node scripts/rollback-projections.mjs",
+    "validate:projections": "node scripts/validate-projections.mjs",
+    "check:projection-health": "node scripts/check-projection-health.mjs",
+    "test:projections": "node --test tests/projection-pipeline.test.mjs",
+    "maintenance:check": "npm run validate:memories && npm run validate:relationships && npm run validate:projections && npm run check:projection-health && npm run validate:assets && npm run check && npm run build:site && npm run validate:links",
+    "validate": "npm run format:check && npm run test:projections && npm run maintenance:check"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.6.0",

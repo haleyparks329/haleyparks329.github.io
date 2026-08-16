@@ -3,6 +3,10 @@ import { getCollection } from "astro:content";
 import EditorialLayout from "../../layouts/EditorialLayout.astro";
 import { projectDocumentForSlug } from "../../data/project-documents";
 import { flagshipRelationship } from "../../data/wonderful-digital-world";
+import { loadPublicProjections } from "../../data/public-projections.mjs";
+
+// WP6 build-time consumer: fail closed before rendering if the public release is invalid.
+await loadPublicProjections();
 
 const projects = (await getCollection("projects")).sort(
   (a, b) => a.data.order - b.data.order,
