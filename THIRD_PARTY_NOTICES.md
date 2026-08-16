@@ -4,7 +4,7 @@
 
 The `/world/` presentation reuses the isometric renderer from
 [`Wonderful-Digital-World/world-view`](https://github.com/Wonderful-Digital-World/world-view)
-at commit `051d70bf`. That project retains the lineage and visual language of
+at commit `07d00cf99cdc82e232a734d05d428cd63c99bab8`. That project retains the lineage and visual language of
 [`tiny.place`](https://github.com/localhost/tiny.place).
 
 The vendored renderer is licensed under GPL-3.0-or-later. Its source is kept in

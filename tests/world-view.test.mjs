@@ -3,6 +3,7 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 import test from "node:test";
 
+import { createRendererCommands } from "../src/data/world-renderer-adapter.ts";
 import { loadWorldView, toWorldViewState } from "../src/data/world-view.ts";
 import { withBasePath } from "../src/utils/site-path.ts";
 
@@ -44,8 +45,129 @@ test("website delegates room identity to World View", async () => {
   assert.doesNotMatch(adapter, /place-(?:workbench|archive)/);
   assert.match(adapter, /resolveRendererPlacement/);
   assert.match(page, /WDW_ROOM_REGISTRY/);
-  assert.match(page, /room\.key === "outside"/);
+  assert.match(page, /room\.key === "workshop"/);
   assert.match(renderer, /shell\.dataset\.initialRoom/);
+});
+
+test("renderer commands preserve reviewed resident identity and room membership", () => {
+  const projection = {
+    schemaVersion: "1.0",
+    projectionId: "world-renderer-test",
+    generatedAt: "2026-08-16T00:00:00.000Z",
+    status: "partial",
+    places: [],
+    residents: [
+      {
+        residentId: "resident-bridget",
+        name: "Bridget",
+        role: "resident",
+        placeId: "workshop",
+        status: "active",
+      },
+      {
+        residentId: "resident-banjo",
+        name: "Banjo",
+        role: "resident",
+        placeId: "workshop",
+        status: "bounded",
+      },
+      {
+        residentId: "resident-coach",
+        name: "Coach",
+        role: "resident",
+        placeId: "lab",
+        status: "active",
+      },
+      {
+        residentId: "resident-mini-me",
+        name: "Mini Me",
+        role: "resident",
+        placeId: "lab",
+        status: "bounded",
+      },
+    ],
+    activities: [],
+    attention: [],
+  };
+
+  const workshop = createRendererCommands(projection, "workshop");
+  const lab = createRendererCommands(projection, "lab");
+
+  assert.deepEqual(
+    workshop.map(({ state }) => state.label),
+    ["Bridget", "Banjo"],
+  );
+  assert.deepEqual(
+    lab.map(({ state }) => state.label),
+    ["Coach", "Mini Me"],
+  );
+  assert.equal(lab[1].state.tint, 0xa78bfa);
+  assert.deepEqual(createRendererCommands(null, "outside"), []);
+});
+
+test("World View camera controls use the renderer API in the visible control order", async () => {
+  const [page, renderer] = await Promise.all([
+    readFile(path.join(root, "src/pages/world/index.astro"), "utf8"),
+    readFile(path.join(root, "src/scripts/world-renderer.ts"), "utf8"),
+  ]);
+  const controlOrder = [
+    "data-world-zoom-out",
+    "data-world-zoom-slider",
+    "data-world-zoom-in",
+    "data-world-zoom-fit",
+  ].map((attribute) => page.indexOf(attribute));
+
+  assert.ok(controlOrder.every((index) => index >= 0));
+  assert.deepEqual(
+    controlOrder,
+    [...controlOrder].sort((left, right) => left - right),
+  );
+  assert.match(renderer, /world\?\.zoomOut\(\)/);
+  assert.match(renderer, /world\?\.setZoom\(/);
+  assert.match(renderer, /world\?\.zoomIn\(\)/);
+  assert.match(renderer, /world\?\.resetZoom\(\)/);
+  assert.doesNotMatch(renderer, /style\.transform/);
+});
+
+test("World View retains the global view switch and keeps renderer JavaScript route-local", async () => {
+  const [header, page, renderer] = await Promise.all([
+    readFile(
+      path.join(root, "src/components/redesign/EditorialHeader.astro"),
+      "utf8",
+    ),
+    readFile(path.join(root, "src/pages/world/index.astro"), "utf8"),
+    readFile(path.join(root, "src/scripts/world-renderer.ts"), "utf8"),
+  ]);
+
+  assert.match(header, /class="maria-view-switch" aria-label="Site view"/);
+  assert.match(header, />\s*Regular View\s*</);
+  assert.match(header, />\s*World View\s*</);
+  assert.match(page, /scripts\/world-renderer/);
+  assert.doesNotMatch(header, /world-renderer/);
+  assert.doesNotMatch(renderer, /import\(/);
+});
+
+test("active public World View vocabulary is limited to canonical rooms", async () => {
+  const manifest = JSON.parse(
+    await readFile(
+      path.join(root, "public/projections/manifest.v1.json"),
+      "utf8",
+    ),
+  );
+  const activeWorld = await readFile(
+    path.join(
+      root,
+      "public/projections/releases",
+      manifest.releaseId,
+      "world.v1.json",
+    ),
+    "utf8",
+  );
+
+  assert.doesNotMatch(
+    activeWorld,
+    /\b(?:poker|court|office|home|workbench|public archive)\b/i,
+  );
 });
 
 test("world consumer maps every published availability state", () => {

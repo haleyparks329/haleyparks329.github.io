@@ -1,32 +1,33 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { loadWorldView } from "../../data/world-view";
-import { countResidentsByRoom } from "../../data/world-renderer-adapter";
+import {
+  countResidentsByRoom,
+  type WorldRoomKey,
+} from "../../data/world-renderer-adapter";
 import { withBasePath } from "../../utils/site-path";
+import { MAX_ZOOM, MIN_ZOOM, ZOOM_STEP } from "../../vendor/world-view/iso";
 import { WDW_ROOM_REGISTRY } from "../../vendor/world-view/world/rooms";
 
 const worldView = await loadWorldView();
 const projection =
   worldView.state === "unavailable" ? null : worldView.projection;
-const roomCounts = countResidentsByRoom(projection);
-const roomCount = (roomKey: string) =>
+const rendererRoomKeys: ReadonlyArray<WorldRoomKey> = WDW_ROOM_REGISTRY.map(
+  ({ key }) => key as WorldRoomKey,
+);
+const roomCounts = countResidentsByRoom(projection, rendererRoomKeys);
+const roomCount = (roomKey: string): number =>
   roomCounts[roomKey as keyof typeof roomCounts] ?? 0;
 const initialRoom =
-  WDW_ROOM_REGISTRY.find((room) => room.key === "outside") ??
+  WDW_ROOM_REGISTRY.find((room) => room.key === "workshop") ??
   WDW_ROOM_REGISTRY[0]!;
+const initialZoom = initialRoom.defaultZoom ?? 1;
 const basePath = import.meta.env.BASE_URL;
 const projectHref = withBasePath(
   "/projects/wonderful-digital-world/",
   basePath,
 );
-const manifestHref = withBasePath("/projections/manifest.v1.json", basePath);
-const stateCopy = {
-  fresh: "Verified and current",
-  partial: "Verified, intentionally partial",
-  stale: "Verified, but stale",
-  unavailable: "Projection unavailable",
-};
-const formatDate = (value: string) =>
+const formatDate = (value: string): string =>
   new Intl.DateTimeFormat("en", {
     dateStyle: "medium",
     timeStyle: "short",
@@ -46,29 +47,12 @@ const formatDate = (value: string) =>
     data-projection={projection ? JSON.stringify(projection) : ""}
   >
     <header class="world-intro">
-      <div>
-        <p class="world-eyebrow">Wonderful Digital World · public projection</p>
-        <h1>World View</h1>
-        <p>
-          A small pixel world for the reviewed state that Wonderful Digital
-          World has chosen to publish.
-        </p>
-      </div>
-      <aside class:list={["world-status", `world-status--${worldView.state}`]}>
-        <span aria-hidden="true"></span>
-        <div>
-          <strong>{stateCopy[worldView.state]}</strong>
-          {
-            worldView.state !== "unavailable" ? (
-              <small>
-                Published {formatDate(worldView.projection.generatedAt)} UTC
-              </small>
-            ) : (
-              <small>{worldView.reason}</small>
-            )
-          }
-        </div>
-      </aside>
+      <p class="world-eyebrow">Wonderful Digital World · public projection</p>
+      <h1>World View</h1>
+      <p>
+        A small pixel world for the reviewed state that Wonderful Digital World
+        has chosen to publish.
+      </p>
     </header>
 
     <section class="world-console" aria-labelledby="renderer-heading">
@@ -112,11 +96,57 @@ const formatDate = (value: string) =>
           <button type="button" data-world-retry>Try again</button>
         </div>
       </div>
-      <p class="world-console__note" data-room-note>
-        Rooms, layouts, and resident placement come directly from World View.
-        The reviewed public projection supplies the residents shown in them.
-      </p>
+      <footer class="world-console__footer">
+        <p class="world-console__note" data-room-note>
+          Rooms, layouts, and resident placement come directly from World View.
+          The reviewed public projection supplies the residents shown in them.
+        </p>
+        <div class="world-camera" aria-label="Camera controls" role="group">
+          <button
+            aria-label="Zoom out"
+            data-world-zoom-out
+            disabled
+            type="button">−</button
+          >
+          <input
+            aria-label="Zoom level"
+            data-world-zoom-slider
+            disabled
+            max={MAX_ZOOM}
+            min={MIN_ZOOM}
+            step={ZOOM_STEP}
+            type="range"
+            value={initialZoom}
+          />
+          <button aria-label="Zoom in" data-world-zoom-in disabled type="button"
+            >+</button
+          >
+          <button
+            aria-label="Fit room"
+            data-world-zoom-fit
+            disabled
+            type="button">Fit</button
+          >
+          <output data-world-zoom-value>{initialZoom.toFixed(2)}×</output>
+        </div>
+      </footer>
     </section>
+
+    <aside class:list={["world-status", `world-status--${worldView.state}`]}>
+      <span aria-hidden="true"></span>
+      <div>
+        <strong>Public state · {worldView.state}</strong>
+        {
+          worldView.state !== "unavailable" ? (
+            <small>
+              Published {formatDate(worldView.projection.generatedAt)} UTC
+            </small>
+          ) : (
+            <small>{worldView.reason}</small>
+          )
+        }
+      </div>
+    </aside>
 
     <section class="world-about" aria-labelledby="world-about-heading">
       <div>
@@ -127,18 +157,16 @@ const formatDate = (value: string) =>
       </div>
       <div class="world-about__copy">
         <p>
-          This alternate presentation uses a reviewed, sanitized public
-          projection. It can be partial or delayed. Private memory, credentials,
-          live resident state, and unpublished operations are never exposed
-          here.
+          This is a public visual projection of Wonderful Digital World. Its
+          reviewed and sanitized state can be partial or delayed; the private
+          runtime is not directly exposed.
         </p>
         <p>
           World View defines the rooms, layouts, and resident placement. This
-          site supplies only the reviewed public projection.
+          website supplies the reviewed public residents shown inside them.
         </p>
         <div class="world-links">
-          <a href={manifestHref}>Public manifest</a>
-          <a href={projectHref}>Project system page</a>
+          <a href={projectHref}>WDW project + architecture</a>
           <a
             href="https://github.com/Wonderful-Digital-World/wonderful-digital-world"
             rel="noreferrer">WDW repository ↗</a
@@ -152,7 +180,6 @@ const formatDate = (value: string) =>
             rel="noreferrer">Website repository ↗</a
           >
         </div>
-        <p class="world-closing">Oh, this is the little digital world.</p>
       </div>
     </section>
   </article>
@@ -170,10 +197,6 @@ const formatDate = (value: string) =>
     overflow: hidden;
   }
   .world-intro {
-    display: flex;
-    align-items: end;
-    justify-content: space-between;
-    gap: 2rem;
     margin-bottom: clamp(1.5rem, 3vw, 2.5rem);
   }
   .world-eyebrow,
@@ -197,7 +220,7 @@ const formatDate = (value: string) =>
     font-size: clamp(3rem, 7vw, 6.5rem);
     letter-spacing: -0.045em;
   }
-  .world-intro > div > p:last-child {
+  .world-intro > p:last-child {
     max-width: 42rem;
     margin: 0.8rem 0 0;
     color: var(--maria-muted);
@@ -292,8 +315,8 @@ const formatDate = (value: string) =>
   .world-stage-wrap {
     position: relative;
     width: 100%;
-    height: clamp(30rem, 68vw, 52rem);
-    min-height: 30rem;
+    height: clamp(34rem, 68vw, 58rem);
+    min-height: 34rem;
     background: #1d1a19;
   }
   .world-stage,
@@ -329,18 +352,61 @@ const formatDate = (value: string) =>
     border-radius: 50%;
     animation: world-spin 0.8s linear infinite;
   }
-  .world-console__note {
-    margin: 0;
-    padding: 0.7rem 1rem;
+  .world-console__footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.65rem 1rem;
     border-top: 1px solid rgb(255 255 255 / 16%);
+  }
+  .world-console__note {
+    max-width: 52rem;
+    margin: 0;
     color: #bcb2aa;
     font-size: 0.75rem;
+  }
+  .world-camera {
+    display: flex;
+    flex: 0 0 auto;
+    align-items: center;
+    gap: 0.35rem;
+  }
+  .world-camera button {
+    min-width: 2rem;
+    height: 1.9rem;
+    padding: 0 0.55rem;
+    border: 1px solid rgb(255 255 255 / 24%);
+    border-radius: 0.25rem;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    font-size: 0.75rem;
+    cursor: pointer;
+  }
+  .world-camera button:disabled {
+    cursor: default;
+    opacity: 0.4;
+  }
+  .world-camera input {
+    width: clamp(5rem, 10vw, 8rem);
+    accent-color: #f5f0e7;
+  }
+  .world-camera output {
+    min-width: 3.2rem;
+    color: #bcb2aa;
+    font-variant-numeric: tabular-nums;
+    font-size: 0.7rem;
+    text-align: right;
+  }
+  .world-status {
+    margin-top: 1rem;
   }
   .world-about {
     display: grid;
     grid-template-columns: minmax(15rem, 0.8fr) minmax(0, 1.4fr);
     gap: clamp(2rem, 8vw, 8rem);
-    padding: clamp(3rem, 7vw, 6rem) 0 0;
+    padding: clamp(2.25rem, 4vw, 3.5rem) 0 0;
   }
   .world-about h2 {
     max-width: 13ch;
@@ -357,20 +423,12 @@ const formatDate = (value: string) =>
     margin-top: 1.8rem;
     font-size: 0.8rem;
   }
-  .world-closing {
-    margin-top: 2rem;
-    color: var(--maria-muted);
-    font-family: var(--maria-display);
-    font-size: clamp(1.35rem, 2.5vw, 2rem);
-    font-style: italic;
-  }
   @keyframes world-spin {
     to {
       transform: rotate(360deg);
     }
   }
   @media (max-width: 48rem) {
-    .world-intro,
     .world-console__bar,
     .world-about {
       display: block;
@@ -387,6 +445,10 @@ const formatDate = (value: string) =>
     .world-stage-wrap {
       height: 32rem;
       min-height: 32rem;
+    }
+    .world-console__footer {
+      align-items: flex-start;
+      flex-direction: column;
     }
     .world-about__copy {
       margin-top: 1.5rem;

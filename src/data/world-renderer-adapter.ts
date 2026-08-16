@@ -2,8 +2,7 @@ import type { AgentState } from "../vendor/world-view/iso/types";
 import {
   resolveRendererPlacement,
   type RendererRoomKey,
-} from "../vendor/world-view/world/placement";
-import { WDW_ROOM_REGISTRY } from "../vendor/world-view/world/rooms";
+} from "../vendor/world-view/world/placement.ts";
 import type { WorldProjection, WorldResident } from "./world-view";
 
 export type WorldRoomKey = RendererRoomKey;
@@ -13,10 +12,6 @@ export type RendererCommand = {
   state: AgentState;
 };
 
-const WORLD_ROOM_KEYS = new Set<WorldRoomKey>(
-  WDW_ROOM_REGISTRY.map(({ key }) => key as WorldRoomKey),
-);
-
 const KNOWN_TINTS: Readonly<Record<string, number>> = {
   bridget: 0xe88ec2,
   banjo: 0x60a5fa,
@@ -25,10 +20,6 @@ const KNOWN_TINTS: Readonly<Record<string, number>> = {
 };
 
 const FALLBACK_TINTS = [0x7fc8a9, 0x60a5fa, 0xf59e0b, 0xa78bfa, 0xf472b6];
-
-function isWorldRoomKey(placeId: string): placeId is WorldRoomKey {
-  return WORLD_ROOM_KEYS.has(placeId as WorldRoomKey);
-}
 
 function tintForResident(resident: WorldResident): number {
   const known = KNOWN_TINTS[resident.name.toLowerCase()];
@@ -43,14 +34,16 @@ function tintForResident(resident: WorldResident): number {
 
 export function countResidentsByRoom(
   projection: WorldProjection | null,
+  roomKeys: ReadonlyArray<WorldRoomKey>,
 ): Record<WorldRoomKey, number> {
-  const counts = Object.fromEntries(
-    WDW_ROOM_REGISTRY.map(({ key }) => [key, 0]),
-  ) as Record<WorldRoomKey, number>;
+  const counts = Object.fromEntries(roomKeys.map((key) => [key, 0])) as Record<
+    WorldRoomKey,
+    number
+  >;
 
   for (const resident of projection?.residents ?? []) {
-    if (isWorldRoomKey(resident.placeId)) {
-      counts[resident.placeId] += 1;
+    if (Object.hasOwn(counts, resident.placeId)) {
+      counts[resident.placeId as WorldRoomKey] += 1;
     }
   }
 
@@ -75,7 +68,7 @@ export function createRendererCommands(
         agentId: `public:${resident.residentId}`,
         state: {
           ...placement,
-          label: `${resident.name} · public`,
+          label: resident.name,
           tint: tintForResident(resident),
         },
       };

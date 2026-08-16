@@ -17,7 +17,7 @@ The World View may read the published manifest and its referenced public artifac
 - Private repository state, personal memory, credentials, and unpublished drafts.
 - Runtime access from the static website into another project repository.
 - Direct LLM publication or automated publication without the configured human approval.
-- Interactive simulation, Mini Me, or a background orchestration layer.
+- Live or private interactive simulation, Mini Me runtime state, or a background orchestration layer. A reviewed, sanitized Mini Me resident may appear in the public projection like any other published resident.
 - Silent schema expansion or projection fields inferred from private data.
 
 Publication remains deterministic and reviewable: validate the source, stage artifacts, require human approval, publish atomically, and retain a rollback path. Operational commands and recovery steps are documented in [public-projection-operations.md](./public-projection-operations.md); the existing integration proof is in [projection-integration-proof.md](./projection-integration-proof.md).

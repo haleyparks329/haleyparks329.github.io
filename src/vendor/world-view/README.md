@@ -2,7 +2,7 @@
 
 The files in `iso/` and `world/` are reused from the canonical
 [`Wonderful-Digital-World/world-view`](https://github.com/Wonderful-Digital-World/world-view)
-repository at commit `7dc7acfa`. That project retains the lineage and visual
+repository at commit `07d00cf99cdc82e232a734d05d428cd63c99bab8`. That project retains the lineage and visual
 language of [tiny.place](https://github.com/localhost/tiny.place).
 
 The renderer is licensed under GPL-3.0-or-later. See the adjacent `LICENSE`
