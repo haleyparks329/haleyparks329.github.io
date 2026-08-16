@@ -1,5 +1,6 @@
 ---
 import { getCollection } from "astro:content";
+import ProjectCardVisual from "../components/ProjectCardVisual.astro";
 import EditorialLayout from "../layouts/EditorialLayout.astro";
 
 const projects = (await getCollection("projects")).sort(
@@ -39,11 +40,12 @@ const accents: Record<string, string> = {
         {
           featuredProjects.map((project) => (
             <article
-              class="maria-card"
+              class="maria-card maria-card--project"
               style={`--card-accent: ${accents[project.data.accent]}`}
             >
               <a href={`/projects/${project.data.slug}/`}>
                 <span class="maria-card__mark" aria-hidden="true" />
+                <ProjectCardVisual slug={project.data.slug} />
                 <h2>{project.data.title}</h2>
                 <p>{project.data.summary}</p>
                 <div class="maria-card__meta">

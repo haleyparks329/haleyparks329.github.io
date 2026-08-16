@@ -1,16 +1,20 @@
 ---
 import BaseLayout from "./BaseLayout.astro";
+import type { BreadcrumbItem } from "../components/Breadcrumbs.astro";
 
 interface Props {
   title?: string;
   description?: string;
+  canonicalPath?: string;
+  imagePath?: string;
+  breadcrumbs?: BreadcrumbItem[];
   eyebrow?: string;
 }
 
-const { title, description, eyebrow } = Astro.props;
+const { eyebrow, ...layoutProps } = Astro.props;
 ---
 
-<BaseLayout title={title} description={description}>
+<BaseLayout {...layoutProps}>
   {eyebrow && <p class="editorial-page-eyebrow">{eyebrow}</p>}
   <slot />
 </BaseLayout>

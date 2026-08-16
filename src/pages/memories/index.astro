@@ -29,66 +29,77 @@ const accents = ["olive", "rust", "plum", "blue"];
         private systems behind it.
       </p>
       <p class="maria-note">
-        Manual publication · Evidence required · Last compiled {
+        {groups.length} published records · Evidence required · Provenance audit {
           date(memoryGeneratedAt)
         }
       </p>
     </header>
 
-    <div class="maria-groups">
-      {
-        groups.map((group, groupIndex) => {
-          const id = `group-${group.label.replaceAll(" ", "-").toLowerCase()}`;
-          return (
-            <section class="maria-group" aria-labelledby={id}>
-              <div class="maria-section-heading">
-                <p>{String(groupIndex + 1).padStart(2, "0")}</p>
-                <h2 id={id}>{group.label}</h2>
-              </div>
-              <div class="maria-card-grid">
-                {group.memories.map((memory, index) => (
-                  <article
-                    id={memory.slug}
-                    class="maria-card maria-card--content"
-                  >
-                    <span
-                      class:list={[
-                        "maria-card__mark",
-                        `maria-card__mark--${accents[(groupIndex + index) % accents.length]}`,
-                      ]}
-                      aria-hidden="true"
-                    />
-                    <p class="maria-card__eyebrow">
-                      <time datetime={memory.occurredAt}>
-                        {date(memory.occurredAt)}
-                      </time>
-                      <span aria-hidden="true"> · </span>
-                      {memory.kind}
-                    </p>
-                    <h3>
-                      <a href={`#${memory.slug}`}>{memory.title}</a>
-                    </h3>
-                    <p>{memory.excerpt}</p>
-                    <p class="maria-card__significance">
-                      <strong>Why it matters.</strong> {memory.significance}
-                    </p>
-                    <div class="maria-card__trail">
-                      <span>{memory.sourceLabel}</span>
-                      {memory.publicEvidence.map((item) => (
-                        <a href={item.href}>{item.label}</a>
-                      ))}
-                      {memory.relatedProjects.map((item) => (
-                        <a href={item.href}>Related: {item.label}</a>
-                      ))}
-                    </div>
-                  </article>
-                ))}
-              </div>
-            </section>
-          );
-        })
-      }
-    </div>
+    {
+      groups.length > 0 ? (
+        <div class="maria-groups">
+          {groups.map((group, groupIndex) => {
+            const id = `group-${group.label.replaceAll(" ", "-").toLowerCase()}`;
+            return (
+              <section class="maria-group" aria-labelledby={id}>
+                <div class="maria-section-heading">
+                  <p>{String(groupIndex + 1).padStart(2, "0")}</p>
+                  <h2 id={id}>{group.label}</h2>
+                </div>
+                <div class="maria-card-grid">
+                  {group.memories.map((memory, index) => (
+                    <article
+                      id={memory.slug}
+                      class="maria-card maria-card--content"
+                    >
+                      <span
+                        class:list={[
+                          "maria-card__mark",
+                          `maria-card__mark--${accents[(groupIndex + index) % accents.length]}`,
+                        ]}
+                        aria-hidden="true"
+                      />
+                      <p class="maria-card__eyebrow">
+                        <time datetime={memory.occurredAt}>
+                          {date(memory.occurredAt)}
+                        </time>
+                        <span aria-hidden="true"> · </span>
+                        {memory.kind}
+                      </p>
+                      <h3>
+                        <a href={`#${memory.slug}`}>{memory.title}</a>
+                      </h3>
+                      <p>{memory.excerpt}</p>
+                      <p class="maria-card__significance">
+                        <strong>Why it matters.</strong> {memory.significance}
+                      </p>
+                      <div class="maria-card__trail">
+                        <span>{memory.sourceLabel}</span>
+                        {memory.publicEvidence.map((item) => (
+                          <a href={item.href}>{item.label}</a>
+                        ))}
+                        {memory.relatedProjects.map((item) => (
+                          <a href={item.href}>Related: {item.label}</a>
+                        ))}
+                      </div>
+                    </article>
+                  ))}
+                </div>
+              </section>
+            );
+          })}
+        </div>
+      ) : (
+        <section class="maria-boundary" aria-labelledby="memories-empty-title">
+          <p class="maria-eyebrow">Current publication</p>
+          <h2 id="memories-empty-title">No verified public memories yet.</h2>
+          <p>
+            Nothing is published here until its source and public evidence have
+            been verified.
+          </p>
+        </section>
+      )
+    }
 
     <aside class="maria-boundary">
       <p class="maria-eyebrow">Field Log</p>

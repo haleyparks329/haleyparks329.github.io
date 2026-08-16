@@ -1,0 +1,190 @@
+---
+interface Props {
+  slug: string;
+  compact?: boolean;
+}
+
+const { slug, compact = false } = Astro.props;
+const variants = ["orbit", "grid", "threshold", "signal"];
+const checksum = [...slug].reduce((total, character) => {
+  return total + (character.codePointAt(0) ?? 0);
+}, 0);
+const variant = variants[checksum % variants.length];
+---
+
+<div
+  class:list={[
+    "project-card-visual",
+    `project-card-visual--${variant}`,
+    { "project-card-visual--compact": compact },
+  ]}
+  aria-hidden="true"
+>
+  <span class="visual-frame"></span>
+  <span class="visual-disc"></span>
+  <span class="visual-line visual-line--a"></span>
+  <span class="visual-line visual-line--b"></span>
+</div>
+
+<style>
+  .project-card-visual {
+    position: relative;
+    min-height: 9.5rem;
+    overflow: hidden;
+    border: 1px solid
+      color-mix(in srgb, var(--card-accent) 28%, var(--maria-line));
+    border-radius: 1rem;
+    margin-block: 1.4rem 1.75rem;
+    background:
+      linear-gradient(
+        135deg,
+        transparent 48%,
+        rgb(255 255 255 / 45%) 49% 51%,
+        transparent 52%
+      ),
+      color-mix(in srgb, var(--card-accent) 12%, var(--maria-paper));
+  }
+
+  .project-card-visual--compact {
+    min-height: 12rem;
+    margin: 0;
+  }
+
+  .project-card-visual span {
+    position: absolute;
+    display: block;
+  }
+
+  .visual-frame {
+    inset: 18% 16%;
+    border: 1px solid
+      color-mix(in srgb, var(--card-accent) 70%, var(--maria-ink));
+  }
+
+  .visual-disc {
+    width: 4.5rem;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: var(--card-accent);
+    opacity: 0.86;
+  }
+
+  .visual-line {
+    height: 1px;
+    background: var(--maria-ink);
+    transform-origin: left center;
+  }
+
+  .visual-line--a {
+    width: 55%;
+  }
+
+  .visual-line--b {
+    width: 38%;
+  }
+
+  .project-card-visual--orbit .visual-disc {
+    top: 17%;
+    right: 17%;
+  }
+
+  .project-card-visual--orbit .visual-frame {
+    border-radius: 50%;
+  }
+
+  .project-card-visual--orbit .visual-line--a {
+    bottom: 28%;
+    left: 12%;
+    transform: rotate(-12deg);
+  }
+
+  .project-card-visual--orbit .visual-line--b {
+    top: 31%;
+    left: 22%;
+    transform: rotate(38deg);
+  }
+
+  .project-card-visual--grid .visual-frame {
+    inset: 16% 12% 20% 38%;
+    background:
+      linear-gradient(
+        90deg,
+        transparent 48%,
+        var(--maria-line) 49% 51%,
+        transparent 52%
+      ),
+      linear-gradient(
+        transparent 48%,
+        var(--maria-line) 49% 51%,
+        transparent 52%
+      );
+  }
+
+  .project-card-visual--grid .visual-disc {
+    bottom: 14%;
+    left: 12%;
+  }
+
+  .project-card-visual--grid .visual-line--a {
+    top: 23%;
+    left: 9%;
+  }
+
+  .project-card-visual--grid .visual-line--b {
+    top: 35%;
+    left: 9%;
+  }
+
+  .project-card-visual--threshold .visual-frame {
+    inset: 12% 39% 12% 12%;
+    border-width: 0 1px 0 0;
+    background: color-mix(in srgb, var(--card-accent) 18%, transparent);
+    transform: skewX(-11deg);
+  }
+
+  .project-card-visual--threshold .visual-disc {
+    top: 30%;
+    right: 15%;
+  }
+
+  .project-card-visual--threshold .visual-line--a {
+    right: 9%;
+    bottom: 18%;
+    transform: rotate(-7deg);
+  }
+
+  .project-card-visual--threshold .visual-line--b {
+    top: 19%;
+    left: 15%;
+    transform: rotate(22deg);
+  }
+
+  .project-card-visual--signal .visual-frame {
+    inset: 22% 12%;
+    border-width: 1px 0;
+  }
+
+  .project-card-visual--signal .visual-disc {
+    top: 22%;
+    left: 17%;
+  }
+
+  .project-card-visual--signal .visual-line--a {
+    right: 8%;
+    bottom: 25%;
+    transform: rotate(-32deg);
+  }
+
+  .project-card-visual--signal .visual-line--b {
+    top: 23%;
+    right: 8%;
+    transform: rotate(18deg);
+  }
+
+  @media (max-width: 720px) {
+    .project-card-visual,
+    .project-card-visual--compact {
+      min-height: 9rem;
+    }
+  }
+</style>

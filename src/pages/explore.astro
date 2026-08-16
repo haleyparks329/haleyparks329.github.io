@@ -1,82 +1,23 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-
-const areas = [
-  {
-    href: "/projects/",
-    label: "Projects",
-    description: "Selected product systems, research, and implementation work.",
-    accent: "olive",
-  },
-  {
-    href: "/writing/",
-    label: "Writing",
-    description: "Essays and research notes organized around recurring ideas.",
-    accent: "rust",
-  },
-  {
-    href: "/memories/",
-    label: "Memories",
-    description:
-      "A selective public record of meaningful decisions and releases.",
-    accent: "plum",
-  },
-  {
-    href: "/about/",
-    label: "About",
-    description: "How I approach complex systems and the people inside them.",
-    accent: "blue",
-  },
-];
 ---
 
 <BaseLayout
   title="Explore"
-  description="A simple index of the published areas of Haley Parks' site."
+  description="A quiet threshold for experimental and unusual public work."
   canonicalPath="/explore/"
   breadcrumbs={[{ label: "Home", href: "/" }, { label: "Explore" }]}
 >
   <div class="maria-page">
     <header class="maria-collection-head">
-      <p class="maria-eyebrow">The edge of the published site</p>
-      <h1>Explore</h1>
+      <p class="maria-eyebrow">Explore</p>
+      <h1>The unfinished edge.</h1>
       <p>
-        Start with the kind of artifact you are looking for. This index stays
-        deliberately small while the public collection grows.
+        Experimental and unusual public work will appear here when it is ready.
+      </p>
+      <p class="maria-note">
+        The <a href="/field-log/">Field Log</a> holds earlier working notes.
       </p>
     </header>
-
-    <nav class="maria-card-grid" aria-label="Explore the site">
-      {
-        areas.map((area) => (
-          <article class="maria-card">
-            <a href={area.href}>
-              <span
-                class:list={[
-                  "maria-card__mark",
-                  `maria-card__mark--${area.accent}`,
-                ]}
-                aria-hidden="true"
-              />
-              <p class="maria-card__eyebrow">Collection</p>
-              <h2>{area.label}</h2>
-              <p>{area.description}</p>
-              <span class="maria-card__meta">
-                Open <span aria-hidden="true">→</span>
-              </span>
-            </a>
-          </article>
-        ))
-      }
-    </nav>
-
-    <aside class="maria-boundary">
-      <p class="maria-eyebrow">Deliberate boundary</p>
-      <p>
-        Explore is a stable doorway, not a simulation of a larger knowledge
-        system. New paths will appear here only when the underlying public
-        material exists.
-      </p>
-    </aside>
   </div>
 </BaseLayout>

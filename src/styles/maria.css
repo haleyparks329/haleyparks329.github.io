@@ -15,14 +15,15 @@
 }
 
 :root {
-  --maria-paper: #f7f6f2;
-  --maria-surface: #fff9f1;
-  --maria-ink: #372826;
-  --maria-muted: #6c5b55;
-  --maria-line: #d9d0c6;
-  --maria-olive: #78812f;
-  --maria-rust: #91505b;
-  --maria-blue: #4f7891;
+  --maria-display: "Newsreader", Georgia, serif;
+  --maria-paper: #f5f0e7;
+  --maria-surface: #fcfaf5;
+  --maria-ink: #2d2926;
+  --maria-muted: #716a62;
+  --maria-line: #c9c0b4;
+  --maria-olive: #747d31;
+  --maria-rust: #7d3f4b;
+  --maria-blue: #3c708e;
   --maria-plum: #5b3038;
   --maria-shadow: 0 18px 45px rgb(55 40 38 / 8%);
   --maria-width: 78rem;
@@ -170,11 +171,15 @@ body.maria-site {
   letter-spacing: -0.025em;
 }
 
+.maria-card--project h2 {
+  margin-top: 0;
+}
+
 .maria-title {
   max-width: 15ch;
   margin: 0;
-  font-size: clamp(3rem, 6.3vw, 5.8rem);
-  line-height: 0.96;
+  font-size: clamp(2.45rem, 4.4vw, 4.15rem);
+  line-height: 1;
 }
 
 .maria-lede {
@@ -253,6 +258,10 @@ body.maria-site {
   background: var(--card-accent, var(--maria-olive));
 }
 
+.maria-card--project .maria-card__mark {
+  margin-bottom: 0;
+}
+
 .maria-card__mark--olive {
   --card-accent: var(--maria-olive);
 }
@@ -303,7 +312,7 @@ body.maria-site {
 
 .maria-collection-head .maria-title {
   max-width: none;
-  font-size: clamp(3rem, 5vw, 4.6rem);
+  font-size: clamp(2.4rem, 4.2vw, 3.75rem);
 }
 
 .maria-collection-head .maria-lede {
@@ -314,7 +323,7 @@ body.maria-site {
   max-width: 14ch;
   margin: 0;
   font-family: "Newsreader", Georgia, serif;
-  font-size: clamp(3rem, 6vw, 5.5rem);
+  font-size: clamp(2.4rem, 4.2vw, 3.75rem);
   font-weight: 500;
   letter-spacing: -0.035em;
   line-height: 0.98;
@@ -501,27 +510,6 @@ body.maria-site {
   text-decoration: none;
 }
 
-.maria-work-card__visual {
-  display: grid;
-  min-height: 12rem;
-  place-items: center;
-  border-radius: 1rem;
-  background: color-mix(
-    in srgb,
-    var(--card-accent, var(--maria-olive)) 14%,
-    var(--maria-paper)
-  );
-}
-
-.maria-work-card__visual span {
-  width: 5rem;
-  height: 5rem;
-  border: 1px solid var(--card-accent, var(--maria-olive));
-  border-radius: 50%;
-  box-shadow: 1.5rem 1.5rem 0 -0.4rem
-    color-mix(in srgb, var(--card-accent, var(--maria-olive)) 30%, transparent);
-}
-
 .maria-work-card h2 {
   margin-top: 0;
 }
@@ -573,7 +561,7 @@ body.maria-site {
   }
 
   .maria-title {
-    font-size: clamp(2.8rem, 14vw, 4.5rem);
+    font-size: clamp(2.35rem, 10.5vw, 3.45rem);
   }
 
   .maria-card-grid {
@@ -582,10 +570,6 @@ body.maria-site {
 
   .maria-card > a {
     min-height: 19rem;
-  }
-
-  .maria-work-card__visual {
-    min-height: 9rem;
   }
 }
 
