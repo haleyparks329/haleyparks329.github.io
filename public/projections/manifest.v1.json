@@ -1,0 +1,27 @@
+{
+  "schemaVersion": "1.0.0",
+  "projectionId": "wp6-public-projections",
+  "releaseId": "release-be290b33e38a203d",
+  "previousReleaseId": null,
+  "publishedAt": "2026-08-16T05:14:29.819Z",
+  "artifacts": [
+    {
+      "kind": "site",
+      "path": "/projections/releases/release-be290b33e38a203d/site-state.v1.json",
+      "schemaVersion": "1.0.0",
+      "sha256": "6e3736f6dfed43083c3c4d21a3c0299b26c6ed081b8aaea99b1e537d7de4e581"
+    },
+    {
+      "kind": "projects",
+      "path": "/projections/releases/release-be290b33e38a203d/projects.v1.json",
+      "schemaVersion": "1.0.0",
+      "sha256": "392f77e67c07b2db1789d39fbf4c5854f6947db722b60301a9f0f78737104105"
+    },
+    {
+      "kind": "world",
+      "path": "/projections/releases/release-be290b33e38a203d/world.v1.json",
+      "schemaVersion": "1.0.0",
+      "sha256": "61d22395d0386c4c33436f6db409b4ff983fc3525ec5d23187b9f5842262778c"
+    }
+  ]
+}

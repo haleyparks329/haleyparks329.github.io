@@ -1,0 +1,30 @@
+{
+  "schemaVersion": "1.0.0",
+  "policyId": "wp6-publication-policy",
+  "mode": "manual",
+  "enabled": false,
+  "killSwitch": true,
+  "classes": {
+    "forbidden": [
+      "credentials",
+      "private_content",
+      "access_control",
+      "identity_security"
+    ],
+    "humanReviewRequired": [
+      "site_state",
+      "project_state",
+      "world_projection",
+      "memories"
+    ],
+    "policyPublishable": [
+      "deterministic_link_normalization",
+      "freshness_status_update"
+    ]
+  },
+  "rules": {
+    "llmMayPublish": false,
+    "sensitiveDataMayPublish": false,
+    "humanApprovalRequired": true
+  }
+}

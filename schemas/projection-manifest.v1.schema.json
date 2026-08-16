@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://haleyparks329.github.io/schemas/projection-manifest.v1.schema.json",
+  "title": "Projection manifest v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "projectionId",
+    "releaseId",
+    "previousReleaseId",
+    "publishedAt",
+    "artifacts"
+  ],
+  "properties": {
+    "schemaVersion": { "const": "1.0.0" },
+    "projectionId": { "const": "wp6-public-projections" },
+    "releaseId": { "type": "string", "pattern": "^release-[a-f0-9]{16}$" },
+    "previousReleaseId": {
+      "type": ["string", "null"],
+      "pattern": "^release-[a-f0-9]{16}$"
+    },
+    "publishedAt": { "type": "string", "format": "date-time" },
+    "artifacts": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 3,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["kind", "path", "schemaVersion", "sha256"],
+        "properties": {
+          "kind": { "enum": ["site", "projects", "world"] },
+          "path": {
+            "type": "string",
+            "pattern": "^/projections/releases/release-[a-f0-9]{16}/.+\\.json$"
+          },
+          "schemaVersion": { "const": "1.0.0" },
+          "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,48 @@
+{
+  "schemaVersion": "1.0.0",
+  "generatedAt": "2026-08-16T00:00:00.000Z",
+  "projectionId": "world-public-main",
+  "status": "partial",
+  "places": [
+    {
+      "placeId": "place-workbench",
+      "name": "The Workbench",
+      "kind": "workspace",
+      "status": "active",
+      "href": "/projects/wonderful-digital-world/"
+    },
+    {
+      "placeId": "place-archive",
+      "name": "Public Archive",
+      "kind": "archive",
+      "status": "active",
+      "href": "/writing/"
+    }
+  ],
+  "residents": [
+    {
+      "residentId": "resident-bridget",
+      "name": "Bridget",
+      "role": "continuity resident",
+      "placeId": "place-workbench",
+      "status": "bounded"
+    }
+  ],
+  "activities": [
+    {
+      "activityId": "activity-wp6-projection",
+      "kind": "projection",
+      "summary": "Public projection boundary established",
+      "occurredAt": "2026-08-16T00:00:00.000Z",
+      "placeId": "place-workbench"
+    }
+  ],
+  "attention": [
+    {
+      "attentionId": "attention-live-world-source",
+      "summary": "Canonical live world source is not connected; this projection is intentionally partial.",
+      "severity": "info",
+      "placeId": "place-workbench"
+    }
+  ]
+}
