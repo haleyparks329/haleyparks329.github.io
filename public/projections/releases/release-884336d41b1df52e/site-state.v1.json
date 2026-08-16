@@ -9,7 +9,7 @@
   "identity": {
     "name": "Haley Parks",
     "canonicalUrl": "https://haleyparks329.github.io",
-    "description": "A public record of projects, research, field notes, and working systems."
+    "description": "A public record of projects, research, working notes, and systems."
   },
   "navigation": [
     {
@@ -28,9 +28,14 @@
       "href": "/writing/"
     },
     {
-      "id": "nav-field-log",
-      "label": "Field log",
-      "href": "/field-log/"
+      "id": "nav-memories",
+      "label": "Memories",
+      "href": "/memories/"
+    },
+    {
+      "id": "nav-explore",
+      "label": "Explore",
+      "href": "/explore/"
     }
   ],
   "featuredProjectIds": [

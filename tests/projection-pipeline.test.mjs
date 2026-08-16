@@ -53,6 +53,13 @@ test("publishes and validates the required public projection contracts", async (
   const { artifacts } = await validatePublished(root);
 
   assert.equal(result.receipt.status, "succeeded");
+  assert.deepEqual(artifacts.site.navigation, [
+    { id: "nav-home", label: "Home", href: "/" },
+    { id: "nav-projects", label: "Projects", href: "/projects/" },
+    { id: "nav-writing", label: "Writing", href: "/writing/" },
+    { id: "nav-memories", label: "Memories", href: "/memories/" },
+    { id: "nav-explore", label: "Explore", href: "/explore/" },
+  ]);
   assert.deepEqual(
     artifacts.projects.projects.map(({ projectId }) => projectId),
     [

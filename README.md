@@ -6,7 +6,18 @@ This repository owns the public presentation of Haley's projects: site design, n
 
 It does not own project implementation, private repository topology, production contracts, schemas, prompts, policies, or runtime orchestration.
 
-The presentation is adapted from the MIT-licensed [Maria Astro theme](https://github.com/xocothemes/maria). See [THIRD_PARTY_NOTICES.md](./THIRD_PARTY_NOTICES.md) for attribution and [docs/redesign/WP6_MARIA_MIGRATION.md](./docs/redesign/WP6_MARIA_MIGRATION.md) for the migration boundary and route inventory.
+The presentation is adapted from the MIT-licensed [Maria Astro theme](https://github.com/xocothemes/maria). See [THIRD_PARTY_NOTICES.md](./THIRD_PARTY_NOTICES.md) for attribution.
+
+The canonical implementation references are:
+
+- [Current website architecture](./docs/CURRENT_WEBSITE_ARCHITECTURE.md)
+- [Current design system](./docs/CURRENT_DESIGN_SYSTEM.md)
+- [Current route inventory](./docs/CURRENT_ROUTE_INVENTORY.md)
+- [World-view integration boundary](./docs/integrations/world-view-boundary.md)
+
+Completed redesign work packages are historical evidence under
+[`docs/archive/redesign-history/`](./docs/archive/redesign-history/); they are not
+current implementation guidance.
 
 ## Technology
 
@@ -32,7 +43,10 @@ Run the complete local validation suite:
 npm run validate
 ```
 
-Validation checks formatting, content relationships, Astro types, the static build, and internal links. Deployment performs the same repository-local validation before publishing the Pages artifact.
+Validation checks formatting, content relationships, memories and projection
+contracts, Astro types, the static build, current-site structure, and internal
+links. Deployment performs the same repository-local validation before
+publishing the Pages artifact.
 
 ## Content ownership
 
