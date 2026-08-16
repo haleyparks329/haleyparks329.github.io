@@ -1,5 +1,6 @@
 ---
 import { getCollection } from "astro:content";
+import ProjectCardVisual from "../../components/ProjectCardVisual.astro";
 import EditorialLayout from "../../layouts/EditorialLayout.astro";
 import { loadPublicProjections } from "../../data/public-projections.mjs";
 
@@ -42,9 +43,7 @@ const accents: Record<string, string> = {
             style={`--card-accent: ${accents[project.data.accent]}`}
           >
             <a href={`/projects/${project.data.slug}/`}>
-              <div class="maria-work-card__visual" aria-hidden="true">
-                <span />
-              </div>
+              <ProjectCardVisual slug={project.data.slug} compact />
               <div>
                 <p class="maria-eyebrow">{project.data.status}</p>
                 <h2>{project.data.title}</h2>

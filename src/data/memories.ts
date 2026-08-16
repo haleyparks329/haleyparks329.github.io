@@ -1,13 +1,36 @@
 import projection from "./public-memories.v1.json";
 
 export type MemoryLink = { label: string; href: string };
-export type PublicMemory = (typeof projection.memories)[number];
+export type PublicMemory = {
+  id: string;
+  slug: string;
+  title: string;
+  excerpt: string;
+  significance: string;
+  occurredAt: string;
+  publishedAt: string;
+  kind: string;
+  weight: string;
+  sourceLabel: string;
+  sourceType: string;
+  publicationMode: string;
+  publicEvidence: MemoryLink[];
+  relatedProjects: MemoryLink[];
+};
 
-export const memories = [...projection.memories].sort(
+type MemoryProjection = {
+  schemaVersion: string;
+  generatedAt: string;
+  memories: PublicMemory[];
+};
+
+const publicProjection = projection as MemoryProjection;
+
+export const memories = [...publicProjection.memories].sort(
   (a, b) => Date.parse(b.occurredAt) - Date.parse(a.occurredAt),
 );
 export const latestMemory = memories[0];
-export const memoryGeneratedAt = new Date(projection.generatedAt);
+export const memoryGeneratedAt = new Date(publicProjection.generatedAt);
 
 export type MemoryGroup = { label: string; memories: PublicMemory[] };
 
