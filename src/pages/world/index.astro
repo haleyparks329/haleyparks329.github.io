@@ -1,0 +1,410 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { loadWorldView } from "../../data/world-view";
+import {
+  WORLD_ROOMS,
+  countResidentsByRoom,
+} from "../../data/world-renderer-adapter";
+import { withBasePath } from "../../utils/site-path";
+
+const worldView = await loadWorldView();
+const projection =
+  worldView.state === "unavailable" ? null : worldView.projection;
+const roomCounts = countResidentsByRoom(projection);
+const basePath = import.meta.env.BASE_URL;
+const projectHref = withBasePath(
+  "/projects/wonderful-digital-world/",
+  basePath,
+);
+const manifestHref = withBasePath("/projections/manifest.v1.json", basePath);
+const stateCopy = {
+  fresh: "Verified and current",
+  partial: "Verified, intentionally partial",
+  stale: "Verified, but stale",
+  unavailable: "Projection unavailable",
+};
+const formatDate = (value: string) =>
+  new Intl.DateTimeFormat("en", {
+    dateStyle: "medium",
+    timeStyle: "short",
+    timeZone: "UTC",
+  }).format(new Date(value));
+---
+
+<BaseLayout
+  title="World View"
+  description="The pixel world renderer presenting Wonderful Digital World's reviewed public projection."
+  canonicalPath="/world/"
+>
+  <article
+    class="world-page"
+    data-world-shell
+    data-projection={projection ? JSON.stringify(projection) : ""}
+  >
+    <header class="world-intro">
+      <div>
+        <p class="world-eyebrow">Wonderful Digital World · public projection</p>
+        <h1>World View</h1>
+        <p>
+          A small pixel world for the reviewed state that Wonderful Digital
+          World has chosen to publish.
+        </p>
+      </div>
+      <aside class:list={["world-status", `world-status--${worldView.state}`]}>
+        <span aria-hidden="true"></span>
+        <div>
+          <strong>{stateCopy[worldView.state]}</strong>
+          {
+            worldView.state !== "unavailable" ? (
+              <small>
+                Published {formatDate(worldView.projection.generatedAt)} UTC
+              </small>
+            ) : (
+              <small>{worldView.reason}</small>
+            )
+          }
+        </div>
+      </aside>
+    </header>
+
+    <section class="world-console" aria-labelledby="renderer-heading">
+      <div class="world-console__bar">
+        <div>
+          <p class="world-kicker">Room</p>
+          <h2 id="renderer-heading" data-room-status>Outside room selected</h2>
+        </div>
+        <nav class="world-rooms" aria-label="World rooms">
+          {
+            WORLD_ROOMS.map((room) => (
+              <button
+                type="button"
+                data-room={room.key}
+                data-room-label={room.label}
+                aria-pressed={room.key === "outside" ? "true" : "false"}
+              >
+                {room.label}
+                {roomCounts[room.key] > 0 && (
+                  <span>{roomCounts[room.key]}</span>
+                )}
+              </button>
+            ))
+          }
+        </nav>
+      </div>
+
+      <div class="world-stage-wrap">
+        <div
+          class="world-stage"
+          data-world-stage
+          aria-label="Interactive pixel world"
+        >
+        </div>
+        <div class="world-overlay" data-world-loading role="status">
+          <span class="world-loader" aria-hidden="true"></span>
+          <p>Drawing the world…</p>
+        </div>
+        <div class="world-overlay" data-world-failure hidden>
+          <p>The world could not be drawn.</p>
+          <button type="button" data-world-retry>Try again</button>
+        </div>
+      </div>
+      <p class="world-console__note" data-room-note>
+        The renderer opens in its canonical Outside room. Choose Office to see
+        the currently published resident.
+      </p>
+    </section>
+
+    <section class="world-about" aria-labelledby="world-about-heading">
+      <div>
+        <p class="world-kicker">About this view</p>
+        <h2 id="world-about-heading">
+          A public window, not the private runtime.
+        </h2>
+      </div>
+      <div class="world-about__copy">
+        <p>
+          This alternate presentation uses a reviewed, sanitized public
+          projection. It can be partial or delayed. Private memory, credentials,
+          live resident state, and unpublished operations are never exposed
+          here.
+        </p>
+        <p>
+          The world uses the existing open-source renderer; this site only
+          translates published places and residents into its room and agent
+          controls.
+        </p>
+        <div class="world-links">
+          <a href={manifestHref}>Public manifest</a>
+          <a href={projectHref}>Project system page</a>
+          <a
+            href="https://github.com/Wonderful-Digital-World/wonderful-digital-world"
+            rel="noreferrer">WDW repository ↗</a
+          >
+          <a
+            href="https://github.com/Wonderful-Digital-World/world-view"
+            rel="noreferrer">World-view renderer ↗</a
+          >
+          <a
+            href="https://github.com/haleyparks329/haleyparks329.github.io"
+            rel="noreferrer">Website repository ↗</a
+          >
+        </div>
+        <p class="world-closing">Oh, this is the little digital world.</p>
+      </div>
+    </section>
+  </article>
+</BaseLayout>
+
+<script>
+  import "../../scripts/world-renderer";
+</script>
+
+<style>
+  .world-page {
+    width: min(calc(100% - 2rem), 90rem);
+    margin-inline: auto;
+    padding: clamp(2rem, 5vw, 5rem) 0 clamp(4rem, 8vw, 7rem);
+    overflow: hidden;
+  }
+  .world-intro {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: 2rem;
+    margin-bottom: clamp(1.5rem, 3vw, 2.5rem);
+  }
+  .world-eyebrow,
+  .world-kicker {
+    margin: 0 0 0.4rem;
+    color: var(--maria-muted);
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+  }
+  .world-intro h1,
+  .world-console h2,
+  .world-about h2 {
+    margin: 0;
+    font-family: var(--maria-display);
+    font-weight: 500;
+    line-height: 1;
+  }
+  .world-intro h1 {
+    font-size: clamp(3rem, 7vw, 6.5rem);
+    letter-spacing: -0.045em;
+  }
+  .world-intro > div > p:last-child {
+    max-width: 42rem;
+    margin: 0.8rem 0 0;
+    color: var(--maria-muted);
+  }
+  .world-status {
+    display: flex;
+    flex: 0 0 auto;
+    align-items: flex-start;
+    gap: 0.65rem;
+    max-width: 23rem;
+    padding: 0.8rem 1rem;
+    border: 1px solid var(--maria-line);
+    border-radius: 0.35rem;
+    background: var(--maria-surface);
+  }
+  .world-status > span {
+    width: 0.6rem;
+    height: 0.6rem;
+    margin-top: 0.35rem;
+    border-radius: 50%;
+    background: var(--maria-olive);
+  }
+  .world-status--stale > span,
+  .world-status--partial > span {
+    background: #b57c24;
+  }
+  .world-status--unavailable > span {
+    background: var(--maria-rust);
+  }
+  .world-status strong,
+  .world-status small {
+    display: block;
+  }
+  .world-status strong {
+    font-size: 0.82rem;
+  }
+  .world-status small {
+    color: var(--maria-muted);
+    font-size: 0.7rem;
+  }
+  .world-console {
+    overflow: hidden;
+    border: 1px solid #4d423b;
+    border-radius: 0.5rem;
+    background: #272321;
+    color: #f5f0e7;
+    box-shadow: var(--maria-shadow);
+  }
+  .world-console__bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    padding: 0.9rem 1rem;
+    border-bottom: 1px solid rgb(255 255 255 / 16%);
+  }
+  .world-console .world-kicker {
+    color: #bcb2aa;
+  }
+  .world-console h2 {
+    color: inherit;
+    font-size: 1.5rem;
+  }
+  .world-rooms {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 0.35rem;
+  }
+  .world-rooms button,
+  .world-overlay button {
+    border: 1px solid rgb(255 255 255 / 24%);
+    border-radius: 999px;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    font-size: 0.75rem;
+    cursor: pointer;
+  }
+  .world-rooms button {
+    padding: 0.45rem 0.7rem;
+  }
+  .world-rooms button[aria-pressed="true"] {
+    background: #f5f0e7;
+    color: #272321;
+  }
+  .world-rooms button span {
+    margin-left: 0.3rem;
+    font-size: 0.65rem;
+    opacity: 0.7;
+  }
+  .world-stage-wrap {
+    position: relative;
+    width: 100%;
+    height: clamp(30rem, 68vw, 52rem);
+    min-height: 30rem;
+    background: #1d1a19;
+  }
+  .world-stage,
+  .world-stage canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+  .world-overlay {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-content: center;
+    justify-items: center;
+    gap: 0.8rem;
+    background: #272321;
+    color: #f5f0e7;
+  }
+  .world-overlay[hidden] {
+    display: none;
+  }
+  .world-overlay p {
+    margin: 0;
+  }
+  .world-overlay button {
+    padding: 0.55rem 0.9rem;
+  }
+  .world-loader {
+    width: 1.35rem;
+    height: 1.35rem;
+    border: 2px solid rgb(255 255 255 / 24%);
+    border-top-color: #f5f0e7;
+    border-radius: 50%;
+    animation: world-spin 0.8s linear infinite;
+  }
+  .world-console__note {
+    margin: 0;
+    padding: 0.7rem 1rem;
+    border-top: 1px solid rgb(255 255 255 / 16%);
+    color: #bcb2aa;
+    font-size: 0.75rem;
+  }
+  .world-about {
+    display: grid;
+    grid-template-columns: minmax(15rem, 0.8fr) minmax(0, 1.4fr);
+    gap: clamp(2rem, 8vw, 8rem);
+    padding: clamp(3rem, 7vw, 6rem) 0 0;
+  }
+  .world-about h2 {
+    max-width: 13ch;
+    font-size: clamp(2rem, 4vw, 3.7rem);
+  }
+  .world-about__copy > p {
+    max-width: 49rem;
+    margin: 0 0 1rem;
+  }
+  .world-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.7rem 1.3rem;
+    margin-top: 1.8rem;
+    font-size: 0.8rem;
+  }
+  .world-closing {
+    margin-top: 2rem;
+    color: var(--maria-muted);
+    font-family: var(--maria-display);
+    font-size: clamp(1.35rem, 2.5vw, 2rem);
+    font-style: italic;
+  }
+  @keyframes world-spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  @media (max-width: 48rem) {
+    .world-intro,
+    .world-console__bar,
+    .world-about {
+      display: block;
+    }
+    .world-status {
+      width: 100%;
+      max-width: none;
+      margin-top: 1.5rem;
+    }
+    .world-rooms {
+      justify-content: flex-start;
+      margin-top: 0.8rem;
+    }
+    .world-stage-wrap {
+      height: 32rem;
+      min-height: 32rem;
+    }
+    .world-about__copy {
+      margin-top: 1.5rem;
+    }
+  }
+  @media (max-width: 30rem) {
+    .world-page {
+      width: min(calc(100% - 1rem), 90rem);
+    }
+    .world-stage-wrap {
+      height: 27rem;
+      min-height: 27rem;
+    }
+    .world-rooms button {
+      padding: 0.4rem 0.58rem;
+      font-size: 0.7rem;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .world-loader {
+      animation: none;
+    }
+  }
+</style>

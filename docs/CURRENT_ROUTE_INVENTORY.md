@@ -12,6 +12,7 @@ This is the canonical inventory of build-time routes. Classifications describe c
 | `/writing/`        | `src/pages/writing/index.astro`  | Monograph library        |
 | `/writing/[slug]/` | `src/pages/writing/[slug].astro` | Monograph entry          |
 | `/memories/`       | `src/pages/memories/index.astro` | Public memory layer      |
+| `/world/`          | `src/pages/world/index.astro`    | WDW public World View    |
 
 ## Specialized intentional
 

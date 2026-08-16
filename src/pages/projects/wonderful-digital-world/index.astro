@@ -2,12 +2,16 @@
 import { getEntry } from "astro:content";
 import EditorialLayout from "../../../layouts/EditorialLayout.astro";
 import { wonderfulDigitalWorld as report } from "../../../data/wonderful-digital-world";
+import { WORLD_VIEW_PATH } from "../../../data/world-view";
+import { withBasePath } from "../../../utils/site-path";
 
 const project = await getEntry("projects", "wonderful-digital-world");
 if (!project) throw new Error("Missing Wonderful Digital World project entry");
 
 const repository =
   "https://github.com/Wonderful-Digital-World/wonderful-digital-world";
+const basePath = import.meta.env.BASE_URL;
+const worldHref = withBasePath(WORLD_VIEW_PATH, basePath);
 ---
 
 <EditorialLayout
@@ -21,6 +25,7 @@ const repository =
       <p class="editorial-lede">{report.premise}</p>
       <p>{project.data.coreQuestion}</p>
       <div class="deep-links">
+        <a class="text-link" href={worldHref}>Enter World View</a>
         <a class="text-link" href="#evidence">See the evidence</a>
         <a class="text-link" href={repository} rel="noreferrer">
           Public repository ↗
@@ -44,6 +49,25 @@ const repository =
     <p class="section-label">D0 · Abstract</p>
     <h2 id="wdw-abstract">A world that can continue between sessions.</h2>
     {report.abstract.map((paragraph) => <p>{paragraph}</p>)}
+  </section>
+
+  <section class="project-section" aria-labelledby="wdw-world-view">
+    <p class="section-label">D2 · Public projection</p>
+    <h2 id="wdw-world-view">
+      World View is a window, not the private runtime.
+    </h2>
+    <p>
+      <a href={worldHref}>World View</a> renders the reviewed, checksummed public
+      projection shipped with this site. It contains only explicitly published places,
+      residents, activity, and attention. It does not connect to private resident
+      memory, credentials, live runtime state, or unpublished data.
+    </p>
+    <div class="deep-links">
+      <a href={worldHref}>Open World View</a>
+      <a href={withBasePath("/projections/manifest.v1.json", basePath)}>
+        Inspect the public manifest
+      </a>
+    </div>
   </section>
 
   <section class="project-section" aria-labelledby="wdw-loop">
@@ -129,10 +153,13 @@ const repository =
     <p class="section-label">D2 · Related systems</p>
     <h2 id="wdw-relations">Coordination without ownership.</h2>
     <p>
-      <a href="/projects/the-human-model/">The Human Model</a> owns its domain evidence
-      and evaluation. <a href="/projects/bridget/">Bridget</a> is an independent continuity
-      system. Wonderful Digital World explores how a wider environment could coordinate
-      bounded work around systems like these without becoming their compulsory interpreter.
+      <a href={withBasePath("/projects/the-human-model/", basePath)}
+        >The Human Model</a
+      > owns its domain evidence and evaluation. <a
+        href={withBasePath("/projects/bridget/", basePath)}>Bridget</a
+      > is an independent continuity system. Wonderful Digital World explores how
+      a wider environment could coordinate bounded work around systems like these
+      without becoming their compulsory interpreter.
     </p>
   </section>
 
