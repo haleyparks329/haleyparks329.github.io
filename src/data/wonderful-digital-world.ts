@@ -62,18 +62,18 @@ export const wonderfulDigitalWorld = {
         "https://github.com/Wonderful-Digital-World/wonderful-digital-world/tree/main/docs",
     },
     {
-      part: "World View projection",
-      status: "Fixture proof",
+      part: "Public projection contracts",
+      status: "Implemented and tested",
       detail:
-        "The separate viewer renders deterministic fixture scenarios through a semantic projection boundary; it is not connected to a live WDW backend.",
+        "Versioned, viewer-bounded projection contracts keep public state separate from private or operational state.",
       inspect:
-        "https://github.com/Wonderful-Digital-World/world-view/blob/main/docs/wp3-world-projection.md",
+        "https://github.com/Wonderful-Digital-World/wonderful-digital-world/tree/main/docs",
     },
     {
       part: "Production environment",
       status: "Planned",
       detail:
-        "A database adapter, production connectors and tools, and a live World View adapter are not present in the public implementation.",
+        "A database adapter, production connectors and tools, and a live projection adapter are not present in the public implementation.",
       inspect:
         "https://github.com/Wonderful-Digital-World/wonderful-digital-world",
     },
@@ -84,15 +84,10 @@ export const wonderfulDigitalWorld = {
       status: "Independent experimental integration",
       note: "Public materials explore an optional boundary with Bridget; Bridget is not required as the world interpreter or owner.",
     },
-    {
-      name: "Coach, Mini Me, and Banjo",
-      status: "Deterministic World View fixtures",
-      note: "These names make projection states inspectable in the viewer. They do not demonstrate live autonomous residents.",
-    },
   ],
   limitations: [
     "The reference inbox is in memory; it is not a production persistence layer.",
-    "No production connectors, external tool execution, or live World View adapter are included.",
+    "No production connectors, external tool execution, or live projection adapter are included.",
     "The viewer fixture does not yet prove sanitization, authentication, delay handling, identity policy, or a canonical activity taxonomy.",
     "Resident memory, private prompts, lived data, credentials, and production integrations are intentionally outside the public repository.",
     "The public code demonstrates a bounded seam, not a deployable personal world or general autonomy.",

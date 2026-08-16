@@ -1,0 +1,603 @@
+@font-face {
+  font-family: "Instrument Sans";
+  src: url("/fonts/instrument-sans-latin.woff2") format("woff2");
+  font-display: swap;
+  font-style: normal;
+  font-weight: 400 700;
+}
+
+@font-face {
+  font-family: "Newsreader";
+  src: url("/fonts/newsreader-latin.woff2") format("woff2");
+  font-display: swap;
+  font-style: normal;
+  font-weight: 400 700;
+}
+
+:root {
+  --maria-paper: #f7f6f2;
+  --maria-surface: #fff9f1;
+  --maria-ink: #372826;
+  --maria-muted: #6c5b55;
+  --maria-line: #d9d0c6;
+  --maria-olive: #78812f;
+  --maria-rust: #91505b;
+  --maria-blue: #4f7891;
+  --maria-plum: #5b3038;
+  --maria-shadow: 0 18px 45px rgb(55 40 38 / 8%);
+  --maria-width: 78rem;
+}
+
+html {
+  background: var(--maria-paper);
+  scroll-behavior: smooth;
+}
+
+body.maria-site {
+  min-width: 20rem;
+  margin: 0;
+  background: var(--maria-paper);
+  color: var(--maria-ink);
+  font-family: "Instrument Sans", system-ui, sans-serif;
+  line-height: 1.6;
+}
+
+.maria-site *,
+.maria-site *::before,
+.maria-site *::after {
+  box-sizing: border-box;
+}
+
+.maria-site a {
+  color: inherit;
+}
+
+.maria-site :focus-visible {
+  outline: 3px solid var(--maria-blue);
+  outline-offset: 4px;
+}
+
+.maria-skip {
+  position: fixed;
+  z-index: 100;
+  top: 0.75rem;
+  left: 0.75rem;
+  padding: 0.65rem 0.9rem;
+  border-radius: 999px;
+  background: var(--maria-ink);
+  color: var(--maria-surface) !important;
+  transform: translateY(-160%);
+}
+
+.maria-skip:focus {
+  transform: translateY(0);
+}
+
+.maria-header,
+.maria-footer,
+.maria-page {
+  width: min(calc(100% - 3rem), var(--maria-width));
+  margin-inline: auto;
+}
+
+.maria-header {
+  display: flex;
+  align-items: center;
+  min-height: 5rem;
+  border-bottom: 1px solid var(--maria-line);
+}
+
+.maria-header__inner {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+}
+
+.maria-brand {
+  font-family: "Newsreader", Georgia, serif;
+  font-size: 1.45rem;
+  font-weight: 600;
+  line-height: 1;
+  text-decoration: none;
+}
+
+.maria-nav {
+  display: flex;
+  align-items: center;
+  gap: clamp(1rem, 2.2vw, 2rem);
+  font-size: 0.94rem;
+}
+
+.maria-nav a {
+  position: relative;
+  text-decoration: none;
+}
+
+.maria-nav a::after {
+  position: absolute;
+  right: 0;
+  bottom: -0.35rem;
+  left: 0;
+  height: 1px;
+  background: currentColor;
+  content: "";
+  opacity: 0;
+  transform: scaleX(0.5);
+  transition:
+    opacity 160ms ease,
+    transform 160ms ease;
+}
+
+.maria-nav a:hover::after,
+.maria-nav a[aria-current="page"]::after {
+  opacity: 1;
+  transform: scaleX(1);
+}
+
+.maria-main {
+  min-height: 62vh;
+}
+
+.maria-page {
+  padding-block: clamp(4rem, 8vw, 7rem) 6rem;
+}
+
+.maria-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(16rem, 0.75fr);
+  gap: clamp(2rem, 7vw, 7rem);
+  align-items: end;
+  padding-bottom: clamp(4rem, 7vw, 6.5rem);
+}
+
+.maria-eyebrow {
+  margin: 0 0 1rem;
+  color: var(--maria-muted);
+  font-family: ui-monospace, "SFMono-Regular", Consolas, monospace;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+.maria-title,
+.maria-card h2,
+.maria-work-card h2 {
+  font-family: "Newsreader", Georgia, serif;
+  font-weight: 500;
+  letter-spacing: -0.025em;
+}
+
+.maria-title {
+  max-width: 15ch;
+  margin: 0;
+  font-size: clamp(3rem, 6.3vw, 5.8rem);
+  line-height: 0.96;
+}
+
+.maria-lede {
+  max-width: 38rem;
+  margin: 0;
+  color: var(--maria-muted);
+  font-size: clamp(1.05rem, 1.6vw, 1.25rem);
+}
+
+.maria-section-heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.maria-section-heading h2 {
+  margin: 0;
+  font-size: 0.78rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.maria-section-heading a {
+  color: var(--maria-muted);
+  font-size: 0.9rem;
+}
+
+.maria-card-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-auto-rows: 1fr;
+  gap: 1.25rem;
+}
+
+.maria-card,
+.maria-work-card {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--maria-line);
+  border-radius: 1.35rem;
+  background: var(--maria-surface);
+  box-shadow: 0 0 0 rgb(55 40 38 / 0%);
+  transition:
+    border-color 180ms ease,
+    box-shadow 180ms ease,
+    transform 180ms ease;
+}
+
+.maria-card:hover,
+.maria-work-card:hover {
+  border-color: color-mix(
+    in srgb,
+    var(--card-accent, var(--maria-olive)) 55%,
+    var(--maria-line)
+  );
+  box-shadow: var(--maria-shadow);
+  transform: translateY(-4px);
+}
+
+.maria-card > a {
+  display: flex;
+  height: 100%;
+  min-height: 22rem;
+  flex-direction: column;
+  padding: clamp(1.35rem, 3vw, 2rem);
+  text-decoration: none;
+}
+
+.maria-card__mark {
+  width: 3.5rem;
+  height: 0.35rem;
+  margin-bottom: auto;
+  border-radius: 999px;
+  background: var(--card-accent, var(--maria-olive));
+}
+
+.maria-card__mark--olive {
+  --card-accent: var(--maria-olive);
+}
+
+.maria-card__mark--rust {
+  --card-accent: var(--maria-rust);
+}
+
+.maria-card__mark--plum {
+  --card-accent: var(--maria-plum);
+}
+
+.maria-card__mark--blue {
+  --card-accent: var(--maria-blue);
+}
+
+.maria-card h2,
+.maria-work-card h2 {
+  margin: 3.5rem 0 0.65rem;
+  font-size: clamp(2rem, 3vw, 3rem);
+  line-height: 1;
+}
+
+.maria-card p,
+.maria-work-card p {
+  margin: 0;
+  color: var(--maria-muted);
+}
+
+.maria-card__meta,
+.maria-work-card__meta {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 1.75rem;
+  color: var(--maria-muted);
+  font-family: ui-monospace, "SFMono-Regular", Consolas, monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.maria-collection-head {
+  max-width: 51rem;
+  padding-bottom: clamp(3rem, 6vw, 5rem);
+}
+
+.maria-collection-head .maria-title {
+  max-width: none;
+  font-size: clamp(3rem, 5vw, 4.6rem);
+}
+
+.maria-collection-head .maria-lede {
+  margin-top: 1.5rem;
+}
+
+.maria-collection-head h1 {
+  max-width: 14ch;
+  margin: 0;
+  font-family: "Newsreader", Georgia, serif;
+  font-size: clamp(3rem, 6vw, 5.5rem);
+  font-weight: 500;
+  letter-spacing: -0.035em;
+  line-height: 0.98;
+}
+
+.maria-collection-head > p:not(.maria-eyebrow, .maria-note) {
+  max-width: 42rem;
+  margin: 1.5rem 0 0;
+  color: var(--maria-muted);
+  font-size: clamp(1.05rem, 1.6vw, 1.25rem);
+}
+
+.maria-note,
+.maria-card__eyebrow {
+  color: var(--maria-muted);
+  font-family: ui-monospace, "SFMono-Regular", Consolas, monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.maria-note {
+  margin: 1.5rem 0 0;
+}
+
+.maria-card__eyebrow {
+  margin-top: 3rem !important;
+}
+
+.maria-groups {
+  display: grid;
+  gap: clamp(4rem, 8vw, 7rem);
+}
+
+.maria-group {
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--maria-line);
+}
+
+.maria-group .maria-section-heading > p {
+  margin: 0;
+  color: var(--maria-muted);
+  font-family: ui-monospace, "SFMono-Regular", Consolas, monospace;
+  font-size: 0.72rem;
+}
+
+.maria-card--content {
+  display: flex;
+  min-height: 24rem;
+  flex-direction: column;
+  padding: clamp(1.35rem, 3vw, 2rem);
+}
+
+.maria-card--content .maria-card__mark {
+  margin-bottom: 0;
+}
+
+.maria-card h3 {
+  margin: 0.65rem 0;
+  font-family: "Newsreader", Georgia, serif;
+  font-size: clamp(1.7rem, 2.5vw, 2.5rem);
+  font-weight: 500;
+  letter-spacing: -0.025em;
+  line-height: 1.05;
+}
+
+.maria-card h3 a {
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.18em;
+}
+
+.maria-card__significance {
+  margin-top: 1.25rem !important;
+}
+
+.maria-card__trail {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem 1rem;
+  margin-top: auto;
+  padding-top: 2rem;
+  color: var(--maria-muted);
+  font-size: 0.78rem;
+}
+
+.maria-boundary {
+  max-width: 48rem;
+  margin-top: clamp(4rem, 8vw, 7rem);
+  padding: clamp(1.5rem, 4vw, 2.5rem);
+  border: 1px solid var(--maria-line);
+  border-radius: 1.35rem;
+  background: color-mix(in srgb, var(--maria-surface) 72%, transparent);
+}
+
+.maria-boundary p:last-child {
+  margin-bottom: 0;
+  color: var(--maria-muted);
+}
+
+.maria-prose > section,
+.maria-statement {
+  margin-top: clamp(4rem, 9vw, 8rem);
+}
+
+.maria-split,
+.maria-contact {
+  display: grid;
+  grid-template-columns: minmax(11rem, 0.65fr) minmax(0, 1.35fr);
+  gap: clamp(2rem, 8vw, 8rem);
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--maria-line);
+}
+
+.maria-split h2,
+.maria-contact h2 {
+  margin: 0;
+  font-family: "Newsreader", Georgia, serif;
+  font-size: clamp(1.7rem, 3vw, 2.7rem);
+  font-weight: 500;
+  letter-spacing: -0.025em;
+  line-height: 1.08;
+}
+
+.maria-split p:first-child,
+.maria-contact p:first-child {
+  margin-top: 0;
+}
+
+.maria-split p,
+.maria-contact p,
+.maria-principles li {
+  max-width: 42rem;
+  color: var(--maria-muted);
+}
+
+.maria-statement {
+  margin-inline: 0;
+  padding: clamp(2rem, 6vw, 5rem);
+  border-radius: 1.35rem;
+  background: var(--maria-plum);
+  color: var(--maria-surface);
+}
+
+.maria-statement p {
+  max-width: 23ch;
+  margin: 0;
+  font-family: "Newsreader", Georgia, serif;
+  font-size: clamp(2.2rem, 5vw, 4.8rem);
+  line-height: 1;
+}
+
+.maria-statement footer {
+  margin-top: 2rem;
+  font-family: ui-monospace, "SFMono-Regular", Consolas, monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.maria-principles ul {
+  display: grid;
+  gap: 1.25rem;
+  margin: 0;
+  padding-left: 1.25rem;
+}
+
+.maria-contact {
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--maria-line);
+}
+
+.maria-work-list {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.maria-work-card > a {
+  display: grid;
+  grid-template-columns: minmax(12rem, 0.7fr) minmax(0, 1.3fr);
+  gap: clamp(2rem, 7vw, 6rem);
+  align-items: center;
+  min-height: 18rem;
+  padding: clamp(1.5rem, 4vw, 3rem);
+  text-decoration: none;
+}
+
+.maria-work-card__visual {
+  display: grid;
+  min-height: 12rem;
+  place-items: center;
+  border-radius: 1rem;
+  background: color-mix(
+    in srgb,
+    var(--card-accent, var(--maria-olive)) 14%,
+    var(--maria-paper)
+  );
+}
+
+.maria-work-card__visual span {
+  width: 5rem;
+  height: 5rem;
+  border: 1px solid var(--card-accent, var(--maria-olive));
+  border-radius: 50%;
+  box-shadow: 1.5rem 1.5rem 0 -0.4rem
+    color-mix(in srgb, var(--card-accent, var(--maria-olive)) 30%, transparent);
+}
+
+.maria-work-card h2 {
+  margin-top: 0;
+}
+
+.maria-footer {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 2rem;
+  padding-block: 2rem 3rem;
+  border-top: 1px solid var(--maria-line);
+  color: var(--maria-muted);
+  font-size: 0.86rem;
+}
+
+.maria-footer p {
+  margin: 0;
+}
+
+.maria-footer nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+}
+
+@media (max-width: 760px) {
+  .maria-header {
+    min-height: auto;
+    padding-block: 1.25rem;
+  }
+
+  .maria-header__inner,
+  .maria-footer {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .maria-nav {
+    width: 100%;
+    overflow-x: auto;
+    padding-bottom: 0.35rem;
+  }
+
+  .maria-hero,
+  .maria-work-card > a,
+  .maria-split,
+  .maria-contact {
+    grid-template-columns: 1fr;
+  }
+
+  .maria-title {
+    font-size: clamp(2.8rem, 14vw, 4.5rem);
+  }
+
+  .maria-card-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .maria-card > a {
+    min-height: 19rem;
+  }
+
+  .maria-work-card__visual {
+    min-height: 9rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .maria-site *,
+  .maria-site *::before,
+  .maria-site *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}

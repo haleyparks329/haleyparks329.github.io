@@ -1,127 +1,62 @@
 ---
 import { getCollection } from "astro:content";
 import EditorialLayout from "../layouts/EditorialLayout.astro";
-import { projectDocumentForSlug } from "../data/project-documents";
-import { surpriseRoute } from "../data/wp2-content";
-import { flagshipRelationship } from "../data/wonderful-digital-world";
-import { latestMemory } from "../data/memories";
 
 const projects = (await getCollection("projects")).sort(
   (a, b) => a.data.order - b.data.order,
 );
-const humanModel = projects.find(
-  (project) => project.data.slug === "the-human-model",
-);
-const wonderfulDigitalWorld = projects.find(
-  (project) => project.data.slug === "wonderful-digital-world",
-);
-const humanModelDocument = projectDocumentForSlug("the-human-model");
-const currentWork = projects.filter((project) =>
-  ["bridget", "qa-agents", "career-intelligence"].includes(project.data.slug),
-);
+const featuredProjects = projects.slice(0, 4);
+const accents: Record<string, string> = {
+  rust: "var(--maria-rust)",
+  olive: "var(--maria-olive)",
+  plum: "var(--maria-plum)",
+  blue: "var(--maria-blue)",
+  khaki: "#8b8053",
+};
 ---
 
 <EditorialLayout
   description="Haley Parks builds and investigates personal models, persistent computational environments, and accountable agent systems."
 >
-  <section class="home-intro" aria-labelledby="home-title">
-    <div>
-      <p class="eyebrow">Haley Parks · Copenhagen</p>
-      <h1 id="home-title">
-        Systems for understanding people and coordinating computation.
-      </h1>
-      <p class="editorial-lede">
+  <div class="maria-page">
+    <section class="maria-hero" aria-labelledby="home-title">
+      <div>
+        <p class="maria-eyebrow">AI product engineer · Copenhagen</p>
+        <h1 class="maria-title" id="home-title">Systems made for people.</h1>
+      </div>
+      <p class="maria-lede">
         I build and investigate personal models, agent systems, and persistent
         computational environments. This is where I share the projects,
         evidence, and working notes behind that work.
       </p>
-    </div>
-  </section>
-
-  <section class="flagship-grid" aria-label="Flagship projects">
-    <article class="flagship">
-      <div>
-        <p class="eyebrow">Flagship · human systems</p>
-        <h2>{humanModel?.data.title ?? "The Human Model"}</h2>
-        <p>{humanModelDocument.summary}</p>
-        <p class="flagship__question">{humanModel?.data.coreQuestion}</p>
+    </section>
+    <section aria-labelledby="selected-work-title">
+      <div class="maria-section-heading">
+        <h2 id="selected-work-title">Selected work</h2>
+        <a href="/projects/">View all projects →</a>
       </div>
-      <div class="flagship__footer">
-        <a class="text-link" href="/projects/the-human-model/"
-          >Read the project report</a
-        >
-        <span class="meta-line">{humanModel?.data.status}</span>
+      <div class="maria-card-grid">
+        {
+          featuredProjects.map((project) => (
+            <article
+              class="maria-card"
+              style={`--card-accent: ${accents[project.data.accent]}`}
+            >
+              <a href={`/projects/${project.data.slug}/`}>
+                <span class="maria-card__mark" aria-hidden="true" />
+                <h2>{project.data.title}</h2>
+                <p>{project.data.summary}</p>
+                <div class="maria-card__meta">
+                  <>
+                    <span>{project.data.status}</span>
+                    <span>View project →</span>
+                  </>
+                </div>
+              </a>
+            </article>
+          ))
+        }
       </div>
-    </article>
-
-    <article class="flagship">
-      <div>
-        <p class="eyebrow">Flagship · persistent environments</p>
-        <h2>
-          {wonderfulDigitalWorld?.data.title ?? "Wonderful Digital World"}
-        </h2>
-        <p>{wonderfulDigitalWorld?.data.summary}</p>
-        <p class="flagship__question">
-          {wonderfulDigitalWorld?.data.coreQuestion}
-        </p>
-      </div>
-      <div class="flagship__footer">
-        <a class="text-link" href="/projects/wonderful-digital-world/">
-          Read the project report
-        </a>
-        <span class="meta-line">{wonderfulDigitalWorld?.data.status}</span>
-      </div>
-    </article>
-  </section>
-
-  <section class="relationship" aria-labelledby="relationship-title">
-    <p class="section-label" id="relationship-title">One inquiry, two scales</p>
-    <p>{flagshipRelationship}</p>
-  </section>
-
-  <section class="current-grid" aria-labelledby="current-title">
-    <div class="current-work">
-      <p class="section-label" id="current-title">Current work</p>
-      {
-        currentWork.map((project) => (
-          <article>
-            <span class="meta-line">{project.data.status}</span>
-            <div>
-              <h3>
-                <a href={`/projects/${project.data.slug}/`}>
-                  {project.data.title}
-                </a>
-              </h3>
-              <p>{project.data.summary}</p>
-            </div>
-          </article>
-        ))
-      }
-    </div>
-
-    {
-      latestMemory && (
-        <aside class="memory-note" aria-labelledby="memory-title">
-          <p class="section-label">Latest memory</p>
-          <h2 id="memory-title">
-            <a href={`/memories/#${latestMemory.slug}`}>{latestMemory.title}</a>
-          </h2>
-          <p>{latestMemory.excerpt}</p>
-          <p class="meta-line">
-            {new Date(latestMemory.occurredAt).toLocaleDateString("en", {
-              dateStyle: "medium",
-              timeZone: "UTC",
-            })}
-          </p>
-        </aside>
-      )
-    }
-  </section>
-
-  <div class="surprise">
-    <a href={surpriseRoute.href}>
-      <strong>{surpriseRoute.label}</strong>
-      <span>{surpriseRoute.description} →</span>
-    </a>
+    </section>
   </div>
 </EditorialLayout>

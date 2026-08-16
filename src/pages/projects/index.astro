@@ -1,8 +1,6 @@
 ---
 import { getCollection } from "astro:content";
 import EditorialLayout from "../../layouts/EditorialLayout.astro";
-import { projectDocumentForSlug } from "../../data/project-documents";
-import { flagshipRelationship } from "../../data/wonderful-digital-world";
 import { loadPublicProjections } from "../../data/public-projections.mjs";
 
 // WP6 build-time consumer: fail closed before rendering if the public release is invalid.
@@ -11,90 +9,57 @@ await loadPublicProjections();
 const projects = (await getCollection("projects")).sort(
   (a, b) => a.data.order - b.data.order,
 );
-const humanModel = projects.find(
-  (project) => project.data.slug === "the-human-model",
-);
-const wonderfulDigitalWorld = projects.find(
-  (project) => project.data.slug === "wonderful-digital-world",
-);
-const supportingProjects = projects.filter(
-  (project) =>
-    !["the-human-model", "wonderful-digital-world"].includes(project.data.slug),
-);
-const humanModelDocument = projectDocumentForSlug("the-human-model");
+const accents: Record<string, string> = {
+  rust: "var(--maria-rust)",
+  olive: "var(--maria-olive)",
+  plum: "var(--maria-plum)",
+  blue: "var(--maria-blue)",
+  khaki: "#8b8053",
+};
 ---
 
 <EditorialLayout
   title="Projects"
   description="Flagship and supporting systems built and investigated by Haley Parks."
-  eyebrow="Project index"
 >
-  <section class="projects-intro" aria-labelledby="projects-title">
-    <div>
-      <h1 id="projects-title">Research projects at two scales.</h1>
-      <p class="editorial-lede">
+  <div class="maria-page">
+    <header class="maria-collection-head">
+      <p class="maria-eyebrow">Projects</p>
+      <h1 class="maria-title" id="projects-title">
+        Selected systems and investigations.
+      </h1>
+      <p class="maria-lede">
         The flagships explore a person and a persistent computational
         environment. Supporting systems investigate the memory, evidence,
         coordination, and quality work needed between them.
       </p>
-    </div>
-    <aside>
-      Status language is literal: active, experimental, partial, and not built
-      mean different things. Project pages show the evidence and boundaries
-      behind each claim.
-    </aside>
-  </section>
-
-  <section class="projects-flagships" aria-label="Flagship projects">
-    <article class="project-feature">
-      <p class="eyebrow">Flagship · human systems</p>
-      <h2>{humanModel?.data.title ?? "The Human Model"}</h2>
-      <p>{humanModelDocument.summary}</p>
-      <p class="flagship__question">{humanModel?.data.coreQuestion}</p>
-      <a
-        class="project-feature__link text-link"
-        href="/projects/the-human-model/">Read the project report</a
-      >
-    </article>
-    <article class="project-feature">
-      <p class="eyebrow">Flagship · persistent environments</p>
-      <h2>{wonderfulDigitalWorld?.data.title ?? "Wonderful Digital World"}</h2>
-      <p>{wonderfulDigitalWorld?.data.summary}</p>
-      <p class="flagship__question">
-        {wonderfulDigitalWorld?.data.coreQuestion}
-      </p>
-      <a
-        class="project-feature__link text-link"
-        href="/projects/wonderful-digital-world/"
-      >
-        Read the project report
-      </a>
-    </article>
-  </section>
-
-  <section class="relationship" aria-labelledby="projects-relationship-title">
-    <p class="section-label" id="projects-relationship-title">
-      The connective tissue
-    </p>
-    <p>{flagshipRelationship}</p>
-  </section>
-
-  <section class="supporting-projects" aria-labelledby="supporting-title">
-    <p class="section-label" id="supporting-title">Supporting systems</p>
-    <div class="project-list">
+    </header>
+    <section class="maria-work-list" aria-label="All projects">
       {
-        supportingProjects.map((project) => (
-          <article class="project-row">
-            <h3>
-              <a href={`/projects/${project.data.slug}/`}>
-                {project.data.title}
-              </a>
-            </h3>
-            <p>{project.data.summary}</p>
-            <span class="meta-line">{project.data.status}</span>
+        projects.map((project) => (
+          <article
+            class="maria-work-card"
+            style={`--card-accent: ${accents[project.data.accent]}`}
+          >
+            <a href={`/projects/${project.data.slug}/`}>
+              <div class="maria-work-card__visual" aria-hidden="true">
+                <span />
+              </div>
+              <div>
+                <p class="maria-eyebrow">{project.data.status}</p>
+                <h2>{project.data.title}</h2>
+                <p>{project.data.summary}</p>
+                <div class="maria-work-card__meta">
+                  <>
+                    <span>{project.data.tags.slice(0, 2).join(" · ")}</span>
+                    <span>View project →</span>
+                  </>
+                </div>
+              </div>
+            </a>
           </article>
         ))
       }
-    </div>
-  </section>
+    </section>
+  </div>
 </EditorialLayout>
