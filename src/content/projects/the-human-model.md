@@ -1,9 +1,9 @@
 ---
 title: "The Human Model"
 slug: "the-human-model"
-summary: "A research project about longitudinal, source-backed evidence, uncertainty, predictions, and outcomes for one changing human system."
+summary: "What does software need to remember about a person when the person keeps changing? A longitudinal model for connecting observations, uncertainty, decisions, and outcomes without turning a human into one static profile."
 longDescription: "The Human Model is the evidence and domain-model layer beneath review surfaces: observations retain provenance, uncertainty stays visible, and hypotheses can be evaluated against later outcomes."
-coreQuestion: "Can scattered human signals become structured evidence that supports better decisions as the person changes?"
+coreQuestion: "How do you represent a person in software when the person keeps changing?"
 status: "Active · Building in public"
 featured: true
 accent: "rust"

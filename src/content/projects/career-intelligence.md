@@ -1,9 +1,9 @@
 ---
 title: "Career Intelligence"
 slug: "career-intelligence"
-summary: "A synthetic case study in source-backed career claims, transferable capabilities, uncertainty, and honest gaps."
+summary: "A resume is a view of a person, not the person. Career Intelligence explores evidence-first career reasoning: transferable capabilities, honest gaps, uncertainty, and what a person can actually support before the wording starts."
 longDescription: "Career Intelligence follows fictional educator Andy Barks from evidence to a transparent supported/partial/unsupported role comparison without publishing a reusable career engine."
-coreQuestion: "Can AI understand the person behind a career history instead of only matching keywords in a resume?"
+coreQuestion: "Can software reason about the person behind a career history instead of matching keywords in a document?"
 status: "Active project"
 featured: true
 accent: "olive"

@@ -1,9 +1,9 @@
 ---
 title: "QA Agents"
 slug: "qa-agents"
-summary: "A case study in deterministic evidence before bounded agent investigation."
+summary: "I built QA Agents after realizing my time was better spent judging a good investigation than manually tracing every bug. The project explores evidence-first agent work: when to act, when to block, and when the correct answer is to abstain."
 longDescription: "QA Agents demonstrates evidence-first investigation, acted/blocked/abstained outcomes, five responsibility-bound roles, and a human-reviewed Little Bytes case study."
-coreQuestion: "Which parts of software-quality work benefit from agents, and which still require direct human reasoning?"
+coreQuestion: "What evidence should an agent need before it acts on a software problem?"
 status: "Experimental"
 featured: true
 accent: "blue"

@@ -12,6 +12,49 @@ const repository =
   "https://github.com/Wonderful-Digital-World/wonderful-digital-world";
 const basePath = import.meta.env.BASE_URL;
 const worldHref = withBasePath(WORLD_VIEW_PATH, basePath);
+
+const openingSections = [
+  {
+    label: "Research question",
+    id: "wdw-research-question",
+    heading: "Why is the human still the orchestration layer?",
+    paragraphs: [
+      "That question is the reason Wonderful Digital World exists.",
+      "A surprising amount of “using software” is really a person operating the control plane: remembering where information lives, moving it between tools, repeating context, noticing failed automation, checking whether something finished, and reconstructing decisions the computer has already seen.",
+      "I do not want AI to replace the interesting human part. I want software to take responsibility for more of the software part.",
+    ],
+  },
+  {
+    label: "Abstract",
+    id: "wdw-abstract",
+    heading:
+      "The human provides the human things. The computer handles the computer things.",
+    paragraphs: [
+      "Wonderful Digital World is an experiment in a persistent computational environment: a world that continues to hold state, evidence, work, and outcomes even when a particular chat, model, interface, or process ends.",
+      "Inside that world, deterministic software provides structure where guarantees matter—persistence, identity, provenance, permissions, routing, retries, lifecycle, and canonical state. AI is used where ambiguity earns its cost: interpretation, synthesis, prioritization, recommendations, and uncertain classification.",
+      "The goal is not maximum autonomy. It is better placement of responsibility. Mechanical coordination should disappear into software; intent, judgment, consent, taste, and consequential decisions should remain meaningfully human.",
+    ],
+  },
+  {
+    label: "Origin",
+    id: "wdw-origin",
+    heading: "A feature should reduce operation, not relocate it.",
+    paragraphs: [
+      "A chatbot can make a command easier to phrase while still leaving the human responsible for everything underneath it. If I still have to remember the context, tell the system which tool to use, notice when it failed, retry it, reconcile the result, and decide where the new state belongs, the interaction changed but the operating burden did not.",
+      "WDW treats repeated coordination work as an architectural problem. Work becomes durable. Evidence keeps provenance. Domains retain ownership of their canonical state. Residents receive bounded context for their role and authority. Interfaces can change without becoming the world itself.",
+      "That is also why the system can be whimsical on the surface without depending on the whimsy underneath. Telegram, a website, a tiny pixel world, voice, or something I have not tried yet can all be interfaces into the same persistent world.",
+    ],
+  },
+  {
+    label: "What it does",
+    id: "wdw-what-it-does",
+    heading: "Deterministic where possible; agentic where valuable.",
+    paragraphs: [
+      "LLMs are components, not the architecture. The architecture is the set of boundaries that let reasoning happen without confusing reasoning with authority: evidence, durable WorkItems, bounded residents, domain ownership, proposed actions, viewer-scoped projections, and explicit capability checks.",
+      "The point is not to remove the human from the loop. It is to move the human to the part of the loop where being human is useful.",
+    ],
+  },
+];
 ---
 
 <EditorialLayout
@@ -22,8 +65,6 @@ const worldHref = withBasePath(WORLD_VIEW_PATH, basePath);
   <header class="project-hero">
     <div>
       <h1>{project.data.title}</h1>
-      <p class="editorial-lede">{report.premise}</p>
-      <p>{project.data.coreQuestion}</p>
       <div class="deep-links">
         <a class="text-link" href={worldHref}>Enter World View</a>
         <a class="text-link" href="#evidence">See the evidence</a>
@@ -45,11 +86,17 @@ const worldHref = withBasePath(WORLD_VIEW_PATH, basePath);
     </aside>
   </header>
 
-  <section class="project-section" aria-labelledby="wdw-abstract">
-    <p class="section-label">D0 · Abstract</p>
-    <h2 id="wdw-abstract">A world that can continue between sessions.</h2>
-    {report.abstract.map((paragraph) => <p>{paragraph}</p>)}
-  </section>
+  {
+    openingSections.map((section) => (
+      <section class="project-section" aria-labelledby={section.id}>
+        <p class="section-label">{section.label}</p>
+        <h2 id={section.id}>{section.heading}</h2>
+        {section.paragraphs.map((paragraph) => (
+          <p>{paragraph}</p>
+        ))}
+      </section>
+    ))
+  }
 
   <section class="project-section" aria-labelledby="wdw-world-view">
     <p class="section-label">D2 · Public projection</p>

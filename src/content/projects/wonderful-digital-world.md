@@ -1,9 +1,9 @@
 ---
 title: "Wonderful Digital World"
 slug: "wonderful-digital-world"
-summary: "A public architecture for a persistent computational environment that can preserve context, coordinate bounded work, and keep human authority explicit."
+summary: "Why is the human still the orchestration layer? WDW is my experiment in persistent software that can carry context, coordinate bounded work, and handle the computer work while leaving intent, judgment, and consent with the human."
 longDescription: "Wonderful Digital World investigates how durable state, provenance, explicit authority, and viewer-safe projections can reduce the coordination work people repeatedly perform for their computers."
-coreQuestion: "What changes when the computational environment can maintain context and coordinate bounded work without taking ownership of human judgment?"
+coreQuestion: "What changes when the computer can handle the coordination work without taking over the human decisions?"
 status: "Active · Public architecture and tested reference seam"
 featured: true
 accent: "blue"
