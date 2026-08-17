@@ -1,8 +1,8 @@
 {
   "schema": "wdw.systems.v1",
-  "generatedAt": "2026-08-17T17:18:33.623177+00:00",
-  "sourceObservedAt": "2026-08-10T18:04:46.598005+00:00",
-  "releaseDelayHours": 24.0,
+  "generatedAt": "2026-08-17T18:03:17.141280+00:00",
+  "sourceObservedAt": "2026-08-17T18:02:35.951000+00:00",
+  "releaseDelayHours": 0.0,
   "state": "partial",
   "residents": {
     "total": 4,
@@ -10,11 +10,11 @@
     "needsAttention": 0
   },
   "intelligence": {
-    "thoughts": null,
-    "candidates": null,
-    "reviewed": null,
-    "meanSimilarity": null,
+    "thoughts": 72,
+    "candidates": 360,
+    "reviewed": 0,
+    "meanSimilarity": 0.7283508168976477,
     "precisionAtK": null,
-    "precisionAtKState": "unknown"
+    "precisionAtKState": "insufficient-evidence"
   }
 }
