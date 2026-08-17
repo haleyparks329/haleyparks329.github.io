@@ -1,7 +1,8 @@
 import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { extname, join, relative } from "node:path";
+import { fileURLToPath } from "node:url";
 
-const distDir = new URL("../dist/", import.meta.url).pathname;
+const distDir = fileURLToPath(new URL("../dist/", import.meta.url));
 
 if (!existsSync(distDir)) {
   console.error("dist/ does not exist. Run npm run build first.");

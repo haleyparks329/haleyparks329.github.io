@@ -1,0 +1,20 @@
+{
+  "schema": "wdw.systems.v1",
+  "generatedAt": "2026-08-17T17:18:33.623177+00:00",
+  "sourceObservedAt": "2026-08-10T18:04:46.598005+00:00",
+  "releaseDelayHours": 24.0,
+  "state": "partial",
+  "residents": {
+    "total": 4,
+    "active": 0,
+    "needsAttention": 0
+  },
+  "intelligence": {
+    "thoughts": null,
+    "candidates": null,
+    "reviewed": null,
+    "meanSimilarity": null,
+    "precisionAtK": null,
+    "precisionAtKState": "unknown"
+  }
+}

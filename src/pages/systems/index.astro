@@ -1,0 +1,599 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import systemsProjectionJson from "../../data/systems.json";
+import { loadSystemsView, SYSTEMS_STALE_AFTER_HOURS } from "../../data/systems";
+import { withBasePath } from "../../utils/site-path";
+
+const view = await loadSystemsView({ source: systemsProjectionJson });
+const projection = view.availability === "available" ? view.projection : null;
+const stale = view.availability === "available" && view.stale;
+const basePath = import.meta.env.BASE_URL;
+
+const count = (value: number | null | undefined) =>
+  value === null || value === undefined
+    ? "Unavailable"
+    : value.toLocaleString("en-US");
+const decimal = (value: number | null | undefined) =>
+  value === null || value === undefined ? "Unavailable" : value.toFixed(3);
+const timestamp = (value: string | undefined) => {
+  if (!value) return "Unavailable";
+  return `${new Intl.DateTimeFormat("en-GB", {
+    dateStyle: "medium",
+    timeStyle: "short",
+    timeZone: "UTC",
+  }).format(new Date(value))} UTC`;
+};
+
+const qualityStatement = !projection
+  ? "Unavailable"
+  : projection.intelligence.reviewed === 0
+    ? "Unknown — no human-reviewed labels"
+    : projection.intelligence.precisionAtK === null
+      ? "Unavailable — insufficient evidence"
+      : `${(projection.intelligence.precisionAtK * 100).toFixed(1)}% precision at K`;
+
+const statusLabel = !projection
+  ? "Snapshot unavailable"
+  : stale
+    ? "Snapshot stale"
+    : projection.state === "ready"
+      ? "Snapshot available"
+      : `Snapshot ${projection.state}`;
+---
+
+<BaseLayout
+  title="Systems"
+  description="A delayed, aggregate-only view of the public systems behind Haley Parks' work."
+  canonicalPath="/systems/"
+>
+  <article class="systems-shell">
+    <header class="systems-hero">
+      <p class="systems-kicker">Public systems surface</p>
+      <h1>Systems</h1>
+      <p class="systems-lede">
+        A quiet, read-only window onto the systems I am building. This page
+        consumes one sanitized public projection; it does not connect to private
+        runtime state.
+      </p>
+      <div
+        class:list={[
+          "snapshot-state",
+          {
+            stale,
+            unavailable: !projection,
+          },
+        ]}
+      >
+        <span aria-hidden="true"></span>
+        <strong>{statusLabel}</strong>
+        {
+          projection && (
+            <small>
+              Generated {timestamp(projection.generatedAt)} ·{" "}
+              {projection.releaseDelayHours}-hour release delay
+            </small>
+          )
+        }
+      </div>
+    </header>
+
+    {
+      !projection ? (
+        <section class="notice" aria-labelledby="systems-unavailable">
+          <p class="systems-kicker">Last known state</p>
+          <h2 id="systems-unavailable">No verified snapshot is available.</h2>
+          <p>
+            {view.availability === "unavailable"
+              ? view.reason
+              : "The public export is unavailable."}
+            The rest of this page remains online to explain the boundary and
+            publication path.
+          </p>
+        </section>
+      ) : (
+        <>
+          {stale && (
+            <aside class="notice" aria-label="Stale snapshot notice">
+              This static snapshot is more than {SYSTEMS_STALE_AFTER_HOURS}{" "}
+              hours old. The values below are preserved as the last verified
+              public state, not presented as live data.
+            </aside>
+          )}
+
+          <section aria-labelledby="systems-summary">
+            <div class="section-heading">
+              <p class="systems-kicker">Snapshot summary</p>
+              <h2 id="systems-summary">What the public export can say</h2>
+            </div>
+            <dl class="metric-grid">
+              <div>
+                <>
+                  <dt>Residents</dt>
+                  <dd>{count(projection.residents.total)}</dd>
+                </>
+              </div>
+              <div>
+                <>
+                  <dt>Active</dt>
+                  <dd>{count(projection.residents.active)}</dd>
+                </>
+              </div>
+              <div>
+                <>
+                  <dt>Needs attention</dt>
+                  <dd>{count(projection.residents.needsAttention)}</dd>
+                </>
+              </div>
+              <div>
+                <>
+                  <dt>Source observed</dt>
+                  <dd class="metric-date">
+                    {timestamp(projection.sourceObservedAt)}
+                  </dd>
+                </>
+              </div>
+            </dl>
+          </section>
+
+          <section class="split-section" aria-labelledby="systems-residents">
+            <div>
+              <p class="systems-kicker">Residents</p>
+              <h2 id="systems-residents">Aggregate presence, deliberately.</h2>
+            </div>
+            <div>
+              <p>
+                The public contract exposes three counts: total residents,
+                active residents, and residents needing attention. It does not
+                publish names, profiles, health details, identifiers, private
+                notes, or an activity feed.
+              </p>
+              <p>
+                “Active” and “needs attention” are projection states, not
+                judgments about a person. The aggregate is all this page knows.
+              </p>
+            </div>
+          </section>
+
+          <section aria-labelledby="systems-intelligence">
+            <div class="section-heading">
+              <p class="systems-kicker">Thought Intelligence</p>
+              <h2 id="systems-intelligence">
+                A matching experiment with evidence limits.
+              </h2>
+              <p>
+                The experiment ranks possible relationships between thoughts.
+                Similarity is a ranking signal, not proof that a match is
+                correct and not a measure of model accuracy.
+              </p>
+            </div>
+            <dl class="intelligence-grid">
+              <div>
+                <>
+                  <dt>Thoughts</dt>
+                  <dd>{count(projection.intelligence.thoughts)}</dd>
+                </>
+              </div>
+              <div>
+                <>
+                  <dt>Candidates</dt>
+                  <dd>{count(projection.intelligence.candidates)}</dd>
+                </>
+              </div>
+              <div>
+                <>
+                  <dt>Human reviewed</dt>
+                  <dd>{count(projection.intelligence.reviewed)}</dd>
+                </>
+              </div>
+              <div>
+                <>
+                  <dt>Mean similarity</dt>
+                  <dd>{decimal(projection.intelligence.meanSimilarity)}</dd>
+                </>
+              </div>
+              <div class="quality">
+                <>
+                  <dt>Model quality</dt>
+                  <dd>{qualityStatement}</dd>
+                </>
+              </div>
+            </dl>
+            <p class="evidence-note">
+              Precision at K:{" "}
+              {projection.intelligence.precisionAtK === null
+                ? "Unavailable"
+                : decimal(projection.intelligence.precisionAtK)}
+              . Evidence state:{" "}
+              <code>{projection.intelligence.precisionAtKState}</code>.
+            </p>
+          </section>
+        </>
+      )
+    }
+
+    <section class="flow-section" aria-labelledby="systems-flow">
+      <div class="section-heading">
+        <p class="systems-kicker">Data flow</p>
+        <h2 id="systems-flow">A one-way publication boundary</h2>
+      </div>
+      <ol class="flow">
+        <li>
+          <span>01</span><strong>Private local state</strong><small
+            >Remains in the system workspace.</small
+          >
+        </li>
+        <li>
+          <span>02</span><strong>Allowlisted projection</strong><small
+            >Only aggregate contract fields pass.</small
+          >
+        </li>
+        <li>
+          <span>03</span><strong>24-hour delay</strong><small
+            >Recent observations are excluded.</small
+          >
+        </li>
+        <li>
+          <span>04</span><strong>Static website</strong><small
+            >The last committed snapshot works offline.</small
+          >
+        </li>
+      </ol>
+      <p>
+        This site receives the exported JSON only. It never receives the private
+        Command Center database, local paths, work items, resident identifiers,
+        or credentials.
+      </p>
+    </section>
+
+    <section class="provenance" aria-labelledby="systems-provenance">
+      <div>
+        <p class="systems-kicker">Provenance</p>
+        <h2 id="systems-provenance">How to read this snapshot</h2>
+      </div>
+      <dl>
+        <div>
+          <dt>Schema</dt><dd>
+            <code>{projection?.schema ?? "wdw.systems.v1"}</code>
+          </dd>
+        </div>
+        <div>
+          <dt>Generated</dt><dd>{timestamp(projection?.generatedAt)}</dd>
+        </div>
+        <div>
+          <dt>Source observed</dt><dd>
+            {timestamp(projection?.sourceObservedAt)}
+          </dd>
+        </div>
+        <div>
+          <dt>Release delay</dt><dd>
+            {
+              projection
+                ? `${projection.releaseDelayHours} hours`
+                : "Minimum 24 hours"
+            }
+          </dd>
+        </div>
+        <div>
+          <dt>Sanitization</dt><dd>
+            Explicit allowlist plus privacy validation
+          </dd>
+        </div>
+        <div>
+          <dt>Freshness</dt><dd>{projection ? statusLabel : "Unavailable"}</dd>
+        </div>
+      </dl>
+    </section>
+
+    <nav class="system-links" aria-label="Related systems">
+      <a href={withBasePath("/world/", basePath)}
+        ><span>Experience</span>Digital World →</a
+      >
+      <a href={withBasePath("/projects/wonderful-digital-world/", basePath)}
+        ><span>Architecture</span>Wonderful Digital World →</a
+      >
+      <a
+        href="https://github.com/Wonderful-Digital-World/wonderful-digital-world"
+        rel="noreferrer"><span>Source</span>Public repository ↗</a
+      >
+      <a href={withBasePath("/projects/the-human-model/", basePath)}
+        ><span>Related project</span>The Human Model →</a
+      >
+    </nav>
+  </article>
+</BaseLayout>
+
+<style>
+  .systems-shell {
+    width: min(calc(100% - 3rem), var(--maria-width));
+    margin: 0 auto;
+    padding: clamp(3.5rem, 8vw, 7rem) 0 6rem;
+  }
+  .systems-hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(18rem, 0.58fr);
+    gap: 2rem 5rem;
+    align-items: end;
+    padding-bottom: 3rem;
+    border-bottom: 1px solid var(--maria-line);
+  }
+  .systems-hero h1 {
+    grid-column: 1;
+    margin: 0;
+    font-family: var(--maria-display);
+    font-size: clamp(4.5rem, 12vw, 9.5rem);
+    font-weight: 400;
+    line-height: 0.82;
+    letter-spacing: -0.055em;
+  }
+  .systems-kicker {
+    margin: 0 0 0.7rem;
+    color: var(--maria-rust);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+  .systems-lede {
+    grid-column: 1;
+    max-width: 47rem;
+    margin: 1rem 0 0;
+    font-family: var(--maria-display);
+    font-size: clamp(1.35rem, 2.6vw, 2.1rem);
+    line-height: 1.25;
+  }
+  .snapshot-state {
+    grid-column: 2;
+    grid-row: 2 / 4;
+    display: grid;
+    grid-template-columns: 0.7rem 1fr;
+    gap: 0.35rem 0.7rem;
+    align-items: center;
+    padding: 1.25rem;
+    border: 1px solid var(--maria-line);
+    background: var(--maria-surface);
+  }
+  .snapshot-state > span {
+    width: 0.7rem;
+    height: 0.7rem;
+    border-radius: 50%;
+    background: var(--maria-olive);
+  }
+  .snapshot-state.stale > span {
+    background: var(--maria-rust);
+  }
+  .snapshot-state.unavailable > span {
+    background: var(--maria-muted);
+  }
+  .snapshot-state small {
+    grid-column: 2;
+    color: var(--maria-muted);
+    line-height: 1.45;
+  }
+  section,
+  .flow-section {
+    padding: clamp(3rem, 7vw, 5.5rem) 0;
+    border-bottom: 1px solid var(--maria-line);
+  }
+  h2 {
+    max-width: 55rem;
+    margin: 0;
+    font-family: var(--maria-display);
+    font-size: clamp(2rem, 5vw, 4.3rem);
+    font-weight: 400;
+    line-height: 1.02;
+    letter-spacing: -0.035em;
+  }
+  .section-heading > p:last-child {
+    max-width: 46rem;
+    margin: 1.25rem 0 0;
+    color: var(--maria-muted);
+    font-size: 1.05rem;
+    line-height: 1.65;
+  }
+  .metric-grid,
+  .intelligence-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    margin: 2.5rem 0 0;
+    border-top: 1px solid var(--maria-line);
+    border-left: 1px solid var(--maria-line);
+  }
+  .metric-grid > div,
+  .intelligence-grid > div {
+    min-height: 9rem;
+    padding: 1.2rem;
+    border-right: 1px solid var(--maria-line);
+    border-bottom: 1px solid var(--maria-line);
+    background: color-mix(in srgb, var(--maria-surface) 68%, transparent);
+  }
+  dt {
+    color: var(--maria-muted);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+  }
+  dd {
+    margin: 0.65rem 0 0;
+    font-family: var(--maria-display);
+    font-size: clamp(1.6rem, 3vw, 2.8rem);
+    line-height: 1.05;
+  }
+  .metric-date {
+    max-width: 11rem;
+    font-size: 1.25rem;
+    line-height: 1.25;
+  }
+  .split-section {
+    display: grid;
+    grid-template-columns: 0.8fr 1.2fr;
+    gap: 3rem 7rem;
+  }
+  .split-section p {
+    max-width: 42rem;
+    margin: 0 0 1rem;
+    color: var(--maria-muted);
+    font-size: 1.05rem;
+    line-height: 1.7;
+  }
+  .intelligence-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+  .intelligence-grid .quality {
+    grid-column: span 4;
+    min-height: auto;
+  }
+  .intelligence-grid .quality dd {
+    font-size: clamp(1.45rem, 2.8vw, 2.35rem);
+  }
+  .evidence-note {
+    color: var(--maria-muted);
+  }
+  code {
+    font-size: 0.86em;
+    overflow-wrap: anywhere;
+  }
+  .notice {
+    margin-top: 2rem;
+    padding: 1.5rem;
+    border: 1px solid var(--maria-rust);
+    background: color-mix(in srgb, var(--maria-rust) 7%, var(--maria-surface));
+  }
+  aside.notice {
+    padding: 1.25rem 1.5rem;
+    line-height: 1.6;
+  }
+  .flow {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    margin: 2.5rem 0 1.5rem;
+    padding: 1px;
+    list-style: none;
+    background: var(--maria-line);
+  }
+  .flow li {
+    display: flex;
+    min-height: 11rem;
+    flex-direction: column;
+    padding: 1.25rem;
+    background: var(--maria-surface);
+  }
+  .flow span {
+    color: var(--maria-rust);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+  }
+  .flow strong {
+    margin-top: auto;
+    font-family: var(--maria-display);
+    font-size: 1.35rem;
+    font-weight: 500;
+  }
+  .flow small {
+    margin-top: 0.45rem;
+    color: var(--maria-muted);
+    line-height: 1.45;
+  }
+  .flow-section > p {
+    max-width: 54rem;
+    color: var(--maria-muted);
+    line-height: 1.65;
+  }
+  .provenance {
+    display: grid;
+    grid-template-columns: 0.8fr 1.2fr;
+    gap: 3rem 7rem;
+  }
+  .provenance dl {
+    margin: 0;
+    border-top: 1px solid var(--maria-line);
+  }
+  .provenance dl > div {
+    display: grid;
+    grid-template-columns: 10rem 1fr;
+    gap: 1rem;
+    padding: 0.9rem 0;
+    border-bottom: 1px solid var(--maria-line);
+  }
+  .provenance dd {
+    margin: 0;
+    font-family: inherit;
+    font-size: 1rem;
+    line-height: 1.4;
+  }
+  .system-links {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1px;
+    margin-top: 3rem;
+    padding: 1px;
+    background: var(--maria-line);
+  }
+  .system-links a {
+    display: flex;
+    min-height: 7rem;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 1.25rem;
+    background: var(--maria-surface);
+    color: var(--maria-ink);
+    font-family: var(--maria-display);
+    font-size: 1.45rem;
+    text-decoration: none;
+  }
+  .system-links a:hover {
+    background: color-mix(
+      in srgb,
+      var(--maria-olive) 10%,
+      var(--maria-surface)
+    );
+  }
+  .system-links span {
+    margin-bottom: 0.4rem;
+    color: var(--maria-muted);
+    font-family: sans-serif;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  @media (max-width: 800px) {
+    .systems-hero,
+    .split-section,
+    .provenance {
+      grid-template-columns: 1fr;
+    }
+    .snapshot-state {
+      grid-column: 1;
+      grid-row: auto;
+    }
+    .metric-grid,
+    .intelligence-grid,
+    .flow {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .intelligence-grid .quality {
+      grid-column: span 2;
+    }
+  }
+  @media (max-width: 520px) {
+    .systems-shell {
+      width: min(calc(100% - 2rem), var(--maria-width));
+    }
+    .metric-grid,
+    .intelligence-grid,
+    .flow,
+    .system-links {
+      grid-template-columns: 1fr;
+    }
+    .intelligence-grid .quality {
+      grid-column: 1;
+    }
+    .provenance dl > div {
+      grid-template-columns: 1fr;
+      gap: 0.35rem;
+    }
+  }
+</style>
