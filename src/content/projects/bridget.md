@@ -1,9 +1,9 @@
 ---
 title: "Bridget"
 slug: "bridget"
-summary: "A persistent software resident for continuity and reconciliation within bounded domains."
+summary: "Bridget exists because I got tired of reconstructing context my computer had already seen. She is a bounded software resident for continuity, reconciliation, and getting the right information back in front of me when it matters."
 longDescription: "Bridget preserves source references, continuity, visible ambiguity, and reviewed corrections without becoming the database, universal gateway, or canonical owner of domain evidence."
-coreQuestion: "Can software carry context between systems without taking over the thinking that context is meant to support?"
+coreQuestion: "Can software carry context forward without becoming the owner of everything it touches?"
 status: "Active · Private V1"
 featured: true
 accent: "plum"

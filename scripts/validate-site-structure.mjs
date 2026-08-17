@@ -77,7 +77,10 @@ const expectedHeaderItems = [
 if (JSON.stringify(headerItems) !== JSON.stringify(expectedHeaderItems)) {
   fail("primary header links or order differ from the canonical navigation");
 }
-if (!/class="maria-brand" href="\/"/.test(header)) {
+if (
+  !/const regularHref = resolveHref\("\/"\);/.test(header) ||
+  !/<a\s+class="maria-brand"\s+href=\{regularHref\}/.test(header)
+) {
   fail("Haley Parks brand does not link to Home");
 }
 const siteConfig = readFileSync(

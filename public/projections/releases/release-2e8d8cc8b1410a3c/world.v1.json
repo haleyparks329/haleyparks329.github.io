@@ -1,0 +1,55 @@
+{
+  "schemaVersion": "1.0.0",
+  "generatedAt": "2026-08-16T00:00:00.000Z",
+  "projectionId": "world-public-main",
+  "status": "partial",
+  "places": [
+    {
+      "placeId": "workshop",
+      "name": "Workshop",
+      "kind": "workspace",
+      "status": "active",
+      "href": "/projects/wonderful-digital-world/"
+    },
+    {
+      "placeId": "lab",
+      "name": "Lab",
+      "kind": "research",
+      "status": "active",
+      "href": "/projects/wonderful-digital-world/"
+    },
+    {
+      "placeId": "outside",
+      "name": "Outside",
+      "kind": "commons",
+      "status": "active",
+      "href": "/world/"
+    }
+  ],
+  "residents": [
+    {
+      "residentId": "resident-bridget",
+      "name": "Bridget",
+      "role": "continuity resident",
+      "placeId": "workshop",
+      "status": "bounded"
+    }
+  ],
+  "activities": [
+    {
+      "activityId": "activity-wp6-projection",
+      "kind": "projection",
+      "summary": "Public projection boundary established",
+      "occurredAt": "2026-08-16T00:00:00.000Z",
+      "placeId": "workshop"
+    }
+  ],
+  "attention": [
+    {
+      "attentionId": "attention-live-world-source",
+      "summary": "Canonical live world source is not connected; this projection is intentionally partial.",
+      "severity": "info",
+      "placeId": "workshop"
+    }
+  ]
+}

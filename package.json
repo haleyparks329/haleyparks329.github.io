@@ -21,13 +21,14 @@
     "projections:rollback": "node scripts/rollback-projections.mjs",
     "validate:projections": "node scripts/validate-projections.mjs",
     "check:projection-health": "node scripts/check-projection-health.mjs",
-    "test:projections": "node --test tests/projection-pipeline.test.mjs",
+    "test:projections": "node --experimental-strip-types --test tests/projection-pipeline.test.mjs tests/world-view.test.mjs",
     "maintenance:check": "npm run validate:memories && npm run validate:relationships && npm run validate:projections && npm run check:projection-health && npm run validate:assets && npm run check && npm run build:site && npm run validate:structure && npm run validate:links",
     "validate": "npm run format:check && npm run test:projections && npm run maintenance:check"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.6.0",
-    "astro": "^7.0.8"
+    "astro": "^7.0.8",
+    "pixi.js": "^8.19.0"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.5",

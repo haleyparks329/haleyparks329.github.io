@@ -18,14 +18,26 @@ const projects = (await getCollection("projects"))
   <article class="maria-page about-page">
     <header class="maria-collection-head about-hero">
       <p class="maria-eyebrow">About</p>
-      <h1>{siteConfig.tagline}</h1>
-      <p>{siteConfig.description}</p>
+      <h1>Hi, I’m Haley.</h1>
+      <p>
+        I’m an AI Product Engineer and systems person who likes figuring out
+        where the human is doing work the computer should have been doing all
+        along.
+      </p>
+      <p>
+        Most of what I build sits somewhere between software engineering,
+        product thinking, data, AI, and human-computer interaction. I tend to
+        start with an irritation—why am I entering this again? Why did this
+        context disappear? Why does this system need me to remember how it
+        works?—and keep pulling on it until it turns into an architecture
+        problem.
+      </p>
     </header>
 
     <dl class="about-facts" aria-label="Profile">
       <div>
         <dt>Role</dt>
-        <dd>{siteConfig.role}</dd>
+        <dd>AI Product Engineer</dd>
       </div>
       <div>
         <dt>Based in</dt>
@@ -33,7 +45,7 @@ const projects = (await getCollection("projects"))
       </div>
       <div>
         <dt>Focus</dt>
-        <dd>Data, behavior, context, and goals</dd>
+        <dd>Human-centered interaction systems</dd>
       </div>
     </dl>
 
@@ -41,19 +53,56 @@ const projects = (await getCollection("projects"))
       <div>
         <p class="maria-eyebrow">Public work</p>
         <h2 id="work-heading">
-          Systems that keep evidence and human context visible.
+          I build systems that make the computer carry more of the system.
         </h2>
       </div>
       <div class="about-copy">
         <p>
-          The projects on this site explore source-backed human models,
-          persistent computational environments, bounded AI investigation, and
-          the interfaces that make those systems understandable.
+          I am interested in persistent state, provenance, adaptive interfaces,
+          bounded autonomy, observability, and models that can change without
+          pretending uncertainty disappeared.
         </p>
         <p>
-          The writing develops the same questions in another form: how to
-          preserve context, build evidence before autonomy, and design tools for
-          whole people.
+          The Human Model asks how software can represent a changing person.
+          Wonderful Digital World asks why the person is still responsible for
+          orchestrating all the software around them. Bridget explores
+          continuity across that world. QA Agents explores evidence and
+          authority before action. Career Intelligence asks what happens when
+          career reasoning starts with the person’s evidence instead of the
+          document meant to summarize it.
+        </p>
+        <p>
+          They look like different projects, but they keep running into the same
+          underlying idea: technology should fit the person better than the
+          person has to fit the technology.
+        </p>
+      </div>
+    </section>
+
+    <section class="about-section" aria-labelledby="philosophy-heading">
+      <div>
+        <p class="maria-eyebrow">Philosophy</p>
+        <h2 id="philosophy-heading">
+          Human-centered is an engineering constraint.
+        </h2>
+      </div>
+      <div class="about-copy">
+        <p>
+          For me, human-centered technology is not just friendly copy or a nicer
+          interface. It changes where state lives, how much context a system
+          asks a person to repeat, whether uncertainty is visible, how expensive
+          it is to change your mind, what an agent is allowed to do, and whether
+          the interface can adapt without becoming the source of truth.
+        </p>
+        <p>
+          I want the human doing the human things: intent, judgment, creativity,
+          taste, consent, correction, meaning. I want the computer doing more of
+          the persistence, retrieval, routing, synchronization, bookkeeping,
+          evidence gathering, and state tracking.
+        </p>
+        <p>
+          The goal is not to automate being human. The goal is to stop making
+          humans operate computers quite so much.
         </p>
       </div>
     </section>
@@ -85,17 +134,25 @@ const projects = (await getCollection("projects"))
     <section class="about-section" aria-labelledby="availability-heading">
       <div>
         <p class="maria-eyebrow">Availability</p>
-        <h2 id="availability-heading">Open to relevant opportunities.</h2>
+        <h2 id="availability-heading">
+          I’m looking for smart people building interesting things.
+        </h2>
       </div>
       <div class="about-copy">
-        <p>{siteConfig.availability}</p>
+        <p>
+          I’m especially interested in engineering roles where product judgment,
+          systems thinking, AI, and human-centered design overlap. The title
+          matters less to me than the chance to build useful, technically
+          serious things with people who care how the system feels to the humans
+          inside it.
+        </p>
       </div>
     </section>
 
     <section class="maria-contact" aria-labelledby="contact-heading">
       <div>
         <p class="maria-eyebrow">Contact</p>
-        <h2 id="contact-heading">Get in touch.</h2>
+        <h2 id="contact-heading">Come say hi.</h2>
       </div>
       <div>
         <p>

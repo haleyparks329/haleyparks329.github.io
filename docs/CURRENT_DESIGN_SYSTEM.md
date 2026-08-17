@@ -19,6 +19,8 @@ The body face is the readable sans-serif stack defined by the tokens. Display he
 
 The primary navigation is exactly: **Haley Parks → Home**, **Projects**, **Writing**, **Memories**, and **Explore**. The Haley Parks wordmark links to `/`. About is a secondary footer destination. Search is also secondary. Field Log is retired and must not appear in navigation.
 
+The Regular View / World View switch is a separate, labeled control adjacent to the primary navigation. It uses ordinary URL navigation, preserves the primary navigation's names and order, exposes the active view with `aria-current`, and remains usable with keyboard focus and at mobile widths.
+
 Navigation must retain a visible keyboard focus state, accurate `aria-current`, meaningful landmarks, and a working skip link. Mobile navigation may wrap, but must not reorder, hide, or rename destinations.
 
 ## Cards and collections

@@ -15,6 +15,37 @@ if (!project) {
 const workspace = workspaceForSlug(project.data.slug);
 const repositoryUrl = "https://github.com/haleyparks329/bridget-architecture";
 
+const openingSections = [
+  {
+    label: "Research question",
+    id: "bridget-overview",
+    heading: "Why am I reconstructing context my computer has already seen?",
+    paragraphs: [
+      "Bridget started much smaller than the system she lives in now. I wanted an easy way to send information somewhere and have it end up in the right place without turning every capture into another administrative task for me.",
+      "Over time, that became a continuity problem: how can software remember what matters across tools and moments, notice when something needs reconciliation, and bring the right context back without pretending it owns every domain underneath it?",
+    ],
+  },
+  {
+    label: "Abstract",
+    id: "bridget-abstract",
+    heading: "A resident for continuity, not a universal brain.",
+    paragraphs: [
+      "Bridget is a bounded software resident. Her job is continuity and reconciliation: preserve references, carry useful context forward, notice unresolved work, and help coordinate what needs attention.",
+      "The boundary matters. Bridget is not the Human Model, not the database, and not the canonical owner of every piece of state she can see. She can interpret, route, surface, and propose. The underlying domains still own their own truth.",
+      "That is what makes her useful to me: I can change the interface without making the interface the system.",
+    ],
+  },
+  {
+    label: "Origin",
+    id: "bridget-origin",
+    heading: "I want to think once when once is enough.",
+    paragraphs: [
+      "I do not mind making a decision. I mind having to remake the same decision because the context disappeared into another tool, another conversation, or another month.",
+      "Bridget is part of my attempt to delegate that cognitive administration without delegating ownership of the decision itself.",
+    ],
+  },
+];
+
 const responsibilities = [
   [
     "Event",
@@ -95,50 +126,35 @@ const artifacts = [
     documentSummary="What Bridget is, the continuity problem it solves, and the deliberate boundary it keeps before autonomy."
   >
     <div class="bridget-document">
-      <section class="lead-section" aria-labelledby="bridget-overview">
-        <p class="section-label">Project brief</p>
-        <h2 id="bridget-overview">
-          Personal orchestration without another app
-        </h2>
-        <p class="lead">
-          Bridget is a private, deterministic system for turning scattered
-          messages and inputs into durable, inspectable context. It organizes
-          information, maintains continuity across time, exposes uncertainty for
-          correction, and returns one coherent view through interfaces I already
-          use.
-        </p>
-        <nav class="hero-links" aria-label="Bridget primary resources">
-          <a href="/writing/i-did-not-want-another-app/"
-            >Read the origin story</a
+      {
+        openingSections.map((section, index) => (
+          <section
+            class={index === 0 ? "lead-section" : undefined}
+            aria-labelledby={section.id}
           >
-          <a href="/writing/what-i-built-instead-of-an-agent/">
-            Read the architecture case study
-          </a>
-          <ExternalLink
-            href={repositoryUrl}
-            label="Explore the public architecture repository"
-            ariaLabel="Explore the Bridget public architecture repository (opens externally)"
-          />
-        </nav>
-      </section>
-
-      <section aria-labelledby="the-problem">
-        <p class="section-label">Why it exists</p>
-        <h2 id="the-problem">The problem was reconstructing context</h2>
-        <p>
-          Useful information lived across messages, tools, projects, and
-          personal systems. Remembering both the context and where it had been
-          recorded became work of its own. Isolated logs lost meaning over time,
-          while another dashboard would have added another behavior to maintain.
-        </p>
-        <p>
-          Bridget began with the opposite constraint: let the software adapt to
-          behavior already in place. The full evolution is in
-          <a href="/writing/i-did-not-want-another-app/">
-            I Did Not Want Another App
-          </a>.
-        </p>
-      </section>
+            <p class="section-label">{section.label}</p>
+            <h2 id={section.id}>{section.heading}</h2>
+            {section.paragraphs.map((paragraph) => (
+              <p class={index === 0 ? "lead" : undefined}>{paragraph}</p>
+            ))}
+            {index === 0 && (
+              <nav class="hero-links" aria-label="Bridget primary resources">
+                <a href="/writing/i-did-not-want-another-app/">
+                  Read the origin story
+                </a>
+                <a href="/writing/what-i-built-instead-of-an-agent/">
+                  Read the architecture case study
+                </a>
+                <ExternalLink
+                  href={repositoryUrl}
+                  label="Explore the public architecture repository"
+                  ariaLabel="Explore the Bridget public architecture repository (opens externally)"
+                />
+              </nav>
+            )}
+          </section>
+        ))
+      }
 
       <section aria-labelledby="what-bridget-does">
         <p class="section-label">V1 responsibilities</p>

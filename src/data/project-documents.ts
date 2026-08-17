@@ -1,4 +1,12 @@
 export type ReportLink = { href: string; label: string; external?: boolean };
+export type OpeningSection = {
+  id: string;
+  heading: string;
+  paragraphs: string[];
+  pullquote?: string;
+  steps?: string[];
+  links?: ReportLink[];
+};
 export type ReportStep = { title: string; text: string };
 export type TechnicalGroup = { title: string; items: string[] };
 export type StatusRow = {
@@ -13,6 +21,7 @@ export type ProjectDocumentData = {
   reportType: string;
   summary: string;
   links: ReportLink[];
+  openingSections?: OpeningSection[];
   abstract: string[];
   why: string[];
   actuallyDoes: { intro: string; steps: string[] };
@@ -49,6 +58,70 @@ export const projectDocuments: Record<string, ProjectDocumentData> = {
     summary:
       "A longitudinal evidence and domain-model project connecting provenance, uncertainty, hypotheses, and outcomes.",
     links: [repositories.human],
+    openingSections: [
+      {
+        id: "research-question",
+        heading:
+          "How do you represent a person in software when the person keeps changing?",
+        paragraphs: [
+          "People are not static profiles. Preferences change. Bodies change. Plans change. New evidence can make an old conclusion wrong. A useful human model has to preserve that history instead of constantly replacing it with the latest summary.",
+          "That means treating human context as longitudinal, provenance-aware, reviewable state: what was observed, what was inferred, what was confirmed, what changed, and why.",
+        ],
+      },
+      {
+        id: "abstract",
+        heading: "I am not a Markdown file.",
+        paragraphs: [
+          "That line started as a rant about agent memory. If everything important about a person lives in one Markdown file, it gets stale, grows into a mess, and quietly turns old assumptions into current truth. I wanted something that could change with the person while still remembering how it got there.",
+          "The Human Model is my attempt to build that representation. It connects source-backed observations with interpretations, claims, corrections, interventions, and later outcomes. Important state stays reviewable, uncertainty stays visible, and a new conclusion does not have to erase the path that produced the old one.",
+          "I started with bodybuilding because I already had the problem in front of me: training, nutrition, recovery, measurements, plans, wearable data, and my own observations all described parts of the same changing system. The architecture grew from trying to reason across those parts without pretending any one signal was the whole person.",
+        ],
+      },
+      {
+        id: "origin",
+        heading: "Bodybuilding made the context problem impossible to ignore.",
+        pullquote:
+          "I started by trying to model my training. Somewhere along the way, the harder question became: what does it mean to model a person at all?",
+        paragraphs: [
+          "My data was already scattered across workout logs, nutrition apps, Apple Health, coaching notes, measurements, screenshots, and whatever I happened to notice that week. Each source was useful on its own. The problem was keeping the relationships between them.",
+          "If a training block went badly, I did not only care about the final number. I cared what the plan was, what actually happened, what else was going on, what I believed at the time, and whether that belief survived contact with the outcome. That pushed the project away from “personal dashboard” and toward a domain model built around provenance, longitudinal state, corrections, and uncertainty.",
+        ],
+      },
+      {
+        id: "what-it-does",
+        heading: "A review loop, not a machine for declaring truth.",
+        paragraphs: [
+          "The Human Model separates evidence from interpretation and interpretation from accepted state. A source can report something without making it true forever, and a model can make a useful inference without being allowed to silently promote that inference into fact.",
+        ],
+        steps: [
+          "Capture an observation with its source and time.",
+          "Preserve the evidence and its provenance.",
+          "Interpret it without hiding uncertainty.",
+          "Form reviewable claims, hypotheses, or predictions.",
+          "Compare those ideas with later outcomes.",
+          "Let corrections and new evidence change future state without erasing history.",
+        ],
+      },
+      {
+        id: "motif",
+        heading: "“I am not a Markdown file” became bigger than this project.",
+        paragraphs: [
+          "The same idea now shows up across several of my systems. A resume is not the person. A chat transcript is not the world. A dashboard is not the underlying state. A projection is not the source of truth.",
+          "Summaries are useful interfaces. They just should not quietly become the thing they summarize.",
+        ],
+        links: [
+          {
+            href: "/projects/career-intelligence/",
+            label: "Career Intelligence",
+          },
+          {
+            href: "/projects/wonderful-digital-world/",
+            label: "Wonderful Digital World",
+          },
+          { href: "/projects/bridget/", label: "Bridget" },
+        ],
+      },
+    ],
     abstract: [
       "The Human Model asks how software can represent one changing person without flattening observations into isolated scores.",
       "It owns its domain evidence and evaluation. Interfaces may help capture or present context, but they do not own the model.",
@@ -165,6 +238,43 @@ export const projectDocuments: Record<string, ProjectDocumentData> = {
     summary:
       "An Andy Barks case study in source-backed claims, transferable capabilities, uncertainty, and honest gaps.",
     links: [repositories.career],
+    openingSections: [
+      {
+        id: "core-question",
+        heading: "A resume is a view of a person. What gets lost in the view?",
+        paragraphs: [
+          "Career Intelligence started as a practical job-search problem: I wanted help adapting career materials without one-shotting prompts or rewriting myself into whatever a job description happened to ask for.",
+          "That quickly became a representation problem. Job titles are incomplete. Resumes are compressed. Transferable skills cross role boundaries. Reflection can be useful without being evidence. And being capable of doing a job is not the same question as whether the environment is a good fit.",
+        ],
+      },
+      {
+        id: "what-it-does",
+        heading: "Evidence before language.",
+        paragraphs: [
+          "Career Intelligence separates what the evidence supports from how that evidence is eventually described. Source-backed facts stay distinct from wording, gaps remain visible, and claims can be supported, partial, or unsupported instead of being polished into certainty.",
+          "The public project demonstrates those ideas with a fictional person and a small, inspectable role comparison. The deeper system is about reasoning from a career history without treating the resume as the canonical person model.",
+        ],
+      },
+      {
+        id: "why-built",
+        heading:
+          "I wanted the story to be truthful before I made it persuasive.",
+        paragraphs: [
+          "Good positioning should help someone see the shape that is already there. It should not invent experience to make the shape fit.",
+          "That means reasoning about capabilities, evidence, uncertainty, environment, and honest gaps before generating the sentence that goes on the page.",
+        ],
+      },
+      {
+        id: "human-model-bridge",
+        heading: "Another reason I am not a Markdown file.",
+        paragraphs: [
+          "The Human Model asks how software can represent a changing person without flattening them into one static summary. Career Intelligence applies the same instinct to a narrower problem: a resume is useful, but it is still only a projection of a much larger history.",
+        ],
+        links: [
+          { href: "/projects/the-human-model/", label: "The Human Model" },
+        ],
+      },
+    ],
     abstract: [
       "Career Intelligence starts with what the evidence can support rather than rewriting a person to match a job description.",
       "The public repository follows a fictional librarian and educator through one transparent role comparison.",
@@ -274,6 +384,35 @@ export const projectDocuments: Record<string, ProjectDocumentData> = {
     links: [
       { href: "/projects/qa-agents/demo/", label: "Little Bytes case study" },
       repositories.qa,
+    ],
+    openingSections: [
+      {
+        id: "core-question",
+        heading:
+          "What should happen after software changes, but before an agent acts?",
+        paragraphs: [
+          "QA Agents started when I was the only QA person on a team and realized that a lot of my time was going into investigation a computer could perform faster than I could.",
+          "The interesting part was not “can I make an agent debug something?” It was deciding what the agent should have to know before it acted, where its responsibility ended, and what should come back to the human for judgment.",
+        ],
+      },
+      {
+        id: "what-it-does",
+        heading: "Evidence first. Action second.",
+        paragraphs: [
+          "QA Agents is a case study in bounded software investigation. Deterministic evidence is established before agent reasoning, missing evidence stays visible, and each role has a specific responsibility rather than broad permission to “fix the problem.”",
+          "An investigation can end in three useful ways: acted, blocked, or abstained. Acting means the evidence and authority were sufficient for the bounded task. Blocked means something required is missing. Abstained means the work is outside the role’s authority.",
+          "Sometimes the trustworthy behavior is doing nothing and explaining why.",
+        ],
+      },
+      {
+        id: "why-built",
+        heading:
+          "I would rather review a good investigation than manually trace every bug.",
+        paragraphs: [
+          "The human value in QA is not typing every command or personally collecting every artifact. It is understanding expected behavior, judging risk, spotting when the evidence does not support the conclusion, and deciding what should happen next.",
+          "QA Agents explores how much of the investigative bookkeeping can move into software while keeping that judgment legible and human-reviewed.",
+        ],
+      },
     ],
     abstract: [
       "QA Agents asks what evidence should exist before an agent investigates or acts.",

@@ -1,7 +1,10 @@
 ---
 import { siteConfig } from "../../site.config";
+import { WORLD_VIEW_PATH } from "../../data/world-view";
+import { withBasePath } from "../../utils/site-path";
 
 const pathname = Astro.url.pathname;
+const basePath = import.meta.env.BASE_URL;
 const navItems = [
   { href: "/projects/", label: "Projects" },
   { href: "/writing/", label: "Writing" },
@@ -9,27 +12,49 @@ const navItems = [
   { href: "/explore/", label: "Explore" },
 ];
 
-const isActive = (href: string) =>
-  href === "/" ? pathname === href : pathname.startsWith(href);
+const resolveHref = (href: string) => withBasePath(href, basePath);
+const isActive = (href: string) => {
+  const resolvedHref = resolveHref(href);
+  return resolvedHref.endsWith("/")
+    ? pathname.startsWith(resolvedHref)
+    : pathname === resolvedHref;
+};
+const regularHref = resolveHref("/");
+const worldHref = resolveHref(WORLD_VIEW_PATH);
+const isWorldView = pathname.startsWith(worldHref);
 ---
 
 <a class="maria-skip" href="#main-content">Skip to content</a>
 <header class="maria-header">
   <div class="maria-header__inner">
-    <a class="maria-brand" href="/" aria-label={`${siteConfig.name}, home`}>
+    <a
+      class="maria-brand"
+      href={regularHref}
+      aria-label={`${siteConfig.name}, home`}
+    >
       {siteConfig.name}
     </a>
-    <nav class="maria-nav" aria-label="Primary navigation">
-      {
-        navItems.map((item) => (
-          <a
-            href={item.href}
-            aria-current={isActive(item.href) ? "page" : undefined}
-          >
-            {item.label}
-          </a>
-        ))
-      }
-    </nav>
+    <div class="maria-header__actions">
+      <nav class="maria-nav" aria-label="Primary navigation">
+        {
+          navItems.map((item) => (
+            <a
+              href={resolveHref(item.href)}
+              aria-current={isActive(item.href) ? "page" : undefined}
+            >
+              {item.label}
+            </a>
+          ))
+        }
+      </nav>
+      <nav class="maria-view-switch" aria-label="Site view">
+        <a href={regularHref} aria-current={!isWorldView ? "page" : undefined}>
+          Regular View
+        </a>
+        <a href={worldHref} aria-current={isWorldView ? "page" : undefined}>
+          World View
+        </a>
+      </nav>
+    </div>
   </div>
 </header>
