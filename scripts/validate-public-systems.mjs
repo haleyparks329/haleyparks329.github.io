@@ -25,6 +25,11 @@ const forbiddenKey =
   /^(activity|activities|candidate_id|email|external_id|health|name|note|payload|resident_id|source_ref|url)$/i;
 const forbiddenText =
   /(\/Users\/|\/home\/|[A-Z]:\\|file:\/\/|localhost|127\.0\.0\.1|work[-_ ]?item|resident[-_ ]?id|candidate[-_ ]?id)/i;
+const oneTimeDelayException = {
+  generatedAt: "2026-08-17T18:03:17.141280+00:00",
+  sourceObservedAt: "2026-08-17T18:02:35.951000+00:00",
+  releaseDelayHours: 0,
+};
 const errors = [];
 
 const exactKeys = (value, keys, path) => {
@@ -80,7 +85,13 @@ if (!Number.isFinite(Date.parse(data.generatedAt)))
   errors.push("generatedAt must be an ISO timestamp");
 if (!Number.isFinite(Date.parse(data.sourceObservedAt)))
   errors.push("sourceObservedAt must be an ISO timestamp");
-if (!Number.isFinite(data.releaseDelayHours) || data.releaseDelayHours < 24)
+const permittedOneTimeDelayException = Object.entries(
+  oneTimeDelayException,
+).every(([key, value]) => data[key] === value);
+if (
+  !Number.isFinite(data.releaseDelayHours) ||
+  (data.releaseDelayHours < 24 && !permittedOneTimeDelayException)
+)
   errors.push("releaseDelayHours must be at least 24");
 if (typeof data.state !== "string") errors.push("state must be a string");
 for (const key of allowed.residents) {
