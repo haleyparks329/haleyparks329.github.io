@@ -255,6 +255,26 @@ export const destinations: Destination[] = [
     trails: ["meet-haley"],
   },
   {
+    id: "systems",
+    href: "/systems/",
+    label: "Systems",
+    type: "page",
+    summary:
+      "A delayed, aggregate-only public snapshot of the systems behind the work.",
+    topics: ["Agent Systems", "Information Architecture"],
+    trails: ["ai-systems"],
+  },
+  {
+    id: "digital-world",
+    href: "/world/",
+    label: "Digital World",
+    type: "place",
+    summary:
+      "A separate visual experience rendered from Wonderful Digital World's public projection.",
+    topics: ["Agent Systems", "Human-Centered Technology"],
+    trails: ["ai-systems"],
+  },
+  {
     id: "writing",
     href: "/writing/",
     label: "Writing",
@@ -525,6 +545,30 @@ export const destinations: Destination[] = [
 ];
 
 export const relationships: Relationship[] = [
+  {
+    from: "systems",
+    to: "project-wonderful-digital-world",
+    type: "related",
+    label: "System source",
+    reason:
+      "The Systems page renders a delayed public projection produced by Wonderful Digital World.",
+  },
+  {
+    from: "systems",
+    to: "digital-world",
+    type: "related",
+    label: "Related experience",
+    reason:
+      "Digital World is a separate visual experience built from its own public projection.",
+  },
+  {
+    from: "systems",
+    to: "project-the-human-model",
+    type: "related",
+    label: "Related system",
+    reason:
+      "The Human Model is a sibling evidence-first system with its own domain boundary.",
+  },
   {
     from: "writing-i-did-not-want-another-app",
     to: "project-bridget",

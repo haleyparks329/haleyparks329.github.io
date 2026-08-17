@@ -141,7 +141,7 @@ test("World View retains the global view switch and keeps renderer JavaScript ro
 
   assert.match(header, /class="maria-view-switch" aria-label="Site view"/);
   assert.match(header, />\s*Regular View\s*</);
-  assert.match(header, />\s*World View\s*</);
+  assert.match(header, />\s*Digital World\s*</);
   assert.match(page, /scripts\/world-renderer/);
   assert.doesNotMatch(header, /world-renderer/);
   assert.doesNotMatch(renderer, /import\(/);
