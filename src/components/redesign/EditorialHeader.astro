@@ -7,6 +7,7 @@ const pathname = Astro.url.pathname;
 const basePath = import.meta.env.BASE_URL;
 const navItems = [
   { href: "/projects/", label: "Projects" },
+  { href: "/systems/", label: "Systems" },
   { href: "/writing/", label: "Writing" },
   { href: "/memories/", label: "Memories" },
   { href: "/explore/", label: "Explore" },
@@ -52,7 +53,7 @@ const isWorldView = pathname.startsWith(worldHref);
           Regular View
         </a>
         <a href={worldHref} aria-current={isWorldView ? "page" : undefined}>
-          World View
+          Digital World
         </a>
       </nav>
     </div>

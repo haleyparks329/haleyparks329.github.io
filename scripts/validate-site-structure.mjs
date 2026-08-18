@@ -70,6 +70,7 @@ const headerItems = [
 ].map(([, href, label]) => ({ href, label }));
 const expectedHeaderItems = [
   { href: "/projects/", label: "Projects" },
+  { href: "/systems/", label: "Systems" },
   { href: "/writing/", label: "Writing" },
   { href: "/memories/", label: "Memories" },
   { href: "/explore/", label: "Explore" },

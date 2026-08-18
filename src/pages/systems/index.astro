@@ -1,0 +1,398 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import systemsProjectionJson from "../../data/systems.json";
+import { loadSystemsView, SYSTEMS_STALE_AFTER_HOURS } from "../../data/systems";
+
+const view = await loadSystemsView({ source: systemsProjectionJson });
+const projection = view.availability === "available" ? view.projection : null;
+const stale = view.availability === "available" && view.stale;
+
+const count = (value: number | null | undefined) =>
+  value === null || value === undefined
+    ? "Unavailable"
+    : value.toLocaleString("en-US");
+const decimal = (value: number | null | undefined) =>
+  value === null || value === undefined ? "Unavailable" : value.toFixed(3);
+const timestamp = (value: string | undefined) => {
+  if (!value) return "Unavailable";
+  return `${new Intl.DateTimeFormat("en-GB", {
+    dateStyle: "medium",
+    timeStyle: "short",
+    timeZone: "UTC",
+  }).format(new Date(value))} UTC`;
+};
+const titleCase = (value: string) =>
+  value.replace(/(^|[-_\s])\S/g, (letter) => letter.toUpperCase());
+const evaluationState = projection?.intelligence.precisionAtKState ?? "unknown";
+const evaluationLabel =
+  evaluationState === "insufficient-evidence"
+    ? "Incomplete"
+    : evaluationState === "available"
+      ? "Complete"
+      : titleCase(evaluationState);
+const precisionAtKLabel =
+  projection?.intelligence.precisionAtK === null &&
+  evaluationState === "insufficient-evidence"
+    ? "Unavailable · Needs human labels"
+    : decimal(projection?.intelligence.precisionAtK);
+const modelQualityLabel =
+  evaluationState === "insufficient-evidence"
+    ? "Insufficient evidence"
+    : evaluationState === "available"
+      ? "Evaluated"
+      : "Unavailable";
+
+const statusLabel = !projection
+  ? "Unavailable"
+  : stale
+    ? "Stale"
+    : titleCase(projection.state);
+const statusTone = !projection
+  ? "unavailable"
+  : stale
+    ? "stale"
+    : projection.state === "ready"
+      ? "ready"
+      : "partial";
+---
+
+<BaseLayout
+  title="Systems Command Center"
+  description="A read-only, sanitized and delayed public projection of the WDW Command Center."
+  canonicalPath="/systems/"
+>
+  <article class="command-center">
+    <header class="console-header">
+      <div>
+        <p class="console-eyebrow">Operator overview · Public projection</p>
+        <h1>Command Center</h1>
+      </div>
+      <dl class="console-meta">
+        <div>
+          <dt>Generated</dt>
+          <dd>
+            {projection ? timestamp(projection.generatedAt) : "Unavailable"}
+          </dd>
+        </div>
+        <div>
+          <dt>Mode</dt>
+          <dd>Public · Read only</dd>
+        </div>
+      </dl>
+    </header>
+
+    <aside class:list={["projection-notice", statusTone]} role="status">
+      <span class="status-dot" aria-hidden="true"></span>
+      <strong>{statusLabel}</strong>
+      {
+        projection ? (
+          <span>
+            Sanitized public projection · {projection.releaseDelayHours}-hour
+            delay · refreshed {timestamp(projection.generatedAt)}
+            {stale &&
+              ` · exceeds the ${SYSTEMS_STALE_AFTER_HOURS}-hour freshness window`}
+          </span>
+        ) : (
+          <span>
+            Sanitized 24-hour-delayed projection ·{" "}
+            {view.availability === "unavailable"
+              ? view.reason
+              : "Snapshot unavailable"}
+          </span>
+        )
+      }
+    </aside>
+
+    {
+      projection && (
+        <div class="console-stack">
+          <section class="console-panel" aria-labelledby="residents-heading">
+            <header class="panel-header">
+              <div>
+                <p class="panel-kicker">Public aggregate</p>
+                <h2 id="residents-heading">Residents</h2>
+              </div>
+              <span class="panel-badge">Aggregate only</span>
+            </header>
+            <dl class="metric-grid residents-grid">
+              <div>
+                <dt>Total</dt>
+                <dd>{count(projection.residents.total)}</dd>
+              </div>
+              <div>
+                <dt>Active</dt>
+                <dd>{count(projection.residents.active)}</dd>
+              </div>
+              <div>
+                <dt>Needs attention</dt>
+                <dd>{count(projection.residents.needsAttention)}</dd>
+              </div>
+            </dl>
+          </section>
+
+          <section class="console-panel" aria-labelledby="intelligence-heading">
+            <header class="panel-header">
+              <div>
+                <p class="panel-kicker">Public aggregate</p>
+                <h2 id="intelligence-heading">Intelligence Summary</h2>
+              </div>
+              <span class="panel-badge">Evaluation: {evaluationLabel}</span>
+            </header>
+            <dl class="metric-grid intelligence-grid">
+              <div>
+                <dt>Thoughts</dt>
+                <dd>{count(projection.intelligence.thoughts)}</dd>
+              </div>
+              <div>
+                <dt>Candidates</dt>
+                <dd>{count(projection.intelligence.candidates)}</dd>
+              </div>
+              <div>
+                <dt>Reviewed</dt>
+                <dd>{count(projection.intelligence.reviewed)}</dd>
+              </div>
+              <div>
+                <dt>Mean similarity</dt>
+                <dd>{decimal(projection.intelligence.meanSimilarity)}</dd>
+              </div>
+              <div>
+                <dt>Precision at K</dt>
+                <dd class="text-value">{precisionAtKLabel}</dd>
+              </div>
+              <div>
+                <dt>Model quality</dt>
+                <dd class="text-value">{modelQualityLabel}</dd>
+              </div>
+            </dl>
+          </section>
+        </div>
+      )
+    }
+  </article>
+</BaseLayout>
+
+<style>
+  .command-center {
+    --console-paper: #f4f2ea;
+    --console-panel: #fffdf7;
+    --console-ink: #16211d;
+    --console-muted: #617069;
+    --console-line: #d9ddd6;
+    --console-green: #44735d;
+    --console-amber: #a66b2b;
+    --console-red: #9a4a42;
+    width: min(calc(100% - 3rem), 70rem);
+    margin: clamp(2rem, 5vw, 4rem) auto 5rem;
+    padding: clamp(1.25rem, 3vw, 2rem);
+    border: 1px solid var(--console-line);
+    border-radius: 1rem;
+    background: var(--console-paper);
+    color: var(--console-ink);
+    box-shadow: 0 1rem 3rem rgba(22, 33, 29, 0.06);
+  }
+  .console-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 2rem;
+    padding: 0.25rem 0.25rem 1.25rem;
+  }
+  .console-eyebrow,
+  .panel-kicker {
+    margin: 0 0 0.4rem;
+    color: var(--console-muted);
+    font-family: ui-sans-serif, system-ui, sans-serif;
+    font-size: 0.67rem;
+    font-weight: 750;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+  }
+  h1,
+  h2 {
+    margin: 0;
+    color: var(--console-ink);
+    font-family: Georgia, "Times New Roman", serif;
+    font-weight: 500;
+    letter-spacing: -0.025em;
+  }
+  h1 {
+    font-size: clamp(1.9rem, 4vw, 2.7rem);
+    line-height: 1;
+  }
+  h2 {
+    font-size: clamp(1.25rem, 2.5vw, 1.6rem);
+    line-height: 1.1;
+  }
+  .console-meta {
+    display: grid;
+    grid-template-columns: repeat(2, auto);
+    gap: 1rem 1.75rem;
+    margin: 0;
+  }
+  .console-meta div {
+    min-width: 8rem;
+  }
+  dt {
+    color: var(--console-muted);
+    font-family: ui-sans-serif, system-ui, sans-serif;
+    font-size: 0.65rem;
+    font-weight: 750;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+  }
+  .console-meta dd {
+    margin: 0.25rem 0 0;
+    font-family: ui-sans-serif, system-ui, sans-serif;
+    font-size: 0.76rem;
+    font-weight: 650;
+    line-height: 1.35;
+  }
+  .projection-notice {
+    display: grid;
+    grid-template-columns: 0.55rem auto 1fr;
+    gap: 0.55rem 0.7rem;
+    align-items: center;
+    padding: 0.75rem 0.9rem;
+    border: 1px solid var(--console-line);
+    border-radius: 0.65rem;
+    background: rgba(255, 253, 247, 0.72);
+    font-family: ui-sans-serif, system-ui, sans-serif;
+    font-size: 0.75rem;
+    line-height: 1.45;
+  }
+  .projection-notice > span:last-child {
+    color: var(--console-muted);
+  }
+  .status-dot {
+    width: 0.55rem;
+    height: 0.55rem;
+    border-radius: 50%;
+    background: var(--console-amber);
+  }
+  .projection-notice.ready .status-dot {
+    background: var(--console-green);
+  }
+  .projection-notice.stale .status-dot {
+    background: var(--console-red);
+  }
+  .projection-notice.unavailable .status-dot {
+    background: var(--console-muted);
+  }
+  .console-stack {
+    display: grid;
+    gap: 0.9rem;
+    margin-top: 0.9rem;
+  }
+  .console-panel {
+    overflow: hidden;
+    border: 1px solid var(--console-line);
+    border-radius: 0.8rem;
+    background: var(--console-panel);
+  }
+  .panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1rem 1.1rem;
+    border-bottom: 1px solid var(--console-line);
+  }
+  .panel-badge {
+    flex: 0 0 auto;
+    padding: 0.32rem 0.55rem;
+    border: 1px solid var(--console-line);
+    border-radius: 999px;
+    color: var(--console-muted);
+    font-family: ui-sans-serif, system-ui, sans-serif;
+    font-size: 0.64rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .metric-grid {
+    display: grid;
+    margin: 0;
+  }
+  .residents-grid,
+  .intelligence-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .metric-grid > div {
+    min-width: 0;
+    min-height: 6.2rem;
+    padding: 1rem 1.1rem;
+    border-right: 1px solid var(--console-line);
+    border-bottom: 1px solid var(--console-line);
+  }
+  .residents-grid > div:last-child,
+  .intelligence-grid > div:nth-child(3n) {
+    border-right: 0;
+  }
+  .residents-grid > div {
+    border-bottom: 0;
+  }
+  .intelligence-grid > div:nth-last-child(-n + 3) {
+    border-bottom: 0;
+  }
+  .metric-grid dd {
+    margin: 0.65rem 0 0;
+    color: var(--console-ink);
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: clamp(1.45rem, 3vw, 2rem);
+    line-height: 1;
+  }
+  .metric-grid dd.text-value {
+    font-family: ui-sans-serif, system-ui, sans-serif;
+    font-size: clamp(1rem, 2vw, 1.25rem);
+    font-weight: 650;
+    line-height: 1.2;
+  }
+  @media (max-width: 760px) {
+    .console-header {
+      align-items: flex-start;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+    .console-meta {
+      width: 100%;
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (max-width: 580px) {
+    .command-center {
+      width: min(calc(100% - 1.5rem), 70rem);
+      margin-top: 1rem;
+      padding: 0.8rem;
+    }
+    .projection-notice {
+      grid-template-columns: 0.55rem 1fr;
+    }
+    .projection-notice > span:last-child {
+      grid-column: 2;
+    }
+    .residents-grid,
+    .intelligence-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .metric-grid > div,
+    .residents-grid > div:last-child,
+    .intelligence-grid > div:nth-child(3n),
+    .intelligence-grid > div:nth-last-child(-n + 3) {
+      border-right: 1px solid var(--console-line);
+      border-bottom: 1px solid var(--console-line);
+    }
+    .metric-grid > div:nth-child(2n) {
+      border-right: 0;
+    }
+    .metric-grid > div:nth-last-child(-n + 2) {
+      border-bottom: 0;
+    }
+    .residents-grid > div:last-child {
+      border-bottom: 0;
+    }
+    .panel-header {
+      align-items: flex-start;
+      flex-direction: column;
+    }
+  }
+</style>
