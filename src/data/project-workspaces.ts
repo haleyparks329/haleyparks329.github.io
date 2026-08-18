@@ -39,12 +39,8 @@ export const projectWorkspaces: Record<string, ProjectWorkspaceConfig> = {
     annotation: "threads in; coherent context out; uncertainty stays visible",
     primaryLinks: [
       {
-        label: "Architecture",
-        href: "/writing/what-i-built-instead-of-an-agent/",
-      },
-      {
-        label: "Origin story",
-        href: "/writing/i-did-not-want-another-app/",
+        label: "Writing",
+        href: "/writing/",
       },
       {
         label: "Architecture repository",
@@ -59,16 +55,7 @@ export const projectWorkspaces: Record<string, ProjectWorkspaceConfig> = {
       },
       {
         label: "Writing",
-        links: [
-          {
-            label: "Origin story",
-            href: "/writing/i-did-not-want-another-app/",
-          },
-          {
-            label: "Architecture case study",
-            href: "/writing/what-i-built-instead-of-an-agent/",
-          },
-        ],
+        links: [{ label: "Current writing", href: "/writing/" }],
       },
       {
         label: "Related system",
@@ -204,7 +191,7 @@ export const projectWorkspaces: Record<string, ProjectWorkspaceConfig> = {
           },
           {
             label: "Related Writing",
-            href: "/writing/why-fika-jobs-felt-familiar/",
+            href: "/writing/",
           },
         ],
       },

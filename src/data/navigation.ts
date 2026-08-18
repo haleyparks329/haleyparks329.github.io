@@ -84,9 +84,9 @@ export const trails: Trail[] = [
       "A route through attention, evidence, QA handoff, and personal context systems.",
     stops: [
       {
-        destinationId: "writing-what-i-built-instead-of-an-agent",
+        destinationId: "writing",
         reason:
-          "Begin with the case for visible state, bounded automation, and human judgment.",
+          "Begin with current essays about visible state, bounded automation, and human judgment.",
       },
       {
         destinationId: "project-qa-agents",
@@ -200,9 +200,9 @@ export const trails: Trail[] = [
           "A sibling person-modeling system shows the same evidence-first pattern in another domain.",
       },
       {
-        destinationId: "writing-why-fika-jobs-felt-familiar",
+        destinationId: "writing",
         reason:
-          "The career investigation connects Fika Jobs to the same evidence-first pressure in another domain.",
+          "Current writing carries these evidence-first questions into adjacent domains.",
       },
     ],
   },
@@ -279,7 +279,7 @@ export const destinations: Destination[] = [
     href: "/writing/",
     label: "Writing",
     type: "page",
-    summary: "Case studies, essays, and quick notes from active work.",
+    summary: "Current essays and research notes published on Substack.",
     topics: ["Navigation", "Human-Centered Technology"],
     trails: ["meet-haley"],
   },
@@ -509,39 +509,6 @@ export const destinations: Destination[] = [
     topics: ["Software Quality", "Agent Systems"],
     project: "qa-agents",
   },
-  {
-    id: "writing-i-did-not-want-another-app",
-    href: "/writing/i-did-not-want-another-app/",
-    label: "I Did Not Want Another App",
-    type: "writing",
-    summary:
-      "How an AI coaching idea grew into a broader personal orchestration system.",
-    topics: ["Agent Systems", "Human-Centered Technology"],
-    project: "bridget",
-    trails: ["ai-systems"],
-  },
-  {
-    id: "writing-what-i-built-instead-of-an-agent",
-    href: "/writing/what-i-built-instead-of-an-agent/",
-    label: "What I Built Instead of an Agent",
-    type: "writing",
-    summary:
-      "Why Bridget uses deterministic state, visible uncertainty, and human reconciliation before autonomy.",
-    topics: ["Agent Systems", "Human-Centered Technology"],
-    project: "bridget",
-    trails: ["ai-systems"],
-  },
-  {
-    id: "writing-why-fika-jobs-felt-familiar",
-    href: "/writing/why-fika-jobs-felt-familiar/",
-    label: "Why Fika Jobs Felt Familiar",
-    type: "writing",
-    summary:
-      "A product investigation into Fika Jobs and private career knowledge graphs.",
-    topics: ["Career Intelligence", "Human-Centered Technology"],
-    project: "career-intelligence",
-    trails: ["human-performance"],
-  },
 ];
 
 export const relationships: Relationship[] = [
@@ -568,30 +535,6 @@ export const relationships: Relationship[] = [
     label: "Related system",
     reason:
       "The Human Model is a sibling evidence-first system with its own domain boundary.",
-  },
-  {
-    from: "writing-i-did-not-want-another-app",
-    to: "project-bridget",
-    type: "continued-in",
-    label: "Continued in",
-    reason:
-      "The origin story continues in Bridget's project workspace and public architecture.",
-  },
-  {
-    from: "writing-i-did-not-want-another-app",
-    to: "writing-what-i-built-instead-of-an-agent",
-    type: "continued-in",
-    label: "Continued in",
-    reason:
-      "The engineering account continues the origin story with Bridget's deterministic architecture.",
-  },
-  {
-    from: "writing-what-i-built-instead-of-an-agent",
-    to: "project-bridget",
-    type: "part-of",
-    label: "Part of",
-    reason:
-      "This case study documents Bridget's public architecture and autonomy boundary.",
   },
   {
     from: "project-bridget",
@@ -673,14 +616,6 @@ export const relationships: Relationship[] = [
       "Both systems preserve evidence around a person instead of flattening them into a score.",
   },
   {
-    from: "writing-why-fika-jobs-felt-familiar",
-    to: "project-career-intelligence",
-    type: "part-of",
-    label: "Part of",
-    reason:
-      "The investigation connects Career Intelligence to a broader product philosophy.",
-  },
-  {
     from: "project-the-human-model-current",
     to: "project-the-human-model-system",
     type: "continued-in",
@@ -703,14 +638,6 @@ export const relationships: Relationship[] = [
     label: "Continued in",
     reason:
       "The deep dives show how the source-backed system behaves in concrete cases.",
-  },
-  {
-    from: "project-career-intelligence-research",
-    to: "writing-why-fika-jobs-felt-familiar",
-    type: "related",
-    label: "Related investigation",
-    reason:
-      "The writing examines the product philosophy behind the career reasoning work.",
   },
   {
     from: "project-this-website-design",

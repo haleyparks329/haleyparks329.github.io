@@ -6,7 +6,7 @@ This document is the canonical architecture reference for the website. Historica
 
 - **Maria** owns the global shell, homepage, project collection, and About page. It provides the calm editorial surface shared by the site.
 - **Compass** owns deep project navigation: workspace headers, grouped project links, related material, and cross-project context.
-- **Monograph** owns Writing: the library index, writing taxonomy, entry metadata, and long-form reading layout.
+- **Writing** is a build-time projection of Haley's Substack feed. The site owns the concise index presentation; Substack owns canonical publication and entry pages.
 - **Memories** is the public memory layer. Every item must pass the repository's provenance, privacy, visibility, and asset validation before it can render.
 - **Explore** is the experimental discovery surface. It may present current public routes and relationships in new ways, but it does not create a parallel content system.
 - **Wonderful Digital World (WDW)** is an active, read-only integration seam. `/world/` renders the static, reviewed public world projection; this repository does not implement a private runtime or autonomous publication.
@@ -27,9 +27,11 @@ Component-scoped styles stay with the component that owns them. New global rules
 
 ## Content and data ownership
 
-- `src/content/projects/` and `src/content/writing/` own public authored entries.
+- `src/content/projects/` owns public authored project entries.
+- `archive/writing/` preserves the former local writing Markdown outside the runtime content system.
+- `src/site.config.ts` owns the canonical Substack profile and feed URLs.
+- `src/data/substack-feed.ts` fetches and normalizes public Substack entries at build time.
 - `src/data/project-workspaces.ts` owns Compass navigation groups and project-specific summaries.
-- `src/data/writing-library.ts` owns Monograph collections and relationship validation.
 - `src/data/memories.ts` plus `src/data/memories/` own the reviewed public memory dataset and provenance rules.
 - `src/data/navigation.ts` owns Explore destinations, trails, topics, and relationships.
 - `src/data/world-view.ts` is the typed, read-only consumer for the validated public world projection.
@@ -40,7 +42,7 @@ Search and Explore consume only these current public sources. Archived documenta
 
 ## Route families
 
-The full classification is in [CURRENT_ROUTE_INVENTORY.md](./CURRENT_ROUTE_INVENTORY.md). In summary, Maria owns the canonical top level, Compass specializes project descendants, Monograph specializes Writing, Memories has one canonical public surface, World View consumes the reviewed WDW projection, and Explore owns explicitly experimental discovery routes.
+The full classification is in [CURRENT_ROUTE_INVENTORY.md](./CURRENT_ROUTE_INVENTORY.md). In summary, Maria owns the canonical top level and the Substack-backed Writing index, Compass specializes project descendants, Memories has one canonical public surface, World View consumes the reviewed WDW projection, and Explore owns explicitly experimental discovery routes.
 
 ## Integration boundary
 

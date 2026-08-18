@@ -1,41 +1,30 @@
 ---
-import { getCollection } from "astro:content";
-import WritingConnections from "@/components/WritingConnections.astro";
-import WritingDocumentHeader from "@/components/WritingDocumentHeader.astro";
-import { validateWritingLibrary, writingHref } from "@/data/writing-library";
+import ContentTypeLabel from "@/components/ContentTypeLabel.astro";
 import BaseLayout from "@/layouts/BaseLayout.astro";
 
-const writings = await getCollection("writing");
-const projects = await getCollection("projects");
-validateWritingLibrary(writings, projects);
-
-const entry = writings.find(
-  (candidate) => candidate.data.writingId === "writing-replay-investigation",
-);
-
-if (!entry) {
-  throw new Error("The Meticulous writing entry is missing.");
-}
+const title = "Extending Deterministic Replay with an Investigation Layer";
+const description =
+  "A bounded exploration of reasoning downstream of deterministic replay evidence.";
 ---
 
 <BaseLayout
-  title={entry.data.title}
-  description={entry.data.description}
-  canonicalPath={writingHref(entry)}
+  title={title}
+  description={description}
+  canonicalPath="/projects/qa-agents/meticulous/"
   breadcrumbs={[
     { label: "Home", href: "/" },
-    { label: "Writing", href: "/writing/" },
-    { label: entry.data.title },
+    { label: "Projects", href: "/projects/" },
+    { label: "QA Agents", href: "/projects/qa-agents/" },
+    { label: title },
   ]}
 >
-  <article
-    class="writing-document"
-    data-writing-type={entry.data.type}
-    data-writing-id={entry.data.writingId}
-    data-writing-collections={entry.data.collections.join(" ")}
-  >
-    <WritingDocumentHeader entry={entry} />
-    <div class="document-body">
+  <article class="project-note">
+    <header class="project-note__header">
+      <ContentTypeLabel type="Research note" />
+      <h1>{title}</h1>
+      <p>{description}</p>
+    </header>
+    <div class="project-note__body">
       <p>
         This secondary exploration asked how a bounded investigator might reason
         downstream of replay evidence while preserving human merge authority.
@@ -52,30 +41,55 @@ if (!entry) {
         </a>
       </p>
     </div>
-    <WritingConnections entry={entry} writings={writings} projects={projects} />
-    <p class="back-link"><a href="/writing/">Return to Writing</a></p>
+    <p class="back-link">
+      <a href="/projects/qa-agents/">Return to QA Agents</a>
+    </p>
   </article>
 </BaseLayout>
 
 <style>
-  .writing-document {
+  .project-note {
     width: min(var(--site-max-width), calc(100% - (var(--site-gutter) * 2)));
     margin-inline: auto;
   }
 
-  .document-body {
+  .project-note__header {
+    max-width: 50rem;
+    padding-block: clamp(3rem, 8vw, 7rem) clamp(2rem, 5vw, 4rem);
+    border-bottom: var(--border-width) solid var(--color-border);
+  }
+
+  .project-note__header h1 {
+    max-width: 18ch;
+    margin: var(--space-3) 0 var(--space-4);
+    font-family: var(--font-display);
+    font-size: clamp(2.4rem, 6vw, 5rem);
+    font-weight: 500;
+    letter-spacing: -0.035em;
+    line-height: 0.98;
+  }
+
+  .project-note__header > p {
+    max-width: 58ch;
+    margin: 0;
+    color: var(--color-text-muted);
+    font-size: clamp(1rem, 1.5vw, 1.2rem);
+    line-height: 1.6;
+  }
+
+  .project-note__body {
     max-width: var(--reading-measure);
     padding-top: clamp(1.5rem, 4vw, 2.5rem);
   }
 
-  .document-body p {
+  .project-note__body p {
     margin: 0 0 var(--space-4);
     color: var(--color-text-muted);
     font-size: clamp(0.98rem, 1vw, 1.05rem);
     line-height: 1.65;
   }
 
-  .document-body a,
+  .project-note__body a,
   .back-link a {
     color: var(--plum);
     font-weight: 600;
@@ -85,9 +99,9 @@ if (!entry) {
 
   .back-link {
     max-width: var(--reading-measure);
-    border-top: var(--border-width) solid var(--color-border);
     margin-top: clamp(2rem, 5vw, 3.5rem);
     padding-top: var(--space-5);
     padding-bottom: clamp(3rem, 7vw, 6rem);
+    border-top: var(--border-width) solid var(--color-border);
   }
 </style>

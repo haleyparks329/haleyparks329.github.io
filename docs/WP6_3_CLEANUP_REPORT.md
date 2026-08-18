@@ -1,5 +1,7 @@
 # WP6.3 Cleanup Report
 
+> Historical report. The writing architecture described here was superseded by the Substack consolidation on 2026-08-18. See `CURRENT_WEBSITE_ARCHITECTURE.md` and `CURRENT_ROUTE_INVENTORY.md` for the current state.
+
 ## Outcome
 
 WP6.3 consolidated the repository around the website's current public architecture without redesigning the experience or changing its content model. The Maria collection layer, Compass project workspaces, Monograph writing library, Memories, and Explore now have one documented hierarchy. Wonderful Digital World remains an integration boundary rather than a second runtime architecture. Field Log is retired.
@@ -30,7 +32,7 @@ WP6.3 consolidated the repository around the website's current public architectu
 - Generated projection releases remain versioned and validated.
 - Projection health, asset, memory provenance, relationship, link, and source-structure validators remain part of maintenance validation.
 - Project workspace navigation hrefs are checked against built routes.
-- Writing references continue to use the validated writing-library data source.
+- At the time of this work package, writing references used the validated writing-library data source.
 - The Wonderful Digital World integration seam is documented, but no private state, new runtime, or speculative interface was introduced.
 
 ## Automated verification

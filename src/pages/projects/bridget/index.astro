@@ -83,19 +83,10 @@ const boundaries = [
 
 const artifacts = [
   {
-    type: "Origin story",
-    title: "I Did Not Want Another App",
-    description:
-      "How an AI coaching idea grew into a broader personal orchestration system.",
-    href: "/writing/i-did-not-want-another-app/",
-    external: false,
-  },
-  {
-    type: "Architecture case study",
-    title: "What I Built Instead of an Agent",
-    description:
-      "Why Bridget uses deterministic state, visible uncertainty, and human reconciliation before autonomy.",
-    href: "/writing/what-i-built-instead-of-an-agent/",
+    type: "Writing",
+    title: "Essays and research notes",
+    description: "Read current essays and research notes on Substack.",
+    href: "/writing/",
     external: false,
   },
   {
@@ -139,12 +130,7 @@ const artifacts = [
             ))}
             {index === 0 && (
               <nav class="hero-links" aria-label="Bridget primary resources">
-                <a href="/writing/i-did-not-want-another-app/">
-                  Read the origin story
-                </a>
-                <a href="/writing/what-i-built-instead-of-an-agent/">
-                  Read the architecture case study
-                </a>
+                <a href="/writing/">Read current writing</a>
                 <ExternalLink
                   href={repositoryUrl}
                   label="Explore the public architecture repository"
