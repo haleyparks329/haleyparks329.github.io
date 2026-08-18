@@ -4,6 +4,8 @@ export type SiteConfig = {
   tagline: string;
   description: string;
   siteUrl: string;
+  substackProfileUrl: string;
+  substackFeedUrl: string;
   githubUsername: string;
   githubUrl: string;
   email: string;
@@ -20,6 +22,8 @@ export const siteConfig: SiteConfig = {
   description:
     "Projects, writing, and public work by Haley Parks, an AI Product Engineer building human-centered systems across data, behavior, context, and goals.",
   siteUrl: "https://haleyparks329.github.io",
+  substackProfileUrl: "https://substack.com/@haleyparks329",
+  substackFeedUrl: "https://haleyparks329.substack.com/feed",
   githubUsername: "haleyparks329",
   githubUrl: "https://github.com/haleyparks329",
   email: "haleyparks329@gmail.com",

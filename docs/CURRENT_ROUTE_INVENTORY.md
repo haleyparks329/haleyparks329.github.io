@@ -4,15 +4,14 @@ This is the canonical inventory of build-time routes. Classifications describe c
 
 ## Canonical
 
-| Route              | Source                           | Owner                    |
-| ------------------ | -------------------------------- | ------------------------ |
-| `/`                | `src/pages/index.astro`          | Maria home               |
-| `/about/`          | `src/pages/about.astro`          | Maria secondary page     |
-| `/projects/`       | `src/pages/projects/index.astro` | Maria project collection |
-| `/writing/`        | `src/pages/writing/index.astro`  | Monograph library        |
-| `/writing/[slug]/` | `src/pages/writing/[slug].astro` | Monograph entry          |
-| `/memories/`       | `src/pages/memories/index.astro` | Public memory layer      |
-| `/world/`          | `src/pages/world/index.astro`    | WDW public World View    |
+| Route        | Source                           | Owner                    |
+| ------------ | -------------------------------- | ------------------------ |
+| `/`          | `src/pages/index.astro`          | Maria home               |
+| `/about/`    | `src/pages/about.astro`          | Maria secondary page     |
+| `/projects/` | `src/pages/projects/index.astro` | Maria project collection |
+| `/writing/`  | `src/pages/writing/index.astro`  | Maria + Substack feed    |
+| `/memories/` | `src/pages/memories/index.astro` | Public memory layer      |
+| `/world/`    | `src/pages/world/index.astro`    | WDW public World View    |
 
 ## Specialized intentional
 
@@ -59,6 +58,7 @@ None after WP6.3 cleanup. Every built route above is intentionally classified an
 
 ## Retired
 
-| Route         | Status                                                                                                                              |
-| ------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
-| `/field-log/` | Retired. No source route, redirect, navigation item, search record, sitemap record, or public projection entry. **DO NOT RESTORE.** |
+| Route              | Status                                                                                                                              |
+| ------------------ | ----------------------------------------------------------------------------------------------------------------------------------- |
+| `/field-log/`      | Retired. No source route, redirect, navigation item, search record, sitemap record, or public projection entry. **DO NOT RESTORE.** |
+| `/writing/[slug]/` | Retired. Former local entries are archived, with current writing published canonically on Substack.                                 |

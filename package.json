@@ -28,6 +28,7 @@
   "dependencies": {
     "@astrojs/sitemap": "^3.6.0",
     "astro": "^7.0.8",
+    "fast-xml-parser": "^5.11.0",
     "pixi.js": "^8.19.0"
   },
   "devDependencies": {
