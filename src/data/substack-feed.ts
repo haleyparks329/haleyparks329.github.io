@@ -1,5 +1,6 @@
 import { XMLParser } from "fast-xml-parser";
 import { siteConfig } from "@/site.config";
+import { cachedSubstackPosts } from "@/data/substack-feed-cache";
 
 export type WritingPost = {
   title: string;
@@ -10,6 +11,9 @@ export type WritingPost = {
 };
 
 type FeedItem = Record<string, unknown>;
+
+const RETRY_DELAYS_MS = [0, 750, 2_000] as const;
+const REQUEST_TIMEOUT_MS = 8_000;
 
 const parser = new XMLParser({
   ignoreAttributes: false,
@@ -87,36 +91,75 @@ const normalizeItem = (item: FeedItem): WritingPost | undefined => {
   };
 };
 
+const parseFeed = (xml: string): WritingPost[] => {
+  const parsed = parser.parse(xml) as {
+    rss?: { channel?: { item?: FeedItem | FeedItem[] } };
+  };
+  const rawItems = parsed.rss?.channel?.item;
+  const items = rawItems
+    ? Array.isArray(rawItems)
+      ? rawItems
+      : [rawItems]
+    : [];
+
+  return items
+    .map(normalizeItem)
+    .filter((post): post is WritingPost => Boolean(post))
+    .sort((a, b) => b.publishedAt.getTime() - a.publishedAt.getTime());
+};
+
+const cachedPosts = (): WritingPost[] =>
+  cachedSubstackPosts.map((post) => ({
+    ...post,
+    publishedAt: new Date(post.publishedAt),
+  }));
+
+const wait = (delayMs: number) =>
+  new Promise<void>((resolve) => setTimeout(resolve, delayMs));
+
+const fetchFeed = async (feedUrl: string): Promise<WritingPost[]> => {
+  let lastError: unknown;
+
+  for (const [index, delayMs] of RETRY_DELAYS_MS.entries()) {
+    if (delayMs > 0) await wait(delayMs);
+
+    try {
+      const response = await fetch(feedUrl, {
+        headers: {
+          Accept:
+            "application/rss+xml, application/xml;q=0.9, text/xml;q=0.8, */*;q=0.1",
+          "Accept-Language": "en-US,en;q=0.9",
+          "User-Agent":
+            "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
+        },
+        signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
+      });
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+      const posts = parseFeed(await response.text());
+      if (posts.length === 0) throw new Error("Feed contained no valid posts");
+      return posts;
+    } catch (error) {
+      lastError = error;
+      if (index < RETRY_DELAYS_MS.length - 1) continue;
+    }
+  }
+
+  throw lastError;
+};
+
 export async function getSubstackPosts(): Promise<WritingPost[]> {
   const feedUrl =
     import.meta.env.SUBSTACK_FEED_URL || siteConfig.substackFeedUrl;
 
   try {
-    const response = await fetch(feedUrl, {
-      headers: { Accept: "application/rss+xml, application/xml;q=0.9" },
-      signal: AbortSignal.timeout(8_000),
-    });
-    if (!response.ok) throw new Error(`HTTP ${response.status}`);
-
-    const parsed = parser.parse(await response.text()) as {
-      rss?: { channel?: { item?: FeedItem | FeedItem[] } };
-    };
-    const rawItems = parsed.rss?.channel?.item;
-    const items = rawItems
-      ? Array.isArray(rawItems)
-        ? rawItems
-        : [rawItems]
-      : [];
-
-    return items
-      .map(normalizeItem)
-      .filter((post): post is WritingPost => Boolean(post))
-      .sort((a, b) => b.publishedAt.getTime() - a.publishedAt.getTime());
+    return await fetchFeed(feedUrl);
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
+    const fallbackPosts = cachedPosts();
     console.warn(
-      `[writing] Unable to load Substack feed from ${feedUrl}: ${message}`,
+      `[writing] Unable to load Substack feed from ${feedUrl}: ${message}. Using ${fallbackPosts.length} cached posts.`,
     );
-    return [];
+    return fallbackPosts;
   }
 }
