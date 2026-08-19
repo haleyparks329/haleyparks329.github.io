@@ -479,13 +479,7 @@ export async function loadPublicProjection(options: {
       values["systems.v1.json"]!.value,
       expectedReleaseDelayHours,
     );
-    validateBundle(
-      manifest,
-      world,
-      systems,
-      now,
-      expectedReleaseDelayHours,
-    );
+    validateBundle(manifest, world, systems, now, expectedReleaseDelayHours);
     try {
       storage?.setItem(
         STORAGE_KEY,
