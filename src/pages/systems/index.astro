@@ -1,59 +1,11 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import systemsProjectionJson from "../../data/systems.json";
-import { loadSystemsView, SYSTEMS_STALE_AFTER_HOURS } from "../../data/systems";
+import { withBasePath } from "../../utils/site-path";
 
-const view = await loadSystemsView({ source: systemsProjectionJson });
-const projection = view.availability === "available" ? view.projection : null;
-const stale = view.availability === "available" && view.stale;
-
-const count = (value: number | null | undefined) =>
-  value === null || value === undefined
-    ? "Unavailable"
-    : value.toLocaleString("en-US");
-const decimal = (value: number | null | undefined) =>
-  value === null || value === undefined ? "Unavailable" : value.toFixed(3);
-const timestamp = (value: string | undefined) => {
-  if (!value) return "Unavailable";
-  return `${new Intl.DateTimeFormat("en-GB", {
-    dateStyle: "medium",
-    timeStyle: "short",
-    timeZone: "UTC",
-  }).format(new Date(value))} UTC`;
-};
-const titleCase = (value: string) =>
-  value.replace(/(^|[-_\s])\S/g, (letter) => letter.toUpperCase());
-const evaluationState = projection?.intelligence.precisionAtKState ?? "unknown";
-const evaluationLabel =
-  evaluationState === "insufficient-evidence"
-    ? "Incomplete"
-    : evaluationState === "available"
-      ? "Complete"
-      : titleCase(evaluationState);
-const precisionAtKLabel =
-  projection?.intelligence.precisionAtK === null &&
-  evaluationState === "insufficient-evidence"
-    ? "Unavailable · Needs human labels"
-    : decimal(projection?.intelligence.precisionAtK);
-const modelQualityLabel =
-  evaluationState === "insufficient-evidence"
-    ? "Insufficient evidence"
-    : evaluationState === "available"
-      ? "Evaluated"
-      : "Unavailable";
-
-const statusLabel = !projection
-  ? "Unavailable"
-  : stale
-    ? "Stale"
-    : titleCase(projection.state);
-const statusTone = !projection
-  ? "unavailable"
-  : stale
-    ? "stale"
-    : projection.state === "ready"
-      ? "ready"
-      : "partial";
+const manifestUrl = withBasePath(
+  "/projections/wdw/manifest.v1.json",
+  import.meta.env.BASE_URL,
+);
 ---
 
 <BaseLayout
@@ -61,7 +13,11 @@ const statusTone = !projection
   description="A read-only, sanitized and delayed public projection of the WDW Command Center."
   canonicalPath="/systems/"
 >
-  <article class="command-center">
+  <article
+    class="command-center"
+    data-systems-shell
+    data-manifest-url={manifestUrl}
+  >
     <header class="console-header">
       <div>
         <p class="console-eyebrow">Operator overview · Public projection</p>
@@ -70,9 +26,7 @@ const statusTone = !projection
       <dl class="console-meta">
         <div>
           <dt>Generated</dt>
-          <dd>
-            {projection ? timestamp(projection.generatedAt) : "Unavailable"}
-          </dd>
+          <dd data-generated>Loading…</dd>
         </div>
         <div>
           <dt>Mode</dt>
@@ -81,95 +35,83 @@ const statusTone = !projection
       </dl>
     </header>
 
-    <aside class:list={["projection-notice", statusTone]} role="status">
+    <aside class="projection-notice loading" role="status">
       <span class="status-dot" aria-hidden="true"></span>
-      <strong>{statusLabel}</strong>
-      {
-        projection ? (
-          <span>
-            Sanitized public projection · {projection.releaseDelayHours}-hour
-            delay · refreshed {timestamp(projection.generatedAt)}
-            {stale &&
-              ` · exceeds the ${SYSTEMS_STALE_AFTER_HOURS}-hour freshness window`}
-          </span>
-        ) : (
-          <span>
-            Sanitized 24-hour-delayed projection ·{" "}
-            {view.availability === "unavailable"
-              ? view.reason
-              : "Snapshot unavailable"}
-          </span>
-        )
-      }
+      <strong data-projection-status>Loading</strong>
+      <span data-projection-detail>Loading verified delayed projection…</span>
     </aside>
 
-    {
-      projection && (
-        <div class="console-stack">
-          <section class="console-panel" aria-labelledby="residents-heading">
-            <header class="panel-header">
-              <div>
-                <p class="panel-kicker">Public aggregate</p>
-                <h2 id="residents-heading">Residents</h2>
-              </div>
-              <span class="panel-badge">Aggregate only</span>
-            </header>
-            <dl class="metric-grid residents-grid">
-              <div>
-                <dt>Total</dt>
-                <dd>{count(projection.residents.total)}</dd>
-              </div>
-              <div>
-                <dt>Active</dt>
-                <dd>{count(projection.residents.active)}</dd>
-              </div>
-              <div>
-                <dt>Needs attention</dt>
-                <dd>{count(projection.residents.needsAttention)}</dd>
-              </div>
-            </dl>
-          </section>
+    <div class="console-stack">
+      <section class="console-panel" aria-labelledby="residents-heading">
+        <header class="panel-header">
+          <div>
+            <p class="panel-kicker">Public aggregate</p>
+            <h2 id="residents-heading">Residents</h2>
+          </div>
+          <span class="panel-badge">Aggregate only</span>
+        </header>
+        <dl class="metric-grid residents-grid">
+          <div>
+            <dt>Total</dt>
+            <dd data-metric="residents.total">Unavailable</dd>
+          </div>
+          <div>
+            <dt>Active</dt>
+            <dd data-metric="residents.active">Unavailable</dd>
+          </div>
+          <div>
+            <dt>Needs attention</dt>
+            <dd data-metric="residents.needsAttention">Unavailable</dd>
+          </div>
+        </dl>
+      </section>
 
-          <section class="console-panel" aria-labelledby="intelligence-heading">
-            <header class="panel-header">
-              <div>
-                <p class="panel-kicker">Public aggregate</p>
-                <h2 id="intelligence-heading">Intelligence Summary</h2>
-              </div>
-              <span class="panel-badge">Evaluation: {evaluationLabel}</span>
-            </header>
-            <dl class="metric-grid intelligence-grid">
-              <div>
-                <dt>Thoughts</dt>
-                <dd>{count(projection.intelligence.thoughts)}</dd>
-              </div>
-              <div>
-                <dt>Candidates</dt>
-                <dd>{count(projection.intelligence.candidates)}</dd>
-              </div>
-              <div>
-                <dt>Reviewed</dt>
-                <dd>{count(projection.intelligence.reviewed)}</dd>
-              </div>
-              <div>
-                <dt>Mean similarity</dt>
-                <dd>{decimal(projection.intelligence.meanSimilarity)}</dd>
-              </div>
-              <div>
-                <dt>Precision at K</dt>
-                <dd class="text-value">{precisionAtKLabel}</dd>
-              </div>
-              <div>
-                <dt>Model quality</dt>
-                <dd class="text-value">{modelQualityLabel}</dd>
-              </div>
-            </dl>
-          </section>
-        </div>
-      )
-    }
+      <section class="console-panel" aria-labelledby="intelligence-heading">
+        <header class="panel-header">
+          <div>
+            <p class="panel-kicker">Public aggregate</p>
+            <h2 id="intelligence-heading">Intelligence Summary</h2>
+          </div>
+          <span class="panel-badge" data-evaluation>Evaluation: Unknown</span>
+        </header>
+        <dl class="metric-grid intelligence-grid">
+          <div>
+            <dt>Thoughts</dt>
+            <dd data-metric="intelligence.thoughts">Unavailable</dd>
+          </div>
+          <div>
+            <dt>Candidates</dt>
+            <dd data-metric="intelligence.candidates">Unavailable</dd>
+          </div>
+          <div>
+            <dt>Reviewed</dt>
+            <dd data-metric="intelligence.reviewed">Unavailable</dd>
+          </div>
+          <div>
+            <dt>Mean similarity</dt>
+            <dd data-metric="intelligence.meanSimilarity">Unavailable</dd>
+          </div>
+          <div>
+            <dt>Precision at K</dt>
+            <dd class="text-value" data-metric="intelligence.precisionAtK">
+              Unavailable
+            </dd>
+          </div>
+          <div>
+            <dt>Model quality</dt>
+            <dd class="text-value" data-metric="intelligence.modelQuality">
+              Unavailable
+            </dd>
+          </div>
+        </dl>
+      </section>
+    </div>
   </article>
 </BaseLayout>
+
+<script>
+  import "../../scripts/systems-runtime";
+</script>
 
 <style>
   .command-center {
