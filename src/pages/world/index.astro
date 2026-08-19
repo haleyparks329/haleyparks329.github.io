@@ -1,23 +1,9 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import { loadWorldView } from "../../data/world-view";
-import {
-  countResidentsByRoom,
-  type WorldRoomKey,
-} from "../../data/world-renderer-adapter";
 import { withBasePath } from "../../utils/site-path";
 import { MAX_ZOOM, MIN_ZOOM, ZOOM_STEP } from "../../vendor/world-view/iso";
 import { WDW_ROOM_REGISTRY } from "../../vendor/world-view/world/rooms";
 
-const worldView = await loadWorldView();
-const projection =
-  worldView.state === "unavailable" ? null : worldView.projection;
-const rendererRoomKeys: ReadonlyArray<WorldRoomKey> = WDW_ROOM_REGISTRY.map(
-  ({ key }) => key as WorldRoomKey,
-);
-const roomCounts = countResidentsByRoom(projection, rendererRoomKeys);
-const roomCount = (roomKey: string): number =>
-  roomCounts[roomKey as keyof typeof roomCounts] ?? 0;
 const initialRoom =
   WDW_ROOM_REGISTRY.find((room) => room.key === "workshop") ??
   WDW_ROOM_REGISTRY[0]!;
@@ -27,12 +13,7 @@ const projectHref = withBasePath(
   "/projects/wonderful-digital-world/",
   basePath,
 );
-const formatDate = (value: string): string =>
-  new Intl.DateTimeFormat("en", {
-    dateStyle: "medium",
-    timeStyle: "short",
-    timeZone: "UTC",
-  }).format(new Date(value));
+const manifestUrl = withBasePath("/projections/wdw/manifest.v1.json", basePath);
 ---
 
 <BaseLayout
@@ -44,7 +25,7 @@ const formatDate = (value: string): string =>
     class="world-page"
     data-world-shell
     data-initial-room={initialRoom.key}
-    data-projection={projection ? JSON.stringify(projection) : ""}
+    data-manifest-url={manifestUrl}
   >
     <header class="world-intro">
       <p class="world-eyebrow">Wonderful Digital World · public projection</p>
@@ -73,7 +54,7 @@ const formatDate = (value: string): string =>
                 aria-pressed={room.key === initialRoom.key ? "true" : "false"}
               >
                 {room.name}
-                {roomCount(room.key) > 0 && <span>{roomCount(room.key)}</span>}
+                <span data-room-count={room.key} hidden />
               </button>
             ))
           }
@@ -132,19 +113,17 @@ const formatDate = (value: string): string =>
       </footer>
     </section>
 
-    <aside class:list={["world-status", `world-status--${worldView.state}`]}>
+    <aside
+      class="world-status world-status--loading"
+      data-world-public-status
+      role="status"
+    >
       <span aria-hidden="true"></span>
       <div>
-        <strong>Public state · {worldView.state}</strong>
-        {
-          worldView.state !== "unavailable" ? (
-            <small>
-              Published {formatDate(worldView.projection.generatedAt)} UTC
-            </small>
-          ) : (
-            <small>{worldView.reason}</small>
-          )
-        }
+        <strong data-world-public-label>Public state · loading</strong>
+        <small data-world-public-detail
+          >Loading verified delayed projection…</small
+        >
       </div>
     </aside>
 
@@ -186,7 +165,9 @@ const formatDate = (value: string): string =>
 </BaseLayout>
 
 <script>
-  import "../../scripts/world-renderer";
+  import { loadWorldView } from "../../scripts/world-renderer";
+
+  loadWorldView();
 </script>
 
 <style>
