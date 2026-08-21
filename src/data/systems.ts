@@ -1,4 +1,5 @@
 import { readFile } from "node:fs/promises";
+import { loadPublicRelease } from "./wdw-public-release.ts";
 
 export const SYSTEMS_SCHEMA = "wdw.systems.v1";
 export const SYSTEMS_STALE_AFTER_HOURS = 72;
@@ -92,14 +93,18 @@ export async function loadSystemsView(
     filePath?: string;
     source?: unknown;
     now?: Date;
+    root?: string;
   } = {},
 ): Promise<SystemsView> {
   try {
-    const source =
-      options.source ??
-      (options.filePath
-        ? JSON.parse(await readFile(options.filePath, "utf8"))
-        : null);
+    let source = options.source;
+    if (source === undefined && options.filePath) {
+      source = JSON.parse(await readFile(options.filePath, "utf8"));
+    }
+    if (source === undefined) {
+      source = (await loadPublicRelease(options.root, options.now)).artifacts
+        .systems;
+    }
     if (source === null) {
       return {
         availability: "unavailable",
