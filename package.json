@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "astro dev",
     "build": "npm run build:site",
-    "build:site": "npm run validate:memories && npm run validate:projections && npm run validate:systems && astro build",
+    "build:site": "npm run validate:memories && npm run validate:projections && npm run validate:systems && astro build && node scripts/check-public-views.mjs",
     "preview": "astro preview",
     "check": "astro check",
     "format": "prettier --write .",
@@ -22,7 +22,7 @@
     "validate:projections": "node scripts/validate-projections.mjs",
     "validate:systems": "node scripts/validate-public-systems.mjs",
     "check:projection-health": "node scripts/check-projection-health.mjs",
-    "test:projections": "node --experimental-strip-types --test tests/projection-pipeline.test.mjs tests/public-release-runtime.test.mjs tests/world-view.test.mjs",
+    "test:projections": "node --experimental-strip-types --test tests/projection-pipeline.test.mjs tests/world-view.test.mjs",
     "test:systems": "node --experimental-strip-types --test tests/systems.test.mjs",
     "maintenance:check": "npm run validate:memories && npm run validate:relationships && npm run validate:projections && npm run check:projection-health && npm run validate:assets && npm run check && npm run build:site && npm run validate:structure && npm run validate:links",
     "validate": "npm run format:check && npm run test:projections && npm run test:systems && npm run maintenance:check"

@@ -1,4 +1,5 @@
 import { loadPublicProjections } from "./public-projections.mjs";
+import { loadPublicRelease } from "./wdw-public-release.ts";
 
 export const WORLD_VIEW_PATH = "/world/";
 
@@ -68,6 +69,12 @@ export function toWorldViewState(
 export async function loadWorldView(
   root = process.cwd(),
 ): Promise<WorldViewState> {
+  try {
+    const release = await loadPublicRelease(root);
+    return toWorldViewState(release.artifacts.world as WorldProjection);
+  } catch {
+    // Keep reading the previous publication layout during the producer rollout.
+  }
   try {
     const published = (await loadPublicProjections(root)) as unknown as {
       artifacts: { world: WorldProjection };

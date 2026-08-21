@@ -1,9 +1,11 @@
 import assert from "node:assert/strict";
-import { mkdtemp, writeFile } from "node:fs/promises";
+import { mkdtemp, readFile, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
+import { join, resolve } from "node:path";
 import test from "node:test";
 import { loadSystemsView } from "../src/data/systems.ts";
+
+const root = resolve(import.meta.dirname, "..");
 
 const valid = {
   schema: "wdw.systems.v1",
@@ -69,4 +71,23 @@ test("ignores additive fields after publication validation", async () => {
   });
   assert.equal(view.availability, "available");
   assert.equal("futureField" in view.projection, false);
+});
+
+test("Systems page loads only the verified public release at build time", async () => {
+  const page = await readFile(
+    join(root, "src/pages/systems/index.astro"),
+    "utf8",
+  );
+
+  assert.match(page, /const view = await loadSystemsView\(\)/);
+  assert.doesNotMatch(page, /systems\.json/);
+  assert.doesNotMatch(page, /systems-runtime/);
+  assert.doesNotMatch(page, /data-systems-view/);
+});
+
+test("default loading fails closed when no verified release exists", async () => {
+  const emptyRoot = await mkdtemp(join(tmpdir(), "systems-no-release-"));
+  const view = await loadSystemsView({ root: emptyRoot });
+
+  assert.equal(view.availability, "unavailable");
 });

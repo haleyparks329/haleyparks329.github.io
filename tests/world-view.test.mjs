@@ -240,4 +240,16 @@ test("World View routes and projection links honor a deployment base path", asyn
   );
   assert.match(page, /canonicalPath="\/world\/"/);
   assert.match(page, /loadWorldView\(\)/);
+  assert.match(
+    page,
+    /data-projection=\{projection \? JSON\.stringify\(projection\)/,
+  );
+  assert.doesNotMatch(page, /data-manifest-url/);
+
+  const renderer = await readFile(
+    path.join(root, "src/scripts/world-renderer.ts"),
+    "utf8",
+  );
+  assert.match(renderer, /shell\.dataset\.projection/);
+  assert.doesNotMatch(renderer, /fetch\(/);
 });
