@@ -48,36 +48,29 @@ const openingSections = [
 
 const responsibilities = [
   [
-    "Event",
-    "Receives information through a low-friction interface and preserves each input as a durable source record.",
-  ],
-  [
-    "Observation",
-    "Extracts only facts supported by the source and a known, versioned rule.",
-  ],
-  [
     "Continuity",
-    "Connects related observations across time without treating chat history as memory.",
-  ],
-  [
-    "Expectation",
-    "Evaluates only anticipated inputs or outcomes that the operator configured explicitly.",
+    "Preserves references to source-owned evidence and carries useful context across tools and moments.",
   ],
   [
     "Reconciliation",
     "Keeps ambiguous, conflicting, or incorrectly linked cases visible for audited human correction.",
   ],
   [
-    "Daily Brief",
-    "Projects existing canonical state into one bounded, read-only view.",
+    "Unresolved work",
+    "Stewards incomplete coordination without converting an unknown state into truth.",
+  ],
+  [
+    "Context return",
+    "Brings referenced domain state back into a bounded view without becoming its canonical owner.",
   ],
 ];
 
 const boundaries = [
+  "No ownership of intake receipt infrastructure or source evidence.",
+  "No conversion of unknown state into truth.",
+  "No mandatory hop; domains can operate without Bridget.",
+  "No ownership of canonical domain state; references point back to the owning domain.",
   "No unrestricted autonomous action or general-purpose agent behavior.",
-  "No hidden memory inside prompts; durable, inspectable state is the system of record.",
-  "No inferred obligations presented as facts.",
-  "No recommendation or decision engine in V1.",
   "No replacement of human judgment.",
 ];
 
@@ -93,7 +86,7 @@ const artifacts = [
     type: "Public architecture repository",
     title: "Bridget Architecture",
     description:
-      "The V1 architecture, domain model, synthetic examples, and design principles.",
+      "The public architecture, domain model, synthetic examples, and design principles.",
     href: repositoryUrl,
     external: true,
   },
@@ -143,11 +136,11 @@ const artifacts = [
       }
 
       <section aria-labelledby="what-bridget-does">
-        <p class="section-label">V1 responsibilities</p>
+        <p class="section-label">Bounded responsibilities</p>
         <h2 id="what-bridget-does">What Bridget does</h2>
         <p>
-          Each domain has a bounded job. Together they preserve evidence,
-          continuity, explicit anticipation, and a route for human correction.
+          Bridget preserves references, maintains continuity, stewards
+          unresolved work, and provides a route for human correction.
         </p>
         <div class="responsibility-grid">
           {
@@ -169,8 +162,8 @@ const artifacts = [
         <h2 id="what-bridget-does-not-do">What Bridget does not do</h2>
         <p>
           These limits keep fluent behavior from obscuring what the system
-          actually knows. V1 establishes trustworthy state before adding
-          higher-order behavior.
+          actually knows. Bridget coordinates around source evidence and
+          domain-owned state without taking ownership of either.
         </p>
         <ul>
           {boundaries.map((boundary) => <li>{boundary}</li>)}
@@ -182,21 +175,23 @@ const artifacts = [
         <h2 id="architecture-overview">Architecture overview</h2>
         <figure class="architecture-flow">
           <div class="flow-track">
-            <span>Message or input</span><i aria-hidden="true">→</i>
-            <span>Event</span><i aria-hidden="true">→</i>
-            <span>Observation</span><i aria-hidden="true">→</i>
-            <span>Continuity</span>
+            <span>Source-owned evidence</span><i aria-hidden="true">→</i>
+            <span>Bridget continuity + reconciliation</span><i
+              aria-hidden="true">→</i
+            >
+            <span>Referenced domain state</span>
           </div>
           <div class="flow-branches">
-            <span>Expectation evaluation</span>
-            <span>Human reconciliation ↺</span>
+            <span>Unresolved work remains inspectable</span>
+            <span>Domains can operate without Bridget</span>
           </div>
-          <div class="flow-output"><span>Bounded Daily Brief</span></div>
+          <div class="flow-output">
+            <span>Bounded view or proposed coordination</span>
+          </div>
           <figcaption>
-            An accessible high-level view of the V1 pipeline. Inputs become
-            durable Events, supported Observations update Continuity, explicit
-            Expectations are evaluated, and ambiguous state returns through
-            human Reconciliation before a read-only Daily Brief is composed.
+            Bridget is an optional continuity and reconciliation layer. It does
+            not own receipt infrastructure, canonical domain state, or the power
+            to turn uncertainty into fact.
           </figcaption>
         </figure>
         <p>
@@ -217,12 +212,13 @@ const artifacts = [
         <p>
           <a href="/projects/the-human-model/">The Human Model</a> focuses on understanding
           patterns in my training, recovery, movement, and performance. Bridget preserves
-          and coordinates the information that systems like it depend on. One models
-          the human; the other maintains continuity around the work.
+          continuity, reconciles references, and stewards unresolved work. The Human
+          Model remains responsible for its own evidence and canonical state and can
+          operate without Bridget.
         </p>
         <blockquote>
-          The Human Model tries to understand me. Bridget makes sure the
-          information needed for that understanding does not get lost.
+          The Human Model models a person. Bridget can help keep references and
+          unresolved coordination from getting lost.
         </blockquote>
       </section>
 
@@ -256,12 +252,11 @@ const artifacts = [
 
       <section class="status-section" aria-labelledby="current-status">
         <p class="section-label">Current state</p>
-        <h2 id="current-status">Working privately, documented publicly</h2>
+        <h2 id="current-status">Public reference, bounded claims</h2>
         <p>
-          Bridget V1 is implemented privately and actively used. The public
-          repository documents the architecture and design principles without
-          exposing production code, private data, prompts, deployment details,
-          or exact production schemas. It is an engineering reference, not a
+          The public repository documents Bridget's architecture, boundaries,
+          and synthetic examples. It does not establish the state or maturity of
+          any non-public runtime. It is an engineering reference, not a
           downloadable product.
         </p>
       </section>
@@ -273,8 +268,8 @@ const artifacts = [
           Publicly documented possibilities include richer retrieval, additional
           ingress sources, stronger reconciliation tools, broader workspace
           views, bounded recommendations, calendar coordination, and specialized
-          companion systems. These are possible future layers, not shipped V1
-          capabilities.
+          companion systems. These are possible future layers, not capabilities
+          established by the public evidence.
         </p>
       </section>
     </div>

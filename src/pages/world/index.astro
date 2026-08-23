@@ -50,8 +50,8 @@ const formatDate = (value: string): string =>
       <p class="world-eyebrow">Wonderful Digital World · public projection</p>
       <h1>World View</h1>
       <p>
-        A small pixel world for the reviewed state that Wonderful Digital World
-        has chosen to publish.
+        A small pixel world for an authorized projection that Wonderful Digital
+        World has chosen to publish.
       </p>
     </header>
 
@@ -98,8 +98,8 @@ const formatDate = (value: string): string =>
       </div>
       <footer class="world-console__footer">
         <p class="world-console__note" data-room-note>
-          Rooms, layouts, and resident placement come directly from World View.
-          The reviewed public projection supplies the residents shown in them.
+          World View supplies presentation and layout. An authorized projection
+          supplies the published resident references shown inside those spaces.
         </p>
         <div class="world-camera" aria-label="Camera controls" role="group">
           <button
@@ -135,7 +135,7 @@ const formatDate = (value: string): string =>
     <aside class:list={["world-status", `world-status--${worldView.state}`]}>
       <span aria-hidden="true"></span>
       <div>
-        <strong>Public state · {worldView.state}</strong>
+        <strong>Projection state · {worldView.state}</strong>
         {
           worldView.state !== "unavailable" ? (
             <small>
@@ -152,18 +152,21 @@ const formatDate = (value: string): string =>
       <div>
         <p class="world-kicker">About this view</p>
         <h2 id="world-about-heading">
-          A public window, not the private runtime.
+          An authorized projection, not the world.
         </h2>
       </div>
       <div class="world-about__copy">
         <p>
-          This is a public visual projection of Wonderful Digital World. Its
-          reviewed and sanitized state can be partial or delayed; the private
-          runtime is not directly exposed.
+          This is an authorized, noncanonical, replaceable projection of
+          Wonderful Digital World. It may lag or omit private state, so absence
+          here is not evidence that something is absent from the world.
         </p>
         <p>
-          World View defines the rooms, layouts, and resident placement. This
-          website supplies the reviewed public residents shown inside them.
+          World View owns presentation, layout, and adaptation only; it owns no
+          canonical residents, domain state, work, or evidence. Recent-activity
+          cues are conceptual projection features. The visual language descends
+          from Tiny Places, while this implementation is adapted for Wonderful
+          Digital World.
         </p>
         <div class="world-links">
           <a href={projectHref}>WDW project + architecture</a>

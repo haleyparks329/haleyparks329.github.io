@@ -6,33 +6,46 @@ export const wonderfulDigitalWorld = {
     "The public architecture keeps a deliberate boundary: machines may preserve state, reconcile evidence, prepare work, and propose actions; authority over intent, consent, preferences, priorities, corrections, and meaning remains human.",
   ],
   loop: [
-    "A persistent world retains public-safe state.",
-    "New artifacts and evidence are observed with provenance.",
-    "Interpretations preserve uncertainty rather than replacing the source.",
-    "Work is reconciled against current state and explicit authority.",
-    "Bounded actions may be proposed or performed when capability permits.",
-    "Outcomes are recorded so the world can continue from evidence.",
+    "Outside-world input becomes a durable receipt or evidence record.",
+    "Communication and work routing turn that durable record into inspectable coordination.",
+    "A bounded resident receives only the context and authority needed for its work.",
+    "The owning domain evaluates any proposed state change against canonical domain state.",
+    "A change is proposed or confirmed, or the unknown remains safely unresolved.",
+    "Durable evidence and work survive the worker that handled them.",
   ],
   objects: [
     {
-      term: "Artifact / Evidence",
-      meaning: "A source object and the trace that says where it came from.",
+      term: "Durable receipt / Evidence",
+      meaning:
+        "A persistent source record and the trace that says where it came from.",
     },
     {
-      term: "Interpretation",
-      meaning: "A derived reading that remains separate from source evidence.",
+      term: "Communication",
+      meaning:
+        "An inspectable message that carries a reference without becoming canonical state.",
     },
     {
       term: "Work item",
       meaning: "A durable unit of attention that can be routed and resolved.",
     },
     {
-      term: "Proposed action",
-      meaning: "A possible change awaiting the authority its scope requires.",
+      term: "Resident",
+      meaning: "A bounded reasoner with explicit context and authority limits.",
     },
     {
-      term: "Outcome",
-      meaning: "The recorded result of work, including failure or abstention.",
+      term: "Domain state",
+      meaning:
+        "Canonical state owned and interpreted by the responsible domain.",
+    },
+    {
+      term: "Place",
+      meaning:
+        "A high-level context for presence, attention, and authorized activity.",
+    },
+    {
+      term: "Proposed / confirmed change",
+      meaning:
+        "A reviewable transition whose authority and confirmation remain explicit.",
     },
     {
       term: "Projection",
@@ -47,7 +60,7 @@ export const wonderfulDigitalWorld = {
   evidence: [
     {
       part: "Reference seam",
-      status: "Implemented and tested",
+      status: "Publicly tested",
       detail:
         "Provenance, digest identity, persist-before-route behavior, work outcomes, capability checks, and viewer-bounded projections are covered by public tests.",
       inspect:
@@ -62,18 +75,18 @@ export const wonderfulDigitalWorld = {
         "https://github.com/Wonderful-Digital-World/wonderful-digital-world/tree/main/docs",
     },
     {
-      part: "Public projection contracts",
-      status: "Implemented and tested",
+      part: "Public projection",
+      status: "Publicly tested",
       detail:
         "Versioned, viewer-bounded projection contracts keep public state separate from private or operational state.",
       inspect:
         "https://github.com/Wonderful-Digital-World/wonderful-digital-world/tree/main/docs",
     },
     {
-      part: "Production environment",
-      status: "Planned",
+      part: "Private or production runtime",
+      status: "Outside public evidence",
       detail:
-        "A database adapter, production connectors and tools, and a live projection adapter are not present in the public implementation.",
+        "The public repository does not establish the contents, architecture, or maturity of any private or production runtime.",
       inspect:
         "https://github.com/Wonderful-Digital-World/wonderful-digital-world",
     },
@@ -86,10 +99,10 @@ export const wonderfulDigitalWorld = {
     },
   ],
   limitations: [
-    "The reference inbox is in memory; it is not a production persistence layer.",
-    "No production connectors, external tool execution, or live projection adapter are included.",
+    "The public reference inbox is in memory; it demonstrates a contract rather than durable production persistence.",
+    "The public repository includes no production connectors, external tool execution, or live projection adapter.",
     "The viewer fixture does not yet prove sanitization, authentication, delay handling, identity policy, or a canonical activity taxonomy.",
-    "Resident memory, private prompts, lived data, credentials, and production integrations are intentionally outside the public repository.",
+    "Resident memory, private prompts, lived data, credentials, and production integrations are outside the public evidence set.",
     "The public code demonstrates a bounded seam, not a deployable personal world or general autonomy.",
   ],
 } as const;

@@ -20,4 +20,4 @@ repositoryUrl: "https://github.com/Wonderful-Digital-World/wonderful-digital-wor
 order: 2
 ---
 
-Wonderful Digital World is an investigation into computation that can continue between sessions while keeping provenance, uncertainty, domain ownership, and human authority visible. Its public repository defines the architecture and a narrow tested reference seam; production persistence, live integrations, and autonomous residents remain future work.
+Wonderful Digital World distinguishes durable receipts and evidence, communication and work routing, bounded resident reasoning, and domain-owned canonical state. Its public repository documents and tests a narrow reference seam; it does not establish the maturity or contents of any private runtime.

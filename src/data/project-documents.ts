@@ -11,7 +11,13 @@ export type ReportStep = { title: string; text: string };
 export type TechnicalGroup = { title: string; items: string[] };
 export type StatusRow = {
   part: string;
-  status: "Working" | "Prototype" | "Experimental" | "Planned" | "Withheld";
+  status:
+    | "Documented"
+    | "Working"
+    | "Prototype"
+    | "Experimental"
+    | "Planned"
+    | "Withheld";
   does: string;
   inspect: ReportLink;
 };
@@ -130,10 +136,11 @@ export const projectDocuments: Record<string, ProjectDocumentData> = {
     why: [
       "Human context is fragmented across records and moments.",
       "A useful model must preserve where evidence came from, what remains uncertain, and whether a hypothesis survived contact with later outcomes.",
+      "Fitness is the deepest proving ground because it supplies dense evidence, observable outcomes, sustained use, and multiple consumers—not because it defines the model's boundary.",
     ],
     actuallyDoes: {
       intro:
-        "The public project demonstrates an inspectable model loop without publishing the private machinery.",
+        "The public project documents an inspectable model loop without making claims about private implementation maturity.",
       steps: [
         "Preserve observations and provenance.",
         "Keep uncertainty visible.",
@@ -169,7 +176,7 @@ export const projectDocuments: Record<string, ProjectDocumentData> = {
     statusRows: [
       {
         part: "Evidence and provenance",
-        status: "Working",
+        status: "Documented",
         does: "Keeps the path from observation to interpretation reviewable.",
         inspect: repositories.human,
       },
@@ -214,7 +221,7 @@ export const projectDocuments: Record<string, ProjectDocumentData> = {
       },
     ],
     notSolved: [
-      "This is not medical advice or a generalized model of people.",
+      "This is not medical advice or a claim that one person's model generalizes to everyone.",
       "Calibration and stronger evaluation remain ongoing research.",
     ],
     appendix: {

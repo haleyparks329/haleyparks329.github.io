@@ -31,6 +31,7 @@ const openingSections = [
       "The human provides the human things. The computer handles the computer things.",
     paragraphs: [
       "Wonderful Digital World is an experiment in a persistent computational environment: a world that continues to hold state, evidence, work, and outcomes even when a particular chat, model, interface, or process ends.",
+      "Outside world -> Durable evidence / receipt -> Communication + work routing -> Bounded resident -> Owning domain -> Proposed / confirmed change",
       "Inside that world, deterministic software provides structure where guarantees matter—persistence, identity, provenance, permissions, routing, retries, lifecycle, and canonical state. AI is used where ambiguity earns its cost: interpretation, synthesis, prioritization, recommendations, and uncertain classification.",
       "The goal is not maximum autonomy. It is better placement of responsibility. Mechanical coordination should disappear into software; intent, judgment, consent, taste, and consequential decisions should remain meaningfully human.",
     ],
@@ -101,13 +102,14 @@ const openingSections = [
   <section class="project-section" aria-labelledby="wdw-world-view">
     <p class="section-label">D2 · Public projection</p>
     <h2 id="wdw-world-view">
-      World View is a window, not the private runtime.
+      World View is an authorized projection, not the world.
     </h2>
     <p>
-      <a href={worldHref}>World View</a> renders the reviewed, checksummed public
-      projection shipped with this site. It contains only explicitly published places,
-      residents, activity, and attention. It does not connect to private resident
-      memory, credentials, live runtime state, or unpublished data.
+      <a href={worldHref}>World View</a> renders an authorized, noncanonical, replaceable
+      projection. It may lag or omit state, so absence from the view does not establish
+      absence from the world. The view owns no canonical residents, domain state,
+      work, or evidence; recent activity cues are presentation of published projection
+      data, not runtime authority.
     </p>
     <div class="deep-links">
       <a href={worldHref}>Open World View</a>
@@ -151,7 +153,8 @@ const openingSections = [
       <table class="evidence-table">
         <thead>
           <tr
-            ><th>Part</th><th>Maturity</th><th>Public claim</th><th>Inspect</th
+            ><th>Part</th><th>Public status</th><th>Public claim</th><th
+              >Inspect</th
             ></tr
           >
         </thead>

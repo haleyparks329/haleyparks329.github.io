@@ -29,13 +29,13 @@ export type ProjectWorkspaceConfig = {
 export const projectWorkspaces: Record<string, ProjectWorkspaceConfig> = {
   bridget: {
     slug: "bridget",
-    cardLabel: "Personal orchestration",
+    cardLabel: "Continuity and reconciliation",
     cardMicrocopy: "replaces remembering, not thinking",
     projectType: "Personal orchestration system",
     headerSummary:
-      "A private, deterministic system that turns scattered inputs into durable, inspectable context without replacing human judgment.",
+      "A bounded continuity and reconciliation interface that stewards unresolved work while domain state remains domain-owned.",
     currentNote:
-      "Using the private V1 system while documenting its architecture and design boundaries in public.",
+      "The public architecture documents responsibilities and boundaries without asserting private implementation maturity.",
     annotation: "threads in; coherent context out; uncertainty stays visible",
     primaryLinks: [
       {
@@ -80,14 +80,13 @@ export const projectWorkspaces: Record<string, ProjectWorkspaceConfig> = {
   },
   "the-human-model": {
     slug: "the-human-model",
-    cardLabel: "Personal research",
-    projectType: "Personal research",
+    cardLabel: "Longitudinal person model",
+    projectType: "Human modeling research",
     headerSummary:
-      "A living experiment in understanding how training, health, movement, and context change over time.",
+      "A general-purpose longitudinal model of a changing person, preserving evidence, uncertainty, corrections, and outcomes over time.",
     currentNote:
-      "Cleaning up the path from workout records and recovery context to a reviewable next-session prediction.",
-    annotation:
-      "growing system; still deciding where all the data wants to live",
+      "The public evidence documents architecture and bounded examples without asserting private implementation status.",
+    annotation: "fitness is the deepest proving ground, not the model boundary",
     primaryLinks: [
       {
         label: "Current work",

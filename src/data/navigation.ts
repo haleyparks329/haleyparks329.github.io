@@ -101,7 +101,7 @@ export const trails: Trail[] = [
       {
         destinationId: "project-bridget",
         reason:
-          "Bridget shows how personal context can be maintained before any autonomous layer is added.",
+          "Bridget shows bounded continuity, reconciliation, and unresolved-work stewardship without owning domain truth.",
       },
       {
         destinationId: "project-wonderful-digital-world",

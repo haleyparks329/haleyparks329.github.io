@@ -20,4 +20,4 @@ repositoryUrl: "https://github.com/haleyparks329/the-human-model"
 order: 1
 ---
 
-The Human Model explores how software can represent a person without flattening observations, uncertainty, and change into isolated scores. Its public work emphasizes evidence, architecture, evaluation, screenshots, and deliberately simplified demonstrations.
+The Human Model is a general-purpose longitudinal model of a changing person. Fitness is its deepest proving ground because it provides dense evidence, observable outcomes, sustained use, and multiple consumers—not because fitness defines the model's boundary. Public work focuses on provenance, uncertainty, review, and decision support rather than medical diagnosis or automated truth.
