@@ -6,6 +6,7 @@ export type SiteConfig = {
   siteUrl: string;
   substackProfileUrl: string;
   substackFeedUrl: string;
+  substackArticleLimit: number;
   githubUsername: string;
   githubUrl: string;
   email: string;
@@ -24,6 +25,7 @@ export const siteConfig: SiteConfig = {
   siteUrl: "https://haleyparks329.github.io",
   substackProfileUrl: "https://substack.com/@haleyparks329",
   substackFeedUrl: "https://haleyparks329.substack.com/feed",
+  substackArticleLimit: 10,
   githubUsername: "haleyparks329",
   githubUrl: "https://github.com/haleyparks329",
   email: "haleyparks329@gmail.com",

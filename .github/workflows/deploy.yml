@@ -3,6 +3,9 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: [main]
+  schedule:
+    # Refresh Substack content even when the website code has not changed.
+    - cron: "17 */6 * * *"
   workflow_dispatch:
 
 permissions:

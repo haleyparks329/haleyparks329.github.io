@@ -3,7 +3,7 @@ import { getSubstackPosts } from "@/data/substack-feed";
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import { siteConfig } from "@/site.config";
 
-const posts = (await getSubstackPosts()).slice(0, 6);
+const posts = await getSubstackPosts();
 const date = new Intl.DateTimeFormat("en", {
   month: "short",
   day: "numeric",

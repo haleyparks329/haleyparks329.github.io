@@ -1,6 +1,5 @@
 import { XMLParser } from "fast-xml-parser";
 import { siteConfig } from "@/site.config";
-import { cachedSubstackPosts } from "@/data/substack-feed-cache";
 
 export type WritingPost = {
   title: string;
@@ -11,6 +10,7 @@ export type WritingPost = {
 };
 
 type FeedItem = Record<string, unknown>;
+type ArchiveItem = Record<string, unknown>;
 
 const RETRY_DELAYS_MS = [0, 750, 2_000] as const;
 const REQUEST_TIMEOUT_MS = 8_000;
@@ -108,26 +108,68 @@ const parseFeed = (xml: string): WritingPost[] => {
     .sort((a, b) => b.publishedAt.getTime() - a.publishedAt.getTime());
 };
 
-const cachedPosts = (): WritingPost[] =>
-  cachedSubstackPosts.map((post) => ({
-    ...post,
-    publishedAt: new Date(post.publishedAt),
-  }));
+const normalizeArchiveItem = (
+  item: ArchiveItem,
+  publicationUrl: string,
+): WritingPost | undefined => {
+  const title = textValue(item.title);
+  const slug = textValue(item.slug);
+  const url =
+    validUrl(item.canonical_url) ||
+    (slug ? new URL(`/p/${slug}`, publicationUrl).toString() : undefined);
+  const publishedAt = new Date(textValue(item.post_date) ?? "");
+
+  if (!title || !url || Number.isNaN(publishedAt.getTime())) return undefined;
+
+  return {
+    title,
+    url,
+    publishedAt,
+    excerpt: excerptFromHtml(
+      item.subtitle ?? item.description ?? item.truncated_body_text,
+    ),
+    image: validUrl(item.cover_image),
+  };
+};
+
+const parseArchive = (body: string, publicationUrl: string): WritingPost[] => {
+  const marker = "Markdown Content:";
+  const json = body.includes(marker)
+    ? body.slice(body.indexOf(marker) + marker.length).trim()
+    : body;
+  const parsed = JSON.parse(json) as unknown;
+
+  if (!Array.isArray(parsed))
+    throw new Error("Archive response was not a list");
+
+  return parsed
+    .map((item) =>
+      item && typeof item === "object"
+        ? normalizeArchiveItem(item as ArchiveItem, publicationUrl)
+        : undefined,
+    )
+    .filter((post): post is WritingPost => Boolean(post))
+    .sort((a, b) => b.publishedAt.getTime() - a.publishedAt.getTime());
+};
 
 const wait = (delayMs: number) =>
   new Promise<void>((resolve) => setTimeout(resolve, delayMs));
 
-const fetchFeed = async (feedUrl: string): Promise<WritingPost[]> => {
+const fetchPosts = async (
+  sourceName: string,
+  sourceUrl: string,
+  accept: string,
+  parse: (body: string) => WritingPost[],
+): Promise<WritingPost[]> => {
   let lastError: unknown;
 
   for (const [index, delayMs] of RETRY_DELAYS_MS.entries()) {
     if (delayMs > 0) await wait(delayMs);
 
     try {
-      const response = await fetch(feedUrl, {
+      const response = await fetch(sourceUrl, {
         headers: {
-          Accept:
-            "application/rss+xml, application/xml;q=0.9, text/xml;q=0.8, */*;q=0.1",
+          Accept: accept,
           "Accept-Language": "en-US,en;q=0.9",
           "User-Agent":
             "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
@@ -136,8 +178,9 @@ const fetchFeed = async (feedUrl: string): Promise<WritingPost[]> => {
       });
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
-      const posts = parseFeed(await response.text());
-      if (posts.length === 0) throw new Error("Feed contained no valid posts");
+      const posts = parse(await response.text());
+      if (posts.length === 0)
+        throw new Error(`${sourceName} contained no valid posts`);
       return posts;
     } catch (error) {
       lastError = error;
@@ -148,18 +191,62 @@ const fetchFeed = async (feedUrl: string): Promise<WritingPost[]> => {
   throw lastError;
 };
 
-export async function getSubstackPosts(): Promise<WritingPost[]> {
+export async function getSubstackPosts(
+  limit = siteConfig.substackArticleLimit,
+): Promise<WritingPost[]> {
   const feedUrl =
     import.meta.env.SUBSTACK_FEED_URL || siteConfig.substackFeedUrl;
+  const articleLimit = Math.max(1, Math.floor(limit));
+  const archiveUrl = new URL("/api/v1/archive", feedUrl);
+  archiveUrl.search = new URLSearchParams({
+    sort: "new",
+    search: "",
+    offset: "0",
+    limit: String(articleLimit),
+  }).toString();
+  const publicationUrl = new URL(feedUrl).origin;
+  const sources = [
+    {
+      name: "RSS feed",
+      url: feedUrl,
+      accept:
+        "application/rss+xml, application/xml;q=0.9, text/xml;q=0.8, */*;q=0.1",
+      parse: parseFeed,
+    },
+    {
+      name: "Substack archive API",
+      url: archiveUrl.toString(),
+      accept: "application/json, */*;q=0.1",
+      parse: (body: string) => parseArchive(body, publicationUrl),
+    },
+    {
+      name: "Substack archive proxy",
+      url: `https://r.jina.ai/${archiveUrl.toString()}`,
+      accept: "application/json, text/plain;q=0.9, */*;q=0.1",
+      parse: (body: string) => parseArchive(body, publicationUrl),
+    },
+  ];
+  const errors: string[] = [];
 
-  try {
-    return await fetchFeed(feedUrl);
-  } catch (error) {
-    const message = error instanceof Error ? error.message : String(error);
-    const fallbackPosts = cachedPosts();
-    console.warn(
-      `[writing] Unable to load Substack feed from ${feedUrl}: ${message}. Using ${fallbackPosts.length} cached posts.`,
-    );
-    return fallbackPosts;
+  for (const [index, source] of sources.entries()) {
+    try {
+      const posts = await fetchPosts(
+        source.name,
+        source.url,
+        source.accept,
+        source.parse,
+      );
+      if (index > 0) {
+        console.warn(`[writing] Loaded Substack posts via ${source.name}.`);
+      }
+      return posts.slice(0, articleLimit);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      errors.push(`${source.name}: ${message}`);
+    }
   }
+
+  throw new Error(
+    `[writing] Unable to load current Substack posts. ${errors.join("; ")}`,
+  );
 }
