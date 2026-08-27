@@ -1,5 +1,6 @@
 import { XMLParser } from "fast-xml-parser";
 import { siteConfig } from "@/site.config";
+import { cachedSubstackPosts } from "@/data/substack-feed-cache";
 
 export type WritingPost = {
   title: string;
@@ -246,7 +247,12 @@ export async function getSubstackPosts(
     }
   }
 
-  throw new Error(
-    `[writing] Unable to load current Substack posts. ${errors.join("; ")}`,
+  console.warn(
+    `[writing] Live Substack sources were unavailable; using the last-known-good cache. ${errors.join("; ")}`,
   );
+
+  return cachedSubstackPosts.slice(0, articleLimit).map((post) => ({
+    ...post,
+    publishedAt: new Date(post.publishedAt),
+  }));
 }
