@@ -13,6 +13,11 @@ export interface RendererPlacement {
 
 type PlacementCandidate = Omit<RendererPlacement, "action">;
 
+const INDOOR_IDLE: Array<PlacementCandidate> = [
+	{ facing: "right", x: 6, y: 9 },
+	{ facing: "right", x: 8, y: 9 },
+];
+
 const INDOOR_PLACEMENT_CANDIDATES: Partial<
 	Record<ResidentActivity, Array<PlacementCandidate>>
 > = {
@@ -20,10 +25,10 @@ const INDOOR_PLACEMENT_CANDIDATES: Partial<
 		{ facing: "right", x: 3, y: 8 },
 		{ facing: "left", x: 4, y: 8 },
 	],
-	idle: [{ facing: "right", x: 6, y: 9 }],
-	offline: [{ facing: "right", x: 6, y: 9 }],
+	idle: INDOOR_IDLE,
+	offline: INDOOR_IDLE,
 	reviewing: [{ facing: "left", x: 10, y: 2 }],
-	waiting: [{ facing: "right", x: 6, y: 9 }],
+	waiting: INDOOR_IDLE,
 	working: [
 		{ facing: "right", x: 2, y: 4 },
 		{ facing: "right", x: 7, y: 4 },

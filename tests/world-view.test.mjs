@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
-import { readFile } from "node:fs/promises";
+import { cp, mkdtemp, readFile, rm } from "node:fs/promises";
+import { tmpdir } from "node:os";
 import path from "node:path";
 import test from "node:test";
 
@@ -9,8 +10,15 @@ import { withBasePath } from "../src/utils/site-path.ts";
 
 const root = path.resolve(import.meta.dirname, "..");
 
-test("world consumer returns the validated projection without inventing entities", async () => {
-  const state = await loadWorldView(root);
+test("world consumer retains the legacy projection during publisher rollout", async (t) => {
+  const fixtureRoot = await mkdtemp(path.join(tmpdir(), "world-legacy-"));
+  t.after(() => rm(fixtureRoot, { recursive: true, force: true }));
+  await cp(
+    path.join(root, "public/projections"),
+    path.join(fixtureRoot, "public/projections"),
+    { recursive: true, filter: (source) => path.basename(source) !== "wdw" },
+  );
+  const state = await loadWorldView(fixtureRoot);
 
   assert.equal(state.state, "partial");
   assert.notEqual(state.state, "unavailable");
@@ -62,7 +70,7 @@ test("renderer commands preserve reviewed resident identity and room membership"
         name: "Bridget",
         role: "resident",
         placeId: "workshop",
-        status: "active",
+        status: "unavailable",
       },
       {
         residentId: "resident-banjo",
@@ -96,6 +104,10 @@ test("renderer commands preserve reviewed resident identity and room membership"
   assert.deepEqual(
     workshop.map(({ state }) => state.label),
     ["Bridget", "Banjo"],
+  );
+  assert.notDeepEqual(
+    [workshop[0].state.x, workshop[0].state.y],
+    [workshop[1].state.x, workshop[1].state.y],
   );
   assert.deepEqual(
     lab.map(({ state }) => state.label),

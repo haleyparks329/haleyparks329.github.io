@@ -9,3 +9,6 @@ The renderer is licensed under GPL-3.0-or-later. See the adjacent `LICENSE`
 file for the full license. World View's room catalog and placement logic remain
 authoritative here. The site-specific adapter only presents reviewed residents
 to the renderer.
+
+The indoor idle positions in `world/placement.ts` are synchronized with
+World View commit `8234b118` so quiet residents do not overlap.
