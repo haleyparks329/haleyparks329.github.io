@@ -2,7 +2,7 @@
 title: "The Human Model"
 slug: "the-human-model"
 summary: "A longitudinal model of me that predicts my next training session every night and scores itself against what I lifted. A Kalman strength estimate, a baseline every model must beat and an ensemble; the engine is public and runs on a synthetic athlete."
-longDescription: "Observations keep their provenance, what I say shapes recommendations but changes expectations only after a held-out check, and every prediction and outcome is stored append-only. On my real log it beats \"same as last time\" (2.4 kg against 2.6 kg mean error); no readiness score predicted how I lift."
+longDescription: 'Observations keep their provenance, what I say shapes recommendations but changes expectations only after a held-out check, and every prediction and outcome is stored append-only. On my real log it beats "same as last time" (2.4 kg against 2.6 kg mean error); no readiness score predicted how I lift.'
 coreQuestion: "How do you represent a person in software when the person keeps changing?"
 status: "Active · Running nightly; engine public"
 featured: true
