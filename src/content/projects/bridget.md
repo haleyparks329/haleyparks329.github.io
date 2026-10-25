@@ -4,7 +4,7 @@ slug: "bridget"
 summary: "Bridget exists because I got tired of reconstructing context my computer had already seen. She is a bounded software resident for continuity, reconciliation, and getting the right information back in front of me when it matters."
 longDescription: "Bridget preserves source references, continuity, visible ambiguity, and reviewed corrections without becoming the database, universal gateway, or canonical owner of domain evidence."
 coreQuestion: "Can software carry context forward without becoming the owner of everything it touches?"
-status: "Active · Public architecture"
+status: "Running as the front door of Wonderful Digital World"
 featured: true
 accent: "plum"
 tags:
