@@ -23,8 +23,8 @@
     --rf-color-sage: #6e8975;
     --rf-color-coral: #ad594d;
 
-    --rf-text-page-title: clamp(2rem, 3vw, 2.75rem);
-    --rf-text-section-title: clamp(1.5rem, 2vw, 2rem);
+    --rf-text-page-title: clamp(1.9rem, 1.4rem + 1.6vw, 2.5rem);
+    --rf-text-section-title: clamp(1.45rem, 1.2rem + 0.8vw, 1.75rem);
     --rf-text-body: clamp(1rem, 0.97rem + 0.12vw, 1.125rem);
     --rf-text-small: 0.875rem;
     --rf-leading-tight: 1.08;
