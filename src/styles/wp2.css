@@ -163,14 +163,14 @@ body[data-redesign-foundation] :focus-visible {
   margin: 0;
   font-family: var(--font-serif);
   font-size: var(--rf-text-page-title);
-  line-height: 0.99;
+  line-height: 1.1;
   letter-spacing: -0.035em;
 }
 .editorial-main h2 {
   margin: 0;
   font-family: var(--font-serif);
-  font-size: clamp(1.7rem, 3vw, 2.45rem);
-  line-height: 1.08;
+  font-size: var(--rf-text-section-title);
+  line-height: 1.12;
 }
 .editorial-main h3 {
   margin: 0;

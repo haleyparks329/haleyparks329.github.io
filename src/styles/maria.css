@@ -205,7 +205,7 @@ body.maria-site {
 .maria-title {
   max-width: 15ch;
   margin: 0;
-  font-size: clamp(2.45rem, 4.4vw, 4.15rem);
+  font-size: var(--text-page-title);
   line-height: 1;
 }
 
@@ -308,7 +308,7 @@ body.maria-site {
 .maria-card h2,
 .maria-work-card h2 {
   margin: 3.5rem 0 0.65rem;
-  font-size: clamp(2rem, 3vw, 3rem);
+  font-size: var(--text-h2);
   line-height: 1;
 }
 
@@ -339,7 +339,7 @@ body.maria-site {
 
 .maria-collection-head .maria-title {
   max-width: none;
-  font-size: clamp(2.4rem, 4.2vw, 3.75rem);
+  font-size: var(--text-page-title);
 }
 
 .maria-collection-head .maria-lede {
@@ -350,10 +350,10 @@ body.maria-site {
   max-width: 14ch;
   margin: 0;
   font-family: "Newsreader", Georgia, serif;
-  font-size: clamp(2.4rem, 4.2vw, 3.75rem);
+  font-size: var(--text-page-title);
   font-weight: 500;
   letter-spacing: -0.035em;
-  line-height: 0.98;
+  line-height: 1.1;
 }
 
 .maria-collection-head > p:not(.maria-eyebrow, .maria-note) {
@@ -411,7 +411,7 @@ body.maria-site {
 .maria-card h3 {
   margin: 0.65rem 0;
   font-family: "Newsreader", Georgia, serif;
-  font-size: clamp(1.7rem, 2.5vw, 2.5rem);
+  font-size: var(--text-h2);
   font-weight: 500;
   letter-spacing: -0.025em;
   line-height: 1.05;
@@ -468,7 +468,7 @@ body.maria-site {
 .maria-contact h2 {
   margin: 0;
   font-family: "Newsreader", Georgia, serif;
-  font-size: clamp(1.7rem, 3vw, 2.7rem);
+  font-size: var(--text-h2);
   font-weight: 500;
   letter-spacing: -0.025em;
   line-height: 1.08;
@@ -498,8 +498,8 @@ body.maria-site {
   max-width: 23ch;
   margin: 0;
   font-family: "Newsreader", Georgia, serif;
-  font-size: clamp(2.2rem, 5vw, 4.8rem);
-  line-height: 1;
+  font-size: var(--text-page-title);
+  line-height: 1.15;
 }
 
 .maria-statement footer {
@@ -595,7 +595,7 @@ body.maria-site {
   }
 
   .maria-title {
-    font-size: clamp(2.35rem, 10.5vw, 3.45rem);
+    font-size: var(--text-page-title);
   }
 
   .maria-card-grid {
