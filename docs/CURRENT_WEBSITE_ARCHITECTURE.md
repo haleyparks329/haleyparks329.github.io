@@ -35,6 +35,7 @@ Component-scoped styles stay with the component that owns them. New global rules
 - `src/data/memories.ts` plus `src/data/memories/` own the reviewed public memory dataset and provenance rules.
 - `src/data/navigation.ts` owns Explore destinations, trails, topics, and relationships.
 - `src/data/world-view.ts` is the typed, read-only consumer for the validated public world projection.
+- `src/data/world-cutaway.ts` maps that projection to the `/world/` cutaway house: each resident's published status becomes a pose (busy, resting or away). The page is rendered on the server and ships no client script.
 - `projection-sources/public-state.v1.json` is the reviewed source for public projection artifacts.
 - `public/projections/` contains generated, versioned artifacts only. Its schema and publication policy remain stable integration contracts.
 
