@@ -14,7 +14,7 @@ assert.match(systemsPage, /Sanitized 24-hour-delayed projection/);
 assert.doesNotMatch(systemsPage, /data-systems-view/);
 assert.doesNotMatch(systemsPage, /Loading verified delayed projection/);
 
-assert.match(worldPage, /data-projection=/);
+assert.match(worldPage, /Yesterday in the world/);
 assert.match(worldPage, /Bridget/);
 assert.doesNotMatch(worldPage, /data-manifest-url/);
 

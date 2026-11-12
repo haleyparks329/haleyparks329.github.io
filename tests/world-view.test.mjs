@@ -1,16 +1,26 @@
 import assert from "node:assert/strict";
-import { readFile } from "node:fs/promises";
+import { cp, mkdtemp, readFile, rm } from "node:fs/promises";
+import os from "node:os";
 import path from "node:path";
 import test from "node:test";
 
-import { createRendererCommands } from "../src/data/world-renderer-adapter.ts";
+import { cutawayScene } from "../src/data/world-cutaway.ts";
 import { loadWorldView, toWorldViewState } from "../src/data/world-view.ts";
 import { withBasePath } from "../src/utils/site-path.ts";
 
 const root = path.resolve(import.meta.dirname, "..");
 
 test("world consumer returns the validated projection without inventing entities", async () => {
-  const state = await loadWorldView(root);
+  // Read the manual publication only. Daily WDW releases under
+  // public/projections/wdw/ take precedence on the live site.
+  const manualRoot = await mkdtemp(path.join(os.tmpdir(), "world-manual-"));
+  await cp(
+    path.join(root, "public/projections"),
+    path.join(manualRoot, "public/projections"),
+    { recursive: true, filter: (source) => !source.includes("/wdw") },
+  );
+  const state = await loadWorldView(manualRoot);
+  await rm(manualRoot, { recursive: true, force: true });
 
   assert.equal(state.state, "partial");
   assert.notEqual(state.state, "unavailable");
@@ -34,117 +44,19 @@ test("world consumer returns the validated projection without inventing entities
   );
 });
 
-test("website delegates room identity to World View", async () => {
-  const [adapter, page, renderer] = await Promise.all([
-    readFile(path.join(root, "src/data/world-renderer-adapter.ts"), "utf8"),
-    readFile(path.join(root, "src/pages/world/index.astro"), "utf8"),
-    readFile(path.join(root, "src/scripts/world-renderer.ts"), "utf8"),
-  ]);
-
-  assert.doesNotMatch(adapter, /\b(?:WORLD_ROOMS|PLACE_ROOMS)\b/);
-  assert.doesNotMatch(adapter, /place-(?:workbench|archive)/);
-  assert.match(adapter, /resolveRendererPlacement/);
-  assert.match(page, /WDW_ROOM_REGISTRY/);
-  assert.match(page, /room\.key === "workshop"/);
-  assert.match(renderer, /shell\.dataset\.initialRoom/);
-});
-
-test("renderer commands preserve reviewed resident identity and room membership", () => {
-  const projection = {
-    schemaVersion: "1.0",
-    projectionId: "world-renderer-test",
-    generatedAt: "2026-08-16T00:00:00.000Z",
-    status: "partial",
-    places: [],
-    residents: [
-      {
-        residentId: "resident-bridget",
-        name: "Bridget",
-        role: "resident",
-        placeId: "workshop",
-        status: "active",
-      },
-      {
-        residentId: "resident-banjo",
-        name: "Banjo",
-        role: "resident",
-        placeId: "workshop",
-        status: "bounded",
-      },
-      {
-        residentId: "resident-coach",
-        name: "Coach",
-        role: "resident",
-        placeId: "lab",
-        status: "active",
-      },
-      {
-        residentId: "resident-mini-me",
-        name: "Mini Me",
-        role: "resident",
-        placeId: "lab",
-        status: "bounded",
-      },
-    ],
-    activities: [],
-    attention: [],
-  };
-
-  const workshop = createRendererCommands(projection, "workshop");
-  const lab = createRendererCommands(projection, "lab");
-
-  assert.deepEqual(
-    workshop.map(({ state }) => state.label),
-    ["Bridget", "Banjo"],
-  );
-  assert.deepEqual(
-    lab.map(({ state }) => state.label),
-    ["Coach", "Mini Me"],
-  );
-  assert.equal(lab[1].state.tint, 0xa78bfa);
-  assert.deepEqual(createRendererCommands(null, "outside"), []);
-});
-
-test("World View camera controls use the renderer API in the visible control order", async () => {
-  const [page, renderer] = await Promise.all([
-    readFile(path.join(root, "src/pages/world/index.astro"), "utf8"),
-    readFile(path.join(root, "src/scripts/world-renderer.ts"), "utf8"),
-  ]);
-  const controlOrder = [
-    "data-world-zoom-out",
-    "data-world-zoom-slider",
-    "data-world-zoom-in",
-    "data-world-zoom-fit",
-  ].map((attribute) => page.indexOf(attribute));
-
-  assert.ok(controlOrder.every((index) => index >= 0));
-  assert.deepEqual(
-    controlOrder,
-    [...controlOrder].sort((left, right) => left - right),
-  );
-  assert.match(renderer, /world\?\.zoomOut\(\)/);
-  assert.match(renderer, /world\?\.setZoom\(/);
-  assert.match(renderer, /world\?\.zoomIn\(\)/);
-  assert.match(renderer, /world\?\.resetZoom\(\)/);
-  assert.doesNotMatch(renderer, /style\.transform/);
-});
-
-test("World View retains the global view switch and keeps renderer JavaScript route-local", async () => {
-  const [header, page, renderer] = await Promise.all([
+test("World View retains the global view switch and ships no client script", async () => {
+  const [header, page] = await Promise.all([
     readFile(
       path.join(root, "src/components/redesign/EditorialHeader.astro"),
       "utf8",
     ),
     readFile(path.join(root, "src/pages/world/index.astro"), "utf8"),
-    readFile(path.join(root, "src/scripts/world-renderer.ts"), "utf8"),
   ]);
 
   assert.match(header, /class="maria-view-switch" aria-label="Site view"/);
   assert.match(header, />\s*Regular View\s*</);
   assert.match(header, />\s*Digital World\s*</);
-  assert.match(page, /scripts\/world-renderer/);
-  assert.doesNotMatch(header, /world-renderer/);
-  assert.doesNotMatch(renderer, /import\(/);
+  assert.doesNotMatch(page, /<script/);
 });
 
 test("active public World View vocabulary is limited to canonical rooms", async () => {
@@ -240,16 +152,41 @@ test("World View routes and projection links honor a deployment base path", asyn
   );
   assert.match(page, /canonicalPath="\/world\/"/);
   assert.match(page, /loadWorldView\(\)/);
-  assert.match(
-    page,
-    /data-projection=\{projection \? JSON\.stringify\(projection\)/,
-  );
   assert.doesNotMatch(page, /data-manifest-url/);
+});
 
-  const renderer = await readFile(
-    path.join(root, "src/scripts/world-renderer.ts"),
-    "utf8",
+test("cutaway scene poses residents by their published status", () => {
+  const resident = (residentId, placeId, status) => ({
+    residentId,
+    name: residentId,
+    role: "resident",
+    placeId,
+    status,
+  });
+  const scene = cutawayScene({
+    schemaVersion: "1.0.0",
+    projectionId: "wdw-resident-public",
+    generatedAt: "2026-11-11T09:00:00Z",
+    status: "current",
+    places: [],
+    residents: [
+      resident("resident-bridget", "workshop", "bounded"),
+      resident("banjo", "workshop", "active"),
+      resident("coach", "lab", "unavailable"),
+      resident("someone-new", "garden", "working"),
+    ],
+    activities: [],
+    attention: [],
+  });
+
+  assert.deepEqual(
+    scene.residents.map(({ tone, pose, area }) => [tone, pose, area]),
+    [
+      ["banjo", "busy", "workshop"],
+      ["other", "busy", "outside"],
+      ["bridget", "resting", "workshop"],
+      ["coach", "away", "lab"],
+    ],
   );
-  assert.match(renderer, /shell\.dataset\.projection/);
-  assert.doesNotMatch(renderer, /fetch\(/);
+  assert.deepEqual(cutawayScene(null).residents, []);
 });

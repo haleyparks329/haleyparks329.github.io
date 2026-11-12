@@ -1,136 +1,130 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
+import { cutawayScene } from "../../data/world-cutaway";
 import { loadWorldView } from "../../data/world-view";
-import {
-  countResidentsByRoom,
-  type WorldRoomKey,
-} from "../../data/world-renderer-adapter";
 import { withBasePath } from "../../utils/site-path";
-import { MAX_ZOOM, MIN_ZOOM, ZOOM_STEP } from "../../vendor/world-view/iso";
-import { WDW_ROOM_REGISTRY } from "../../vendor/world-view/world/rooms";
 
 const worldView = await loadWorldView();
 const projection =
   worldView.state === "unavailable" ? null : worldView.projection;
-const rendererRoomKeys: ReadonlyArray<WorldRoomKey> = WDW_ROOM_REGISTRY.map(
-  ({ key }) => key as WorldRoomKey,
-);
-const roomCounts = countResidentsByRoom(projection, rendererRoomKeys);
-const roomCount = (roomKey: string): number =>
-  roomCounts[roomKey as keyof typeof roomCounts] ?? 0;
-const initialRoom =
-  WDW_ROOM_REGISTRY.find((room) => room.key === "workshop") ??
-  WDW_ROOM_REGISTRY[0]!;
-const initialZoom = initialRoom.defaultZoom ?? 1;
+const scene = cutawayScene(projection);
 const basePath = import.meta.env.BASE_URL;
 const projectHref = withBasePath(
   "/projects/wonderful-digital-world/",
   basePath,
 );
+const formatDay = (value: string): string =>
+  new Intl.DateTimeFormat("en-GB", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+    timeZone: "UTC",
+  }).format(new Date(value));
 const formatDate = (value: string): string =>
   new Intl.DateTimeFormat("en", {
     dateStyle: "medium",
     timeStyle: "short",
     timeZone: "UTC",
   }).format(new Date(value));
+const day = projection ? formatDay(projection.generatedAt) : null;
+const sceneLabel = projection
+  ? `Cutaway drawing of the residents' house on ${day}. ` +
+    (scene.residents.length
+      ? scene.residents
+          .map((r) => `${r.name} in the ${r.areaName}, ${r.statusLabel}`)
+          .join("; ") + "."
+      : "No residents were published.")
+  : "Cutaway drawing of the residents' house. The projection could not be verified, so no residents are shown.";
 ---
 
 <BaseLayout
   title="World View"
-  description="The pixel world renderer presenting Wonderful Digital World's reviewed public projection."
+  description="Yesterday in Wonderful Digital World: a cutaway house showing each resident's published status."
   canonicalPath="/world/"
 >
-  <article
-    class="world-page"
-    data-world-shell
-    data-initial-room={initialRoom.key}
-    data-projection={projection ? JSON.stringify(projection) : ""}
-  >
+  <article class="world-page">
     <header class="world-intro">
-      <p class="world-eyebrow">Wonderful Digital World · public projection</p>
-      <h1>World View</h1>
+      <p class="world-eyebrow">World View · Wonderful Digital World</p>
+      <h1>Yesterday in the world</h1>
       <p>
-        A small pixel world for an authorized projection that Wonderful Digital
-        World has chosen to publish.
+        {
+          day
+            ? `This view runs 24 hours behind on purpose, so it shows the world as it was on ${day}.`
+            : "This view runs 24 hours behind on purpose."
+        }
       </p>
     </header>
 
-    <section class="world-console" aria-labelledby="renderer-heading">
-      <div class="world-console__bar">
-        <div>
-          <p class="world-kicker">Room</p>
-          <h2 id="renderer-heading" data-room-status>
-            {initialRoom.name} room selected
-          </h2>
+    <div class="cutaway-scroll">
+      <div class="cutaway" role="img" aria-label={sceneLabel}>
+        <div class="cutaway__roof" aria-hidden="true"></div>
+        <div class="cutaway__house" aria-hidden="true">
+          <div class="cutaway__room">
+            <span class="cutaway__room-name">{scene.roomNames.workshop}</span>
+            <span class="cutaway__desk"></span>
+            <span class="cutaway__screen"></span>
+          </div>
+          <div class="cutaway__room">
+            <span class="cutaway__room-name">{scene.roomNames.lab}</span>
+            <span class="cutaway__bench"></span>
+            <span class="cutaway__flask"></span>
+            <span class="cutaway__flask cutaway__flask--two"></span>
+          </div>
         </div>
-        <nav class="world-rooms" aria-label="World rooms">
-          {
-            WDW_ROOM_REGISTRY.map((room) => (
-              <button
-                type="button"
-                data-room={room.key}
-                data-room-label={room.name}
-                aria-pressed={room.key === initialRoom.key ? "true" : "false"}
-              >
-                {room.name}
-                {roomCount(room.key) > 0 && <span>{roomCount(room.key)}</span>}
-              </button>
-            ))
-          }
-        </nav>
-      </div>
-
-      <div class="world-stage-wrap">
-        <div
-          class="world-stage"
-          data-world-stage
-          aria-label="Interactive pixel world"
+        <span class="cutaway__outside-name" aria-hidden="true"
+          >{scene.roomNames.outside}</span
         >
+        <span class="cutaway__trunk" aria-hidden="true"></span>
+        <span class="cutaway__canopy" aria-hidden="true"></span>
+        <span class="cutaway__heap" aria-hidden="true"></span>
+        <span class="cutaway__flower" aria-hidden="true"></span>
+        <span class="cutaway__flower cutaway__flower--two" aria-hidden="true"
+        ></span>
+        <div class="cutaway__ground" aria-hidden="true">
+          <span></span><span></span><span></span><span></span>
         </div>
-        <div class="world-overlay" data-world-loading role="status">
-          <span class="world-loader" aria-hidden="true"></span>
-          <p>Drawing the world…</p>
-        </div>
-        <div class="world-overlay" data-world-failure hidden>
-          <p>The world could not be drawn.</p>
-          <button type="button" data-world-retry>Try again</button>
-        </div>
+        {
+          scene.residents.map((resident) => (
+            <div
+              class:list={[
+                "resident",
+                `resident--${resident.tone}`,
+                `resident--${resident.pose}`,
+              ]}
+              style={`left: ${resident.left}%`}
+              aria-hidden="true"
+            >
+              {resident.tone === "bridget" && <span class="resident__crown" />}
+              <span class="resident__name">{resident.name}</span>
+              {resident.pose !== "busy" && (
+                <span class="resident__tag">
+                  {resident.pose === "away" ? "away" : resident.statusLabel}
+                </span>
+              )}
+            </div>
+          ))
+        }
       </div>
-      <footer class="world-console__footer">
-        <p class="world-console__note" data-room-note>
-          World View supplies presentation and layout. An authorized projection
-          supplies the published resident references shown inside those spaces.
-        </p>
-        <div class="world-camera" aria-label="Camera controls" role="group">
-          <button
-            aria-label="Zoom out"
-            data-world-zoom-out
-            disabled
-            type="button">−</button
-          >
-          <input
-            aria-label="Zoom level"
-            data-world-zoom-slider
-            disabled
-            max={MAX_ZOOM}
-            min={MIN_ZOOM}
-            step={ZOOM_STEP}
-            type="range"
-            value={initialZoom}
-          />
-          <button aria-label="Zoom in" data-world-zoom-in disabled type="button"
-            >+</button
-          >
-          <button
-            aria-label="Fit room"
-            data-world-zoom-fit
-            disabled
-            type="button">Fit</button
-          >
-          <output data-world-zoom-value>{initialZoom.toFixed(2)}×</output>
-        </div>
-      </footer>
-    </section>
+    </div>
+
+    <ul class="world-roster" aria-label="Residents and their published status">
+      {
+        scene.residents.map((resident) => (
+          <li>
+            <span
+              class:list={["world-roster__dot", `resident--${resident.tone}`]}
+              aria-hidden="true"
+            />
+            <strong>{resident.name}</strong>
+            <span>{resident.role}</span>
+            <span>
+              {resident.areaName} · {resident.statusLabel}
+            </span>
+          </li>
+        ))
+      }
+      {scene.residents.length === 0 && <li>No residents are published.</li>}
+    </ul>
 
     <aside class:list={["world-status", `world-status--${worldView.state}`]}>
       <span aria-hidden="true"></span>
@@ -162,21 +156,16 @@ const formatDate = (value: string): string =>
           here is not evidence that something is absent from the world.
         </p>
         <p>
-          World View owns presentation, layout, and adaptation only; it owns no
-          canonical residents, domain state, work, or evidence. Recent-activity
-          cues are conceptual projection features. The visual language descends
-          from Tiny Places, while this implementation is adapted for Wonderful
-          Digital World.
+          The house is drawn on the server from the published projection. Each
+          resident shows one public status: busy residents work at the desk or
+          bench, idle ones rest by the wall, and unavailable ones are faded.
+          Nothing here is live.
         </p>
         <div class="world-links">
           <a href={projectHref}>WDW project + architecture</a>
           <a
             href="https://github.com/Wonderful-Digital-World/wonderful-digital-world"
             rel="noreferrer">WDW repository ↗</a
-          >
-          <a
-            href="https://github.com/Wonderful-Digital-World/world-view"
-            rel="noreferrer">World-view renderer ↗</a
           >
           <a
             href="https://github.com/haleyparks329/haleyparks329.github.io"
@@ -188,19 +177,35 @@ const formatDate = (value: string): string =>
   </article>
 </BaseLayout>
 
-<script>
-  import "../../scripts/world-renderer";
-</script>
-
 <style>
   .world-page {
-    width: min(calc(100% - 2rem), 90rem);
+    --scene-wall: #ece5d8;
+    --scene-frame: #8d8174;
+    --scene-roof: #c9a3a6;
+    --scene-desk: #dcc191;
+    --scene-screen: #4a4540;
+    --scene-bench: #b9c2b8;
+    --scene-leaf: #9aa58a;
+    --scene-trunk: #9a7a4f;
+    --scene-heap: #c8ab84;
+    --scene-soil-1: #ddd3e6;
+    --scene-soil-2: #d3d4bd;
+    --scene-soil-3: #e6d5b3;
+    --scene-soil-4: #cdd5cf;
+    --eye-white: #fffdf8;
+    --eye-pupil: #1e1e1e;
+    --tone-bridget: #c2647f;
+    --tone-mini-me: #a78bfa;
+    --tone-coach: var(--maria-olive);
+    --tone-banjo: #c49a53;
+    --tone-other: #8c9c98;
+
+    width: min(calc(100% - 2rem), 78rem);
     margin-inline: auto;
     padding: clamp(2rem, 5vw, 5rem) 0 clamp(4rem, 8vw, 7rem);
-    overflow: hidden;
   }
   .world-intro {
-    margin-bottom: clamp(1.5rem, 3vw, 2.5rem);
+    margin-bottom: clamp(1.25rem, 3vw, 2rem);
   }
   .world-eyebrow,
   .world-kicker {
@@ -212,28 +217,337 @@ const formatDate = (value: string): string =>
     text-transform: uppercase;
   }
   .world-intro h1,
-  .world-console h2,
   .world-about h2 {
     margin: 0;
     font-family: var(--maria-display);
     font-weight: 500;
-    line-height: 1;
+    line-height: 1.1;
   }
   .world-intro h1 {
     font-size: var(--text-page-title);
-    letter-spacing: -0.045em;
+    letter-spacing: -0.02em;
   }
   .world-intro > p:last-child {
     max-width: 42rem;
-    margin: 0.8rem 0 0;
+    margin: 0.7rem 0 0;
     color: var(--maria-muted);
   }
+
+  /* The scene keeps its proportions and scrolls sideways on small screens. */
+  .cutaway-scroll {
+    overflow-x: auto;
+    border: 1px solid var(--maria-line);
+    border-radius: 0.6rem;
+    background: var(--maria-surface);
+  }
+  .cutaway {
+    position: relative;
+    min-width: 40rem;
+    aspect-ratio: 16 / 8.5;
+    overflow: hidden;
+  }
+  .cutaway__roof {
+    position: absolute;
+    top: 9%;
+    left: 2%;
+    width: 65%;
+    height: 13.5%;
+    background: var(--scene-roof);
+    clip-path: polygon(0 100%, 50% 0, 100% 100%);
+  }
+  .cutaway__house {
+    position: absolute;
+    top: 22%;
+    left: 4%;
+    width: 61%;
+    height: 52%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    border: 2px solid var(--scene-frame);
+    border-bottom: 0;
+    background: var(--scene-wall);
+  }
+  .cutaway__room {
+    position: relative;
+  }
+  .cutaway__room + .cutaway__room {
+    border-left: 2px solid var(--scene-frame);
+  }
+  .cutaway__room-name,
+  .cutaway__outside-name {
+    position: absolute;
+    color: var(--maria-muted);
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .cutaway__room-name {
+    top: 6%;
+    left: 6%;
+  }
+  .cutaway__outside-name {
+    top: 38%;
+    left: 70%;
+  }
+  .cutaway__desk {
+    position: absolute;
+    bottom: 0;
+    left: 58%;
+    width: 26%;
+    height: 22%;
+    border-radius: 3px 3px 0 0;
+    background: var(--scene-desk);
+  }
+  .cutaway__screen {
+    position: absolute;
+    bottom: 22%;
+    left: 64%;
+    width: 13%;
+    height: 14%;
+    border-radius: 2px;
+    background: var(--scene-screen);
+  }
+  .cutaway__bench {
+    position: absolute;
+    bottom: 0;
+    left: 60%;
+    width: 34%;
+    height: 18%;
+    border-radius: 3px 3px 0 0;
+    background: var(--scene-bench);
+  }
+  .cutaway__flask {
+    position: absolute;
+    bottom: 18%;
+    left: 66%;
+    width: 5%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: var(--tone-mini-me);
+    opacity: 0.6;
+  }
+  .cutaway__flask--two {
+    left: 78%;
+    background: var(--tone-coach);
+  }
+  .cutaway__trunk {
+    position: absolute;
+    bottom: 26%;
+    left: 86.5%;
+    width: 1.6%;
+    height: 16%;
+    background: var(--scene-trunk);
+  }
+  .cutaway__canopy {
+    position: absolute;
+    bottom: 38%;
+    left: 81%;
+    width: 13%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: var(--scene-leaf);
+  }
+  .cutaway__heap {
+    position: absolute;
+    bottom: 26%;
+    left: 70%;
+    width: 12%;
+    height: 7%;
+    border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+    background: var(--scene-heap);
+  }
+  .cutaway__flower {
+    position: absolute;
+    bottom: 33.5%;
+    left: 73%;
+    width: 1.1%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: var(--maria-rust);
+  }
+  .cutaway__flower--two {
+    left: 77%;
+    background: var(--tone-banjo);
+  }
+  .cutaway__ground {
+    position: absolute;
+    inset: 74% 0 0;
+    display: grid;
+    grid-template-rows: repeat(4, 1fr);
+    border-top: 2px solid var(--scene-frame);
+  }
+  .cutaway__ground span:nth-child(1) {
+    background: var(--scene-soil-1);
+  }
+  .cutaway__ground span:nth-child(2) {
+    background: var(--scene-soil-2);
+  }
+  .cutaway__ground span:nth-child(3) {
+    background: var(--scene-soil-3);
+  }
+  .cutaway__ground span:nth-child(4) {
+    background: var(--scene-soil-4);
+  }
+
+  .resident {
+    position: absolute;
+    bottom: 26%;
+    width: 4.2%;
+    aspect-ratio: 1 / 1.15;
+    border-radius: 50% 50% 42% 42%;
+    background: var(--tone);
+  }
+  .resident::before,
+  .resident::after {
+    content: "";
+    position: absolute;
+    top: 32%;
+    width: 24%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: radial-gradient(
+      circle at 50% 62%,
+      var(--eye-pupil) 0 36%,
+      var(--eye-white) 40%
+    );
+  }
+  .resident::before {
+    left: 20%;
+  }
+  .resident::after {
+    right: 20%;
+  }
+  .resident--bridget {
+    --tone: var(--tone-bridget);
+  }
+  .resident--mini-me {
+    --tone: var(--tone-mini-me);
+  }
+  .resident--coach {
+    --tone: var(--tone-coach);
+  }
+  .resident--banjo {
+    --tone: var(--tone-banjo);
+  }
+  .resident--other {
+    --tone: var(--tone-other);
+  }
+  .resident__crown {
+    position: absolute;
+    bottom: 96%;
+    left: 28%;
+    width: 44%;
+    height: 26%;
+    background: var(--tone-banjo);
+    clip-path: polygon(
+      0 100%,
+      0 30%,
+      25% 65%,
+      50% 0,
+      75% 65%,
+      100% 30%,
+      100% 100%
+    );
+  }
+  .resident__name,
+  .resident__tag {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: var(--font-mono);
+    white-space: nowrap;
+  }
+  .resident__name {
+    bottom: calc(100% + 0.35rem);
+    padding: 0 0.3rem;
+    border-radius: 999px;
+    background: var(--maria-surface);
+    color: var(--maria-ink);
+    font-size: 0.62rem;
+  }
+  .resident--bridget .resident__name {
+    bottom: calc(100% + 1.1rem);
+  }
+  .resident__tag {
+    top: calc(100% + 0.3rem);
+    padding: 0.05rem 0.35rem;
+    border-radius: 999px;
+    background: var(--maria-surface);
+    color: var(--maria-muted);
+    font-size: 0.56rem;
+  }
+  .resident--busy {
+    animation: resident-bob 3.2s ease-in-out infinite;
+  }
+  .resident--busy:nth-of-type(odd) {
+    animation-delay: -1.4s;
+  }
+  .resident--banjo.resident--busy {
+    animation: resident-scurry 2.6s ease-in-out infinite alternate;
+  }
+  .resident--resting {
+    transform: scaleY(0.94);
+    transform-origin: bottom;
+  }
+  .resident--away {
+    opacity: 0.38;
+    outline: 1.5px dashed var(--scene-frame);
+    outline-offset: 2px;
+  }
+  @keyframes resident-bob {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-6%);
+    }
+  }
+  @keyframes resident-scurry {
+    0% {
+      transform: translateX(-60%);
+    }
+    45% {
+      transform: translateX(40%) translateY(-5%);
+    }
+    100% {
+      transform: translateX(130%);
+    }
+  }
+
+  .world-roster {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem 1.75rem;
+    margin: 1rem 0 0;
+    padding: 0;
+    list-style: none;
+    font-size: 0.85rem;
+  }
+  .world-roster li {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.2rem 0.5rem;
+  }
+  .world-roster span {
+    color: var(--maria-muted);
+  }
+  .world-roster__dot {
+    width: 0.6rem;
+    height: 0.6rem;
+    border-radius: 50%;
+    background: var(--tone);
+    align-self: center;
+  }
+
   .world-status {
     display: flex;
-    flex: 0 0 auto;
     align-items: flex-start;
     gap: 0.65rem;
     max-width: 23rem;
+    margin-top: 1.5rem;
     padding: 0.8rem 1rem;
     border: 1px solid var(--maria-line);
     border-radius: 0.35rem;
@@ -261,150 +575,11 @@ const formatDate = (value: string): string =>
     font-size: 0.82rem;
   }
   .world-status small {
+    margin-top: 0.15rem;
     color: var(--maria-muted);
-    font-size: 0.7rem;
-  }
-  .world-console {
-    overflow: hidden;
-    border: 1px solid #4d423b;
-    border-radius: 0.5rem;
-    background: #272321;
-    color: #f5f0e7;
-    box-shadow: var(--maria-shadow);
-  }
-  .world-console__bar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1.5rem;
-    padding: 0.9rem 1rem;
-    border-bottom: 1px solid rgb(255 255 255 / 16%);
-  }
-  .world-console .world-kicker {
-    color: #bcb2aa;
-  }
-  .world-console h2 {
-    color: inherit;
-    font-size: 1.5rem;
-  }
-  .world-rooms {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: flex-end;
-    gap: 0.35rem;
-  }
-  .world-rooms button,
-  .world-overlay button {
-    border: 1px solid rgb(255 255 255 / 24%);
-    border-radius: 999px;
-    background: transparent;
-    color: inherit;
-    font: inherit;
-    font-size: 0.75rem;
-    cursor: pointer;
-  }
-  .world-rooms button {
-    padding: 0.45rem 0.7rem;
-  }
-  .world-rooms button[aria-pressed="true"] {
-    background: #f5f0e7;
-    color: #272321;
-  }
-  .world-rooms button span {
-    margin-left: 0.3rem;
-    font-size: 0.65rem;
-    opacity: 0.7;
-  }
-  .world-stage-wrap {
-    position: relative;
-    width: 100%;
-    height: clamp(34rem, 68vw, 58rem);
-    min-height: 34rem;
-    background: #1d1a19;
-  }
-  .world-stage,
-  .world-stage canvas {
-    display: block;
-    width: 100%;
-    height: 100%;
-  }
-  .world-overlay {
-    position: absolute;
-    inset: 0;
-    display: grid;
-    place-content: center;
-    justify-items: center;
-    gap: 0.8rem;
-    background: #272321;
-    color: #f5f0e7;
-  }
-  .world-overlay[hidden] {
-    display: none;
-  }
-  .world-overlay p {
-    margin: 0;
-  }
-  .world-overlay button {
-    padding: 0.55rem 0.9rem;
-  }
-  .world-loader {
-    width: 1.35rem;
-    height: 1.35rem;
-    border: 2px solid rgb(255 255 255 / 24%);
-    border-top-color: #f5f0e7;
-    border-radius: 50%;
-    animation: world-spin 0.8s linear infinite;
-  }
-  .world-console__footer {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-    padding: 0.65rem 1rem;
-    border-top: 1px solid rgb(255 255 255 / 16%);
-  }
-  .world-console__note {
-    max-width: 52rem;
-    margin: 0;
-    color: #bcb2aa;
     font-size: 0.75rem;
   }
-  .world-camera {
-    display: flex;
-    flex: 0 0 auto;
-    align-items: center;
-    gap: 0.35rem;
-  }
-  .world-camera button {
-    min-width: 2rem;
-    height: 1.9rem;
-    padding: 0 0.55rem;
-    border: 1px solid rgb(255 255 255 / 24%);
-    border-radius: 0.25rem;
-    background: transparent;
-    color: inherit;
-    font: inherit;
-    font-size: 0.75rem;
-    cursor: pointer;
-  }
-  .world-camera button:disabled {
-    cursor: default;
-    opacity: 0.4;
-  }
-  .world-camera input {
-    width: clamp(5rem, 10vw, 8rem);
-    accent-color: #f5f0e7;
-  }
-  .world-camera output {
-    min-width: 3.2rem;
-    color: #bcb2aa;
-    font-variant-numeric: tabular-nums;
-    font-size: 0.7rem;
-    text-align: right;
-  }
-  .world-status {
-    margin-top: 1rem;
-  }
+
   .world-about {
     display: grid;
     grid-template-columns: minmax(15rem, 0.8fr) minmax(0, 1.4fr);
@@ -416,7 +591,7 @@ const formatDate = (value: string): string =>
     font-size: var(--text-h2);
   }
   .world-about__copy > p {
-    max-width: 49rem;
+    max-width: 42rem;
     margin: 0 0 1rem;
   }
   .world-links {
@@ -426,52 +601,22 @@ const formatDate = (value: string): string =>
     margin-top: 1.8rem;
     font-size: 0.8rem;
   }
-  @keyframes world-spin {
-    to {
-      transform: rotate(360deg);
-    }
-  }
+
   @media (max-width: 48rem) {
-    .world-console__bar,
     .world-about {
       display: block;
     }
     .world-status {
-      width: 100%;
       max-width: none;
-      margin-top: 1.5rem;
-    }
-    .world-rooms {
-      justify-content: flex-start;
-      margin-top: 0.8rem;
-    }
-    .world-stage-wrap {
-      height: 32rem;
-      min-height: 32rem;
-    }
-    .world-console__footer {
-      align-items: flex-start;
-      flex-direction: column;
     }
     .world-about__copy {
       margin-top: 1.5rem;
     }
   }
-  @media (max-width: 30rem) {
-    .world-page {
-      width: min(calc(100% - 1rem), 90rem);
-    }
-    .world-stage-wrap {
-      height: 27rem;
-      min-height: 27rem;
-    }
-    .world-rooms button {
-      padding: 0.4rem 0.58rem;
-      font-size: 0.7rem;
-    }
-  }
+
   @media (prefers-reduced-motion: reduce) {
-    .world-loader {
+    .resident--busy,
+    .resident--banjo.resident--busy {
       animation: none;
     }
   }
