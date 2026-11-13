@@ -1,0 +1,20 @@
+{
+  "generatedAt": "2026-11-12T07:50:45.518047Z",
+  "intelligence": {
+    "candidates": null,
+    "meanSimilarity": null,
+    "precisionAtK": null,
+    "precisionAtKState": "unknown",
+    "reviewed": null,
+    "thoughts": null
+  },
+  "releaseDelayHours": 24.0,
+  "residents": {
+    "active": 4,
+    "needsAttention": 0,
+    "total": 4
+  },
+  "schema": "wdw.systems.v1",
+  "sourceObservedAt": "2026-11-12T07:50:45.469435Z",
+  "state": "known"
+}

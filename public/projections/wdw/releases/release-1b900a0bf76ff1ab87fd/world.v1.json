@@ -1,0 +1,55 @@
+{
+  "activities": [],
+  "attention": [],
+  "generatedAt": "2026-11-12T07:50:45.518047Z",
+  "places": [
+    {
+      "href": "/world/#workshop",
+      "kind": "workshop",
+      "name": "Workshop",
+      "placeId": "workshop",
+      "status": "open"
+    },
+    {
+      "href": "/world/#lab",
+      "kind": "lab",
+      "name": "Lab",
+      "placeId": "lab",
+      "status": "open"
+    }
+  ],
+  "projectionId": "wdw-resident-public",
+  "residents": [
+    {
+      "name": "Bridget",
+      "placeId": "workshop",
+      "residentId": "bridget",
+      "role": "Orchestrator",
+      "status": "active"
+    },
+    {
+      "name": "Coach",
+      "placeId": "lab",
+      "residentId": "coach",
+      "role": "Coaching resident",
+      "status": "active"
+    },
+    {
+      "name": "Mini Me",
+      "placeId": "lab",
+      "residentId": "mini-me",
+      "role": "Research resident",
+      "status": "active"
+    },
+    {
+      "name": "Banjo",
+      "placeId": "workshop",
+      "residentId": "banjo",
+      "role": "Engineering resident",
+      "status": "active"
+    }
+  ],
+  "schema": "wdw.world.v1",
+  "schemaVersion": "1.0.0",
+  "status": "current"
+}

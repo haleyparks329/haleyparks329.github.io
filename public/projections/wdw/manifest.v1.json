@@ -1,0 +1,20 @@
+{
+  "artifacts": {
+    "systems.v1.json": {
+      "bytes": 444,
+      "path": "releases/release-1b900a0bf76ff1ab87fd/systems.v1.json",
+      "sha256": "35da258ab32f37610a7cade01a632ce4d45fbd51e45225001a10905a5aa593bb"
+    },
+    "world.v1.json": {
+      "bytes": 1143,
+      "path": "releases/release-1b900a0bf76ff1ab87fd/world.v1.json",
+      "sha256": "86477fbcc9e8e48cd45ae18e8cd62318a7f04556075ab281f45284e1f33943d0"
+    }
+  },
+  "candidateId": "candidate-88ea9d78282367e5adaa",
+  "releaseDelayHours": 24.0,
+  "releaseId": "release-1b900a0bf76ff1ab87fd",
+  "releasedAt": "2026-11-13T08:00:05.889877Z",
+  "schema": "wdw.public-release-manifest.v1",
+  "sourceObservedAt": "2026-11-12T07:50:45.469435Z"
+}
