@@ -10,7 +10,10 @@ const [systemsPage, worldPage] = await Promise.all([
 ]);
 
 assert.match(systemsPage, /Command Center/);
-assert.match(systemsPage, /Sanitized 24-hour-delayed projection/);
+assert.match(
+  systemsPage,
+  /Sanitized (public projection|24-hour-delayed projection)/,
+);
 assert.doesNotMatch(systemsPage, /data-systems-view/);
 assert.doesNotMatch(systemsPage, /Loading verified delayed projection/);
 

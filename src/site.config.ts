@@ -12,7 +12,6 @@ export type SiteConfig = {
   email: string;
   linkedinUrl: string;
   resumeUrl: string;
-  location: string;
   availability: string;
 };
 
@@ -31,7 +30,6 @@ export const siteConfig: SiteConfig = {
   email: "haleyparks329@gmail.com",
   linkedinUrl: "https://www.linkedin.com/in/haleyparks329/",
   resumeUrl: "TODO: add public resume URL",
-  location: "Denmark",
   availability:
     "Open to relevant AI product engineering, product engineering, applied AI, systems engineering, and early-stage product development opportunities.",
 };
