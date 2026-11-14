@@ -41,6 +41,16 @@ const modelQualityLabel =
       ? "Evaluated"
       : "Unavailable";
 
+const intelligence = projection?.intelligence;
+const hasIntelligence =
+  intelligence !== undefined &&
+  [
+    intelligence.thoughts,
+    intelligence.candidates,
+    intelligence.reviewed,
+    intelligence.meanSimilarity,
+  ].some((value) => value !== null && value !== undefined);
+
 const statusLabel = !projection
   ? "Unavailable"
   : stale
@@ -129,41 +139,46 @@ const statusTone = !projection
             </dl>
           </section>
 
-          <section class="console-panel" aria-labelledby="intelligence-heading">
-            <header class="panel-header">
-              <div>
-                <p class="panel-kicker">Public aggregate</p>
-                <h2 id="intelligence-heading">Intelligence Summary</h2>
-              </div>
-              <span class="panel-badge">Evaluation: {evaluationLabel}</span>
-            </header>
-            <dl class="metric-grid intelligence-grid">
-              <div>
-                <dt>Thoughts</dt>
-                <dd>{count(projection.intelligence.thoughts)}</dd>
-              </div>
-              <div>
-                <dt>Candidates</dt>
-                <dd>{count(projection.intelligence.candidates)}</dd>
-              </div>
-              <div>
-                <dt>Reviewed</dt>
-                <dd>{count(projection.intelligence.reviewed)}</dd>
-              </div>
-              <div>
-                <dt>Mean similarity</dt>
-                <dd>{decimal(projection.intelligence.meanSimilarity)}</dd>
-              </div>
-              <div>
-                <dt>Precision at K</dt>
-                <dd class="text-value">{precisionAtKLabel}</dd>
-              </div>
-              <div>
-                <dt>Model quality</dt>
-                <dd class="text-value">{modelQualityLabel}</dd>
-              </div>
-            </dl>
-          </section>
+          {hasIntelligence && (
+            <section
+              class="console-panel"
+              aria-labelledby="intelligence-heading"
+            >
+              <header class="panel-header">
+                <div>
+                  <p class="panel-kicker">Public aggregate</p>
+                  <h2 id="intelligence-heading">Intelligence Summary</h2>
+                </div>
+                <span class="panel-badge">Evaluation: {evaluationLabel}</span>
+              </header>
+              <dl class="metric-grid intelligence-grid">
+                <div>
+                  <dt>Thoughts</dt>
+                  <dd>{count(projection.intelligence.thoughts)}</dd>
+                </div>
+                <div>
+                  <dt>Candidates</dt>
+                  <dd>{count(projection.intelligence.candidates)}</dd>
+                </div>
+                <div>
+                  <dt>Reviewed</dt>
+                  <dd>{count(projection.intelligence.reviewed)}</dd>
+                </div>
+                <div>
+                  <dt>Mean similarity</dt>
+                  <dd>{decimal(projection.intelligence.meanSimilarity)}</dd>
+                </div>
+                <div>
+                  <dt>Precision at K</dt>
+                  <dd class="text-value">{precisionAtKLabel}</dd>
+                </div>
+                <div>
+                  <dt>Model quality</dt>
+                  <dd class="text-value">{modelQualityLabel}</dd>
+                </div>
+              </dl>
+            </section>
+          )}
         </div>
       )
     }
