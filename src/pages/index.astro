@@ -1,67 +1,85 @@
 ---
-import { getCollection } from "astro:content";
-import ProjectCardVisual from "../components/ProjectCardVisual.astro";
-import EditorialLayout from "../layouts/EditorialLayout.astro";
+// Home: hello, building philosophies, writing, main projects, other projects, contact.
+// Words live in src/data/simple-site.ts; essays come from Substack at build time.
+import SimpleLayout from "@/layouts/SimpleLayout.astro";
+import { simpleSite as s } from "@/data/simple-site";
+import { getSubstackPosts } from "@/data/substack-feed";
 
-const projects = (await getCollection("projects")).sort(
-  (a, b) => a.data.order - b.data.order,
-);
-const featuredProjects = projects.slice(0, 4);
-const accents: Record<string, string> = {
-  rust: "var(--maria-rust)",
-  olive: "var(--maria-olive)",
-  plum: "var(--maria-plum)",
-  blue: "var(--maria-blue)",
-  khaki: "#8b8053",
-};
+const essays = await getSubstackPosts();
+const bare = (url: string) => url.replace(/^https:\/\//, "");
 ---
 
-<EditorialLayout
-  description="Haley Parks builds and investigates personal models, persistent computational environments, and accountable agent systems."
->
-  <div class="maria-page">
-    <section class="maria-hero" aria-labelledby="home-title">
-      <div>
-        <p class="maria-eyebrow">AI Product Engineer</p>
-        <h1 class="maria-title" id="home-title">
-          Hi, I’m Haley. I design human-centered interaction systems.
-        </h1>
-      </div>
-      <p class="maria-lede">
-        I’m interested in what happens when software adapts to people instead of
-        making people adapt to software. I build systems that preserve context,
-        make uncertainty visible, and move more of the computer work off the
-        human—without moving human judgment out of the loop.
-      </p>
-    </section>
-    <section aria-labelledby="selected-work-title">
-      <div class="maria-section-heading">
-        <h2 id="selected-work-title">Things I’m building</h2>
-        <a href="/projects/">View all projects →</a>
-      </div>
-      <div class="maria-card-grid">
-        {
-          featuredProjects.map((project) => (
-            <article
-              class="maria-card maria-card--project"
-              style={`--card-accent: ${accents[project.data.accent]}`}
-            >
-              <a href={`/projects/${project.data.slug}/`}>
-                <span class="maria-card__mark" aria-hidden="true" />
-                <ProjectCardVisual slug={project.data.slug} />
-                <h2>{project.data.title}</h2>
-                <p>{project.data.summary}</p>
-                <div class="maria-card__meta">
-                  <>
-                    <span>{project.data.status}</span>
-                    <span>View project →</span>
-                  </>
-                </div>
-              </a>
-            </article>
-          ))
-        }
-      </div>
-    </section>
+<SimpleLayout>
+  <div class="s-wrap">
+    <article class="s-doc">
+      <h1>{s.hello}</h1>
+      <p class="s-lede">{s.tagline}</p>
+      <p class="s-intro">{s.intro}</p>
+
+      <section id="philosophies">
+        <h2>Building philosophies</h2>
+        <ul>
+          {s.philosophies.map((text) => <li>{text}</li>)}
+        </ul>
+      </section>
+
+      <section id="writing">
+        <h2>What I write about</h2>
+        <p class="s-sub">
+          On Substack: <a href={s.substackUrl}>{bare(s.substackUrl)}</a>
+        </p>
+        <ul>
+          {
+            essays.map((post) => (
+              <li>
+                <a href={post.url}>{post.title}</a>
+              </li>
+            ))
+          }
+        </ul>
+      </section>
+
+      <section id="main-projects">
+        <h2>Main projects</h2>
+        <ul class="s-lead">
+          {
+            s.featured.map((p) => (
+              <li>
+                <a class="s-b" href={p.href}>
+                  {p.title}
+                </a>
+                . {p.line}
+                <span class="s-from">{p.proof}</span>
+              </li>
+            ))
+          }
+        </ul>
+      </section>
+
+      <section id="other-projects">
+        <h2>Other projects</h2>
+        <ul>
+          {
+            s.others.map((p) => (
+              <li>
+                <span class="s-b">{p.title}</span>. {p.line}
+                <span class="s-from">
+                  <a href={p.repo}>{bare(p.repo)}</a>
+                </span>
+              </li>
+            ))
+          }
+        </ul>
+      </section>
+
+      <section id="contact">
+        <h2>Contact me</h2>
+        <ul class="s-contact">
+          <li>Email: {s.contact.email}</li>
+          <li><a href={s.contact.linkedin}>LinkedIn</a></li>
+          <li><a href={s.contact.github}>GitHub</a></li>
+        </ul>
+      </section>
+    </article>
   </div>
-</EditorialLayout>
+</SimpleLayout>

@@ -1,0 +1,127 @@
+---
+// A plain project page: title, short summary, status, sections, and an "On this page"
+// list beside them with the project's commit rings. Words come from simple-site.ts.
+import SimpleLayout from "@/layouts/SimpleLayout.astro";
+import { simpleSite } from "@/data/simple-site";
+
+type Slug = keyof typeof simpleSite.pages;
+type Section = {
+  id: string;
+  h: string;
+  intro?: string;
+  quote?: { text: string; date: string };
+  steps?: readonly string[];
+  list?: readonly string[];
+  p?: readonly string[];
+  links?: readonly { label: string; href: string }[];
+};
+
+const { slug } = Astro.props as { slug: Slug };
+const page = simpleSite.pages[slug];
+const sections = page.sections as readonly Section[];
+const workers = page.workers as readonly string[];
+const names =
+  workers.length > 1
+    ? `${workers.slice(0, -1).join(", ")} and ${workers.at(-1)}`
+    : workers.join("");
+const status = workers.length
+  ? `${page.status} ${names} work${workers.length > 1 ? "" : "s"} on it.`
+  : page.status;
+---
+
+<SimpleLayout title={page.title} description={page.lede}>
+  <div class="s-wrap">
+    <article class="s-doc">
+      <p class="s-crumbs"><a href="/">Haley Parks</a> / {page.title}</p>
+      <h1>{page.title}</h1>
+      <p class="s-lede">{page.lede}</p>
+      <p class="s-meta">{status}</p>
+      <figure class="s-inline">
+        <img
+          src={page.rings.src}
+          alt="A ring drawing of this project's commits"
+          width="240"
+          height="240"
+        />
+        <figcaption>{page.rings.caption}</figcaption>
+      </figure>
+      {
+        sections.map((s) => (
+          <section id={s.id}>
+            <h2>{s.h}</h2>
+            {s.intro && <p>{s.intro}</p>}
+            {s.quote && (
+              <p class="s-quote">
+                “{s.quote.text}”<span>{s.quote.date}</span>
+              </p>
+            )}
+            {s.steps && (
+              <ol>
+                {s.steps.map((x) => (
+                  <li>{x}</li>
+                ))}
+              </ol>
+            )}
+            {s.list && (
+              <ul>
+                {s.list.map((x) => (
+                  <li>{x}</li>
+                ))}
+              </ul>
+            )}
+            {(s.p ?? []).map((x) => (
+              <p>{x}</p>
+            ))}
+            {(s.links ?? []).map((l) => (
+              <p>
+                <a class="s-b" href={l.href}>
+                  {l.label}
+                </a>
+              </p>
+            ))}
+          </section>
+        ))
+      }
+      <p class="s-foot"><a href="/">Back to Haley Parks</a></p>
+    </article>
+    <nav class="s-side" aria-label="On this page">
+      <figure>
+        <img src={page.rings.src} alt="" width="180" height="180" />
+        <figcaption>{page.rings.caption}</figcaption>
+      </figure>
+      <div class="s-hd">On this page</div>
+      {
+        sections.map((s) => (
+          <a href={`#${s.id}`} data-to={s.id}>
+            {s.h}
+          </a>
+        ))
+      }
+    </nav>
+  </div>
+  <script>
+    // mark the section you're reading in "On this page"
+    const links = [
+      ...document.querySelectorAll<HTMLAnchorElement>(".s-side a[data-to]"),
+    ];
+    if (links.length && "IntersectionObserver" in window) {
+      const spy = new IntersectionObserver(
+        (entries) => {
+          const seen = entries
+            .filter((e) => e.isIntersecting)
+            .sort(
+              (a, b) => a.boundingClientRect.top - b.boundingClientRect.top,
+            );
+          if (seen.length)
+            links.forEach((a) =>
+              a.classList.toggle("on", a.dataset.to === seen[0].target.id),
+            );
+        },
+        { rootMargin: "0px 0px -65% 0px" },
+      );
+      document
+        .querySelectorAll(".s-doc section[id]")
+        .forEach((s) => spy.observe(s));
+    }
+  </script>
+</SimpleLayout>
