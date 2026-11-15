@@ -6,44 +6,44 @@ export const simpleSite = {
   hello: "Hi, I’m Haley!",
   tagline: "I build human-centered software.",
   intro:
-    "I’m an AI product engineer: I build agent systems and a model of me that do the computer things, so I get to do the human things.",
+    "I’m an AI engineer who likes building things that make computers work a little harder, so humans don’t have to. Lately, that means personal models, AI agents, and a lot of experiments on myself.",
   philosophies: [
-    "Technology is supposed to be fun, not sterile. It should feel like it was made for you.",
-    "I shouldn’t have to tell the computer what to do. It should know me well enough to do as much as it can on its own.",
-    "Most AI automation just adds work, because you still have to review work you didn’t do. I build systems you can trust, so only the things that need me reach me.",
-    "I can deal with ugly. I can’t deal with annoying.",
+    "Technology should be fun. I want software that feels personal, not like another control panel I have to learn.",
+    "I don't want to spend my life telling computers what to do. I'd rather build systems that know enough about me to figure out the next step.",
+    "Automation isn't very helpful if I have to supervise every single thing it does. The interesting engineering problem is figuring out what I can actually trust it to handle.",
+    "I can forgive ugly software. Annoying software is another story.",
   ],
   substackUrl: "https://haleyparks329.substack.com",
   featured: [
     {
       title: "The Human Model",
       href: "/projects/the-human-model/",
-      line: "A model of me that predicts my next training session every night, then checks itself against what I actually lifted.",
+      line: "I'm building a model of myself. Right now, one experiment is trying to predict what I'll lift before I walk into the gym.",
       proof:
-        "Over 68 predictions it was off by 2.4 kg on average. Repeating the last session was off by 2.6 kg.",
+        "Across 68 predictions, the average error was 2.4 kg. Guessing I'd repeat my last session came in at 2.6 kg. So, progress. Barely. 😅",
     },
     {
       title: "Wonderful Digital World",
       href: "/projects/wonderful-digital-world/",
-      line: "Four AI agents that run my life’s operations on a Mac mini. They share one library and report to me every night.",
+      line: "My little world of AI agents, running on a Mac mini. They have jobs, share context, and help keep my projects and everyday systems moving.",
       proof:
-        "377 commits since April. Bridget is their front door: I talk to her, and she sends each request to the right agent.",
+        "377 commits since April. Bridget is the front door, and the other agents each have their own responsibilities.",
     },
   ],
   others: [
     {
       title: "Bridget",
-      line: "The front door to my agents. I talk to her in chat, and she sends each request to the right one.",
+      line: "The front door to my digital world. I talk to Bridget, and she figures out who needs to do what.",
       repo: "https://github.com/haleyparks329/bridget-architecture",
     },
     {
       title: "QA Agents",
-      line: "Agents that investigate bugs and bring me evidence before anyone acts on it.",
+      line: "Agents that investigate bugs, collect evidence, and help me figure out what's actually broken before changing anything.",
       repo: "https://github.com/haleyparks329/qa-agents",
     },
     {
       title: "Career Intelligence",
-      line: "A tool that reasons about careers from evidence instead of keywords.",
+      line: "An experiment in understanding careers through evidence and experience, rather than reducing people to a list of keywords.",
       repo: "https://github.com/haleyparks329/career-intelligence",
     },
   ],
@@ -55,13 +55,13 @@ export const simpleSite = {
   pages: {
     "the-human-model": {
       title: "The Human Model",
-      lede: "A model of me that guesses what I’ll lift in my next session, every night, and then checks itself against what I actually lifted.",
-      status: "Runs every night. The engine is public; my data stays private.",
+      lede: "What happens when you treat yourself as a longitudinal modeling problem? I decided to find out.",
+      status: "Runs nightly. The engine is public; my personal data isn't.",
       workers: ["Coach", "Banjo"],
       rings: {
         src: "/images/rings/the-human-model.svg",
         caption:
-          "196 commits from 1 April to 15 November 2026, one ring per repository. Each tick is a day with commits.",
+          "196 commits from 1 April to 15 November 2026. Each tick marks a day with commits; each ring represents a repository.",
       },
       sections: [
         {
@@ -72,46 +72,46 @@ export const simpleSite = {
             date: "30 Jun 2026",
           },
           p: [
-            "My data was all over the place: workout logs, nutrition apps, Apple Health, coaching notes, screenshots. Each app had a piece of me. None of them kept the whole picture, or remembered how it changed.",
-            "I didn’t want another dashboard. I wanted one place my agents could read instead of guessing.",
-            "I felt kind of cheesy naming it The Human Model. Now it makes sense. I’m literally modelling myself.",
+            "I had years of information about myself scattered across workout logs, nutrition apps, Apple Health, coaching notes, and the occasional screenshot. Plenty of data, but no real way to understand how it all fit together or changed over time.",
+            "I didn't want another dashboard showing me numbers I could already find somewhere else. I wanted a system that could connect them, learn from them, and give my agents a shared understanding of the person they're supposed to be helping.",
+            "At first, calling it The Human Model felt a little dramatic. But that's literally what I'm trying to build: a model of a human. Me, specifically. An n=1 experiment with a lot of room to grow.",
           ],
         },
         {
           id: "nightly",
-          h: "What it does every night",
+          h: "What happens every night",
           steps: [
-            "It takes in what I logged, and keeps where each piece came from.",
-            "Several models predict my next session, and an ensemble combines them.",
-            "Every number comes with the reason it moved.",
-            "After the session, it scores itself against what I actually lifted.",
-            "Only effects that pass a held-out check can change what it expects.",
+            "New observations come in from my connected data sources, with their provenance intact.",
+            "Multiple models estimate what I might do in my next training session, and an ensemble combines their predictions.",
+            "The system records what influenced each estimate, rather than handing me an unexplained number.",
+            "Once I've trained, it compares the predictions with what I actually did.",
+            "New effects have to prove themselves on held-out data before they're allowed to influence future predictions.",
           ],
           p: [
-            "Coach reads it every night to plan my training. None of my agents own it.",
+            "Coach uses the model as one input when planning my training. The Human Model itself stays independent of whichever agent happens to be reading it.",
           ],
         },
         {
           id: "found",
-          h: "What it found",
+          h: "What I've learned so far",
           list: [
-            "It beats “same as last time”, a little. Over 68 predictions from September to October 2026 it was off by 2.4 kg on average. Repeating the last session was off by 2.6 kg.",
-            "How tired or stressed I said I was didn’t predict what I lifted. Adding it made the predictions worse.",
-            "Effects fitted on all the data looked real, then made the next predictions worse. The held-out rule turned all of them down, which was the right call.",
+            "The model is a little better than repeating my last session. Across 68 predictions from September to October 2026, its mean absolute error was 2.4 kg versus 2.6 kg for the baseline. That's an improvement, but not exactly a victory lap.",
+            "My self-reported fatigue and stress didn't improve the predictions. In fact, adding them made the results worse.",
+            "Some effects looked convincing when fitted on all the data, then failed when tested on observations they hadn't seen. The held-out checks rejected them. That's exactly why I put the checks there.",
           ],
         },
         {
           id: "limits",
-          h: "What it isn’t",
+          h: "The important caveats",
           p: [
-            "It isn’t medical advice, and a model of me says nothing about you. 68 predictions is a small sample, so the nightly scoring has to keep proving it.",
+            "This is an experiment on one person, not a universal model of human performance or a source of medical advice. Sixty-eight predictions are also nowhere near enough to declare the problem solved. That's why it keeps evaluating itself every night.",
           ],
         },
         {
           id: "inside",
           h: "Look inside",
           p: [
-            "The prediction engine is public. It runs on a synthetic athlete, so you can try it without my data.",
+            "The prediction engine is public, with a synthetic athlete you can use to explore it without needing access to my personal data.",
           ],
           links: [
             {
@@ -124,14 +124,14 @@ export const simpleSite = {
     },
     "wonderful-digital-world": {
       title: "Wonderful Digital World",
-      lede: "Four AI agents that run my life’s operations. They share one library, hand work to each other, and report to me every night.",
+      lede: "I gave my AI agents a little world of their own. They have responsibilities, shared context, and actual software keeping them accountable.",
       status:
-        "Runs every day. The architecture is public; the agents’ memory and my data stay private.",
+        "Runs daily. The architecture is public; personal data and agent memory stay private.",
       workers: ["Bridget", "Coach", "Mini Me", "Banjo"],
       rings: {
         src: "/images/rings/wonderful-digital-world.svg",
         caption:
-          "377 commits from 1 April to 15 November 2026, one ring per repository. Each tick is a day with commits.",
+          "377 commits from 1 April to 15 November 2026. Each tick marks a day with commits; each ring represents a repository.",
       },
       sections: [
         {
