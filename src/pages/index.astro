@@ -14,7 +14,17 @@ const bare = (url: string) => url.replace(/^https:\/\//, "");
     <article class="s-doc">
       <h1>{s.hello}</h1>
       <p class="s-lede">{s.tagline}</p>
-      <p class="s-intro">{s.intro}</p>
+      <div class="s-intro">
+        {
+          s.intro.map((para) => (
+            <p>
+              {para
+                .split(/\*\*(.+?)\*\*/)
+                .map((bit, i) => (i % 2 ? <strong>{bit}</strong> : bit))}
+            </p>
+          ))
+        }
+      </div>
 
       <section id="philosophies">
         <h2>Building philosophies</h2>
