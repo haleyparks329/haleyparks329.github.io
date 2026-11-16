@@ -139,9 +139,7 @@ body.simple-site {
   line-height: 1.6;
 }
 .s-doc .s-intro {
-  margin-top: 6px;
-  color: var(--s-ink-soft);
-  max-width: 60ch;
+  margin-top: 14px;
 }
 .s-doc .s-meta {
   margin-top: 20px;
